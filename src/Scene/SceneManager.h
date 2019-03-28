@@ -1,13 +1,12 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 
-#include "MainMenuScene.h"
-#include "OptionsScene.h"
-#include "GameScene.h"
-#include "UboViewProjection.h"
-#include "UboTextureColor.h"
-#include "UboLights.h"
-#include "GeometryShader.h"
+#include "Ubo/UboViewProjection.h"
+#include "Ubo/UboTextureColor.h"
+#include "Ubo/UboLights.h"
+#include "Render/GeometryShader.h"
+#include "Render/TextRenderer.h"
+#include "Scene.h"
 
 class SceneManager {
 public:
@@ -49,9 +48,6 @@ protected:
 	GeometryShader *depthPointShader;
 	TextRenderer* textRenderer;
 	Scene* currentScene = nullptr;
-	MainMenuScene* mainMenuScene;
-	OptionsScene* optionsScene;
-	GameScene* gameScene;
 	UboLights* uboLights;
 	UboTextureColor* uboTextureColor;
 	UboViewProjection* uboViewProjection;

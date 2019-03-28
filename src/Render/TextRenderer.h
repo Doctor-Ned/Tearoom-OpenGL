@@ -4,7 +4,7 @@
 #include <map>
 
 #include "Headers.h"
-#include "Shader.h"
+#include "Render/Shader.h"
 
 struct Character {
 	GLuint TextureID; // ID handle of the glyph texture

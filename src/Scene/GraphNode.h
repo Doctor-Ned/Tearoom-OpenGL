@@ -2,7 +2,7 @@
 #define GRAPHNODE_H
 
 #include "Headers.h"
-#include "Mesh.h"
+#include "Mesh/Mesh.h"
 
 class GraphNode {
 public:

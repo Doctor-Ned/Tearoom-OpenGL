@@ -1,7 +1,7 @@
 #ifndef GEOMETRYSHADER_H
 #define GEOMETRYSHADER_H
 
-#include "Shader.h"
+#include "Render/Shader.h"
 
 class GeometryShader : public Shader {
 public:

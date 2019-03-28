@@ -2,7 +2,7 @@
 #define SHADER_H
 
 #include "Headers.h"
-#include "Ubo.h"
+#include "Ubo/Ubo.h"
 
 class Shader {
 public:

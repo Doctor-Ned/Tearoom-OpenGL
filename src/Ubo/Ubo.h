@@ -11,7 +11,6 @@ public:
 	virtual ~Ubo() = 0;
 protected:
 	Ubo(unsigned int size, char* blockName, GLuint binding);
-protected:
 	GLuint binding;
 	GLuint id;
 	char* blockName;
