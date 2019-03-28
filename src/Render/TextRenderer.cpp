@@ -6,7 +6,7 @@
 TextRenderer::TextRenderer(GLfloat defaultScale) {
 	// Load and configure shader
 	this->defaultScale = defaultScale;
-	textShader = new Shader("textVertexShader.glsl", "textFragmentShader.glsl");
+	textShader = new Shader("textVS.glsl", "textFS.glsl");
 	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(WINDOW_WIDTH), static_cast<GLfloat>(WINDOW_HEIGHT),
 	                                     0.0f));
 	textShader->setInt("text", 0);

@@ -38,6 +38,7 @@ protected:
 	std::vector<GLuint> shaders;
 	char* fragmentPath;
 	char* vertexPath;
+	const char* SHADER_DIR = "Shaders/";
 };
 
 #endif

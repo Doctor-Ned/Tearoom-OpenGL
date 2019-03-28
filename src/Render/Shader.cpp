@@ -181,12 +181,17 @@ GLint Shader::getUniformLocation(const char* name) {
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	GLuint shader;
 	shader = glCreateShader(shaderType);
-	std::ifstream data(file, std::ios::binary | std::ios::ate);
-	std::streamsize fileSize = data.tellg();
+	size_t len_dir = strlen(SHADER_DIR), len_file = strlen(file);
+	char* fullFile = new char[len_dir + len_file + 1];
+	strcpy(fullFile, SHADER_DIR);
+	strcat(fullFile, file);
+	std::ifstream data(fullFile, std::ios::binary | std::ios::ate);
+	const std::streamsize fileSize = data.tellg();
 	data.seekg(0, std::ios::beg);
 	char* shaderText = new char[fileSize + 1];
 	shaderText[fileSize] = '\0';
 	if (data.read(shaderText, fileSize)) {
+		delete[] fullFile;
 		glShaderSource(shader, 1, (const GLchar**)&shaderText, nullptr);
 		glCompileShader(shader);
 		GLint isFine, maxLength;
@@ -198,13 +203,12 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 			glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog);
 			fprintf(stderr, "An error occurred while compiling shader from file '%s'. %s\n", file, errorLog);
 			exit(1);
-			return NULL;
 		}
 		return shader;
 	}
-	printf("Unable to read the shader file '%s'.", file);
+	printf("Unable to read the shader file '%s'.", fullFile);
+	delete[] fullFile;
 	exit(1);
-	return NULL;
 }
 
 void Shader::linkShaderProgram() {

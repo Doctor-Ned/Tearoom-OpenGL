@@ -161,7 +161,7 @@ int main(int, char**) {
 	sceneManager->setFramebuffer(fbo);
 
 
-	Shader post_processing("postProcessing.glsl", "postProcessing.glsl");
+	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
 	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 1.0f);
 

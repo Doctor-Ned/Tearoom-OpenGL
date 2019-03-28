@@ -13,8 +13,6 @@ public:
 	static SceneManager& getInstance();
 	void render();
 	void update(double timeDelta);
-	void newGame();
-	void backToMenu();
 	TextRenderer* getTextRenderer();
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);

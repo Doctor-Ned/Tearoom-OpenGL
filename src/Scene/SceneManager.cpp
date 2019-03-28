@@ -10,17 +10,17 @@ SceneManager& SceneManager::getInstance() {
 }
 
 void SceneManager::setup() {
-	uiTextureShader = new Shader("uiTextureVertexShader.glsl", "uiTextureFragmentShader.glsl");
-	uiColorShader = new Shader("uiColorVertexShader.glsl", "uiColorFragmentShader.glsl");
-	skyboxShader = new Shader("skyboxVertexShader.glsl", "skyboxFragmentShader.glsl");
-	modelShader = new Shader("modelVertexShader.glsl", "modelFragmentShader.glsl");
-	textureShader = new Shader("textureVertexShader.glsl", "textureFragmentShader.glsl");
-	colorShader = new Shader("colorVertexShader.glsl", "colorFragmentShader.glsl");
-	reflectShader = new Shader("reflectVertexShader.glsl", "reflectFragmentShader.glsl");
-	refractShader = new Shader("refractVertexShader.glsl", "refractFragmentShader.glsl");
-	depthShader = new Shader("depthVertexShader.glsl", "depthFragmentShader.glsl");
-	depthPointShader = new GeometryShader("depthPointVertexShader.glsl", "depthPointGeometryShader.glsl", "depthPointFragmentShader.glsl");
-	depthDebugShader = new Shader("depthDebugVertexShader.glsl", "depthDebugFragmentShader.glsl");
+	uiTextureShader = new Shader("Ui/uiTextureVS.glsl", "Ui/uiTextureFS.glsl");
+	uiColorShader = new Shader("Ui/uiColorVS.glsl", "Ui/uiColorFS.glsl");
+	skyboxShader = new Shader("skyboxVS.glsl", "skyboxFS.glsl");
+	modelShader = new Shader("modelVS.glsl", "modelFS.glsl");
+	textureShader = new Shader("textureVS.glsl", "textureFS.glsl");
+	colorShader = new Shader("colorVS.glsl", "colorFS.glsl");
+	reflectShader = new Shader("Ref/reflectVS.glsl", "Ref/reflectFS.glsl");
+	refractShader = new Shader("Ref/refractVS.glsl", "Ref/refractFS.glsl");
+	depthShader = new Shader("Depth/depthVS.glsl", "Depth/depthFS.glsl");
+	depthPointShader = new GeometryShader("Depth/depthPointVS.glsl", "Depth/depthPointGS.glsl", "Depth/depthPointFS.glsl");
+	depthDebugShader = new Shader("Depth/depthDebugVS.glsl", "Depth/depthDebugFS.glsl");
 	uboLights = new UboLights(nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	uboViewProjection = new UboViewProjection(glm::mat4(1.0f), glm::mat4(1.0f));
@@ -43,28 +43,19 @@ void SceneManager::setup() {
 	}
 
 	textRenderer = new TextRenderer(0.5f);
-	textRenderer->load("res\\fonts\\ButterLayer.ttf", 60.0f);
-	mainMenuScene = new MainMenuScene();
-	optionsScene = new OptionsScene();
-	mainMenuScene->setOptionsCallback([this]() { currentScene = optionsScene; });
-	currentScene = mainMenuScene;
+	textRenderer->load("res/fonts/ButterLayer.ttf", 60.0f);
 }
 
 void SceneManager::render() {
-	currentScene->render();
+	if (currentScene != nullptr) {
+		currentScene->render();
+	}
 }
 
 void SceneManager::update(double timeDelta) {
-	currentScene->update(timeDelta);
-}
-
-void SceneManager::newGame() {
-	gameScene = new GameScene();
-	currentScene = gameScene;
-}
-
-void SceneManager::backToMenu() {
-	currentScene = mainMenuScene;
+	if (currentScene != nullptr) {
+		currentScene->update(timeDelta);
+	}
 }
 
 TextRenderer* SceneManager::getTextRenderer() {
@@ -72,15 +63,21 @@ TextRenderer* SceneManager::getTextRenderer() {
 }
 
 void SceneManager::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	currentScene->keyboard_callback(window, key, scancode, action, mods);
+	if (currentScene != nullptr) {
+		currentScene->keyboard_callback(window, key, scancode, action, mods);
+	}
 }
 
 void SceneManager::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	currentScene->mouse_callback(window, xpos, ypos);
+	if (currentScene != nullptr) {
+		currentScene->mouse_callback(window, xpos, ypos);
+	}
 }
 
 void SceneManager::mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
-	currentScene->mouse_button_callback(window, butt, action, mods);
+	if (currentScene != nullptr) {
+		currentScene->mouse_button_callback(window, butt, action, mods);
+	}
 }
 
 Shader* SceneManager::getUiColorShader() {

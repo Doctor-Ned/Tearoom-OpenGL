@@ -1,5 +1,5 @@
 #include "MeshRef.h"
-#include "SceneManager.h"
+#include "Scene/SceneManager.h"
 
 void MeshRef::regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
 	drawToCubemap(environmentMap, getUnmodeledCenter() + glm::vec3(model[3]), fbo, rb, renderCallback, framebuffer);
