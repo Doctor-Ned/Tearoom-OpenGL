@@ -2,14 +2,12 @@
 #define HEADERS_H
 
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include "ft2build.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -30,38 +28,36 @@
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 
-
-#include <glm/gtx/rotate_vector.hpp>
 #include <functional>
 
 static const float WINDOW_WIDTH = 1280.0f, WINDOW_HEIGHT = 720.0f, WINDOW_CENTER_X = WINDOW_WIDTH / 2.0f,
                    WINDOW_CENTER_Y = WINDOW_HEIGHT / 2.0f;
 
-static glm::vec3* create_horizontal_transform_array(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
-                                                 const float y_position = 0.0f) {
+static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
+                                                 const float yPosition = 0.0f) {
 	glm::vec3* result = new glm::vec3[width * length];
-	const float first_x = width == 1 ? (max.x + min.x) / 2.0f : min.x;
-	const float x_step = width == 1 ? 0.0f : (max.x - min.x) / static_cast<float>(width - 1);
-	const float first_z = length == 1 ? (max.y - min.y) / 2.0f : min.y;
-	const float z_step = length == 1 ? 0.0f : (max.y - min.y) / static_cast<float>(length - 1);
+	const float firstX = width == 1 ? (max.x + min.x) / 2.0f : min.x;
+	const float xStep = width == 1 ? 0.0f : (max.x - min.x) / static_cast<float>(width - 1);
+	const float firstZ = length == 1 ? (max.y - min.y) / 2.0f : min.y;
+	const float zStep = length == 1 ? 0.0f : (max.y - min.y) / static_cast<float>(length - 1);
 	int counter = 0;
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < length; j++) {
-			result[counter++] = glm::vec3(i * x_step + first_x, y_position, j * z_step + first_z);
+			result[counter++] = glm::vec3(i * xStep + firstX, yPosition, j * zStep + firstZ);
 		}
 	}
 	return result;
 }
 
 struct Texture {
-	GLuint id;
+	GLuint id{};
 	std::string path;
 };
 
 static const glm::ivec2 ENVMAP_SIZE(2048.0f, 2048.0f);
 
 static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb,
-                          const std::function<void(glm::mat4, glm::mat4)> render_callback, GLuint framebuffer) {
+                          const std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -94,7 +90,7 @@ static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint
 		//v[1][2] *= -1.0f;
 		//v[2][2] *= -1.0f;
 		//v[3][2] *= -1.0f;
-		render_callback(v, p);
+		renderCallback(v, p);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
@@ -102,32 +98,32 @@ static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-static Texture createTexture(const char* texture_file) {
+static Texture createTexture(const char* textureFile) {
 	Texture texture;
-	int img_width, img_height, img_channels;
-	unsigned char* imgData = stbi_load(texture_file, &img_width, &img_height, &img_channels, 0);
+	int imgWidth, imgHeight, imgChannels;
+	unsigned char* imgData = stbi_load(textureFile, &imgWidth, &imgHeight, &imgChannels, 0);
 	if (!imgData) {
-		fprintf(stderr, "Failed to load texture from file \"%s\"!", texture_file);
+		fprintf(stderr, "Failed to load texture from file \"%s\"!", textureFile);
 		exit(1);
 	}
 	GLenum format = GL_RGB;
-	if (img_channels == 4) {
+	if (imgChannels == 4) {
 		format = GL_RGBA;
 	}
 	GLuint imgTexture;
 	glGenTextures(1, &imgTexture);
 	glBindTexture(GL_TEXTURE_2D, imgTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, format, img_width, img_height, 0, format, GL_UNSIGNED_BYTE, imgData);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, imgData);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(imgData);
 	texture.id = imgTexture;
-	texture.path = texture_file;
+	texture.path = textureFile;
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return texture;
 }
 
-static GLuint load_cubemap(std::vector<std::string> faces) {
+static GLuint loadCubemap(std::vector<std::string> faces) {
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -154,26 +150,26 @@ static GLuint load_cubemap(std::vector<std::string> faces) {
 	return textureID;
 }
 
-static double remap(const double value, const double source_min, const double source_max, double target_min, double target_max,
-                    const bool revert_target = false, const bool snap_if_invalid = true) {
-	if (value < source_min || value > source_max) {
-		if (snap_if_invalid) {
-			return value < source_min ? target_min : target_max;
+static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax,
+                    const bool revertTarget = false, const bool snapIfInvalid = true) {
+	if (value < sourceMin || value > sourceMax) {
+		if (snapIfInvalid) {
+			return value < sourceMin ? targetMin : targetMax;
 		}
 	}
-	double result = (value - source_min) / (source_max - source_min) * (target_max - target_min) + target_min;
-	if (revert_target) {
-		result = target_max - result + target_min;
+	double result = (value - sourceMin) / (sourceMax - sourceMin) * (targetMax - targetMin) + targetMin;
+	if (revertTarget) {
+		result = targetMax - result + targetMin;
 	}
 
 	return result;
 }
 
-static int remap(const int value, const int source_min, const int source_max, const int target_min, const int target_max, const bool revert_target = false,
-                 const bool snap_if_invalid = true) {
-	return static_cast<int>(remap(static_cast<double>(value), static_cast<double>(source_min), static_cast<double>(source_max), static_cast<double>(target_min),
-	                              static_cast<double>(target_max),
-	                              revert_target, snap_if_invalid));
+static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false,
+                 const bool snapIfInvalid = true) {
+	return static_cast<int>(remap(static_cast<double>(value), static_cast<double>(sourceMin), static_cast<double>(sourceMax), static_cast<double>(targetMin),
+	                              static_cast<double>(targetMax),
+	                              revertTarget, snapIfInvalid));
 }
 
 #define MAX_LIGHTS_OF_TYPE 16                                   // this MUST be identical to the value from the shader
