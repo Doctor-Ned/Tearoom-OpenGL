@@ -14,9 +14,9 @@ public:
 	virtual void draw(Shader *shader, GraphNode *excluded);
 	virtual void draw(Shader *shader, std::vector<GraphNode*> excluded);
 	virtual void update(double timeDiff);
-	glm::mat4 getLocal();
-	glm::mat4 getWorld();
-	GraphNode *getParent();
+	glm::mat4 getLocal() const;
+	glm::mat4 getWorld() const;
+	GraphNode *getParent() const;
 	void setScale(float scale);
 	void setLocal(glm::mat4 local);
 	void addChild(GraphNode* child);

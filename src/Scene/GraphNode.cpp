@@ -96,7 +96,7 @@ void GraphNode::draw(Shader* shader) {
 	}
 
 	if (mesh) {
-		mesh->draw(*shader, world, scale);
+		mesh->draw(shader, world, scale);
 	}
 
 	for (int i = 0; i < children.size(); i++) {
@@ -118,7 +118,7 @@ void GraphNode::draw(Shader* shader, GraphNode* excluded) {
 	}
 
 	if (mesh) {
-		mesh->draw(*shader, world, scale);
+		mesh->draw(shader, world, scale);
 	}
 
 	for (int i = 0; i < children.size(); i++) {
@@ -142,7 +142,7 @@ void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
 	}
 
 	if (mesh) {
-		mesh->draw(*shader, world, scale);
+		mesh->draw(shader, world, scale);
 	}
 
 	for (int i = 0; i < children.size(); i++) {
@@ -168,11 +168,11 @@ void GraphNode::update(double timeDiff) {
 	}
 }
 
-glm::mat4 GraphNode::getWorld() {
+glm::mat4 GraphNode::getWorld() const {
 	return world;
 }
 
-GraphNode* GraphNode::getParent() {
+GraphNode* GraphNode::getParent() const {
 	return parent;
 }
 
@@ -180,7 +180,7 @@ void GraphNode::setScale(float scale) {
 	this->scale = scale;
 }
 
-glm::mat4 GraphNode::getLocal() {
+glm::mat4 GraphNode::getLocal() const {
 	return local;
 }
 

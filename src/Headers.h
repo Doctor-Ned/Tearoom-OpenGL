@@ -1,6 +1,8 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"         // Visual Studio says it's redundant, but IT IS NOT.
 #include <glm/gtx/rotate_vector.hpp> // same applies to this one
@@ -10,8 +12,6 @@
 #include <stb_image.h>
 
 #include <glm/gtc/matrix_transform.hpp>
-
-#define GLM_ENABLE_EXPERIMENTAL
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
