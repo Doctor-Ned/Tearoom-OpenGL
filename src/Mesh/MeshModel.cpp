@@ -1,12 +1,12 @@
 #include "MeshModel.h"
 
-MeshModel::MeshModel(Shader shader, std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
+MeshModel::MeshModel(Shader *shader, std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
                      std::vector<ModelTexture> textures)
-	: Mesh(shader, indices), vertices(vertices), textures(textures) {
+	: Mesh(shader), indices(indices), vertices(vertices), textures(textures) {
 	setupMesh();
 }
 
-void MeshModel::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshModel::draw(Shader *shader, glm::mat4 world, float scale) {
 	Mesh::draw(shader, world, scale);
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
@@ -26,11 +26,11 @@ void MeshModel::draw(Shader shader, glm::mat4 world, float scale) {
 		else if (name == "texture_height")
 			number = std::to_string(heightNr++);
 
-		shader.setInt((name + number).c_str(), i);
+		shader->setInt((name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
-	shader.setUseSpecular(specularNr > 1);
+	shader->setUseSpecular(specularNr > 1);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
@@ -41,7 +41,7 @@ void MeshModel::draw(Shader shader, glm::mat4 world, float scale) {
 }
 
 void MeshModel::setupMesh() {
-	shader.use();
+	shader->use();
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);

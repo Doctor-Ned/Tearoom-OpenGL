@@ -1,13 +1,13 @@
 #include "MeshSphere.h"
 
-MeshSphere::MeshSphere(Shader shader, float radius, int precision, char* texturePath, glm::vec3 baseCenter)
+MeshSphere::MeshSphere(Shader *shader, float radius, int precision, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(shader), baseCenter(baseCenter), radius(radius), precision(precision) {
 	texture = createTexture(texturePath);
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshSphere::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshSphere::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -43,26 +43,7 @@ void MeshSphere::updateValues(float radius, int precision) {
 	vertices.clear();
 }
 
-void MeshSphere::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static int _precision = precision;
-	ImGui::SliderFloat("Sphere radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Sphere precision", &_precision, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply sphere changes")) {
-		if (_radius != radius || _precision != precision) {
-			radius = _radius;
-			precision = _precision;
-			updateValues(radius, precision);
-		}
-	}
-	ImGui::PopID();
-}
-
-float MeshSphere::getRadius() {
+float MeshSphere::getRadius() const {
 	return radius;
 }
 
@@ -118,7 +99,7 @@ void MeshSphere::createSphereSegment(std::vector<TextureVertex>* vertices, float
 }
 
 void MeshSphere::createRectangle(std::vector<TextureVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,
-                                 glm::vec3* dL) {
+                                 glm::vec3* dL) const {
 	glm::vec3 horizontal = *dR - *dL;
 	glm::vec3 vertical = *tL - *dL;
 	glm::vec3 normal = cross(vertical, horizontal);
@@ -176,7 +157,7 @@ void MeshSphere::createTriangle(std::vector<TextureVertex>* vertices, glm::vec3*
 }
 
 void MeshSphere::bufferData(std::vector<TextureVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -189,13 +170,13 @@ void MeshSphere::bufferData(std::vector<TextureVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(TextureVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, Normal)));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, TexCoords));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 }

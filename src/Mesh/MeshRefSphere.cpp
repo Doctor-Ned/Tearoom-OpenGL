@@ -1,13 +1,13 @@
 #include "MeshRefSphere.h"
 #include "MeshTexture.h"
 
-MeshRefSphere::MeshRefSphere(Shader shader, float radius, int precision, glm::vec3 baseCenter)
+MeshRefSphere::MeshRefSphere(Shader *shader, float radius, int precision, glm::vec3 baseCenter)
 	: MeshRef(shader), baseCenter(baseCenter), radius(radius), precision(precision) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshRefSphere::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshRefSphere::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshRef::draw(shader, world, scale);
 	//glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -41,26 +41,7 @@ void MeshRefSphere::updateValues(float radius, int precision) {
 	vertices.clear();
 }
 
-void MeshRefSphere::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static int _precision = precision;
-	ImGui::SliderFloat("Sphere radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Sphere precision", &_precision, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply sphere changes")) {
-		if (_radius != radius || _precision != precision) {
-			radius = _radius;
-			precision = _precision;
-			updateValues(radius, precision);
-		}
-	}
-	ImGui::PopID();
-}
-
-float MeshRefSphere::getRadius() {
+float MeshRefSphere::getRadius() const {
 	return radius;
 }
 
@@ -143,7 +124,7 @@ void MeshRefSphere::createRectangle(std::vector<SimpleVertex>* vertices, glm::ve
 }
 
 void MeshRefSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec3* up, glm::vec3* right,
-                                glm::vec3* left) {
+                                glm::vec3* left) const {
 	glm::vec3 horizontal = *right - *left;
 	glm::vec3 vertical = *up - *left;
 	glm::vec3 normal = cross(horizontal, vertical);
@@ -162,7 +143,7 @@ void MeshRefSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec
 }
 
 void MeshRefSphere::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

@@ -1,13 +1,12 @@
 #include "MeshBox.h"
 
-MeshBox::MeshBox(Shader shader, glm::vec3 min, glm::vec3 max, char* texturePath)
+MeshBox::MeshBox(Shader *shader, glm::vec3 min, glm::vec3 max, char* texturePath)
 	: MeshTexture(shader), min(min), max(max) {
 	texture = createTexture(texturePath);
-	VBO = 0;
 	setupMesh();
 }
 
-void MeshBox::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshBox::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -153,7 +152,7 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	}
 
 	vertexAmount = 36;
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

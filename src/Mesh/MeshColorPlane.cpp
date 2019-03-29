@@ -1,12 +1,12 @@
 #include "MeshColorPlane.h"
 
-MeshColorPlane::MeshColorPlane(Shader shader, float width, float length, glm::vec4 color, glm::vec3 baseCenter)
+MeshColorPlane::MeshColorPlane(Shader *shader, float width, float length, glm::vec4 color, glm::vec3 baseCenter)
 	: MeshSimple(shader, color), baseCenter(baseCenter), width(width), length(length) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshColorPlane::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorPlane::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -57,7 +57,7 @@ void MeshColorPlane::updateValues(float width, float length) {
 	data.push_back(vertices[2]);
 
 	vertexAmount = 6;
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -70,30 +70,13 @@ void MeshColorPlane::updateValues(float width, float length) {
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(SimpleVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 	data.clear();
-}
-
-void MeshColorPlane::drawGui(bool autoUpdate) {
-	static float _width = width;
-	static float _length = length;
-	ImGui::SliderFloat("Plane width", &_width, 0.0f, 5.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Plane length", &_length, 0.0f, 5.0f);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply plane changes")) {
-		if (_width != width || _length != length) {
-			width = _width;
-			length = _length;
-			updateValues(width, length);
-		}
-	}
 }
 
 void MeshColorPlane::setupMesh() {

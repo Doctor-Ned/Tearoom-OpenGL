@@ -1,13 +1,13 @@
 #include "MeshColorCone.h"
 
-MeshColorCone::MeshColorCone(Shader shader, float radius, float height, int sideAmount, glm::vec4 color,
+MeshColorCone::MeshColorCone(Shader *shader, float radius, float height, int sideAmount, glm::vec4 color,
                              glm::vec3 baseCenter)
 	: MeshSimple(shader, color), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshColorCone::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorCone::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -35,9 +35,8 @@ void MeshColorCone::updateValues(float radius, float height, int sideAmount) {
 	float radStep = 2.0f * M_PI / sideAmount;
 	float angle = 0.0f;
 
-	bool last;
 	for (int i = 0; i < sideAmount; i++) {
-		last = i == sideAmount - 1;
+		bool last = i == sideAmount - 1;
 		createBottomTriangle(&vertices, angle, last ? 0.0f : angle + radStep);
 		createTopTriangle(&vertices);
 		angle += radStep;
@@ -48,30 +47,7 @@ void MeshColorCone::updateValues(float radius, float height, int sideAmount) {
 	vertices.clear();
 }
 
-void MeshColorCone::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static float _height = height;
-	static int _sideAmount = sideAmount;
-	ImGui::SliderFloat("Cone radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Cone height", &_height, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Cone sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply cone changes")) {
-		if (_radius != radius || _height != height || _sideAmount != sideAmount) {
-			radius = _radius;
-			height = _height;
-			sideAmount = _sideAmount;
-			updateValues(radius, height, sideAmount);
-		}
-	}
-	ImGui::PopID();
-}
-
-void MeshColorCone::createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) {
+void MeshColorCone::createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) const {
 	SimpleVertex center, closer, farther;
 	center.Position = baseCenter;
 	center.Normal.x = 0.0f;
@@ -92,7 +68,7 @@ void MeshColorCone::createBottomTriangle(std::vector<SimpleVertex>* vertices, fl
 	vertices->push_back(farther);
 }
 
-void MeshColorCone::createTopTriangle(std::vector<SimpleVertex>* vertices) {
+void MeshColorCone::createTopTriangle(std::vector<SimpleVertex>* vertices) const {
 	SimpleVertex dummy;
 	for (int i = 0; i < 3; i++) {
 		vertices->push_back(dummy);
@@ -119,7 +95,7 @@ void MeshColorCone::createTopTriangle(std::vector<SimpleVertex>* vertices) {
 }
 
 void MeshColorCone::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -132,10 +108,10 @@ void MeshColorCone::bufferData(std::vector<SimpleVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(SimpleVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 }

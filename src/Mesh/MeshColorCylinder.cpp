@@ -1,13 +1,13 @@
 #include "MeshColorCylinder.h"
 
-MeshColorCylinder::MeshColorCylinder(Shader shader, float radius, float height, int sideAmount, glm::vec4 color,
+MeshColorCylinder::MeshColorCylinder(Shader *shader, float radius, float height, int sideAmount, glm::vec4 color,
                                      glm::vec3 baseCenter)
 	: MeshSimple(shader, color), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshColorCylinder::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorCylinder::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -49,30 +49,7 @@ void MeshColorCylinder::updateValues(float radius, float height, int sideAmount)
 	vertices.clear();
 }
 
-void MeshColorCylinder::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static float _height = height;
-	static int _sideAmount = sideAmount;
-	ImGui::SliderFloat("Cylinder radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Cylinder height", &_height, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Cylinder sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply cylinder changes")) {
-		if (_radius != radius || _height != height || _sideAmount != sideAmount) {
-			radius = _radius;
-			height = _height;
-			sideAmount = _sideAmount;
-			updateValues(radius, height, sideAmount);
-		}
-	}
-	ImGui::PopID();
-}
-
-void MeshColorCylinder::createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) {
+void MeshColorCylinder::createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) const {
 	SimpleVertex center, closer, farther;
 	center.Position = baseCenter;
 	center.Normal.x = 0.0f;
@@ -93,7 +70,7 @@ void MeshColorCylinder::createBottomTriangle(std::vector<SimpleVertex>* vertices
 	vertices->push_back(farther);
 }
 
-void MeshColorCylinder::createTopTriangle(std::vector<SimpleVertex>* vertices) {
+void MeshColorCylinder::createTopTriangle(std::vector<SimpleVertex>* vertices) const {
 	SimpleVertex dummy;
 	for (int i = 0; i < 3; i++) {
 		vertices->push_back(dummy);
@@ -117,7 +94,7 @@ void MeshColorCylinder::createTopTriangle(std::vector<SimpleVertex>* vertices) {
 	}
 }
 
-void MeshColorCylinder::createSideTriangles(std::vector<SimpleVertex>* vertices) {
+void MeshColorCylinder::createSideTriangles(std::vector<SimpleVertex>* vertices) const {
 	SimpleVertex dummy;
 	for (int i = 0; i < 6; i++) {
 		vertices->push_back(dummy);
@@ -162,7 +139,7 @@ void MeshColorCylinder::createSideTriangles(std::vector<SimpleVertex>* vertices)
 }
 
 void MeshColorCylinder::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -175,10 +152,10 @@ void MeshColorCylinder::bufferData(std::vector<SimpleVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(SimpleVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 }

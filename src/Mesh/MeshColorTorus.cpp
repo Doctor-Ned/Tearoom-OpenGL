@@ -1,6 +1,6 @@
 #include "MeshColorTorus.h"
 
-MeshColorTorus::MeshColorTorus(Shader shader, float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
+MeshColorTorus::MeshColorTorus(Shader *shader, float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
                                glm::vec3 baseCenter)
 	: MeshSimple(shader, color), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut),
 	  sideAmount(sideAmount) {
@@ -8,7 +8,7 @@ MeshColorTorus::MeshColorTorus(Shader shader, float radiusIn, float radiusOut, i
 	setupMesh();
 }
 
-void MeshColorTorus::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorTorus::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -46,33 +46,7 @@ void MeshColorTorus::updateValues(float radiusIn, float radiusOut, int sideAmoun
 	vertices.clear();
 }
 
-void MeshColorTorus::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radiusIn = radiusIn;
-	static float _radiusOut = radiusOut;
-	static int _sideAmount = sideAmount;
-	if (_radiusOut <= radiusIn) {
-		radiusOut = radiusIn + 0.01f;
-	}
-	ImGui::SliderFloat("Torus radiusIn", &_radiusIn, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Torus radiusOut", &_radiusOut, _radiusIn, _radiusIn + 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Torus sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply torus changes")) {
-		if (_radiusIn != radiusIn || _radiusOut != radiusOut || _sideAmount != sideAmount) {
-			radiusIn = _radiusIn;
-			radiusOut = _radiusOut;
-			sideAmount = _sideAmount;
-			updateValues(radiusIn, radiusOut, sideAmount);
-		}
-	}
-	ImGui::PopID();
-}
-
-void MeshColorTorus::createTorusSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) {
+void MeshColorTorus::createTorusSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) const {
 	glm::vec3* circle = new glm::vec3[sideAmount];
 
 	float centerX = radiusOut;
@@ -123,7 +97,7 @@ void MeshColorTorus::createTorusSegment(std::vector<SimpleVertex>* vertices, flo
 }
 
 void MeshColorTorus::createRectangle(std::vector<SimpleVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,
-                                     glm::vec3* dL) {
+                                     glm::vec3* dL) const {
 	glm::vec3 horizontal = *dR - *dL;
 	glm::vec3 vertical = *tL - *dL;
 	glm::vec3 normal = cross(vertical, horizontal);
@@ -146,7 +120,7 @@ void MeshColorTorus::createRectangle(std::vector<SimpleVertex>* vertices, glm::v
 }
 
 void MeshColorTorus::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -159,10 +133,10 @@ void MeshColorTorus::bufferData(std::vector<SimpleVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(SimpleVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 }

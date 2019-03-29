@@ -1,6 +1,6 @@
 #include "MeshTorus.h"
 
-MeshTorus::MeshTorus(Shader shader, float radiusIn, float radiusOut, int sideAmount, char* texturePath,
+MeshTorus::MeshTorus(Shader *shader, float radiusIn, float radiusOut, int sideAmount, char* texturePath,
                      glm::vec3 baseCenter)
 	: MeshTexture(shader), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
@@ -8,7 +8,7 @@ MeshTorus::MeshTorus(Shader shader, float radiusIn, float radiusOut, int sideAmo
 	setupMesh();
 }
 
-void MeshTorus::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshTorus::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -46,32 +46,6 @@ void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
-}
-
-void MeshTorus::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radiusIn = radiusIn;
-	static float _radiusOut = radiusOut;
-	static int _sideAmount = sideAmount;
-	if (_radiusOut <= radiusIn) {
-		radiusOut = radiusIn + 0.01f;
-	}
-	ImGui::SliderFloat("Torus radiusIn", &_radiusIn, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Torus radiusOut", &_radiusOut, _radiusIn, _radiusIn + 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Torus sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply torus changes")) {
-		if (_radiusIn != radiusIn || _radiusOut != radiusOut || _sideAmount != sideAmount) {
-			radiusIn = _radiusIn;
-			radiusOut = _radiusOut;
-			sideAmount = _sideAmount;
-			updateValues(radiusIn, radiusOut, sideAmount);
-		}
-	}
-	ImGui::PopID();
 }
 
 void MeshTorus::createTorusSegment(std::vector<TextureVertex>* vertices, float angle, float radStep) {
@@ -157,7 +131,7 @@ void MeshTorus::createRectangle(std::vector<TextureVertex>* vertices, glm::vec3*
 }
 
 void MeshTorus::bufferData(std::vector<TextureVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -170,13 +144,13 @@ void MeshTorus::bufferData(std::vector<TextureVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(TextureVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, Normal)));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, TexCoords));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 }

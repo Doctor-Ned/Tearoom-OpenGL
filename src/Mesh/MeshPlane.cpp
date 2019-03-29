@@ -1,13 +1,13 @@
 #include "MeshPlane.h"
 
-MeshPlane::MeshPlane(Shader shader, float width, float length, char* texturePath, glm::vec3 baseCenter)
+MeshPlane::MeshPlane(Shader *shader, float width, float length, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(shader), baseCenter(baseCenter), width(width), length(length) {
 	texture = createTexture(texturePath);
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshPlane::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshPlane::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -65,7 +65,7 @@ void MeshPlane::updateValues(float width, float length) {
 	data.push_back(vertices[2]);
 
 	vertexAmount = 6;
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -78,33 +78,16 @@ void MeshPlane::updateValues(float width, float length) {
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(TextureVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, Normal)));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, TexCoords));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 	data.clear();
-}
-
-void MeshPlane::drawGui(bool autoUpdate) {
-	static float _width = width;
-	static float _length = length;
-	ImGui::SliderFloat("Plane width", &_width, 0.0f, 5.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Plane length", &_length, 0.0f, 5.0f);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply plane changes")) {
-		if (_width != width || _length != length) {
-			width = _width;
-			length = _length;
-			updateValues(width, length);
-		}
-	}
 }
 
 void MeshPlane::setupMesh() {

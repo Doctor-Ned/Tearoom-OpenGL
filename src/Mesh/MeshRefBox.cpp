@@ -1,13 +1,13 @@
 #include "MeshRefBox.h"
 #include "MeshSimple.h"
 
-MeshRefBox::MeshRefBox(Shader shader, glm::vec3 min, glm::vec3 max)
+MeshRefBox::MeshRefBox(Shader *shader, glm::vec3 min, glm::vec3 max)
 	: MeshRef(shader), min(min), max(max) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshRefBox::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshRefBox::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshRef::draw(shader, world, scale);
 	//glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -121,7 +121,7 @@ void MeshRefBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	}
 
 	vertexAmount = 36;
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -134,20 +134,20 @@ void MeshRefBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	glBufferData(GL_ARRAY_BUFFER, vertexAmount * sizeof(SimpleVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 	data.clear();
 }
 
-glm::vec3 MeshRefBox::getMin() {
+glm::vec3 MeshRefBox::getMin() const {
 	return min;
 }
 
-glm::vec3 MeshRefBox::getMax() {
+glm::vec3 MeshRefBox::getMax() const {
 	return max;
 }
 

@@ -22,11 +22,12 @@ struct ModelTexture {
 
 class MeshModel : public Mesh {
 public:
-	MeshModel(Shader shader, std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
+	MeshModel(Shader *shader, std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
 	          std::vector<ModelTexture> textures);
-	void draw(Shader shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 protected:
-	void setupMesh() override;
+	void setupMesh();
+	std::vector<unsigned int> indices;
 	std::vector<ModelVertex> vertices;
 	std::vector<ModelTexture> textures;
 };

@@ -1,18 +1,18 @@
 #include "MeshModelInstanced.h"
 
-MeshModelInstanced::MeshModelInstanced(Shader shader, std::vector<ModelVertex> vertices,
+MeshModelInstanced::MeshModelInstanced(Shader *shader, std::vector<ModelVertex> vertices,
                                        std::vector<unsigned int> indices, std::vector<ModelTexture> textures,
                                        glm::vec3* offsets, int offsetSize)
-	: Mesh(shader, indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices), textures(textures) {
+	: Mesh(shader), indices(indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices), textures(textures) {
 	setupMesh();
 }
 
-void MeshModelInstanced::draw(Shader shader, glm::mat4 world, float scale) {
-	shader.use();
-	shader.setShininess(shininess);
-	shader.setScale(scale);
-	shader.setModel(world);
-	shader.setUseLight(useLight);
+void MeshModelInstanced::draw(Shader *shader, glm::mat4 world, float scale) {
+	shader->use();
+	shader->setShininess(shininess);
+	shader->setScale(scale);
+	shader->setModel(world);
+	shader->setUseLight(useLight);
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
 	GLuint normalNr = 1;
@@ -31,11 +31,11 @@ void MeshModelInstanced::draw(Shader shader, glm::mat4 world, float scale) {
 		else if (name == "texture_height")
 			number = std::to_string(heightNr++);
 
-		glUniform1i(shader.getUniformLocation((name + number).c_str()), i);
+		glUniform1i(shader->getUniformLocation((name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
-	shader.setUseSpecular(specularNr > 1);
+	shader->setUseSpecular(specularNr > 1);
 	glBindVertexArray(VAO);
 	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr, offsetSize);
 	glBindVertexArray(0);
@@ -45,7 +45,7 @@ void MeshModelInstanced::draw(Shader shader, glm::mat4 world, float scale) {
 }
 
 void MeshModelInstanced::setupMesh() {
-	shader.use();
+	shader->use();
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);

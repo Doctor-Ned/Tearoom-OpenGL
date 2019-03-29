@@ -1,6 +1,6 @@
 #include "MeshCylinder.h"
 
-MeshCylinder::MeshCylinder(Shader shader, float radius, float height, int sideAmount, char* texturePath,
+MeshCylinder::MeshCylinder(Shader *shader, float radius, float height, int sideAmount, char* texturePath,
                            glm::vec3 baseCenter)
 	: MeshTexture(shader), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
@@ -8,7 +8,7 @@ MeshCylinder::MeshCylinder(Shader shader, float radius, float height, int sideAm
 	setupMesh();
 }
 
-void MeshCylinder::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshCylinder::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -52,30 +52,7 @@ void MeshCylinder::updateValues(float radius, float height, int sideAmount) {
 	vertices.clear();
 }
 
-void MeshCylinder::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static float _height = height;
-	static int _sideAmount = sideAmount;
-	ImGui::SliderFloat("Cylinder radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Cylinder height", &_height, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Cylinder sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply cylinder changes")) {
-		if (_radius != radius || _height != height || _sideAmount != sideAmount) {
-			radius = _radius;
-			height = _height;
-			sideAmount = _sideAmount;
-			updateValues(radius, height, sideAmount);
-		}
-	}
-	ImGui::PopID();
-}
-
-void MeshCylinder::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) {
+void MeshCylinder::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const {
 	TextureVertex center, closer, farther;
 	center.Position = baseCenter;
 	center.Normal.x = 0.0f;
@@ -105,7 +82,7 @@ void MeshCylinder::createBottomTriangle(std::vector<TextureVertex>* vertices, fl
 	vertices->push_back(farther);
 }
 
-void MeshCylinder::createTopTriangle(std::vector<TextureVertex>* vertices) {
+void MeshCylinder::createTopTriangle(std::vector<TextureVertex>* vertices) const {
 	TextureVertex dummy;
 	for (int i = 0; i < 3; i++) {
 		vertices->push_back(dummy);
@@ -130,7 +107,7 @@ void MeshCylinder::createTopTriangle(std::vector<TextureVertex>* vertices) {
 	}
 }
 
-void MeshCylinder::createSideTriangles(std::vector<TextureVertex>* vertices) {
+void MeshCylinder::createSideTriangles(std::vector<TextureVertex>* vertices) const {
 	TextureVertex dummy;
 	for (int i = 0; i < 6; i++) {
 		vertices->push_back(dummy);
@@ -189,7 +166,7 @@ void MeshCylinder::createSideTriangles(std::vector<TextureVertex>* vertices) {
 }
 
 void MeshCylinder::bufferData(std::vector<TextureVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

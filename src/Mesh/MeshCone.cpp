@@ -1,13 +1,13 @@
 #include "MeshCone.h"
 
-MeshCone::MeshCone(Shader shader, float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
+MeshCone::MeshCone(Shader *shader, float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(shader), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshCone::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshCone::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshTexture::draw(shader, world, scale);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -50,30 +50,7 @@ void MeshCone::updateValues(float radius, float height, int sideAmount) {
 	vertices.clear();
 }
 
-void MeshCone::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static float _height = height;
-	static int _sideAmount = sideAmount;
-	ImGui::SliderFloat("Cone radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderFloat("Cone height", &_height, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Cone sides", &_sideAmount, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply cone changes")) {
-		if (_radius != radius || _height != height || _sideAmount != sideAmount) {
-			radius = _radius;
-			height = _height;
-			sideAmount = _sideAmount;
-			updateValues(radius, height, sideAmount);
-		}
-	}
-	ImGui::PopID();
-}
-
-void MeshCone::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) {
+void MeshCone::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const {
 	TextureVertex center, closer, farther;
 	center.Position = baseCenter;
 	center.Normal.x = 0.0f;
@@ -103,7 +80,7 @@ void MeshCone::createBottomTriangle(std::vector<TextureVertex>* vertices, float 
 	vertices->push_back(farther);
 }
 
-void MeshCone::createTopTriangle(std::vector<TextureVertex>* vertices) {
+void MeshCone::createTopTriangle(std::vector<TextureVertex>* vertices) const {
 	TextureVertex dummy;
 	for (int i = 0; i < 3; i++) {
 		vertices->push_back(dummy);
@@ -133,7 +110,7 @@ void MeshCone::createTopTriangle(std::vector<TextureVertex>* vertices) {
 }
 
 void MeshCone::bufferData(std::vector<TextureVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

@@ -16,41 +16,41 @@ void Mesh::setUseLight(bool useLight) {
 	this->useLight = useLight;
 }
 
-bool Mesh::getUseLight() {
+bool Mesh::getUseLight() const {
 	return useLight;
 }
 
-void Mesh::draw(Shader shader, glm::mat4 world, float scale) {
-	shader.use();
-	shader.setShininess(shininess);
-	shader.setScale(scale);
-	shader.setModel(world);
-	shader.setUseLight(useLight);
-	shader.setUseSpecular(false);
+float Mesh::getShininess() const {
+	return shininess;
 }
 
-void Mesh::drawGui(bool autoUpdate) {}
+void Mesh::draw(Shader *shader, glm::mat4 world, float scale) {
+	shader->use();
+	shader->setShininess(shininess);
+	shader->setScale(scale);
+	shader->setModel(world);
+	shader->setUseLight(useLight);
+	shader->setUseSpecular(false);
+}
 
-void Mesh::setShader(Shader shader) {
+void Mesh::setShader(Shader *shader) {
 	this->shader = shader;
 }
 
-Shader* Mesh::getShader() {
-	return &shader;
+Shader* Mesh::getShader() const {
+	return shader;
 }
 
 Mesh::~Mesh() {
-	//if(VAO != 0) {
-	//	glDeleteVertexArrays(1, &VAO);
-	//}
-	//if (VBO != 0) {
-	//	glDeleteBuffers(1, &VBO);
-	//}
-	//if (EBO != 0) {
-	//	glDeleteBuffers(1, &EBO);
-	//}
+	if(VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+	}
+	if (VBO != 0) {
+		glDeleteBuffers(1, &VBO);
+	}
+	if (EBO != 0) {
+		glDeleteBuffers(1, &EBO);
+	}
 }
 
-Mesh::Mesh(Shader shader, std::vector<unsigned int> indices) : indices(indices), shader(shader) {}
-
-Mesh::Mesh(Shader shader) : shader(shader) {}
+Mesh::Mesh(Shader *shader) : shader(shader), VAO(0), VBO(0), EBO(0) {}

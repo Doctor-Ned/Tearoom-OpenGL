@@ -1,12 +1,12 @@
 #include "MeshColorSphere.h"
 
-MeshColorSphere::MeshColorSphere(Shader shader, float radius, int precision, glm::vec4 color, glm::vec3 baseCenter)
+MeshColorSphere::MeshColorSphere(Shader *shader, float radius, int precision, glm::vec4 color, glm::vec3 baseCenter)
 	: MeshSimple(shader, color), baseCenter(baseCenter), radius(radius), precision(precision) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshColorSphere::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorSphere::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -40,26 +40,7 @@ void MeshColorSphere::updateValues(float radius, int precision) {
 	vertices.clear();
 }
 
-void MeshColorSphere::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	static float _radius = radius;
-	static int _precision = precision;
-	ImGui::SliderFloat("Sphere radius", &_radius, 0.01f, 2.0f);
-	ImGui::NewLine();
-	ImGui::SliderInt("Sphere precision", &_precision, 3, 50);
-	ImGui::NewLine();
-
-	if (autoUpdate || ImGui::Button("Apply sphere changes")) {
-		if (_radius != radius || _precision != precision) {
-			radius = _radius;
-			precision = _precision;
-			updateValues(radius, precision);
-		}
-	}
-	ImGui::PopID();
-}
-
-float MeshColorSphere::getRadius() {
+float MeshColorSphere::getRadius() const {
 	return radius;
 }
 
@@ -115,7 +96,7 @@ void MeshColorSphere::createSphereSegment(std::vector<SimpleVertex>* vertices, f
 }
 
 void MeshColorSphere::createRectangle(std::vector<SimpleVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,
-                                      glm::vec3* dL) {
+                                      glm::vec3* dL) const {
 	glm::vec3 horizontal = *dR - *dL;
 	glm::vec3 vertical = *tL - *dL;
 	glm::vec3 normal = cross(vertical, horizontal);
@@ -138,7 +119,7 @@ void MeshColorSphere::createRectangle(std::vector<SimpleVertex>* vertices, glm::
 }
 
 void MeshColorSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec3* up, glm::vec3* right,
-                                     glm::vec3* left) {
+                                     glm::vec3* left) const {
 	glm::vec3 horizontal = *right - *left;
 	glm::vec3 vertical = *up - *left;
 	glm::vec3 normal = cross(horizontal, vertical);
@@ -157,7 +138,7 @@ void MeshColorSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::v
 }
 
 void MeshColorSphere::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -170,10 +151,10 @@ void MeshColorSphere::bufferData(std::vector<SimpleVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(SimpleVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 }

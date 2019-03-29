@@ -1,22 +1,7 @@
 #include "MeshRef.h"
 #include "Scene/SceneManager.h"
 
-void MeshRef::regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
-	drawToCubemap(environmentMap, getUnmodeledCenter() + glm::vec3(model[3]), fbo, rb, renderCallback, framebuffer);
-}
-
-void MeshRef::draw(Shader shader, glm::mat4 model, float scale) {
-	Mesh::draw(shader, model, scale);
-	glBindVertexArray(VAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, environmentMap);
-}
-
-GLuint MeshRef::getEnvironmentMap() {
-	return environmentMap;
-}
-
-MeshRef::MeshRef(Shader shader) : Mesh(shader) {
+MeshRef::MeshRef(Shader *shader) : Mesh(shader) {
 	glGenTextures(1, &environmentMap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, environmentMap);
 	glActiveTexture(GL_TEXTURE0);
@@ -39,4 +24,19 @@ MeshRef::MeshRef(Shader shader) : Mesh(shader) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, SceneManager::getInstance().getFramebuffer());
 	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+void MeshRef::draw(Shader *shader, glm::mat4 model, float scale) {
+	Mesh::draw(shader, model, scale);
+	glBindVertexArray(VAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, environmentMap);
+}
+
+void MeshRef::regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
+	drawToCubemap(environmentMap, getUnmodeledCenter() + glm::vec3(model[3]), fbo, rb, renderCallback, framebuffer);
+}
+
+GLuint MeshRef::getEnvironmentMap() const {
+	return environmentMap;
 }

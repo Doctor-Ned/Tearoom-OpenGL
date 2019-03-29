@@ -12,22 +12,19 @@ public:
 	void draw(glm::mat4 world, float scale);
 	void setShininess(float shininess);
 	void setUseLight(bool useLight);
-	bool getUseLight();
-	virtual void draw(Shader shader, glm::mat4 world, float scale = 1.0f);
-	virtual void drawGui(bool autoUpdate = true);
-	virtual void setShader(Shader shader);
-	Shader *getShader();
+	bool getUseLight() const;
+	float getShininess() const;
+	virtual void draw(Shader *shader, glm::mat4 world, float scale = 1.0f);
+	void setShader(Shader *shader);
+	Shader *getShader() const;
 	~Mesh();
 protected:
-	Mesh(Shader shader, std::vector<unsigned int> indices);
-	Mesh(Shader shader);
+	Mesh(Shader *shader);
 	GLuint VAO;
 	GLuint VBO, EBO;
 	float shininess = 1.0f;
-	std::vector<unsigned int> indices;
-	Shader shader;
+	Shader *shader;
 	bool useLight = true;
-	virtual void setupMesh() = 0;
 };
 
 #endif

@@ -2,18 +2,14 @@
 
 #include <stb_image.h>
 
-Model::Model(Shader shader, char* path) : Mesh(shader) {
+Model::Model(Shader *shader, char* path) : Mesh(shader) {
 	loadModel(std::string(path));
 }
 
-void Model::draw(glm::mat4 world, float scale) { draw(shader, world, scale); }
-
-void Model::draw(Shader shader, glm::mat4 world, float scale) {
+void Model::draw(Shader *shader, glm::mat4 world, float scale) {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].draw(shader, world, scale);
 }
-
-void Model::setupMesh() {}
 
 void Model::loadModel(std::string const& path) {
 	Assimp::Importer importer;
@@ -116,7 +112,7 @@ std::vector<ModelTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTexture
 		}
 		if (!skip) {
 			ModelTexture texture;
-			texture.id = TextureFromFile(str.C_Str(), this->directory);
+			texture.id = textureFromFile(str.C_Str(), this->directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
@@ -126,7 +122,7 @@ std::vector<ModelTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTexture
 	return textures;
 }
 
-GLuint Model::TextureFromFile(const char* path, const std::string& directory) {
+GLuint Model::textureFromFile(const char* path, const std::string& directory) {
 	std::string filename = std::string(path);
 	filename = directory + '\\' + filename;
 

@@ -4,17 +4,14 @@
 #include "MeshModelInstanced.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <vector>
 #include <string>
 
 class ModelInstanced : public Mesh {
 public:
-	ModelInstanced(Shader shader, char* path, glm::vec3* offsets, int offsetSize);
-	void draw(glm::mat4 world, float scale = 1.0f);
-	void draw(Shader shader, glm::mat4 world, float scale = 1.0f) override;
+	ModelInstanced(Shader *shader, char* path, glm::vec3* offsets, int offsetSize);
+	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 private:
-	void setupMesh() override;
 	glm::vec3* offsets;
 	int offsetSize;
 	std::vector<ModelTexture> textures_loaded;

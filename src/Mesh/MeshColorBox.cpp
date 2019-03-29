@@ -1,12 +1,12 @@
 #include "MeshColorBox.h"
 
-MeshColorBox::MeshColorBox(Shader shader, glm::vec3 min, glm::vec3 max, glm::vec4 color)
+MeshColorBox::MeshColorBox(Shader *shader, glm::vec3 min, glm::vec3 max, glm::vec4 color)
 	: MeshSimple(shader, color), min(min), max(max) {
 	VBO = 0;
 	setupMesh();
 }
 
-void MeshColorBox::draw(Shader shader, glm::mat4 world, float scale) {
+void MeshColorBox::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshSimple::draw(shader, world, scale);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
@@ -120,7 +120,7 @@ void MeshColorBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	}
 
 	vertexAmount = 36;
-	shader.use();
+	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

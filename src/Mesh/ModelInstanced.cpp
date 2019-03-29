@@ -1,21 +1,17 @@
 #include "ModelInstanced.h"
 
 #include <stb_image.h>
+#include <assimp/postprocess.h>
 
-ModelInstanced::ModelInstanced(Shader shader, char* path, glm::vec3* offsets, int offsetSize) : Mesh(shader),
-                                                                                                offsets(offsets),
-                                                                                                offsetSize(offsetSize) {
+ModelInstanced::ModelInstanced(Shader *shader, char* path, glm::vec3* offsets, int offsetSize) : Mesh(shader), offsets(offsets), offsetSize(offsetSize) {
 	loadModel(std::string(path));
 }
 
-void ModelInstanced::draw(glm::mat4 world, float scale) { draw(shader, world, scale); }
-
-void ModelInstanced::draw(Shader shader, glm::mat4 world, float scale) {
-	for (unsigned int i = 0; i < meshes.size(); i++)
+void ModelInstanced::draw(Shader *shader, glm::mat4 world, float scale) {
+	for (unsigned int i = 0; i < meshes.size(); i++) {
 		meshes[i].draw(shader, world, scale);
+	}
 }
-
-void ModelInstanced::setupMesh() {}
 
 void ModelInstanced::loadModel(std::string const& path) {
 	Assimp::Importer importer;
@@ -66,8 +62,7 @@ MeshModelInstanced ModelInstanced::processMesh(aiMesh* mesh, const aiScene* scen
 			vec.x = mesh->mTextureCoords[0][i].x;
 			vec.y = mesh->mTextureCoords[0][i].y;
 			vertex.TexCoords = vec;
-		}
-		else
+		} else
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 
 		vector.x = mesh->mTangents[i].x;
@@ -104,7 +99,7 @@ MeshModelInstanced ModelInstanced::processMesh(aiMesh* mesh, const aiScene* scen
 }
 
 std::vector<ModelTexture> ModelInstanced::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
-                                                               std::string typeName) {
+	std::string typeName) {
 	std::vector<ModelTexture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
 		aiString str;
@@ -157,8 +152,7 @@ GLuint ModelInstanced::TextureFromFile(const char* path, const std::string& dire
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		stbi_image_free(data);
-	}
-	else {
+	} else {
 		printf("Failed to load texture from file '%s'!\n", path);
 		stbi_image_free(data);
 	}
