@@ -9,7 +9,6 @@ public:
 	Shader(char* vertexPath, char* fragmentPath);
 	virtual GLuint getID();
 	void use();
-	void remove();
 	void setScale(float scale);
 	void setColor(glm::vec4 color);
 	void setModel(glm::mat4 model);
@@ -28,6 +27,7 @@ public:
 	void setLightSpace(glm::mat4 lightSpace);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);
+	~Shader();
 protected:
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);
 	GLuint createAndCompileShader(int shaderType, const char* file);

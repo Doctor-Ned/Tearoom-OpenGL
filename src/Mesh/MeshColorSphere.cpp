@@ -1,8 +1,7 @@
 #include "MeshColorSphere.h"
 
-MeshColorSphere::MeshColorSphere(Shader *shader, float radius, int precision, glm::vec4 color, glm::vec3 baseCenter)
-	: MeshSimple(shader, color), baseCenter(baseCenter), radius(radius), precision(precision) {
-	VBO = 0;
+MeshColorSphere::MeshColorSphere(float radius, int precision, glm::vec4 color, glm::vec3 baseCenter)
+	: MeshSimple(color), baseCenter(baseCenter), radius(radius), precision(precision) {
 	setupMesh();
 }
 

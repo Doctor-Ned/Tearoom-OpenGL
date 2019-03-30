@@ -1,9 +1,8 @@
 #include "MeshRefBox.h"
 #include "MeshSimple.h"
 
-MeshRefBox::MeshRefBox(Shader *shader, glm::vec3 min, glm::vec3 max)
-	: MeshRef(shader), min(min), max(max) {
-	VBO = 0;
+MeshRefBox::MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max)
+	: MeshRef(reflective), min(min), max(max) {
 	setupMesh();
 }
 

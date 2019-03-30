@@ -1,9 +1,8 @@
 #include "MeshColorCone.h"
 
-MeshColorCone::MeshColorCone(Shader *shader, float radius, float height, int sideAmount, glm::vec4 color,
+MeshColorCone::MeshColorCone(float radius, float height, int sideAmount, glm::vec4 color,
                              glm::vec3 baseCenter)
-	: MeshSimple(shader, color), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
-	VBO = 0;
+	: MeshSimple(color), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	setupMesh();
 }
 

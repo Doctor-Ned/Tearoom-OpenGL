@@ -1,11 +1,11 @@
 #include "UiButton.h"
 #include "GLFW/glfw3.h"
 
-UiButton::UiButton(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
-                   glm::vec2 position, glm::vec2 size, bool center) : UiElement(
-	shader, textureIdle, position, size, center) {
+UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
+	glm::vec2 position, glm::vec2 size, bool center) : UiElement(textureIdle, position, size, center) {
 	this->textureHover = createTexture(textureHover);
 	this->textureClicked = createTexture(textureClicked);
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	glGenVertexArrays(1, &vao);
 	vbo = 0;
 	setup();
@@ -15,15 +15,15 @@ void UiButton::render() {
 	UiElement::render();
 	Texture* txt;
 	switch (state) {
-	default:
-		txt = &texture;
-		break;
-	case Hover:
-		txt = &textureHover;
-		break;
-	case Clicked:
-		txt = &textureClicked;
-		break;
+		default:
+			txt = &texture;
+			break;
+		case Hover:
+			txt = &textureHover;
+			break;
+		case Clicked:
+			txt = &textureClicked;
+			break;
 	}
 	glBindTexture(GL_TEXTURE_2D, txt->id);
 	glBindVertexArray(vao);
@@ -34,13 +34,13 @@ void UiButton::render() {
 }
 
 void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	if (hover != (xpos > actualPosition.x && xpos < actualPosition.x + size.x && ypos > actualPosition.y && ypos <
-		actualPosition.y + size.y)) {
+	glm::vec2 resPosition = getRescaledPosition(), resSize = getRescaledSize();
+	double minX = resPosition.x, maxX = resPosition.x + resSize.x, minY = resPosition.y, maxY = resPosition.y + size.y;
+	if (hover != (xpos > minX && xpos < maxX && ypos > minY && ypos < maxY)) {
 		hover = !hover;
 		if (hover) {
 			state = clicked ? Clicked : Hover;
-		}
-		else if (!clicked) {
+		} else if (!clicked) {
 			state = Idle;
 		}
 	}
@@ -51,8 +51,7 @@ void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action,
 		if (action == GLFW_PRESS && hover) {
 			clicked = true;
 			state = Clicked;
-		}
-		else if (action == GLFW_RELEASE) {
+		} else if (action == GLFW_RELEASE) {
 			if (clicked) {
 				clicked = false;
 				if (hover) {
@@ -60,8 +59,7 @@ void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action,
 					if (callback != nullptr) {
 						callback();
 					}
-				}
-				else {
+				} else {
 					state = Idle;
 				}
 			}
@@ -110,10 +108,14 @@ void UiButton::setup() {
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-	                      (void*)offsetof(UiTextureVertex, TexCoords));
+		(void*)offsetof(UiTextureVertex, TexCoords));
 
 	glBindVertexArray(0);
 	data.clear();
+}
+
+ShaderType UiButton::getShaderType() {
+	return STUiTexture;
 }
 
 void UiButton::setButtonCallback(std::function<void()> callback) {

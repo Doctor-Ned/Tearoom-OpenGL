@@ -1,8 +1,7 @@
 #include "MeshColorPlane.h"
 
-MeshColorPlane::MeshColorPlane(Shader *shader, float width, float length, glm::vec4 color, glm::vec3 baseCenter)
-	: MeshSimple(shader, color), baseCenter(baseCenter), width(width), length(length) {
-	VBO = 0;
+MeshColorPlane::MeshColorPlane(float width, float length, glm::vec4 color, glm::vec3 baseCenter)
+	: MeshSimple(color), baseCenter(baseCenter), width(width), length(length) {
 	setupMesh();
 }
 

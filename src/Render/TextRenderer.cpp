@@ -1,15 +1,15 @@
 #include <iostream>
 #include "Render/TextRenderer.h"
 #include "freetype/ftparams.h"
+#include "Scene/SceneManager.h"
 
 
 TextRenderer::TextRenderer(GLfloat defaultScale) {
 	// Load and configure shader
 	this->defaultScale = defaultScale;
 	textShader = new Shader("textVS.glsl", "textFS.glsl");
-	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(WINDOW_WIDTH), static_cast<GLfloat>(WINDOW_HEIGHT),
-	                                     0.0f));
 	textShader->setInt("text", 0);
+	updateProjection();
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays(1, &this->vao);
 	glGenBuffers(1, &this->vbo);
@@ -135,4 +135,9 @@ void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void TextRenderer::updateProjection() {
+	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(SceneManager::getInstance()->getWindowWidth()) , static_cast<GLfloat>(SceneManager::getInstance()->getWindowHeight()),
+		0.0f));
 }

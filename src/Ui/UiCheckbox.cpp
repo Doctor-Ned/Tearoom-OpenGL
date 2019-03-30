@@ -1,15 +1,16 @@
 #include "UiCheckbox.h"
 #include "GLFW/glfw3.h"
 
-UiCheckbox::UiCheckbox(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
+UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked, glm::vec2 position,
-	glm::vec2 size, bool checked, bool center) : UiElement(shader, textureIdle, position, size, center) {
+	glm::vec2 size, bool checked, bool center) : UiElement(textureIdle, position, size, center) {
 	this->textureHover = createTexture(textureHover);
 	this->textureClicked = createTexture(textureClicked);
 	this->textureTick = createTexture(textureTickIdle);
 	this->textureTickHover = createTexture(textureTickHover);
 	this->textureTickClicked = createTexture(textureTickClicked);
 	this->checked = checked;
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	vbo = 0;
 	setup();
 }
@@ -37,8 +38,9 @@ void UiCheckbox::render() {
 }
 
 void UiCheckbox::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	if (hover != (xpos > actualPosition.x && xpos < actualPosition.x + size.x && ypos > actualPosition.y && ypos <
-		actualPosition.y + size.y)) {
+	glm::vec2 resPosition = getRescaledPosition(), resSize = getRescaledSize();
+	double minX = resPosition.x, maxX = resPosition.x + resSize.x, minY = resPosition.y, maxY = resPosition.y + size.y;
+	if (hover != (xpos > minX && xpos < maxX && ypos > minY && ypos < maxY)) {
 		hover = !hover;
 		if (hover) {
 			state = clicked ? Clicked : Hover;
@@ -119,6 +121,10 @@ void UiCheckbox::setup() {
 
 	glBindVertexArray(0);
 	data.clear();
+}
+
+ShaderType UiCheckbox::getShaderType() {
+	return STUiTexture;
 }
 
 void UiCheckbox::setCheckboxCallback(std::function<void(bool)> callback) {

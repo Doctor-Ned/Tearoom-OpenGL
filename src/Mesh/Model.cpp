@@ -2,13 +2,18 @@
 
 #include <stb_image.h>
 
-Model::Model(Shader *shader, char* path) : Mesh(shader) {
+Model::Model(char* path) : Mesh() {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	loadModel(std::string(path));
 }
 
 void Model::draw(Shader *shader, glm::mat4 world, float scale) {
 	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i].draw(shader, world, scale);
+		meshes[i]->draw(shader, world, scale);
+}
+
+ShaderType Model::getShaderType() {
+	return STModel;
 }
 
 void Model::loadModel(std::string const& path) {
@@ -33,7 +38,7 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 	}
 }
 
-MeshModel Model::processMesh(aiMesh* mesh, const aiScene* scene) {
+MeshModel *Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	std::vector<ModelVertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<ModelTexture> textures;
@@ -94,7 +99,7 @@ MeshModel Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	std::vector<ModelTexture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-	return MeshModel(shader, vertices, indices, textures);
+	return new MeshModel(vertices, indices, textures);
 }
 
 std::vector<ModelTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {

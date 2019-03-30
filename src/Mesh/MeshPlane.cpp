@@ -1,9 +1,9 @@
 #include "MeshPlane.h"
 
-MeshPlane::MeshPlane(Shader *shader, float width, float length, char* texturePath, glm::vec3 baseCenter)
-	: MeshTexture(shader), baseCenter(baseCenter), width(width), length(length) {
+MeshPlane::MeshPlane(float width, float length, char* texturePath, glm::vec3 baseCenter)
+	: MeshTexture(), baseCenter(baseCenter), width(width), length(length) {
 	texture = createTexture(texturePath);
-	VBO = 0;
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 

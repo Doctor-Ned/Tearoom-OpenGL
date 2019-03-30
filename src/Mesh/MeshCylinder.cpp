@@ -1,10 +1,9 @@
 #include "MeshCylinder.h"
 
-MeshCylinder::MeshCylinder(Shader *shader, float radius, float height, int sideAmount, char* texturePath,
+MeshCylinder::MeshCylinder(float radius, float height, int sideAmount, char* texturePath,
                            glm::vec3 baseCenter)
-	: MeshTexture(shader), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
+	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
-	VBO = 0;
 	setupMesh();
 }
 

@@ -1,7 +1,7 @@
 #include "UiPlane.h"
 
-UiPlane::UiPlane(Shader* shader, const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiElement(
-	shader, texture, position, size, center) {
+UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiElement(texture, position, size, center) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
@@ -59,4 +59,8 @@ void UiPlane::setup() {
 
 	glBindVertexArray(0);
 	data.clear();
+}
+
+ShaderType UiPlane::getShaderType() {
+	return STUiTexture;
 }

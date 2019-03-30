@@ -1,9 +1,8 @@
 #include "MeshRefSphere.h"
 #include "MeshTexture.h"
 
-MeshRefSphere::MeshRefSphere(Shader *shader, float radius, int precision, glm::vec3 baseCenter)
-	: MeshRef(shader), baseCenter(baseCenter), radius(radius), precision(precision) {
-	VBO = 0;
+MeshRefSphere::MeshRefSphere(bool reflective, float radius, int precision, glm::vec3 baseCenter)
+	: MeshRef(reflective), baseCenter(baseCenter), radius(radius), precision(precision) {
 	setupMesh();
 }
 

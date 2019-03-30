@@ -3,6 +3,7 @@
 
 #include "Headers.h"
 #include "Render/Shader.h"
+#include "Scene/SceneManager.h"
 
 struct UiVertex {
 	glm::vec2 Position;
@@ -15,7 +16,7 @@ struct UiTextureVertex {
 
 class UiElement {
 public:
-	UiElement(Shader* shader, const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
+	UiElement(const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
 	virtual void render();
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 	virtual void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
@@ -23,9 +24,13 @@ public:
 	glm::vec2 getPosition();
 	glm::vec2 getCenter();
 	glm::vec2 getSize();
-	void reworkProjection();
+	void updateProjection(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	virtual ~UiElement();
+	virtual ShaderType getShaderType() = 0;
 protected:
+	glm::vec2 getRescaledPosition();
+	glm::vec2 getRescaledSize();
+	float windowWidth, windowHeight, screenWidth, screenHeight;
 	glm::mat4 projection;
 	virtual void setup() = 0;
 	Texture texture;

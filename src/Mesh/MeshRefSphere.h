@@ -9,7 +9,7 @@
 
 class MeshRefSphere : public MeshRef {
 public:
-	MeshRefSphere(Shader *shader, float radius, int precision, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
+	MeshRefSphere(bool reflective, float radius, int precision, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 	void updateValues(float radius, int precision);
 	float getRadius() const;

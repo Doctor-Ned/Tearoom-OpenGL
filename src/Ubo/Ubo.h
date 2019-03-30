@@ -8,7 +8,7 @@ public:
 	virtual GLuint getID();
 	virtual GLuint getBinding();
 	virtual char* getBlockName();
-	virtual ~Ubo() = 0;
+	~Ubo();
 protected:
 	Ubo(unsigned int size, char* blockName, GLuint binding);
 	GLuint binding;

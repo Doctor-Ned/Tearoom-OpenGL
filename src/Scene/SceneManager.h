@@ -8,9 +8,25 @@
 #include "Render/TextRenderer.h"
 #include "Scene.h"
 
+enum ShaderType {
+	STNone,
+	STSkybox,
+	STTexture,
+	STColor,
+	STModel,
+	STModelInstanced,
+	STReflect,
+	STRefract,
+	STDepth,
+	STDepthPoint,
+	STDepthDebug,
+	STUiTexture,
+	STUiColor
+};
+
 class SceneManager {
 public:
-	static SceneManager& getInstance();
+	static SceneManager *getInstance();
 	void render();
 	void update(double timeDelta);
 	TextRenderer* getTextRenderer();
@@ -18,17 +34,6 @@ public:
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	bool quitPending = false;
-	Shader* getUiColorShader();
-	Shader* getUiTextureShader();
-	Shader* getSkyboxShader();
-	Shader* getModelShader();
-	Shader* getTextureShader();
-	Shader* getColorShader();
-	Shader* getReflectShader();
-	Shader* getRefractShader();
-	Shader* getDepthShader();
-	GeometryShader* getDepthPointShader();
-	Shader* getDepthDebugShader();
 	UboLights* getUboLights();
 	UboTextureColor* getUboTextureColor();
 	UboViewProjection* getUboViewProjection();
@@ -39,11 +44,22 @@ public:
 	SceneManager(SceneManager const&) = delete;
 	void operator=(SceneManager const&) = delete;
 	void setCurrentScene(Scene* scene);
+	float getWindowWidth();
+	float getWindowHeight();
+	float getScreenWidth();
+	float getScreenHeight();
+	float getWindowCenterX();
+	float getWindowCenterY();
+	Shader* getShader(ShaderType type);
+	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
+	void setup();
+	~SceneManager();
 protected:
+	std::vector<Ubo*> ubos;
+	std::map<ShaderType, Shader*> shaders;
+	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	GLuint framebuffer;
 	SceneManager() {}
-	void setup();
-	Shader *uiColorShader, *uiTextureShader, *skyboxShader, *modelShader, *textureShader, *colorShader, *reflectShader, *refractShader, *depthShader, *depthDebugShader;
 	GeometryShader *depthPointShader;
 	TextRenderer* textRenderer;
 	Scene* currentScene = nullptr;

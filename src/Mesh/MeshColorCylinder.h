@@ -7,7 +7,7 @@
 
 class MeshColorCylinder : public MeshSimple {
 public:
-	MeshColorCylinder(Shader *shader, float radius, float height, int sideAmount, glm::vec4 color,
+	MeshColorCylinder(float radius, float height, int sideAmount, glm::vec4 color,
 	                  glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 	void updateValues(float radius, float height, int sideAmount);

@@ -1,9 +1,8 @@
 #include "MeshCone.h"
 
-MeshCone::MeshCone(Shader *shader, float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
-	: MeshTexture(shader), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
+MeshCone::MeshCone(float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
+	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
-	VBO = 0;
 	setupMesh();
 }
 

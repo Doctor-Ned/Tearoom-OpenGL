@@ -34,10 +34,6 @@ void Shader::use() {
 	glUseProgram(id);
 }
 
-void Shader::remove() {
-	glDeleteProgram(id);
-}
-
 void Shader::setScale(float scale) {
 	use();
 	GLint location = getUniformLocation("scale");
@@ -176,6 +172,10 @@ void Shader::bind(Ubo* ubo) {
 
 GLint Shader::getUniformLocation(const char* name) {
 	return glGetUniformLocation(id, name);
+}
+
+Shader::~Shader() {
+	glDeleteProgram(id);
 }
 
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {

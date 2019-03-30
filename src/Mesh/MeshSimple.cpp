@@ -1,10 +1,16 @@
 #include "MeshSimple.h"
 
-MeshSimple::MeshSimple(Shader *shader, glm::vec4 color) : Mesh(shader), color(color) {}
+MeshSimple::MeshSimple(glm::vec4 color) : Mesh(), color(color) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+}
 
 void MeshSimple::draw(Shader *shader, glm::mat4 world, float scale) {
 	Mesh::draw(shader, world, scale);
 	shader->setColor(color);
+}
+
+ShaderType MeshSimple::getShaderType() {
+	return STColor;
 }
 
 void MeshSimple::setColor(glm::vec4 color) {

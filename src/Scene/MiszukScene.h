@@ -7,8 +7,9 @@ class MiszukScene :
 {
 public:
 	GraphNode* rootNode;
-	virtual void render() override;
-	virtual void update(double deltaTime) override;
+	void render() override;
+	void update(double deltaTime) override;
+	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 	GraphNode* getRootNode();
 	MiszukScene();
 	~MiszukScene();

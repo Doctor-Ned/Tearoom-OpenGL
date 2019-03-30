@@ -11,7 +11,9 @@ Ubo::Ubo(unsigned int size, char* blockName, GLuint binding) {
 	glBindBufferRange(GL_UNIFORM_BUFFER, binding, id, 0, size);
 }
 
-Ubo::~Ubo() { }
+Ubo::~Ubo() {
+	glDeleteBuffers(1, &id);
+}
 
 GLuint Ubo::getID() {
 	return id;

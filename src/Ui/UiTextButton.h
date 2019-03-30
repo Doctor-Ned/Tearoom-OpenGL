@@ -6,7 +6,7 @@
 
 class UiTextButton : public UiButton {
 public:
-	UiTextButton(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
+	UiTextButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	             glm::vec2 position, glm::vec2 size, TextRenderer* textRenderer, char* text
 	             , glm::vec3 textColor = glm::vec3(0.3f, 0.3f, 0.3f), bool center = true);
 	void render() override;

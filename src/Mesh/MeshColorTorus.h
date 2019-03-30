@@ -7,7 +7,7 @@
 
 class MeshColorTorus : public MeshSimple {
 public:
-	MeshColorTorus(Shader *shader, float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
+	MeshColorTorus(float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
 	               glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 	void updateValues(float radiusIn, float radiusOut, int sideAmount);

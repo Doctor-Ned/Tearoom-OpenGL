@@ -13,7 +13,7 @@ enum UiButtonState {
 
 class UiButton : public UiElement {
 public:
-	UiButton(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
+	UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	         glm::vec2 position, glm::vec2 size, bool center = true);
 	void render() override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
@@ -21,6 +21,7 @@ public:
 	void setButtonCallback(std::function<void()> callback);
 	UiButtonState getState();
 	void setup() override;
+	ShaderType getShaderType() override;
 protected:
 	Texture textureHover, textureClicked;
 	UiButtonState state = Idle;

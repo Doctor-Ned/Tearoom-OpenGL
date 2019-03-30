@@ -9,7 +9,7 @@
 
 class MeshSphere : public MeshTexture {
 public:
-	MeshSphere(Shader *shader, float radius, int precision, char* texturePath,
+	MeshSphere(float radius, int precision, char* texturePath,
 	           glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
 	void updateValues(float radius, int precision);

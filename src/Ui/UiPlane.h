@@ -4,9 +4,10 @@
 
 class UiPlane : public UiElement {
 public:
-	UiPlane(Shader* shader, const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
+	UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
 	void render() override;
 	void setup() override;
+	ShaderType getShaderType() override;
 };
 
 #endif

@@ -1,9 +1,9 @@
 #include "UiColorPlane.h"
 
 UiColorPlane::
-UiColorPlane(Shader* shader, glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(
-	shader, nullptr, position, size, center) {
+UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(nullptr, position, size, center) {
 	this->color = color;
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
@@ -58,4 +58,8 @@ void UiColorPlane::setup() {
 
 	glBindVertexArray(0);
 	data.clear();
+}
+
+ShaderType UiColorPlane::getShaderType() {
+	return STUiColor;
 }

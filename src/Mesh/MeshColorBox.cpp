@@ -1,8 +1,7 @@
 #include "MeshColorBox.h"
 
-MeshColorBox::MeshColorBox(Shader *shader, glm::vec3 min, glm::vec3 max, glm::vec4 color)
-	: MeshSimple(shader, color), min(min), max(max) {
-	VBO = 0;
+MeshColorBox::MeshColorBox(glm::vec3 min, glm::vec3 max, glm::vec4 color)
+	: MeshSimple(color), min(min), max(max) {
 	setupMesh();
 }
 

@@ -1,8 +1,9 @@
 #include "MeshModel.h"
 
-MeshModel::MeshModel(Shader *shader, std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
+MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
                      std::vector<ModelTexture> textures)
-	: Mesh(shader), indices(indices), vertices(vertices), textures(textures) {
+	: Mesh(), indices(indices), vertices(vertices), textures(textures) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 
@@ -31,13 +32,16 @@ void MeshModel::draw(Shader *shader, glm::mat4 world, float scale) {
 	}
 
 	shader->setUseSpecular(specularNr > 1);
-
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glUseProgram(0);
+}
+
+ShaderType MeshModel::getShaderType() {
+	return STModel;
 }
 
 void MeshModel::setupMesh() {

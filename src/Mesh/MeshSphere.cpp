@@ -1,9 +1,8 @@
 #include "MeshSphere.h"
 
-MeshSphere::MeshSphere(Shader *shader, float radius, int precision, char* texturePath, glm::vec3 baseCenter)
-	: MeshTexture(shader), baseCenter(baseCenter), radius(radius), precision(precision) {
+MeshSphere::MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter)
+	: MeshTexture(), baseCenter(baseCenter), radius(radius), precision(precision) {
 	texture = createTexture(texturePath);
-	VBO = 0;
 	setupMesh();
 }
 

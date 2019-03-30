@@ -32,9 +32,6 @@
 
 #include <functional>
 
-static const float WINDOW_WIDTH = 1280.0f, WINDOW_HEIGHT = 720.0f, WINDOW_CENTER_X = WINDOW_WIDTH / 2.0f,
-                   WINDOW_CENTER_Y = WINDOW_HEIGHT / 2.0f;
-
 static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
                                                  const float yPosition = 0.0f) {
 	glm::vec3* result = new glm::vec3[width * length];

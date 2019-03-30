@@ -1,10 +1,9 @@
 #include "MeshColorTorus.h"
 
-MeshColorTorus::MeshColorTorus(Shader *shader, float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
+MeshColorTorus::MeshColorTorus(float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
                                glm::vec3 baseCenter)
-	: MeshSimple(shader, color), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut),
+	: MeshSimple(color), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut),
 	  sideAmount(sideAmount) {
-	VBO = 0;
 	setupMesh();
 }
 

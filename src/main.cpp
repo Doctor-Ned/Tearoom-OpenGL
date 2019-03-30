@@ -34,7 +34,57 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 }
 
 
-int main(int, char**) {
+int main(int argc, char** argv) {
+	sceneManager = SceneManager::getInstance();
+	bool borderless = false;
+	bool fullscreen = false;
+
+	float windowWidth = 1280.0f, windowHeight = 720.0f;
+
+	bool expectedWidth = false, expectedHeight = false;
+
+	for (int i = 0; i < argc; i++) {
+		char* arg = argv[i];
+
+		if (expectedWidth || expectedHeight) {
+			int target = 0;
+			bool correct = true;
+			int count = 0;
+			for (count = 0; arg[count] != '\0'; count++) {
+				if(arg[count] < '0' || arg[count] > '9') {
+					correct = false;
+					break;
+				}
+			}
+			if(correct) {
+				int multiplier = 1;
+				for(int j=0;j<count;j++) {
+					target += multiplier * (arg[count - 1 - j] - '0');
+					multiplier *= 10;
+				}
+				if(expectedWidth) {
+					windowWidth = target;
+					expectedWidth = false;
+				} else {
+					windowHeight = target;
+					expectedHeight = false;
+				}
+			}
+		} else {
+			if(strcmp("-fullscreen", arg) == 0) {
+				fullscreen = true;
+			} else if (strcmp("-windowed", arg) == 0) {
+				fullscreen = false;
+			} else if (strcmp("-borderless", arg) == 0) {
+				borderless = true;
+			} else if (strcmp("-width", arg) == 0) {
+				expectedWidth = true;
+			} else if (strcmp("-height", arg) == 0) {
+				expectedHeight = true;
+			}
+		}
+	}
+
 	// Setup window
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
@@ -60,8 +110,37 @@ int main(int, char**) {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // 3.0+ only
 #endif
 
+	float screenWidth = windowWidth, screenHeight = windowHeight;
+
+	if (fullscreen) {
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+		screenWidth = mode->width;
+		screenHeight = mode->height;
+	}
+
+	sceneManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+
 	// Create window with graphics context
-	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Tearoom", nullptr, nullptr);
+	GLFWwindow* window;
+	if (borderless) {
+		if(fullscreen) {
+			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", monitor, nullptr);
+		} else {
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+			window = glfwCreateWindow(windowWidth, windowHeight, "Tearoom", nullptr, nullptr);
+		}
+	} else if (fullscreen) {
+		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", glfwGetPrimaryMonitor(), nullptr);
+	} else {
+		window = glfwCreateWindow(windowWidth, windowHeight, "Tearoom", nullptr, nullptr);
+	}
 	if (window == nullptr) {
 		return 1;
 	}
@@ -84,13 +163,14 @@ int main(int, char**) {
 
 	srand(time(nullptr));
 
+	sceneManager->setup();
+
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	sceneManager = &SceneManager::getInstance();
 
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
@@ -104,16 +184,16 @@ int main(int, char**) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, windowWidth, windowHeight);
 
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-	GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0};
+	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawBuffers);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 	GLenum status;
@@ -155,7 +235,7 @@ int main(int, char**) {
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-	                      reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
+		reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
 	data.clear();
 	glBindVertexArray(0);
@@ -181,7 +261,7 @@ int main(int, char**) {
 
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		glViewport(0, 0, windowWidth, windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
@@ -190,7 +270,7 @@ int main(int, char**) {
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		glViewport(0, 0, windowWidth, windowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		post_processing.use();
 		glBindVertexArray(vao);
@@ -203,6 +283,7 @@ int main(int, char**) {
 		glfwMakeContextCurrent(window);
 		glfwSwapBuffers(window);
 	}
+	delete sceneManager;
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteRenderbuffers(1, &rbo);

@@ -12,10 +12,11 @@ struct TextureVertex {
 class MeshTexture : public Mesh {
 public:
 	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	ShaderType getShaderType() override;
 protected:
-	MeshTexture(Shader *shader, std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
+	MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
 	            char* textureFile);
-	MeshTexture(Shader *shader);
+	MeshTexture();
 	Texture texture;
 	std::vector<unsigned int> indices;
 	std::vector<TextureVertex> vertices;

@@ -1,10 +1,10 @@
 #include "MeshTorus.h"
 
-MeshTorus::MeshTorus(Shader *shader, float radiusIn, float radiusOut, int sideAmount, char* texturePath,
+MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath,
                      glm::vec3 baseCenter)
-	: MeshTexture(shader), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
+	: MeshTexture(), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
 	texture = createTexture(texturePath);
-	VBO = 0;
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 

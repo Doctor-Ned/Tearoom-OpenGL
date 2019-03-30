@@ -1,7 +1,7 @@
 #include "MeshBox.h"
 
-MeshBox::MeshBox(Shader *shader, glm::vec3 min, glm::vec3 max, char* texturePath)
-	: MeshTexture(shader), min(min), max(max) {
+MeshBox::MeshBox(glm::vec3 min, glm::vec3 max, char* texturePath)
+	: MeshTexture(), min(min), max(max) {
 	texture = createTexture(texturePath);
 	setupMesh();
 }

@@ -33,14 +33,6 @@ void Mesh::draw(Shader *shader, glm::mat4 world, float scale) {
 	shader->setUseSpecular(false);
 }
 
-void Mesh::setShader(Shader *shader) {
-	this->shader = shader;
-}
-
-Shader* Mesh::getShader() const {
-	return shader;
-}
-
 Mesh::~Mesh() {
 	if(VAO != 0) {
 		glDeleteVertexArrays(1, &VAO);
@@ -53,4 +45,4 @@ Mesh::~Mesh() {
 	}
 }
 
-Mesh::Mesh(Shader *shader) : shader(shader), VAO(0), VBO(0), EBO(0) {}
+Mesh::Mesh() : shader(nullptr) {}

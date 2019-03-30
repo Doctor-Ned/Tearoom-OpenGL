@@ -1,17 +1,16 @@
 #include "UiSlider.h"
 
-UiSlider::UiSlider(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
-                   glm::vec2 position,
-                   glm::vec2 size, Shader* lineShader, double lineThickness, glm::vec2 buttonSize, float value,
-                   float min, float max, glm::vec4 lineColor, bool center) : UiElement(
-	lineShader, nullptr, position, size, center) {
+UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
+                   glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
+                   float min, float max, glm::vec4 lineColor, bool center) : UiElement(nullptr, position, size, center) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	button = new UiButton(shader, textureIdle, textureHover, textureClicked, position, buttonSize, true);
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
 	setup();
 }
 
@@ -36,13 +35,14 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	button->mouse_callback(window, xpos, ypos);
 	if (button->getState() == Clicked) {
 		if (moving) {
-			if (xpos < actualPosition.x) {
+			glm::vec2 resPosition = getRescaledPosition(), resSize = getRescaledSize();
+			if (xpos < resPosition.x) {
 				if (value != min) {
 					value = min;
 					callback(value);
 				}
 			}
-			else if (xpos > actualPosition.x + size.x) {
+			else if (xpos > resPosition.x + resSize.x) {
 				if (value != max) {
 					value = max;
 					callback(value);
@@ -112,6 +112,10 @@ void UiSlider::setup() {
 
 	glBindVertexArray(0);
 	data.clear();
+}
+
+ShaderType UiSlider::getShaderType() {
+	return STColor;
 }
 
 UiSlider::~UiSlider() {

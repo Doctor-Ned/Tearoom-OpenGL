@@ -6,7 +6,7 @@
 
 class UiCheckbox : public UiElement {
 public:
-	UiCheckbox(Shader* shader, const char* textureIdle, const char* textureHover, const char* textureClicked,
+	UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 		const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked,
 		glm::vec2 position, glm::vec2 size, bool checked, bool center = true);
 	void render() override;
@@ -15,6 +15,7 @@ public:
 	void setCheckboxCallback(std::function<void(bool)> callback);
 	UiButtonState getState();
 	void setup() override;
+	ShaderType getShaderType() override;
 protected:
 	bool checked;
 	Texture textureHover, textureClicked, textureTick, textureTickHover, textureTickClicked;

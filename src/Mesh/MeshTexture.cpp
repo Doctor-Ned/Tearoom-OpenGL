@@ -1,8 +1,9 @@
 #include "MeshTexture.h"
 
-MeshTexture::MeshTexture(Shader *shader, std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
+MeshTexture::MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
                          char* textureFile)
-	: Mesh(shader), indices(indices), vertices(vertices) {
+	: Mesh(), indices(indices), vertices(vertices) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	texture = createTexture(textureFile);
 }
 
@@ -10,4 +11,10 @@ void MeshTexture::draw(Shader *shader, glm::mat4 world, float scale) {
 	Mesh::draw(shader, world, scale);
 }
 
-MeshTexture::MeshTexture(Shader *shader) : Mesh(shader) {}
+ShaderType MeshTexture::getShaderType() {
+	return STTexture;
+}
+
+MeshTexture::MeshTexture() : Mesh() {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+}

@@ -1,9 +1,10 @@
 #include "MeshModelInstanced.h"
 
-MeshModelInstanced::MeshModelInstanced(Shader *shader, std::vector<ModelVertex> vertices,
+MeshModelInstanced::MeshModelInstanced(std::vector<ModelVertex> vertices,
                                        std::vector<unsigned int> indices, std::vector<ModelTexture> textures,
                                        glm::vec3* offsets, int offsetSize)
-	: Mesh(shader), indices(indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices), textures(textures) {
+	: Mesh(), indices(indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices), textures(textures) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 
@@ -42,6 +43,10 @@ void MeshModelInstanced::draw(Shader *shader, glm::mat4 world, float scale) {
 
 	glActiveTexture(GL_TEXTURE0);
 	glUseProgram(0);
+}
+
+ShaderType MeshModelInstanced::getShaderType() {
+	return STModelInstanced;
 }
 
 void MeshModelInstanced::setupMesh() {

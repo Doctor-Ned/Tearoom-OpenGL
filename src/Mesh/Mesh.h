@@ -5,6 +5,7 @@
 #include "Render/Shader.h"
 #include <string>
 #include <vector>
+#include "Scene/SceneManager.h"
 
 class Mesh {
 public:
@@ -15,13 +16,12 @@ public:
 	bool getUseLight() const;
 	float getShininess() const;
 	virtual void draw(Shader *shader, glm::mat4 world, float scale = 1.0f);
-	void setShader(Shader *shader);
-	Shader *getShader() const;
+	virtual ShaderType getShaderType() = 0;
 	~Mesh();
 protected:
-	Mesh(Shader *shader);
-	GLuint VAO;
-	GLuint VBO, EBO;
+	Mesh();
+	GLuint VAO = 0;
+	GLuint VBO = 0, EBO = 0;
 	float shininess = 1.0f;
 	Shader *shader;
 	bool useLight = true;

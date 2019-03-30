@@ -3,13 +3,18 @@
 #include <stb_image.h>
 #include <assimp/postprocess.h>
 
-ModelInstanced::ModelInstanced(Shader *shader, char* path, glm::vec3* offsets, int offsetSize) : Mesh(shader), offsets(offsets), offsetSize(offsetSize) {
+ModelInstanced::ModelInstanced(char* path, glm::vec3* offsets, int offsetSize) : Mesh(), offsets(offsets), offsetSize(offsetSize) {
+	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	loadModel(std::string(path));
+}
+
+ShaderType ModelInstanced::getShaderType() {
+	return STModelInstanced;
 }
 
 void ModelInstanced::draw(Shader *shader, glm::mat4 world, float scale) {
 	for (unsigned int i = 0; i < meshes.size(); i++) {
-		meshes[i].draw(shader, world, scale);
+		meshes[i]->draw(shader, world, scale);
 	}
 }
 
@@ -35,7 +40,7 @@ void ModelInstanced::processNode(aiNode* node, const aiScene* scene) {
 	}
 }
 
-MeshModelInstanced ModelInstanced::processMesh(aiMesh* mesh, const aiScene* scene) {
+MeshModelInstanced *ModelInstanced::processMesh(aiMesh* mesh, const aiScene* scene) {
 	std::vector<ModelVertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<ModelTexture> textures;
@@ -95,7 +100,7 @@ MeshModelInstanced ModelInstanced::processMesh(aiMesh* mesh, const aiScene* scen
 	std::vector<ModelTexture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-	return MeshModelInstanced(shader, vertices, indices, textures, offsets, offsetSize);
+	return new MeshModelInstanced(vertices, indices, textures, offsets, offsetSize);
 }
 
 std::vector<ModelTexture> ModelInstanced::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
