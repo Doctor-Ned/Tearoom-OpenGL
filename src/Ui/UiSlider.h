@@ -16,6 +16,9 @@ public:
 	void setCallback(std::function<void(float)> callback);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
+	void setPosition(glm::vec2 position, bool center) override;
+	void setup() override;
+	~UiSlider();
 protected:
 	float value, min, max;
 	double lineThickness;

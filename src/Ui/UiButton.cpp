@@ -120,17 +120,6 @@ void UiButton::setButtonCallback(std::function<void()> callback) {
 	this->callback = callback;
 }
 
-void UiButton::setPosition(glm::vec2 position, bool center) {
-	this->position = position;
-	if (center) {
-		actualPosition = glm::vec2(position.x - size.x / 2.0f, position.y - size.y / 2.0f);
-	}
-	else {
-		actualPosition = position;
-	}
-	setup();
-}
-
 UiButtonState UiButton::getState() {
 	return state;
 }

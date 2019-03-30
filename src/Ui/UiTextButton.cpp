@@ -8,7 +8,7 @@ UiTextButton::UiTextButton(Shader* shader, const char* textureIdle, const char* 
 	this->textRenderer = textRenderer;
 	this->text = text;
 	this->color = textColor;
-	textAnchor = glm::vec2(actualPosition.x + size.x / 2.0f, actualPosition.y + size.y / 2.0f);
+	setup();
 }
 
 void UiTextButton::render() {
@@ -19,3 +19,10 @@ void UiTextButton::render() {
 void UiTextButton::setText(char* text) {
 	this->text = text;
 }
+
+void UiTextButton::setPosition(glm::vec2 position, bool center) {
+	UiElement::setPosition(position, center);
+	textAnchor = glm::vec2(actualPosition.x + size.x / 2.0f, actualPosition.y + size.y / 2.0f);
+}
+
+void UiTextButton::setup() {}

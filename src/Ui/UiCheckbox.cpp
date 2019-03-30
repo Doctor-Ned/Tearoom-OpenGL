@@ -10,7 +10,6 @@ UiCheckbox::UiCheckbox(Shader* shader, const char* textureIdle, const char* text
 	this->textureTickHover = createTexture(textureTickHover);
 	this->textureTickClicked = createTexture(textureTickClicked);
 	this->checked = checked;
-	glGenVertexArrays(1, &vao);
 	vbo = 0;
 	setup();
 }
@@ -103,6 +102,7 @@ void UiCheckbox::setup() {
 	if (vbo != 0) {
 		glDeleteBuffers(1, &vbo);
 	}
+
 	glGenBuffers(1, &vbo);
 
 	glBindVertexArray(vao);
@@ -123,17 +123,6 @@ void UiCheckbox::setup() {
 
 void UiCheckbox::setCheckboxCallback(std::function<void(bool)> callback) {
 	this->callback = callback;
-}
-
-void UiCheckbox::setPosition(glm::vec2 position, bool center) {
-	this->position = position;
-	if (center) {
-		actualPosition = glm::vec2(position.x - size.x / 2.0f, position.y - size.y / 2.0f);
-	}
-	else {
-		actualPosition = position;
-	}
-	setup();
 }
 
 UiButtonState UiCheckbox::getState() {

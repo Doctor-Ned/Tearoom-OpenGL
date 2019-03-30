@@ -13,10 +13,9 @@ public:
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	void setCheckboxCallback(std::function<void(bool)> callback);
-	void setPosition(glm::vec2 position, bool center = true);
 	UiButtonState getState();
+	void setup() override;
 protected:
-	void setup();
 	bool checked;
 	Texture textureHover, textureClicked, textureTick, textureTickHover, textureTickClicked;
 	UiButtonState state = Idle;

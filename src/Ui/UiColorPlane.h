@@ -8,6 +8,7 @@ public:
 	void render() override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
+	void setup() override;
 protected:
 	glm::vec4 color;
 };

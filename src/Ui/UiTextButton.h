@@ -11,6 +11,8 @@ public:
 	             , glm::vec3 textColor = glm::vec3(0.3f, 0.3f, 0.3f), bool center = true);
 	void render() override;
 	void setText(char* text);
+	void setPosition(glm::vec2 position, bool center) override;
+	void setup() override;
 protected:
 	TextRenderer* textRenderer;
 	char* text;

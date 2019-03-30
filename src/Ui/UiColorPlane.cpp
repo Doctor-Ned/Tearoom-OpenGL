@@ -4,6 +4,24 @@ UiColorPlane::
 UiColorPlane(Shader* shader, glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(
 	shader, nullptr, position, size, center) {
 	this->color = color;
+	setup();
+}
+
+void UiColorPlane::render() {
+	UiElement::render();
+	shader->setColor(color);
+	glBindVertexArray(vao);
+	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void UiColorPlane::mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
+
+void UiColorPlane::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
+
+void UiColorPlane::setup() {
 	const float minX = actualPosition.x;
 	const float minY = actualPosition.y;
 
@@ -24,7 +42,9 @@ UiColorPlane(Shader* shader, glm::vec4 color, glm::vec2 position, glm::vec2 size
 
 	shader->use();
 
-	glGenVertexArrays(1, &vao);
+	if(vbo != 0) {
+		glDeleteBuffers(1, &vbo);
+	}
 
 	glGenBuffers(1, &vbo);
 
@@ -39,17 +59,3 @@ UiColorPlane(Shader* shader, glm::vec4 color, glm::vec2 position, glm::vec2 size
 	glBindVertexArray(0);
 	data.clear();
 }
-
-void UiColorPlane::render() {
-	UiElement::render();
-	shader->setColor(color);
-	glBindVertexArray(vao);
-	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	glUseProgram(0);
-}
-
-void UiColorPlane::mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
-
-void UiColorPlane::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}

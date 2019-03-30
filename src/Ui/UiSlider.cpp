@@ -12,43 +12,7 @@ UiSlider::UiSlider(Shader* shader, const char* textureIdle, const char* textureH
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
 	button = new UiButton(shader, textureIdle, textureHover, textureClicked, position, buttonSize, true);
-
-	glGenVertexArrays(1, &vao);
-	const float minX = actualPosition.x;
-	const float minY = actualPosition.y + (size.y - lineThickness) / 2.0f;
-
-	UiVertex vertices[4];
-
-	vertices[0].Position = glm::vec2(minX, minY + lineThickness);
-	vertices[1].Position = glm::vec2(minX, minY);
-	vertices[2].Position = glm::vec2(minX + size.x, minY);
-	vertices[3].Position = glm::vec2(minX + size.x, minY + lineThickness);
-
-	std::vector<UiVertex> data;
-	data.push_back(vertices[0]);
-	data.push_back(vertices[2]);
-	data.push_back(vertices[1]);
-	data.push_back(vertices[0]);
-	data.push_back(vertices[3]);
-	data.push_back(vertices[2]);
-
-	shader->use();
-
-	if (vbo != 0) {
-		glDeleteBuffers(1, &vbo);
-	}
-	glGenBuffers(1, &vbo);
-
-	glBindVertexArray(vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiVertex), &data[0], GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiVertex), (void*)nullptr);
-
-	glBindVertexArray(0);
-	data.clear();
+	setup();
 }
 
 void UiSlider::render() {
@@ -103,4 +67,53 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void UiSlider::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 	this->button->mouse_button_callback(window, button, action, mods);
+}
+
+void UiSlider::setPosition(glm::vec2 position, bool center) {
+	UiElement::setPosition(position, center);
+	this->button->setPosition(position, center);
+}
+
+void UiSlider::setup() {
+	this->button->setup();
+
+	const float minX = actualPosition.x;
+	const float minY = actualPosition.y + (size.y - lineThickness) / 2.0f;
+
+	UiVertex vertices[4];
+
+	vertices[0].Position = glm::vec2(minX, minY + lineThickness);
+	vertices[1].Position = glm::vec2(minX, minY);
+	vertices[2].Position = glm::vec2(minX + size.x, minY);
+	vertices[3].Position = glm::vec2(minX + size.x, minY + lineThickness);
+
+	std::vector<UiVertex> data;
+	data.push_back(vertices[0]);
+	data.push_back(vertices[2]);
+	data.push_back(vertices[1]);
+	data.push_back(vertices[0]);
+	data.push_back(vertices[3]);
+	data.push_back(vertices[2]);
+
+	shader->use();
+
+	if (vbo != 0) {
+		glDeleteBuffers(1, &vbo);
+	}
+	glGenBuffers(1, &vbo);
+
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiVertex), &data[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiVertex), (void*)nullptr);
+
+	glBindVertexArray(0);
+	data.clear();
+}
+
+UiSlider::~UiSlider() {
+	delete button;
 }
