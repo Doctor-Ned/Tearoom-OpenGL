@@ -11,7 +11,7 @@
 #include "Scene/SceneManager.h"
 #include "Ui/UiElement.h"
 #include "Render/Shader.h"
-#include "../Build/src/MiszukScene.h"
+#include "Scene/MiszukScene.h"
 
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
