@@ -9,6 +9,11 @@ SceneManager& SceneManager::getInstance() {
 	return *instance;
 }
 
+void SceneManager::setCurrentScene(Scene * scene)
+{
+	currentScene = scene;
+}
+
 void SceneManager::setup() {
 	uiTextureShader = new Shader("Ui/uiTextureVS.glsl", "Ui/uiTextureFS.glsl");
 	uiColorShader = new Shader("Ui/uiColorVS.glsl", "Ui/uiColorFS.glsl");

@@ -38,6 +38,7 @@ public:
 	float difficulty = 1.0f;
 	SceneManager(SceneManager const&) = delete;
 	void operator=(SceneManager const&) = delete;
+	void setCurrentScene(Scene* scene);
 protected:
 	GLuint framebuffer;
 	SceneManager() {}

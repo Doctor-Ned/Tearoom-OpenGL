@@ -11,6 +11,7 @@
 #include "Scene/SceneManager.h"
 #include "Ui/UiElement.h"
 #include "Render/Shader.h"
+#include "../Build/src/MiszukScene.h"
 
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -160,10 +161,12 @@ int main(int, char**) {
 	glBindVertexArray(0);
 	sceneManager->setFramebuffer(fbo);
 
+	MiszukScene* miszukScene = new MiszukScene();
+	sceneManager->setCurrentScene(miszukScene);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
-	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
 
 	while (!glfwWindowShouldClose(window) && !sceneManager->quitPending) {
 		glfwPollEvents();
