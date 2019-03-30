@@ -2,7 +2,9 @@
 #define GRAPHNODE_H
 
 #include "Headers.h"
-#include "Mesh/Mesh.h"
+
+class Mesh;
+class Shader;
 
 class GraphNode {
 public:
@@ -17,11 +19,13 @@ public:
 	glm::mat4 getLocal() const;
 	glm::mat4 getWorld() const;
 	GraphNode *getParent() const;
+	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
 	void setScale(float scale);
 	void setLocal(glm::mat4 local);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	Mesh* getMesh();
+	virtual ~GraphNode();
 protected:
 	glm::mat4 local, world;
 	std::vector<GraphNode*> children;

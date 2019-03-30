@@ -3,7 +3,8 @@
 
 #include "Headers.h"
 #include "Render/Shader.h"
-#include "Scene/SceneManager.h"
+
+enum ShaderType;
 
 struct UiVertex {
 	glm::vec2 Position;

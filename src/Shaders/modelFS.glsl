@@ -41,6 +41,8 @@ layout (std140) uniform TextureColor {
 };
 
 layout (std140) uniform Lights {
+	float initialAmbient;
+	vec3 padding;
 	DirLight dirLight;
 	SpotLight spotLight;
 	PointLight pointLight;
@@ -158,7 +160,7 @@ vec3 calcSpotLight(SpotLight light, vec3 diffuse, vec3 specular, vec3 viewDir) {
 void main() {
 	vec3 diffuse = tcolor.rgb;
 	if(!disableTexture) diffuse *= texture(texture_diffuse1, fs_in.texCoords).rgb;
-    vec3 ambient = 0.05 * diffuse;
+    vec3 ambient = initialAmbient * diffuse;
 	if(useLight == 0) {
 		outColor = vec4(diffuse, 1.0f);
 	} else {

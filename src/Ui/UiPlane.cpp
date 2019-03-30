@@ -1,4 +1,5 @@
 #include "UiPlane.h"
+#include "Scene/SceneManager.h"
 
 UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiElement(texture, position, size, center) {
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());

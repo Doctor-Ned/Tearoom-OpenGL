@@ -15,6 +15,14 @@ void SceneManager::setCurrentScene(Scene * scene) {
 	}
 }
 
+void SceneManager::setCurrentSceneAndDeletePrevious(Scene* scene) {
+	Scene* old = currentScene;
+	currentScene = scene;
+	if (old != nullptr) {
+		delete old;
+	}
+}
+
 float SceneManager::getWindowWidth() {
 	return windowWidth;
 }
@@ -69,7 +77,7 @@ void SceneManager::setup() {
 	shaders.emplace(STDepth, new Shader("Depth/depthVS.glsl", "Depth/depthFS.glsl"));
 	shaders.emplace(STDepthPoint, new GeometryShader("Depth/depthPointVS.glsl", "Depth/depthPointGS.glsl", "Depth/depthPointFS.glsl"));
 	shaders.emplace(STDepthDebug, new Shader("Depth/depthDebugVS.glsl", "Depth/depthDebugFS.glsl"));
-	uboLights = new UboLights(nullptr, nullptr, nullptr);
+	uboLights = new UboLights(0.05f, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	uboViewProjection = new UboViewProjection(glm::mat4(1.0f), glm::mat4(1.0f));
 	ubos.push_back(uboLights);

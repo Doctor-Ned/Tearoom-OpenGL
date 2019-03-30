@@ -44,6 +44,7 @@ public:
 	SceneManager(SceneManager const&) = delete;
 	void operator=(SceneManager const&) = delete;
 	void setCurrentScene(Scene* scene);
+	void setCurrentSceneAndDeletePrevious(Scene* scene);
 	float getWindowWidth();
 	float getWindowHeight();
 	float getScreenWidth();

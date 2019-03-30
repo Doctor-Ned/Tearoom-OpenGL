@@ -13,15 +13,9 @@ void MiszukScene::update(double deltaTime)
 	rootNode->update(deltaTime);
 }
 
-GraphNode* MiszukScene::getRootNode()
-{
-	return rootNode;
-}
-
 
 MiszukScene::MiszukScene()
 {
-	rootNode = new GraphNode();
 	Model* statek = new Model("res/models/sphere/sphere.obj");
 	GraphNode* spaceShip = new GraphNode(statek);
 	rootNode->addChild(spaceShip);

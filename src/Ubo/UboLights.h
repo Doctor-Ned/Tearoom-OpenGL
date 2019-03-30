@@ -5,8 +5,8 @@
 
 class UboLights : public Ubo {
 public:
-	UboLights(DirLight *dirLight, SpotLight *spotLight, PointLight *pointLight);
-	void inject(DirLight *dirLight, SpotLight *spotLight, PointLight *pointLight);
+	UboLights(float ambient, DirLight *dirLight, SpotLight *spotLight, PointLight *pointLight);
+	void inject(float ambient, DirLight *dirLight, SpotLight *spotLight, PointLight *pointLight);
 };
 
 #endif

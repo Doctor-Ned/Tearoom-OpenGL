@@ -1,5 +1,6 @@
 #include "UiCheckbox.h"
 #include "GLFW/glfw3.h"
+#include "Scene/SceneManager.h"
 
 UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked, glm::vec2 position,

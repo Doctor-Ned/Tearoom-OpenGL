@@ -1,4 +1,5 @@
 #include "GraphNode.h"
+#include "Mesh/Mesh.h"
 #include <algorithm>
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : local(glm::mat4(1.0f)), parent(parent), mesh(mesh), dirty(true),
@@ -176,6 +177,15 @@ GraphNode* GraphNode::getParent() const {
 	return parent;
 }
 
+void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
+	if(preserveWorldPosition) {
+		local = (this->parent->getWorld() / parent->getWorld()) * local;
+	}
+	this->parent->removeChild(this);
+	parent->addChild(this);
+	dirty = true;
+}
+
 void GraphNode::setScale(float scale) {
 	this->scale = scale;
 }
@@ -210,4 +220,10 @@ void GraphNode::removeChild(GraphNode* child) {
 
 Mesh* GraphNode::getMesh() {
 	return mesh;
+}
+
+GraphNode::~GraphNode() {
+	for(auto &child : children) {
+		delete child;
+	}
 }
