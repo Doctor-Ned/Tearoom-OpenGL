@@ -9,7 +9,6 @@ public:
 	GraphNode* rootNode;
 	void render() override;
 	void update(double deltaTime) override;
-	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 	GraphNode* getRootNode();
 	MiszukScene();
 	~MiszukScene();

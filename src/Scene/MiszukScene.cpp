@@ -5,16 +5,12 @@
 void MiszukScene::render()
 {
 	rootNode->draw();
-	SceneManager::getInstance()->getTextRenderer()->renderText("Testowe renderowanie tekstu", 1280/2, 720/2);
+	SceneManager::getInstance()->getTextRenderer()->renderText("Testowe renderowanie tekstu", windowCenterX, windowCenterY);
 }
 
 void MiszukScene::update(double deltaTime)
 {
 	rootNode->update(deltaTime);
-}
-
-void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	
 }
 
 GraphNode* MiszukScene::getRootNode()

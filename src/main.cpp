@@ -134,12 +134,12 @@ int main(int argc, char** argv) {
 			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", monitor, nullptr);
 		} else {
 			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-			window = glfwCreateWindow(windowWidth, windowHeight, "Tearoom", nullptr, nullptr);
+			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
 		}
 	} else if (fullscreen) {
 		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", glfwGetPrimaryMonitor(), nullptr);
 	} else {
-		window = glfwCreateWindow(windowWidth, windowHeight, "Tearoom", nullptr, nullptr);
+		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
 	}
 	if (window == nullptr) {
 		return 1;
@@ -270,7 +270,7 @@ int main(int argc, char** argv) {
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
-		glViewport(0, 0, windowWidth, windowHeight);
+		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		post_processing.use();
 		glBindVertexArray(vao);

@@ -8,9 +8,11 @@ SceneManager *SceneManager::getInstance() {
 	return instance;
 }
 
-void SceneManager::setCurrentScene(Scene * scene)
-{
+void SceneManager::setCurrentScene(Scene * scene) {
 	currentScene = scene;
+	if (currentScene != nullptr) {
+		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	}
 }
 
 float SceneManager::getWindowWidth() {
@@ -49,7 +51,7 @@ void SceneManager::updateWindowSize(float windowWidth, float windowHeight, float
 	windowHeight = windowHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
-	if(currentScene != nullptr) {
+	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 	}
 }
@@ -93,11 +95,11 @@ void SceneManager::setup() {
 }
 
 SceneManager::~SceneManager() {
-	for(auto &ubo : ubos) {
+	for (auto &ubo : ubos) {
 		delete ubo;
 	}
 
-	for(auto &pair : shaders) {
+	for (auto &pair : shaders) {
 		delete pair.second;
 	}
 	shaders.clear();
