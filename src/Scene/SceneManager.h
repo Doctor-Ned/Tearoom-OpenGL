@@ -7,7 +7,7 @@
 #include "Render/GeometryShader.h"
 #include "Render/TextRenderer.h"
 #include "Scene.h"
-#include "Headers.h"
+#include "Global.h"
 
 enum ShaderType {
 	STNone,

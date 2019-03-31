@@ -33,7 +33,7 @@ void Skybox::draw(glm::mat4 untranslatedView, glm::mat4 projection, GLuint cubem
 }
 
 void Skybox::setup() {
-	textureId = loadCubemap(faces);
+	textureId = Global::loadCubemap(faces);
 
 	GLfloat vertices[] = {
 		-1.0f, 1.0f, -1.0f,

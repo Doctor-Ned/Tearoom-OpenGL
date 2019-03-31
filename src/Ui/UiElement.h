@@ -1,7 +1,7 @@
 #ifndef UIELEMENT_H
 #define UIELEMENT_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Render/Shader.h"
 
 enum ShaderType;

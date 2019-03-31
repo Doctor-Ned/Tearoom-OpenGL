@@ -1,7 +1,7 @@
 #ifndef MESHREFBOX_H
 #define MESHREFBOX_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshRef.h"
 
 class MeshRefBox : public MeshRef {

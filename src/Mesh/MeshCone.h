@@ -1,7 +1,7 @@
 #ifndef MESHCONE_H
 #define MESHCONE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshTexture.h"
 #include <string>
 #include <vector>

@@ -1,7 +1,7 @@
 #ifndef MESHCOLORPLANE_H
 #define MESHCOLORPLANE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshSimple.h"
 
 class MeshColorPlane : public MeshSimple {

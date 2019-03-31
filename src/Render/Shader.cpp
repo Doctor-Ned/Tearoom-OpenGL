@@ -126,40 +126,45 @@ void Shader::setInt(const char* name, int value) {
 void Shader::setFloat(char* name, float value) {
 	use();
 	GLint location = getUniformLocation(name);
-	if(location != -1) {
+	if (location != -1) {
 		glUniform1f(location, value);
-	}
-}
-
-void Shader::setDirLightSpace(glm::mat4 dirLightSpace) {
-	use();
-	GLint location = getUniformLocation("dirLightSpace");
-	if(location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(dirLightSpace));
-	}
-}
-
-void Shader::setSpotLightSpace(glm::mat4 spotLightSpace) {
-	use();
-	GLint location = getUniformLocation("spotLightSpace");
-	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(spotLightSpace));
-	}
-}
-
-void Shader::setPointLightSpace(glm::mat4 pointLightSpace) {
-	use();
-	GLint location = getUniformLocation("pointLightSpace");
-	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(pointLightSpace));
 	}
 }
 
 void Shader::setLightSpace(glm::mat4 lightSpace) {
 	use();
 	GLint location = getUniformLocation("lightSpace");
-	if(location != -1) {
+	if (location != -1) {
 		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(lightSpace));
+	}
+}
+
+void Shader::updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points) {
+	use();
+	int padding = 0;
+	std::string name = "dir_shadows[";
+	for(int i=0;i<dirs.size();i++) {
+		glActiveTexture(GL_TEXTURE31 - padding--);
+		glBindTexture(GL_TEXTURE_2D, dirs[i].texture);
+		const char* uniform = (name + std::to_string(i) + "]").c_str();
+		setInt(uniform, dirs[i].texture);
+		delete uniform;
+	}
+	name = "spot_shadows[";
+	for (int i = 0; i < spots.size(); i++) {
+		glActiveTexture(GL_TEXTURE31 - padding--);
+		glBindTexture(GL_TEXTURE_2D, spots[i].texture);
+		const char* uniform = (name + std::to_string(i) + "]").c_str();
+		setInt(uniform, spots[i].texture);
+		delete uniform;
+	}
+	name = "point_shadows[";
+	for (int i = 0; i < points.size(); i++) {
+		glActiveTexture(GL_TEXTURE31 - padding--);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, points[i].texture);
+		const char* uniform = (name + std::to_string(i) + "]").c_str();
+		setInt(uniform, points[i].texture);
+		delete uniform;
 	}
 }
 

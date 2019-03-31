@@ -1,7 +1,7 @@
 #ifndef MESHCOLORCYLINDER_H
 #define MESHCOLORCYLINDER_H
 
-#include "Headers.h"
+#include "Global.h"
 #include <vector>
 #include "MeshSimple.h"
 

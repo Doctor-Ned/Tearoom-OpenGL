@@ -2,7 +2,7 @@
 
 MeshBox::MeshBox(glm::vec3 min, glm::vec3 max, char* texturePath)
 	: MeshTexture(), min(min), max(max) {
-	texture = createTexture(texturePath);
+	texture = Global::createTexture(texturePath);
 	setupMesh();
 }
 

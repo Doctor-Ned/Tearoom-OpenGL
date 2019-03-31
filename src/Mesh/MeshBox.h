@@ -1,7 +1,7 @@
 #ifndef MESHBOX_H
 #define MESHBOX_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshTexture.h"
 
 class MeshBox : public MeshTexture {

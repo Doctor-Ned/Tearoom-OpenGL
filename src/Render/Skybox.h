@@ -1,7 +1,7 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Render/Shader.h"
 #include <string>
 #include <vector>

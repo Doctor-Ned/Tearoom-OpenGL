@@ -1,9 +1,8 @@
 #ifndef GRAPHNODE_H
 #define GRAPHNODE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Transform.h"
-
 class Mesh;
 class Shader;
 
