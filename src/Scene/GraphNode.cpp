@@ -90,9 +90,7 @@ void GraphNode::draw(std::vector<GraphNode*> excluded) {
 			children[i]->draw(excluded);
 		}
 	}
-	if (dirty) {
-		dirty = false;
-	}
+	dirty = false;
 }
 
 void GraphNode::draw(Shader* shader) {
@@ -104,7 +102,7 @@ void GraphNode::draw(Shader* shader) {
 		}
 	} else if (dirty) {
 		//world = local;
-		mesh->draw(worldTransform.Matrix(), scale);
+		worldTransform.SetMatrix(localTransform.Matrix());
 	}
 
 	if (mesh) {
@@ -115,9 +113,7 @@ void GraphNode::draw(Shader* shader) {
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->draw(shader);
 	}
-	if (dirty) {
-		dirty = false;
-	}
+	dirty = false;
 }
 
 void GraphNode::draw(Shader* shader, GraphNode* excluded) {
@@ -142,9 +138,7 @@ void GraphNode::draw(Shader* shader, GraphNode* excluded) {
 			children[i]->draw(shader, excluded);
 		}
 	}
-	if (dirty) {
-		dirty = false;
-	}
+	dirty = false;
 }
 
 void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
@@ -176,9 +170,7 @@ void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
 			children[i]->draw(shader, excluded);
 		}
 	}
-	if (dirty) {
-		dirty = false;
-	}
+	dirty = false;
 }
 
 void GraphNode::update(double timeDiff) {
@@ -186,10 +178,6 @@ void GraphNode::update(double timeDiff) {
 		child->update(timeDiff);
 	}
 }
-
-//glm::mat4 GraphNode::getWorld() const {
-//	return world;
-//}
 
 GraphNode* GraphNode::getParent() const {
 	return parent;
@@ -210,15 +198,6 @@ void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
 void GraphNode::setScale(float scale) {
 	this->scale = scale;
 }
-
-//glm::mat4 GraphNode::getLocal() const {
-//	return local;
-//}
-
-//void GraphNode::setLocal(glm::mat4 local) {
-//	this->local = local;
-//	dirty = true;
-//}
 
 void GraphNode::addChild(GraphNode* child) {
 	child->parent = this;

@@ -9,7 +9,7 @@ DirLightNode::DirLightNode(DirLight* light, Mesh* mesh, GraphNode* parent) : Gra
 }
 
 void DirLightNode::update(double timeDiff) {
-	light->model = getWorld();
+	light->model = worldTransform.Matrix();
 	GraphNode::update(timeDiff);
 }
 
