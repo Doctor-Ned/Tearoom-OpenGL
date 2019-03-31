@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "GLFW/glfw3.h"
 
 SceneManager *SceneManager::getInstance() {
 	static SceneManager* instance = nullptr;
@@ -45,6 +46,14 @@ float SceneManager::getWindowCenterX() {
 
 float SceneManager::getWindowCenterY() {
 	return windowCenterY;
+}
+
+void SceneManager::setWindow(GLFWwindow* window) {
+	this->window = window;
+}
+
+void SceneManager::setCursorLocked(bool locked) {
+	glfwSetInputMode(window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 Shader* SceneManager::getShader(ShaderType type) {

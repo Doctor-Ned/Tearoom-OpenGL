@@ -7,6 +7,7 @@
 #include "Render/GeometryShader.h"
 #include "Render/TextRenderer.h"
 #include "Scene.h"
+#include "Headers.h"
 
 enum ShaderType {
 	STNone,
@@ -51,11 +52,14 @@ public:
 	float getScreenHeight();
 	float getWindowCenterX();
 	float getWindowCenterY();
+	void setWindow(GLFWwindow *window);
+	void setCursorLocked(bool locked);
 	Shader* getShader(ShaderType type);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	void setup();
 	~SceneManager();
 protected:
+	GLFWwindow *window;
 	std::vector<Ubo*> ubos;
 	std::map<ShaderType, Shader*> shaders;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;

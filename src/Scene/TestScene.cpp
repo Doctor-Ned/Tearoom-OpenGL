@@ -1,15 +1,23 @@
 #include "TestScene.h"
 #include "Mesh/MeshColorPlane.h"
 #include "SceneManager.h"
+#include "Mesh/MeshColorSphere.h"
 
 TestScene::TestScene() {
 	uboLights = sceneManager->getUboLights();
 	uboTextureColor = sceneManager->getUboTextureColor();
 	uboViewProjection = sceneManager->getUboViewProjection();
 	MeshColorPlane *plane = new MeshColorPlane(1.0f, 1.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	plane->setUseLight(false);
+	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	sphere->setUseLight(false);
 	GraphNode* planeNode = new GraphNode(plane);
+	GraphNode* sphereNode = new GraphNode(sphere);
+	sphereNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	//planeNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	planeNode->setLocal(rotate(glm::mat4(1.0f), 90.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
 	rootNode->addChild(planeNode);
+	rootNode->addChild(sphereNode);
 	camera = new Camera();
 	updatableShaders.push_back(sceneManager->getShader(STModel));
 	updatableShaders.push_back(sceneManager->getShader(STModelInstanced));
@@ -28,6 +36,7 @@ void TestScene::render() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
+	sceneManager->getTextRenderer()->renderText("dupa", 0, 0, 1.0f, false);
 }
 
 void TestScene::update(double deltaTime) {
@@ -49,10 +58,22 @@ void TestScene::update(double deltaTime) {
 	if (getKeyState(KEY_DOWN)) {
 		camera->moveDown(deltaTime * movementSpeed);
 	}
+	if (getKeyState(KEY_MOUSE_LEFT)) {
+		camera->rotateX(-movementSpeed * deltaTime);
+	}
+	if (getKeyState(KEY_MOUSE_RIGHT)) {
+		camera->rotateX(movementSpeed * deltaTime);
+	}
+	if (getKeyState(KEY_MOUSE_UP)) {
+		camera->rotateY(-movementSpeed * deltaTime);
+	}
+	if (getKeyState(KEY_MOUSE_DOWN)) {
+		camera->rotateY(-movementSpeed * deltaTime);
+	}
 
-	camera->rotateY(mouseMovementX * deltaTime);
+	camera->rotateX(mouseMovementX * deltaTime);
 	mouseMovementX = 0.0f;
-	camera->rotateX(mouseMovementY * deltaTime);
+	camera->rotateY(mouseMovementY * deltaTime);
 	mouseMovementY = 0.0f;
 
 	rootNode->update(deltaTime);
@@ -69,20 +90,6 @@ void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, in
 		if (!getKeyState(key)) {
 			setKeyState(key, true);
 			keyEvent(key, true);
-		}
-		switch (key) {
-			case KEY_MOUSE_LEFT:
-				camera->rotateY(-movementSpeed);
-				break;
-			case KEY_MOUSE_RIGHT:
-				camera->rotateY(movementSpeed);
-				break;
-			case KEY_MOUSE_UP:
-				camera->rotateX(movementSpeed);
-				break;
-			case KEY_MOUSE_DOWN:
-				camera->rotateX(-movementSpeed);
-				break;
 		}
 	}
 }

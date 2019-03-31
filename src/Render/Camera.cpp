@@ -3,7 +3,7 @@
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, float speed, float rotSpeed)
 	: speed(speed), rotSpeed(rotSpeed), cameraPos(cameraPos), cameraFront(cameraFront), cameraUp(cameraUp) {
-	yaw = -90.0f;
+	yaw = 0.0f;
 	pitch = 0.0f;
 	dirty = true;
 }
@@ -11,6 +11,7 @@ Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, f
 glm::mat4 Camera::getView() {
 	if (dirty) {
 		view = lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		dirty = false;
 	}
 	return view;
 }

@@ -20,8 +20,6 @@ static void glfw_error_callback(int error, const char* description) {
 
 static SceneManager* sceneManager;
 
-void process_keyboard_movement(GLFWwindow* window) {}
-
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	sceneManager->keyboard_callback(window, key, scancode, action, mods);
 }
@@ -148,6 +146,7 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1); // Enable vsync
 
+	sceneManager->setWindow(window);
 
 	// Initialize OpenGL loader
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
@@ -247,6 +246,7 @@ int main(int argc, char** argv) {
 
 	TestScene *testScene = new TestScene();
 	sceneManager->setCurrentScene(testScene);
+	sceneManager->setCursorLocked(true);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
@@ -254,7 +254,6 @@ int main(int argc, char** argv) {
 
 	while (!glfwWindowShouldClose(window) && !sceneManager->quitPending) {
 		glfwPollEvents();
-		process_keyboard_movement(window);
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta;
 		currentTime = glfwGetTime();
