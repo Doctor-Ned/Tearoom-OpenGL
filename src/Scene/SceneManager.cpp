@@ -160,6 +160,10 @@ void SceneManager::mouse_button_callback(GLFWwindow* window, int butt, int actio
 	}
 }
 
+GLFWwindow* SceneManager::getWindow() {
+	return window;
+}
+
 UboLights* SceneManager::getUboLights() {
 	return uboLights;
 }

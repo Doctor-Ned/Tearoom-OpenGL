@@ -84,6 +84,13 @@ Texture Global::createTexture(const char* textureFile) {
 	return texture;
 }
 
+// order:
+// +X (right)
+// -X (left)
+// +Y (top)
+// -Y (bottom)
+// +Z (front) 
+// -Z (back)
 GLuint Global::loadCubemap(std::vector<std::string> faces) {
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -132,15 +139,15 @@ int Global::remap(const int value, const int sourceMin, const int sourceMax, con
 		revertTarget, snapIfInvalid));
 }
 
-LightShadowData Global::getDirShadowData(int shadowWidth, int shadowHeight) {
-	LightShadowData result;
-	result.width = shadowWidth;
-	result.height = shadowHeight;
+LightShadowData *Global::getDirShadowData(int shadowWidth, int shadowHeight) {
+	LightShadowData *result = new LightShadowData();
+	result->width = shadowWidth;
+	result->height = shadowHeight;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	glGenFramebuffers(1, &result.fbo);
-	glGenTextures(1, &result.texture);
-	glBindTexture(GL_TEXTURE_2D, result.texture);
+	glGenFramebuffers(1, &result->fbo);
+	glGenTextures(1, &result->texture);
+	glBindTexture(GL_TEXTURE_2D, result->texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowWidth, shadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -148,43 +155,43 @@ LightShadowData Global::getDirShadowData(int shadowWidth, int shadowHeight) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, result.texture, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, result->fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, result->texture, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
 }
 
-std::vector<LightShadowData> Global::getDirsShadowData(int count, int shadowWidth, int shadowHeight) {
-	std::vector<LightShadowData> data;
+std::vector<LightShadowData*> Global::getDirsShadowData(int count, int shadowWidth, int shadowHeight) {
+	std::vector<LightShadowData*> data;
 	for (int i = 0; i < count; i++) {
 		data.push_back(getDirShadowData(shadowWidth, shadowHeight));
 	}
 	return data;
 }
 
-LightShadowData Global::getSpotShadowData(int shadowWidth, int shadowHeight) {
+LightShadowData *Global::getSpotShadowData(int shadowWidth, int shadowHeight) {
 	return getDirShadowData(shadowWidth, shadowHeight);
 }
 
-std::vector<LightShadowData> Global::getSpotsShadowData(int count, int shadowWidth, int shadowHeight) {
-	std::vector<LightShadowData> data;
+std::vector<LightShadowData*> Global::getSpotsShadowData(int count, int shadowWidth, int shadowHeight) {
+	std::vector<LightShadowData*> data;
 	for (int i = 0; i < count; i++) {
 		data.push_back(getSpotShadowData(shadowWidth, shadowHeight));
 	}
 	return data;
 }
 
-LightShadowData Global::getPointShadowData(int shadowWidth, int shadowHeight) {
-	LightShadowData result;
-	result.width = shadowWidth;
-	result.height = shadowHeight;
+LightShadowData *Global::getPointShadowData(int shadowWidth, int shadowHeight) {
+	LightShadowData *result = new LightShadowData();
+	result->width = shadowWidth;
+	result->height = shadowHeight;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	glGenFramebuffers(1, &result.fbo);
-	glGenTextures(1, &result.texture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, result.texture);
+	glGenFramebuffers(1, &result->fbo);
+	glGenTextures(1, &result->texture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, result->texture);
 	for (unsigned int i = 0; i < 6; ++i)
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, shadowWidth, shadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -192,16 +199,16 @@ LightShadowData Global::getPointShadowData(int shadowWidth, int shadowHeight) {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, result.texture, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, result->fbo);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, result->texture, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
 }
 
-std::vector<LightShadowData> Global::getPointsShadowData(int count, int shadowWidth, int shadowHeight) {
-	std::vector<LightShadowData> data;
+std::vector<LightShadowData*> Global::getPointsShadowData(int count, int shadowWidth, int shadowHeight) {
+	std::vector<LightShadowData*> data;
 	for (int i = 0; i < count; i++) {
 		data.push_back(getPointShadowData(shadowWidth, shadowHeight));
 	}

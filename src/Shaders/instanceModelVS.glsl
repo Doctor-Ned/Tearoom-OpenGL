@@ -33,8 +33,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	float far_plane;
 	vec3 padding;
+	float far_plane;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -49,11 +49,11 @@ struct SpotLight {
 	vec4 diffuse;
 	vec4 specular;
 	mat4 model;
-	vec3 padding;
 	float constant;
 	float linear;
 	float quadratic;
 	float cutOff;
+	vec3 padding;
 	float outerCutOff;
 };
 

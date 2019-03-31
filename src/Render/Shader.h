@@ -22,7 +22,7 @@ public:
 	void setInt(const char* name, int value);
 	void setFloat(char* name, float value);
 	void setLightSpace(glm::mat4 lightSpace);
-	void updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points);
+	void updateShadowData(std::vector<LightShadowData*> dirs, std::vector<LightShadowData*> spots, std::vector<LightShadowData*> points);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);
 	virtual ~Shader();

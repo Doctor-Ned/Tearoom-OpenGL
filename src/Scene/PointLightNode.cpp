@@ -27,6 +27,10 @@ void PointLightNode::drawGui(bool autoUpdate) {
 		ImGui::NewLine();
 		ImGui::SliderFloat("PointLight quadratic", &quadratic, 0.0f, 10.0f);
 		ImGui::NewLine();
+		ImGui::SliderFloat("Near plane", &light->near_plane, 0.01f, 100.0f);
+		ImGui::NewLine();
+		ImGui::SliderFloat("Far plane", &light->far_plane, 0.01f, 100.0f);
+		ImGui::NewLine();
 		ImGui::ColorEdit3("PointLight color", (float*)&(light->diffuse));
 		ImGui::NewLine();
 	}

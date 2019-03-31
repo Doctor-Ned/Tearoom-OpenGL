@@ -95,14 +95,14 @@ int main(int argc, char** argv) {
 	// Decide GL+GLSL versions
 #if __APPLE__
 	// GL 3.2 + GLSL 150
-	//const char* glsl_version = "#version 150";
+	const char* glsl_version = "#version 150";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
 	// GL 4.3 + GLSL 430
-	//const char* glsl_version = "#version 430";
+	const char* glsl_version = "#version 430";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // 3.2+ only
@@ -160,6 +160,15 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Failed to initialize OpenGL loader!\n");
 		return 1;
 	}
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	ImGui::StyleColorsDark();
 
 	srand(time(nullptr));
 
@@ -246,7 +255,7 @@ int main(int argc, char** argv) {
 
 	TestScene *testScene = new TestScene();
 	sceneManager->setCurrentScene(testScene);
-	sceneManager->setCursorLocked(true);
+	//sceneManager->setCursorLocked(true);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
@@ -254,6 +263,9 @@ int main(int argc, char** argv) {
 
 	while (!glfwWindowShouldClose(window) && !sceneManager->quitPending) {
 		glfwPollEvents();
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta;
 		currentTime = glfwGetTime();
@@ -276,6 +288,7 @@ int main(int argc, char** argv) {
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		post_processing.use();
+		ImGui::Render();
 		glBindVertexArray(vao);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
@@ -283,6 +296,7 @@ int main(int argc, char** argv) {
 		glBindVertexArray(0);
 		glUseProgram(0);
 
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwMakeContextCurrent(window);
 		glfwSwapBuffers(window);
 	}

@@ -15,8 +15,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	float far_plane;
 	vec3 padding;
+	float far_plane;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -31,11 +31,11 @@ struct SpotLight {
 	vec4 diffuse;
 	vec4 specular;
 	mat4 model;
-	vec3 padding;
 	float constant;
 	float linear;
 	float quadratic;
 	float cutOff;
+	vec3 padding;
 	float outerCutOff;
 };
 
@@ -115,7 +115,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
     projCoords = projCoords * 0.5 + 0.5;
     float closestDepth = texture(tex, projCoords.xy).r; 
     float currentDepth = projCoords.z;
-    vec3 lightDir = normalize(vec3(light.model * light.position) - fs_in.pos);
+    vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
     float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
     
 	float shadow = 0.0;
@@ -133,7 +133,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
     if(projCoords.z > 1.0)
         shadow = 0.0;
 
-	vec3 position = vec3(light.model * light.position);
+	vec3 position = vec3(light.model[3]);
 	vec3 direction = normalize(position - fs_in.pos);
 	vec3 spotDirection = normalize(vec3(light.model * vec4(vec3(-light.direction), 0.0f)));
 	float diff = max(dot(direction, fs_in.normal), 0.0);
@@ -169,7 +169,7 @@ vec3 gridSamplingDisk[20] = vec3[]
 );
 
 vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specular, vec3 viewDir) {
-    vec3 fragToLight = fs_in.pos - vec3(light.model * light.position);
+    vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
     float currentDepth = length(fragToLight);
 	float shadow = 0.0;
     float bias = 0.15;
@@ -185,7 +185,7 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specul
     }
     shadow /= float(samples);
 
-	vec3 position = vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	vec3 position = vec3(light.model[3]);
 	vec3 direction = normalize(position - fs_in.pos);
 	float diff = max(dot(direction, fs_in.normal), 0.0);
 	

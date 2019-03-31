@@ -10,6 +10,7 @@
 #include "PointLightNode.h"
 #include "SpotLightNode.h"
 #include "Render/GeometryShader.h"
+#include "Render/Skybox.h"
 
 const int
 KEY_FORWARD = GLFW_KEY_W,
@@ -23,7 +24,9 @@ KEY_SLOW = GLFW_KEY_LEFT_CONTROL,
 KEY_MOUSE_LEFT = GLFW_KEY_LEFT,
 KEY_MOUSE_RIGHT = GLFW_KEY_RIGHT,
 KEY_MOUSE_UP = GLFW_KEY_UP,
-KEY_MOUSE_DOWN = GLFW_KEY_DOWN;
+KEY_MOUSE_DOWN = GLFW_KEY_DOWN,
+KEY_TOGGLE_MOUSE_LOCK = GLFW_KEY_SPACE,
+KEY_QUIT = GLFW_KEY_ESCAPE;
 
 class TestScene : public Scene {
 public:
@@ -35,6 +38,10 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
+	bool lockMouse = false;
+	int renderDepthMap = 0;
+	float spotNear = 0.01f, spotFar = 8.0f, dirNear = 4.0f, dirFar = 13.0f;
+	Skybox *skybox;
 	void renderDirLights();
 	void renderSpotLights();
 	void renderPointLights();
@@ -43,17 +50,17 @@ protected:
 	UboLights *uboLights;
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
-	std::vector<DirLight> dirLights;
-	std::vector<SpotLight> spotLights;
-	std::vector<PointLight> pointLights;
-	std::vector<LightShadowData> dirLightShadows;
-	std::vector<LightShadowData> spotLightShadows;
-	std::vector<LightShadowData> pointLightShadows;
+	std::vector<DirLight*> dirLights;
+	std::vector<SpotLight*> spotLights;
+	std::vector<PointLight*> pointLights;
+	std::vector<LightShadowData*> dirLightShadows;
+	std::vector<LightShadowData*> spotLightShadows;
+	std::vector<LightShadowData*> pointLightShadows;
 	std::vector<DirLightNode*> dirLightNodes;
 	std::vector<SpotLightNode*> spotLightNodes;
 	std::vector<PointLightNode*> pointLightNodes;
 	glm::mat4 spotLightProjection;
-	Shader *depthShader;
+	Shader *depthShader, *depthDebugShader;
 	GeometryShader *depthPointShader;
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;

@@ -40,13 +40,13 @@ struct Texture {
 
 static const glm::ivec2 ENVMAP_SIZE(2048.0f, 2048.0f);
 
-#define MAX_LIGHTS_OF_TYPE 4                                   // this MUST be identical to the value from the shader
+#define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 
-#define DIRLIGHT_SIZE (48 * sizeof(float))                        // 4 * vec4 + 2 * mat4
+#define DIRLIGHT_SIZE sizeof(DirLight)
 
-#define POINTLIGHT_SIZE (40 * sizeof(float))                      // 5 * float + 4 * vec4 + mat4 + vec3
+#define POINTLIGHT_SIZE sizeof(PointLight)
 
-#define SPOTLIGHT_SIZE (60 * sizeof(float))                       // 5 * float + 5 * vec4 + 2 *mat4 + vec3
+#define SPOTLIGHT_SIZE sizeof(SpotLight)
 
 struct DirLight {
 	glm::mat4 lightSpace;
@@ -63,8 +63,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	float far_plane;
 	glm::vec3 padding;
+	float far_plane;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -79,11 +79,11 @@ struct SpotLight {
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 	glm::mat4 model;
-	glm::vec3 padding;
 	float constant;
 	float linear;
 	float quadratic;
 	float cutOff;
+	glm::vec3 padding;
 	float outerCutOff;
 };
 
@@ -102,12 +102,12 @@ public:
 	static GLuint loadCubemap(std::vector<std::string> faces);
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
-	static LightShadowData getDirShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData> getDirsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
-	static LightShadowData getSpotShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData> getSpotsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
-	static LightShadowData getPointShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData> getPointsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
+	static LightShadowData *getDirShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
+	static std::vector<LightShadowData*> getDirsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
+	static LightShadowData *getSpotShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
+	static std::vector<LightShadowData*> getSpotsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
+	static LightShadowData *getPointShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
+	static std::vector<LightShadowData*> getPointsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "Render/TextRenderer.h"
 #include "Scene.h"
 #include "Global.h"
+#include "GLFW/glfw3.h"
 
 enum ShaderType {
 	STNone,
@@ -34,6 +35,7 @@ public:
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
+	GLFWwindow* getWindow();
 	bool quitPending = false;
 	UboLights* getUboLights();
 	UboTextureColor* getUboTextureColor();

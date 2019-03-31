@@ -164,8 +164,8 @@ void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
 }
 
 void GraphNode::update(double timeDiff) {
-	for (int i = 0; i < children.size(); i++) {
-		children[i]->update(timeDiff);
+	for(auto &child : children) {
+		child->update(timeDiff);
 	}
 }
 
@@ -223,6 +223,9 @@ Mesh* GraphNode::getMesh() {
 }
 
 GraphNode::~GraphNode() {
+	if(mesh != nullptr) {
+		delete mesh;
+	}
 	for(auto &child : children) {
 		delete child;
 	}

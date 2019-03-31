@@ -1,14 +1,14 @@
 #include "Skybox.h"
 
-Skybox::Skybox(Shader shader, std::vector<std::string> faces) : shader(shader), faces(faces) {
+Skybox::Skybox(Shader *shader, std::vector<std::string> faces) : shader(shader), faces(faces) {
 	setup();
 }
 
 void Skybox::draw(glm::mat4 untranslatedView, glm::mat4 projection) {
 	glDepthFunc(GL_LEQUAL);
-	shader.use();
-	shader.setView(untranslatedView);
-	shader.setProjection(projection);
+	shader->use();
+	shader->setView(untranslatedView);
+	shader->setProjection(projection);
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
@@ -20,9 +20,9 @@ void Skybox::draw(glm::mat4 untranslatedView, glm::mat4 projection) {
 
 void Skybox::draw(glm::mat4 untranslatedView, glm::mat4 projection, GLuint cubemap) {
 	glDepthFunc(GL_LEQUAL);
-	shader.use();
-	shader.setView(untranslatedView);
-	shader.setProjection(projection);
+	shader->use();
+	shader->setView(untranslatedView);
+	shader->setProjection(projection);
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);

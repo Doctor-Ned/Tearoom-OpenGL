@@ -9,8 +9,8 @@ DirLightNode::DirLightNode(DirLight* light, Mesh* mesh, GraphNode* parent) : Gra
 }
 
 void DirLightNode::update(double timeDiff) {
-	GraphNode::update(timeDiff);
 	light->model = getWorld();
+	GraphNode::update(timeDiff);
 }
 
 void DirLightNode::drawGui(bool autoUpdate) {
@@ -22,7 +22,11 @@ void DirLightNode::drawGui(bool autoUpdate) {
 		ImGui::NewLine();
 		ImGui::SliderAngle("DirLight rotationX", &rotationX);
 		ImGui::NewLine();
-		ImGui::ColorEdit3("DirLight color", (float*)&(light->diffuse));
+		ImGui::ColorEdit3("DirLight ambient", (float*)&(light->ambient));
+		ImGui::NewLine();
+		ImGui::ColorEdit3("DirLight diffuse", (float*)&(light->diffuse));
+		ImGui::NewLine();
+		ImGui::ColorEdit3("DirLight specular", (float*)&(light->specular));
 		ImGui::NewLine();
 	}
 
