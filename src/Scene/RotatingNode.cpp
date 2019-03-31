@@ -5,7 +5,7 @@ RotatingNode::RotatingNode(float rotationSpeed, Mesh* mesh, GraphNode* parent) :
 
 void RotatingNode::update(double timeDiff) {
 	//setLocal(rotate(local, (float)(rotationSpeed * timeDiff), glm::vec3(0.0f, 1.0f, 0.0f)));
-	localTransform.RotateByRadians(float((rotationSpeed * timeDiff)), glm::vec3(0.0f, 1.0f, 0.0f));
+	localTransform.RotateByRadians(float(rotationSpeed * timeDiff), glm::vec3(0.0f, 1.0f, 0.0f));
 	GraphNode::update(timeDiff);
 }
 

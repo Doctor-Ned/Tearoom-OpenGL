@@ -204,9 +204,9 @@ void TestScene::renderDirLights() {
 		glViewport(0, 0, data.width, data.height);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
-		glm::vec3 position = glm::vec3(node->getWorld()[3]);
+		glm::vec3 position = node->worldTransform.getPosition();
 		glm::mat4 projection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.1f, 100.0f);
-		light.lightSpace = projection * lookAt(position - normalize(glm::vec3(node->getWorld() * glm::vec4(glm::vec3(light.direction), 0.0f))), position, glm::vec3(0.0f, 1.0f, 0.0f));
+		light.lightSpace = projection * lookAt(position - normalize(glm::vec3(node->worldTransform.Matrix() * glm::vec4(glm::vec3(light.direction), 0.0f))), position, glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light.lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
@@ -223,7 +223,7 @@ void TestScene::renderSpotLights() {
 		glViewport(0, 0, data.width, data.height);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
-		glm::mat4 world = node->getWorld() * translate(glm::mat4(1.0f), glm::vec3(light.position));
+		glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light.position));
 		glm::vec3 pos = world[3];
 		light.lightSpace = spotLightProjection * lookAt(pos, pos + glm::normalize(glm::vec3(world * glm::vec4(glm::vec3(light.direction), 0.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light.lightSpace);
@@ -243,7 +243,7 @@ void TestScene::renderPointLights() {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthPointShader->setFloat("near_plane", light.near_plane);
 		depthPointShader->setFloat("far_plane", light.far_plane);
-		glm::mat4 world = node->getWorld() * translate(glm::mat4(1.0f), glm::vec3(light.position));
+		glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light.position));
 		glm::vec3 position = world[3];
 		depthPointShader->setPointPosition(position);
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, light.near_plane, light.far_plane);

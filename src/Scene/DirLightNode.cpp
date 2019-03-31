@@ -10,7 +10,7 @@ DirLightNode::DirLightNode(DirLight* light, Mesh* mesh, GraphNode* parent) : Gra
 
 void DirLightNode::update(double timeDiff) {
 	GraphNode::update(timeDiff);
-	light->model = getWorld();
+	light->model = worldTransform.Matrix();
 }
 
 void DirLightNode::drawGui(bool autoUpdate) {

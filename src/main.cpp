@@ -241,12 +241,12 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 	sceneManager->setFramebuffer(fbo);
 
-	MiszukScene* miszukScene = new MiszukScene();
-	sceneManager->setCurrentScene(miszukScene);
+	/*MiszukScene* miszukScene = new MiszukScene();
+	sceneManager->setCurrentScene(miszukScene);*/
 
-	/*TestScene *testScene = new TestScene();
+	TestScene *testScene = new TestScene();
 	sceneManager->setCurrentScene(testScene);
-*/	sceneManager->setCursorLocked(true);
+	sceneManager->setCursorLocked(true);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
