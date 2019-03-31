@@ -250,8 +250,8 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 	sceneManager->setFramebuffer(fbo);
 
-	//MiszukScene* miszukScene = new MiszukScene();
-	//sceneManager->setCurrentScene(miszukScene);
+	/*MiszukScene* miszukScene = new MiszukScene();
+	sceneManager->setCurrentScene(miszukScene);*/
 
 	TestScene *testScene = new TestScene();
 	sceneManager->setCurrentScene(testScene);
@@ -271,6 +271,7 @@ int main(int argc, char** argv) {
 		currentTime = glfwGetTime();
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
+		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debuging game loop
 		sceneManager->update(timeDelta);
 		glfwMakeContextCurrent(window);
 

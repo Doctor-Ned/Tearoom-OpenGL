@@ -34,11 +34,15 @@ void DirLightNode::drawGui(bool autoUpdate) {
 		if (rotationZ != appliedZ || rotationX != appliedX) {
 			appliedZ = rotationZ;
 			appliedX = rotationX;
-			local = glm::mat4(1.0f);
+			/*local = glm::mat4(1.0f);
 			local = rotate(local, appliedZ, glm::vec3(0.0f, 0.0f, 1.0f));
-			local = rotate(local, appliedX, glm::vec3(1.0f, 0.0f, 0.0f));
+			local = rotate(local, appliedX, glm::vec3(1.0f, 0.0f, 0.0f));*/
+			localTransform.SetMatrix(glm::mat4(1));
+			localTransform.RotateByRadians(appliedZ, glm::vec3(0.0f, 0.0f, 1.0f));
+			localTransform.RotateByRadians(appliedX, glm::vec3(1.0f, 0.0f, 0.0f));
 			dirty = true;
-			light->model = getWorld();
+			//light->model = getWorld();
+			light->model = worldTransform.Matrix();
 		}
 		if (lastEnabled != enabled) {
 			enabled = lastEnabled;
