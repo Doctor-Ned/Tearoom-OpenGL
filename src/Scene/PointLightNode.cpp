@@ -10,7 +10,8 @@ PointLightNode(PointLight* light, Mesh* mesh, GraphNode* parent) : GraphNode(mes
 }
 
 void PointLightNode::update(double timeDiff) {
-	light->model = getWorld();
+	//light->model = getWorld();
+	light->model = worldTransform.Matrix();
 	GraphNode::update(timeDiff);
 }
 
@@ -36,9 +37,13 @@ void PointLightNode::drawGui(bool autoUpdate) {
 		light->constant = constant;
 		light->linear = linear;
 		light->quadratic = quadratic;
-		local = translate(glm::mat4(1.0f), glm::vec3(light->position));
+		//local = translate(glm::mat4(1.0f), glm::vec3(light->position));
+		localTransform.SetMatrix(glm::mat4(1));
+		localTransform.Translate(glm::vec3(light->position));
 		dirty = true;
-		light->model = getWorld();
+		//light->model = getWorld();
+		light->model = worldTransform.Matrix();
+
 		if (lastEnabled != enabled) {
 			enabled = lastEnabled;
 			if (enabled) {

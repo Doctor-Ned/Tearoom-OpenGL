@@ -12,8 +12,10 @@ TestScene::TestScene() {
 	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	GraphNode* planeNode = new GraphNode(plane);
 	GraphNode* sphereNode = new GraphNode(sphere);
-	sphereNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-	planeNode->setLocal(rotate(glm::mat4(1.0f), 0.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	//sphereNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	//planeNode->setLocal(rotate(glm::mat4(1.0f), 0.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	sphereNode->localTransform.Translate(glm::vec3(0.0f, 0.0f, 0.0f));
+	planeNode->localTransform.RotateByRadians(0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	rootNode->addChild(planeNode);
 	rootNode->addChild(sphereNode);
 	camera = new Camera();

@@ -15,7 +15,8 @@ SpotLightNode::SpotLightNode(SpotLight* light, Mesh* mesh, GraphNode* parent) : 
 }
 
 void SpotLightNode::update(double timeDiff) {
-	light->model = getWorld();
+	//light->model = getWorld();
+	light->model = worldTransform.Matrix();
 	GraphNode::update(timeDiff);
 }
 
@@ -55,13 +56,18 @@ void SpotLightNode::drawGui(bool autoUpdate) {
 		light->outerCutOff = outerCutOff;
 		//if (rotationZ != appliedZ || rotationY != appliedY || light->position != pos) {
 		light->position = pos;
-		local = translate(glm::mat4(1.0f), glm::vec3(light->position));
+		/*local = translate(glm::mat4(1.0f), glm::vec3(light->position));
 		local = rotate(local, rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
-		local = rotate(local, rotationX, glm::vec3(1.0f, 0.0f, 0.0f));
+		local = rotate(local, rotationX, glm::vec3(1.0f, 0.0f, 0.0f));*/
+		localTransform.SetMatrix(glm::mat4(1));
+		localTransform.Translate(glm::vec3(light->position));
+		localTransform.RotateByRadians(rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
+		localTransform.RotateByRadians(rotationX, glm::vec3(1.0f, 0.0f, 0.0f));
 		appliedZ = rotationZ;
 		appliedX = rotationX;
 		dirty = true;
-		light->model = getWorld();
+		//light->model = getWorld();
+		light->model = worldTransform.Matrix();
 		//}
 		if (lastEnabled != enabled) {
 			enabled = lastEnabled;
