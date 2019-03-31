@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Headers.h"
+#include "Global.h"
 
 class Camera {
 public:

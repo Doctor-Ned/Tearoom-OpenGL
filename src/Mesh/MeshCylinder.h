@@ -1,7 +1,7 @@
 #ifndef MESHCYLINDER_H
 #define MESHCYLINDER_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshTexture.h"
 #include <string>
 #include <vector>

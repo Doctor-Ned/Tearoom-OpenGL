@@ -1,7 +1,7 @@
 #ifndef MESHPLANE_H
 #define MESHPLANE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshTexture.h"
 #include <string>
 #include <vector>

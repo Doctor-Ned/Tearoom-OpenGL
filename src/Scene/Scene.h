@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Ui/UiElement.h"
 #include "GraphNode.h"
 

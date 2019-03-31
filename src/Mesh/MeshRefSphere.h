@@ -1,7 +1,7 @@
 #ifndef MESHREFSPHERE_H
 #define MESHREFSPHERE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include <glm/gtx/rotate_vector.hpp>
 #include <vector>
 #include "MeshRef.h"

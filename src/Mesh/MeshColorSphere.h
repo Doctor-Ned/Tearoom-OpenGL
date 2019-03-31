@@ -1,7 +1,7 @@
 #ifndef MESHCOLORSPHERE_H
 #define MESHCOLORSPHERE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include <glm/gtx/rotate_vector.hpp>
 #include <vector>
 #include "MeshSimple.h"

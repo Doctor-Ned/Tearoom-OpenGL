@@ -4,7 +4,7 @@ MeshTexture::MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsign
                          char* textureFile)
 	: Mesh(), indices(indices), vertices(vertices) {
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
-	texture = createTexture(textureFile);
+	texture = Global::createTexture(textureFile);
 }
 
 void MeshTexture::draw(Shader *shader, glm::mat4 world, float scale) {

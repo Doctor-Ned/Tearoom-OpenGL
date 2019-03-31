@@ -1,7 +1,7 @@
 #ifndef MESHCOLORBOX_H
 #define MESHCOLORBOX_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshSimple.h"
 
 class MeshColorBox : public MeshSimple {

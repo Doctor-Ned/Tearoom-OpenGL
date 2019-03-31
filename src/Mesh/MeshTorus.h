@@ -1,7 +1,7 @@
 #ifndef MESHTORUS_H
 #define MESHTORUS_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "MeshTexture.h"
 #include <string>
 #include <vector>

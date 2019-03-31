@@ -1,7 +1,7 @@
 #ifndef MESHMODEL_H
 #define MESHMODEL_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Mesh.h"
 #include <string>
 #include <vector>

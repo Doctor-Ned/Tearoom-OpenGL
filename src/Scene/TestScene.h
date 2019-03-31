@@ -6,6 +6,10 @@
 #include "Ubo/UboLights.h"
 #include "Ubo/UboViewProjection.h"
 #include "Ubo/UboTextureColor.h"
+#include "DirLightNode.h"
+#include "PointLightNode.h"
+#include "SpotLightNode.h"
+#include "Render/GeometryShader.h"
 
 const int
 KEY_FORWARD = GLFW_KEY_W,
@@ -31,11 +35,29 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
+	void renderDirLights();
+	void renderSpotLights();
+	void renderPointLights();
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;
 	UboLights *uboLights;
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
+	std::vector<DirLight> dirLights;
+	std::vector<SpotLight> spotLights;
+	std::vector<PointLight> pointLights;
+	std::vector<LightShadowData> dirLightShadows;
+	std::vector<LightShadowData> spotLightShadows;
+	std::vector<LightShadowData> pointLightShadows;
+	std::vector<DirLightNode*> dirLightNodes;
+	std::vector<SpotLightNode*> spotLightNodes;
+	std::vector<PointLightNode*> pointLightNodes;
+	glm::mat4 spotLightProjection;
+	Shader *depthShader;
+	GeometryShader *depthPointShader;
+	DirLightNode *dirLightNode;
+	SpotLightNode *spotLightNode;
+	PointLightNode *pointLightNode;
 	bool getKeyState(int key);
 	void setKeyState(int key, bool pressed);
 	void keyEvent(int key, bool pressed);

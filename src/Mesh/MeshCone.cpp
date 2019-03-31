@@ -2,7 +2,7 @@
 
 MeshCone::MeshCone(float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
-	texture = createTexture(texturePath);
+	texture = Global::createTexture(texturePath);
 	setupMesh();
 }
 

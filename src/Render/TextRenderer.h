@@ -3,7 +3,7 @@
 
 #include <map>
 
-#include "Headers.h"
+#include "Global.h"
 #include "Render/Shader.h"
 
 struct Character {

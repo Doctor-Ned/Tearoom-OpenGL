@@ -23,7 +23,7 @@ void UiSlider::render() {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	glUseProgram(0);
-	button->setPosition(glm::vec2(remap(value, min, max, 0.0, size.x) + actualPosition.x,
+	button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x,
 	                              actualPosition.y + size.y / 2.0f));
 	button->render();
 }
@@ -50,8 +50,8 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 				}
 			}
 			else {
-				const double currentX = remap(value, min, max, 0.0, size.x);
-				value = remap(currentX + xpos - moveX, 0.0, size.x, min, max);
+				const double currentX = Global::remap(value, min, max, 0.0, size.x);
+				value = Global::remap(currentX + xpos - moveX, 0.0, size.x, min, max);
 				moveX = xpos;
 				callback(value);
 			}

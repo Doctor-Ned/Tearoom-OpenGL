@@ -5,11 +5,11 @@
 UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked, glm::vec2 position,
 	glm::vec2 size, bool checked, bool center) : UiElement(textureIdle, position, size, center) {
-	this->textureHover = createTexture(textureHover);
-	this->textureClicked = createTexture(textureClicked);
-	this->textureTick = createTexture(textureTickIdle);
-	this->textureTickHover = createTexture(textureTickHover);
-	this->textureTickClicked = createTexture(textureTickClicked);
+	this->textureHover = Global::createTexture(textureHover);
+	this->textureClicked = Global::createTexture(textureClicked);
+	this->textureTick = Global::createTexture(textureTickIdle);
+	this->textureTickHover = Global::createTexture(textureTickHover);
+	this->textureTickClicked = Global::createTexture(textureTickClicked);
 	this->checked = checked;
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	vbo = 0;

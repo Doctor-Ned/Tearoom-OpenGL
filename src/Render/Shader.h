@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Ubo/Ubo.h"
 
 class Shader {
@@ -21,13 +21,11 @@ public:
 	void setProjection(glm::mat4 projection);
 	void setInt(const char* name, int value);
 	void setFloat(char* name, float value);
-	void setDirLightSpace(glm::mat4 dirLightSpace);
-	void setSpotLightSpace(glm::mat4 spotLightSpace);
-	void setPointLightSpace(glm::mat4 pointLightSpace);
 	void setLightSpace(glm::mat4 lightSpace);
+	void updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);
-	~Shader();
+	virtual ~Shader();
 protected:
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);
 	GLuint createAndCompileShader(int shaderType, const char* file);

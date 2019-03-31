@@ -4,8 +4,8 @@
 
 UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, bool center) : UiElement(textureIdle, position, size, center) {
-	this->textureHover = createTexture(textureHover);
-	this->textureClicked = createTexture(textureClicked);
+	this->textureHover = Global::createTexture(textureHover);
+	this->textureClicked = Global::createTexture(textureClicked);
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	glGenVertexArrays(1, &vao);
 	vbo = 0;

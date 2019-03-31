@@ -2,7 +2,7 @@
 
 MeshSphere::MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radius(radius), precision(precision) {
-	texture = createTexture(texturePath);
+	texture = Global::createTexture(texturePath);
 	setupMesh();
 }
 

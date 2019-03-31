@@ -3,7 +3,7 @@
 
 UiElement::UiElement(const char* texture, glm::vec2 position, glm::vec2 size, bool center) {
 	if (texture != nullptr) {
-		this->texture = createTexture(texture);
+		this->texture = Global::createTexture(texture);
 	}
 	SceneManager *manager = SceneManager::getInstance();
 	this->size = size;

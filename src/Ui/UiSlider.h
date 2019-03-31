@@ -1,7 +1,7 @@
 #ifndef UISLIDER_H
 #define UISLIDER_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "UiElement.h"
 #include <functional>
 #include "UiButton.h"

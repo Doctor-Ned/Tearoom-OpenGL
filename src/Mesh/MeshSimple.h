@@ -1,7 +1,7 @@
 #ifndef MESHSIMPLE_H
 #define MESHSIMPLE_H
 
-#include "Headers.h"
+#include "Global.h"
 #include "Mesh.h"
 #include <string>
 #include <vector>

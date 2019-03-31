@@ -36,7 +36,7 @@ void MeshRef::draw(Shader *shader, glm::mat4 model, float scale) {
 }
 
 void MeshRef::regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
-	drawToCubemap(environmentMap, getUnmodeledCenter() + glm::vec3(model[3]), fbo, rb, renderCallback, framebuffer);
+	Global::drawToCubemap(environmentMap, getUnmodeledCenter() + glm::vec3(model[3]), fbo, rb, renderCallback, framebuffer);
 }
 
 GLuint MeshRef::getEnvironmentMap() const {
