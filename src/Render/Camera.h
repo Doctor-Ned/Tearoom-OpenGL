@@ -13,6 +13,8 @@ public:
 	glm::vec3 getFront();
 	glm::vec3 getPos();
 	glm::vec3 getUp();
+	float getYaw();
+	float getPitch();
 	void setPos(glm::vec3 pos);
 	void rotateX(float timeDelta);
 	void rotateY(float timeDelta);

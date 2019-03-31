@@ -64,10 +64,12 @@ Shader* SceneManager::getShader(ShaderType type) {
 }
 
 void SceneManager::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	windowWidth = windowWidth;
-	windowHeight = windowHeight;
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
 	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 	}

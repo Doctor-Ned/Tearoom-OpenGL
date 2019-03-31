@@ -110,11 +110,11 @@ void MeshColorSphere::createRectangle(std::vector<SimpleVertex>* vertices, glm::
 	output[3].Position = *dL + baseCenter;
 
 	vertices->push_back(output[0]);
+	vertices->push_back(output[2]);
 	vertices->push_back(output[3]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[0]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[1]);
+	vertices->push_back(output[2]);
 }
 
 void MeshColorSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec3* up, glm::vec3* right,

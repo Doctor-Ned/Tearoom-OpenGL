@@ -122,11 +122,11 @@ void MeshSphere::createRectangle(std::vector<TextureVertex>* vertices, glm::vec3
 	output[3].TexCoords.y = 0.0f;
 
 	vertices->push_back(output[0]);
+	vertices->push_back(output[2]);
 	vertices->push_back(output[3]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[0]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[1]);
+	vertices->push_back(output[2]);
 }
 
 void MeshSphere::createTriangle(std::vector<TextureVertex>* vertices, glm::vec3* up, glm::vec3* right,

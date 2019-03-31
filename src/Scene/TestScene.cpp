@@ -2,20 +2,18 @@
 #include "Mesh/MeshColorPlane.h"
 #include "SceneManager.h"
 #include "Mesh/MeshColorSphere.h"
+#include "Mesh/Model.h"
 
 TestScene::TestScene() {
 	uboLights = sceneManager->getUboLights();
 	uboTextureColor = sceneManager->getUboTextureColor();
 	uboViewProjection = sceneManager->getUboViewProjection();
 	MeshColorPlane *plane = new MeshColorPlane(1.0f, 1.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	plane->setUseLight(false);
 	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	sphere->setUseLight(false);
 	GraphNode* planeNode = new GraphNode(plane);
 	GraphNode* sphereNode = new GraphNode(sphere);
 	sphereNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-	//planeNode->setLocal(translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	planeNode->setLocal(rotate(glm::mat4(1.0f), 90.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	planeNode->setLocal(rotate(glm::mat4(1.0f), 0.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
 	rootNode->addChild(planeNode);
 	rootNode->addChild(sphereNode);
 	camera = new Camera();
@@ -28,7 +26,7 @@ TestScene::TestScene() {
 }
 
 void TestScene::render() {
-	for(auto &shader : updatableShaders) {
+	for (auto &shader : updatableShaders) {
 		shader->setViewPosition(camera->getPos());
 	}
 	uboViewProjection->inject(camera->getView(), projection);
@@ -40,6 +38,7 @@ void TestScene::render() {
 }
 
 void TestScene::update(double deltaTime) {
+
 	if (getKeyState(KEY_FORWARD)) {
 		camera->moveForward(deltaTime * movementSpeed);
 	}
@@ -71,9 +70,13 @@ void TestScene::update(double deltaTime) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
 
-	camera->rotateX(mouseMovementX * deltaTime);
+	if (abs(mouseMovementX) < 1000.0f) {
+		camera->rotateX(mouseMovementX * deltaTime);
+	}
+	if (abs(mouseMovementY) < 1000.0f) {
+		camera->rotateY(-mouseMovementY * deltaTime);
+	}
 	mouseMovementX = 0.0f;
-	camera->rotateY(mouseMovementY * deltaTime);
 	mouseMovementY = 0.0f;
 
 	rootNode->update(deltaTime);
@@ -82,8 +85,8 @@ void TestScene::update(double deltaTime) {
 void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_RELEASE) {
 		if (getKeyState(key)) {
-			setKeyState(key, true);
-			keyEvent(key, true);
+			setKeyState(key, false);
+			keyEvent(key, false);
 		}
 	}
 	if (action == GLFW_PRESS) {
@@ -126,6 +129,8 @@ void TestScene::setKeyState(int key, bool pressed) {
 	auto pair = keyStates.find(key);
 	if (pair != keyStates.end()) {
 		pair->second = pressed;
+	} else {
+		keyStates.emplace(key, pressed);
 	}
 }
 

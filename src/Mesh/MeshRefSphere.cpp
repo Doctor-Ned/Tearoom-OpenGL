@@ -113,13 +113,13 @@ void MeshRefSphere::createRectangle(std::vector<SimpleVertex>* vertices, glm::ve
 	output[1].Position = *tR + baseCenter;
 	output[2].Position = *dR + baseCenter;
 	output[3].Position = *dL + baseCenter;
-
+	
 	vertices->push_back(output[0]);
+	vertices->push_back(output[2]);
 	vertices->push_back(output[3]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[0]);
-	vertices->push_back(output[2]);
 	vertices->push_back(output[1]);
+	vertices->push_back(output[2]);
 }
 
 void MeshRefSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec3* up, glm::vec3* right,
