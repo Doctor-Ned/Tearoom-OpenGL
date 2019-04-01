@@ -7,10 +7,10 @@ UiButton::UiButton(const char* textureIdle, const char* textureHover, const char
 	this->textureHover = Global::createTexture(textureHover);
 	this->textureClicked = Global::createTexture(textureClicked);
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
-	glGenVertexArrays(1, &vao);
-	vbo = 0;
 	setup();
 }
+
+UiButton::UiButton(glm::vec2 position, bool center) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), center) {}
 
 void UiButton::render() {
 	UiElement::render();

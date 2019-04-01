@@ -24,7 +24,7 @@ protected:
 	GLuint VBO = 0, EBO = 0;
 	float shininess = 1.0f;
 	Shader *shader;
-	bool useLight = true;
+	bool useLight;
 };
 
 #endif

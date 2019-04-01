@@ -43,9 +43,12 @@ TestScene::TestScene() {
 	dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	dirLight->diffuse = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	dirLight->direction = normalize(glm::vec4(0.0f, -1.0f, -1.0f, 1.0f));
-	dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 3.0f));
-	dirLightNode = new DirLightNode(dirLight, lightSphere, nullptr);
-	dirLightNode->localTransform.SetMatrix(dirLight->model);
+	dirLight->model = glm::mat4(1.0f);
+	//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
+	GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
+	dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f)));
+	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
+	//dirLightNode->localTransform.SetMatrix(dirLight->model);
 	//GraphNode *light1 = new GraphNode(lightSphere, dirLightNode);
 	//light1->setLocal(dirLight->model);
 
@@ -73,7 +76,7 @@ TestScene::TestScene() {
 	pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->diffuse = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
 	pointLight->specular = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
-	pointLight->position = glm::vec4(0.5f, 0.2f, 0.0f, 1.0f);
+	pointLight->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->model = glm::mat4(1.0f);
 	pointLight->constant = 0.18f;
 	pointLight->linear = 0.1f;
@@ -131,6 +134,7 @@ void TestScene::render() {
 
 	ImGui::SliderFloat("Dir near plane", &dirNear, 0.01f, 100.0f);
 	ImGui::SliderFloat("Dir far plane", &dirFar, 0.01f, 100.0f);
+	ImGui::SliderFloat("Dir proj size", &dirProjSize, 0.01f, 50.0f);
 	ImGui::SliderFloat("Spot near plane", &spotNear, 0.01f, 100.0f);
 	ImGui::SliderFloat("Spot far plane", &spotFar, 0.01f, 100.0f);
 
@@ -164,7 +168,7 @@ void TestScene::render() {
 
 	if (renderDepthMap == 1 || renderDepthMap == 2) {
 		depthDebugShader->use();
-		depthDebugShader->setInt("perspective", 0);
+		depthDebugShader->setInt("perspective", renderDepthMap == 1 ? 0 : 1);
 		depthDebugShader->setFloat("near_plane", renderDepthMap == 1 ? dirNear : spotNear);
 		depthDebugShader->setFloat("far_plane", renderDepthMap == 1 ? dirNear : spotFar);
 		glActiveTexture(GL_TEXTURE0);
@@ -291,8 +295,10 @@ void TestScene::renderDirLights() {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
 		glm::vec3 position = glm::vec3(node->worldTransform.Matrix()[3]);
-		glm::mat4 projection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, dirNear, dirFar);
-		light->lightSpace = projection * lookAt(position, normalize(glm::vec3(node->worldTransform.Matrix() * glm::vec4(glm::vec3(light->direction), 0.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
+		glm::mat4 directionWorld = node->worldTransform.Matrix();
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		light->lightSpace = projection * lookAt(position, position + glm::vec3(directionWorld * glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
@@ -310,9 +316,12 @@ void TestScene::renderSpotLights() {
 		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
-		glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
+		//glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
+		glm::mat4 world = node->worldTransform.Matrix();
 		glm::vec3 pos = world[3];
-		light->lightSpace = spotLightProjection * lookAt(pos, glm::normalize(glm::vec3(world * glm::vec4(glm::vec3(light->direction), 0.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 directionWorld = world;
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		light->lightSpace = spotLightProjection * lookAt(pos, pos + glm::vec3(directionWorld * glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
@@ -330,7 +339,7 @@ void TestScene::renderPointLights() {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthPointShader->setFloat("near_plane", light->near_plane);
 		depthPointShader->setFloat("far_plane", light->far_plane);
-		glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
+		glm::mat4 world = node->worldTransform.Matrix();
 		glm::vec3 position = world[3];
 		depthPointShader->setPointPosition(position);
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, light->near_plane, light->far_plane);

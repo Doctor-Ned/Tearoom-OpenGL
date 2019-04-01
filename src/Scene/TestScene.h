@@ -40,7 +40,7 @@ public:
 protected:
 	bool lockMouse = false;
 	int renderDepthMap = 0;
-	float spotNear = 0.01f, spotFar = 8.0f, dirNear = 4.0f, dirFar = 13.0f;
+	float spotNear = 1.0f, spotFar = 50.0f, dirNear = 4.0f, dirFar = 70.0f, dirProjSize = 10.0f;
 	Skybox *skybox;
 	void renderDirLights();
 	void renderSpotLights();

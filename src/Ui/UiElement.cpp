@@ -57,6 +57,10 @@ ShaderType UiElement::getShaderType() {
 	return STNone;
 }
 
+glm::vec2 UiElement::createScaledSize(float width, float height) {
+	return glm::vec2(windowWidth*width, windowHeight*height);
+}
+
 glm::vec2 UiElement::getRescaledPosition() {
 	return glm::vec2(actualPosition.x * screenWidth / windowWidth, actualPosition.y * screenHeight / windowHeight);
 }

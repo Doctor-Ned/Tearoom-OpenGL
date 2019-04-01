@@ -11,7 +11,8 @@ file(GLOB_RECURSE HEADER_FILES
 set(SHADER_DIR "Shaders")
 
 file(GLOB_RECURSE SHADER_FILES
-	${SHADER_DIR}/*.glsl)
+	${SHADER_DIR}/*.glsl
+	${SHADER_DIR}/*.sglsl)
 	 
 file(COPY ${FREETYPE_DIR}/freetype.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

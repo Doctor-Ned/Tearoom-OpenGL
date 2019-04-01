@@ -183,6 +183,7 @@ int main(int argc, char** argv) {
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);

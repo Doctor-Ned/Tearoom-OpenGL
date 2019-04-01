@@ -12,23 +12,25 @@ UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const 
 	this->textureTickClicked = Global::createTexture(textureTickClicked);
 	this->checked = checked;
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
-	vbo = 0;
 	setup();
 }
+
+UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) :
+	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, createScaledSize(BASE_BTN_WIDTH, BASE_BTN_HEIGHT), checked, center) {}
 
 void UiCheckbox::render() {
 	UiElement::render();
 	Texture* txt;
 	switch (state) {
-	default:
-		txt = checked ? &textureTick : &texture;
-		break;
-	case Hover:
-		txt = checked ? &textureTickHover : &textureHover;
-		break;
-	case Clicked:
-		txt = checked ? &textureTickClicked : &textureClicked;
-		break;
+		default:
+			txt = checked ? &textureTick : &texture;
+			break;
+		case Hover:
+			txt = checked ? &textureTickHover : &textureHover;
+			break;
+		case Clicked:
+			txt = checked ? &textureTickClicked : &textureClicked;
+			break;
 	}
 	glBindTexture(GL_TEXTURE_2D, txt->id);
 	glBindVertexArray(vao);
@@ -45,8 +47,7 @@ void UiCheckbox::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		hover = !hover;
 		if (hover) {
 			state = clicked ? Clicked : Hover;
-		}
-		else if (!clicked) {
+		} else if (!clicked) {
 			state = Idle;
 		}
 	}
@@ -57,8 +58,7 @@ void UiCheckbox::mouse_button_callback(GLFWwindow* window, int button, int actio
 		if (action == GLFW_PRESS && hover) {
 			clicked = true;
 			state = Clicked;
-		}
-		else if (action == GLFW_RELEASE) {
+		} else if (action == GLFW_RELEASE) {
 			if (clicked) {
 				clicked = false;
 				if (hover) {
@@ -67,8 +67,7 @@ void UiCheckbox::mouse_button_callback(GLFWwindow* window, int button, int actio
 						checked = !checked;
 						callback(checked);
 					}
-				}
-				else {
+				} else {
 					state = Idle;
 				}
 			}
@@ -118,7 +117,7 @@ void UiCheckbox::setup() {
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-	                      (void*)offsetof(UiTextureVertex, TexCoords));
+		(void*)offsetof(UiTextureVertex, TexCoords));
 
 	glBindVertexArray(0);
 	data.clear();
