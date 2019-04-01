@@ -1,10 +1,7 @@
 #include "UiElement.h"
 #include "Scene/SceneManager.h"
 
-UiElement::UiElement(const char* texture, glm::vec2 position, glm::vec2 size, bool center) {
-	if (texture != nullptr) {
-		this->texture = Global::createTexture(texture);
-	}
+UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
 	SceneManager *manager = SceneManager::getInstance();
 	this->size = size;
 	this->center = center;

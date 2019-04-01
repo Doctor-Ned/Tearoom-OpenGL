@@ -2,11 +2,10 @@
 #define UISLIDER_H
 
 #include "Global.h"
-#include "UiElement.h"
 #include <functional>
 #include "UiButton.h"
 
-class UiSlider : public UiElement {
+class UiSlider : public UiTexturedElement {
 public:
 	UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	         glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value, float min, float max,

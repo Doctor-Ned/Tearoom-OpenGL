@@ -4,7 +4,7 @@
 
 UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked, glm::vec2 position,
-	glm::vec2 size, bool checked, bool center) : UiElement(textureIdle, position, size, center) {
+	glm::vec2 size, bool checked, bool center) : UiTexturedElement(textureIdle, position, size, center) {
 	this->textureHover = Global::createTexture(textureHover);
 	this->textureClicked = Global::createTexture(textureClicked);
 	this->textureTick = Global::createTexture(textureTickIdle);
@@ -19,7 +19,7 @@ UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) :
 	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, createSizeScaledByHeight(BASE_BTN_SIZE), checked, center) {}
 
 void UiCheckbox::render() {
-	UiElement::render();
+	UiTexturedElement::render();
 	Texture* txt;
 	switch (state) {
 		default:

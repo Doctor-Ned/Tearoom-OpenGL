@@ -4,7 +4,7 @@
 #include <functional>
 #include "UiButton.h"
 
-class UiCheckbox : public UiElement {
+class UiCheckbox : public UiTexturedElement {
 public:
 	UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 		const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked,

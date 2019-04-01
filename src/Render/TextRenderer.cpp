@@ -23,6 +23,7 @@ TextRenderer::TextRenderer(GLfloat defaultScale) {
 }
 
 void TextRenderer::load(std::string font, GLuint fontSize) {
+	this->fontSize = fontSize;
 	// First clear the previously loaded Characters
 	characters.clear();
 	// Then initialize and load the FreeType library
@@ -82,34 +83,48 @@ void TextRenderer::load(std::string font, GLuint fontSize) {
 }
 
 void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, bool center, glm::vec3 color) {
+	renderText(text, x, y, scale, scale, center, color);
+}
+
+void TextRenderer::renderText(std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
+	renderText(text, position.x, position.y, scaleX, scaleY, center, color);
+}
+
+void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 scale, bool center, glm::vec3 color) {
+	renderText(text, position.x, position.y, scale, center, color);
+}
+
+void TextRenderer::renderText(std::string text, glm::vec2 position, GLfloat scale, bool center, glm::vec3 color) {
+	renderText(text, position.x, position.y, scale, center, color);
+}
+
+void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, glm::vec2 scale, bool center, glm::vec3 color) {
+	renderText(text, x, y, scale.x, scale.y, center, color);
+}
+
+void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
 	textShader->use();
 	textShader->setColor(glm::vec4(color, 1.0f));
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
-	scale *= defaultScale;
+	scaleX *= defaultScale;
+	scaleY *= defaultScale;
 	std::string::const_iterator c;
 
 	if (center) {
-		float totalWidth = 0.0f, totalHeight = 0.0f;
-		for (c = text.begin(); c != text.end(); ++c) {
-			Character ch = characters[*c];
-			totalWidth += ch.Size.x * scale;
-			totalWidth += ch.Bearing.x * scale;
-			float height = ch.Size.y * scale;
-			totalHeight = totalHeight > height ? totalHeight : height;
-		}
-		x -= totalWidth / 2.0f;
-		y -= totalHeight / 2.0f;
+		glm::vec2 size = getTextSize(text, scaleX, scaleY);
+		x -= size.x / 2.0f;
+		y -= size.y / 2.0f;
 	}
 
 	for (c = text.begin(); c != text.end(); ++c) {
 		Character ch = characters[*c];
 
-		GLfloat xpos = x + ch.Bearing.x * scale;
-		GLfloat ypos = y + (this->characters['H'].Bearing.y - ch.Bearing.y) * scale;
+		GLfloat xpos = x + ch.Bearing.x * scaleX;
+		GLfloat ypos = y + (this->characters['H'].Bearing.y - ch.Bearing.y) * scaleY;
 
-		GLfloat w = ch.Size.x * scale;
-		GLfloat h = ch.Size.y * scale;
+		GLfloat w = ch.Size.x * scaleX;
+		GLfloat h = ch.Size.y * scaleY;
 		// Update VBO for each character
 		GLfloat vertices[6][4] = {
 			{xpos, ypos + h, 0.0, 1.0},
@@ -131,13 +146,57 @@ void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 		// Render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		// Now advance cursors for next glyph
-		x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (1/64th times 2^6 = 64)
+		x += (ch.Advance >> 6) * scaleX; // Bitshift by 6 to get value in pixels (1/64th times 2^6 = 64)
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void TextRenderer::updateProjection() {
-	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(SceneManager::getInstance()->getWindowWidth()) , static_cast<GLfloat>(SceneManager::getInstance()->getWindowHeight()),
+	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(SceneManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(SceneManager::getInstance()->getWindowHeight()),
 		0.0f));
+}
+
+GLuint TextRenderer::getFontSize() {
+	return fontSize;
+}
+
+glm::vec2 TextRenderer::getScaleToFitSize(std::string text, glm::vec2 size, UiRescaleMode rescaleMode) {
+	glm::vec2 actualSize = getTextSize(text);
+	float multY = size.y / actualSize.y;
+	float multX = size.x / actualSize.x;
+	switch (rescaleMode) {
+		default:
+			throw std::exception("Unsupported UiRescaleMode provided!");
+		case Fit:
+			glm::vec2 heightBased = getScaleToFitSize(text, size, MatchHeight);
+			glm::vec2 widthBased = getScaleToFitSize(text, size, MatchWidth);
+			if (heightBased.x * actualSize.x <= size.x) {
+				return heightBased;
+			}
+			return widthBased;
+		case MatchHeight:
+			return glm::vec2(multY, multY);
+		case MatchWidth:
+			return glm::vec2(multX, multX);
+		case Stretch:
+			return glm::vec2(multX, multY);
+	}
+}
+
+glm::vec2 TextRenderer::getTextSize(std::string text, GLfloat scale) {
+	return getTextSize(text, scale, scale);
+}
+
+glm::vec2 TextRenderer::getTextSize(std::string text, GLfloat scaleX, GLfloat scaleY) {
+	std::string::const_iterator c;
+	float totalWidth = 0.0f, totalHeight = 0.0f;
+	for (c = text.begin(); c != text.end(); ++c) {
+		Character ch = characters[*c];
+		totalWidth += ch.Size.x * scaleX;
+		totalWidth += ch.Bearing.x * scaleX;
+		float height = ch.Size.y * scaleY;
+		totalHeight = totalHeight > height ? totalHeight : height;
+	}
+	return glm::vec2(totalWidth, totalHeight);
 }

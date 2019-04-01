@@ -3,7 +3,7 @@
 
 UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
-	float min, float max, glm::vec4 lineColor, bool center) : UiElement(nullptr, position, size, center) {
+	float min, float max, glm::vec4 lineColor, bool center) : UiTexturedElement(nullptr, position, size, center) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
@@ -21,7 +21,7 @@ UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, flo
 	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createSizeScaledByHeight(BASE_BTN_SIZE), value, min, max, lineColor, center) {}
 
 void UiSlider::render() {
-	UiElement::render();
+	UiTexturedElement::render();
 	shader->setColor(lineColor);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));

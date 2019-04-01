@@ -3,7 +3,7 @@
 #include "Scene/SceneManager.h"
 
 UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
-	glm::vec2 position, glm::vec2 size, bool center) : UiElement(textureIdle, position, size, center) {
+	glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(textureIdle, position, size, center) {
 	this->textureHover = Global::createTexture(textureHover);
 	this->textureClicked = Global::createTexture(textureClicked);
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
