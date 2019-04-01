@@ -7,7 +7,7 @@
 OptionsScene::OptionsScene(MenuScene* menuScene) {
 	this->menuScene = menuScene;
 	textRenderer = sceneManager->getTextRenderer();
-	const float checkboxShift = 130.0f;
+	const float checkboxShift = windowWidth / 8.0f;
 	UiCheckbox *useLight = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 4 * windowHeight / 9.0f), sceneManager->useLight, true);
 	useLight->setCheckboxCallback([&manager = sceneManager](bool useLight) { manager->useLight = useLight; });
 	UiCheckbox *castShadows = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 5 * windowHeight / 9.0f), sceneManager->castShadows, true);
