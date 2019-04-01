@@ -27,6 +27,7 @@ public:
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);
 	virtual ~Shader();
+	void setCastShadows(bool castShadows);
 protected:
 	std::map<std::string, std::string> sharedData;
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);

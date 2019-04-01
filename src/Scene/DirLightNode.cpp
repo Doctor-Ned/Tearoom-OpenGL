@@ -37,7 +37,7 @@ void DirLightNode::drawGui(bool autoUpdate) {
 			/*local = glm::mat4(1.0f);
 			local = rotate(local, appliedZ, glm::vec3(0.0f, 0.0f, 1.0f));
 			local = rotate(local, appliedX, glm::vec3(1.0f, 0.0f, 0.0f));*/
-			localTransform.SetMatrix(glm::mat4(1));
+			localTransform.SetMatrix(glm::mat4(1.0f));
 			localTransform.RotateByRadians(appliedZ, glm::vec3(0.0f, 0.0f, 1.0f));
 			localTransform.RotateByRadians(appliedX, glm::vec3(1.0f, 0.0f, 0.0f));
 			dirty = true;

@@ -11,12 +11,13 @@ public:
 	Transform worldTransform; //Transform has addres to dirty flag and can change it.
 	Transform localTransform;
 	GraphNode(Mesh* mesh = nullptr, GraphNode* parent = nullptr);
-	virtual void draw();
-	virtual void draw(GraphNode *excluded);
-	virtual void draw(std::vector<GraphNode*> excluded);
-	virtual void draw(Shader *shader);
-	virtual void draw(Shader *shader, GraphNode *excluded);
-	virtual void draw(Shader *shader, std::vector<GraphNode*> excluded);
+	void draw();
+	void draw(GraphNode *excluded);
+	void draw(std::vector<GraphNode*> excluded);
+	void draw(Shader *shader);
+	void draw(Shader *shader, GraphNode *excluded);
+	void draw(Shader *shader, std::vector<GraphNode*> excluded);
+	virtual void draw(Shader *shader, GraphNode **excluded, int excludedCount);
 	virtual void update(double timeDiff);
 	//glm::mat4 getLocal() const;
 	//glm::mat4 getWorld() const;

@@ -31,6 +31,7 @@ void Mesh::draw(Shader *shader, glm::mat4 world, float scale) {
 	shader->setModel(world);
 	shader->setUseLight(useLight);
 	shader->setUseSpecular(false);
+	shader->setCastShadows(castShadows);
 }
 
 Mesh::~Mesh() {
@@ -47,4 +48,5 @@ Mesh::~Mesh() {
 
 Mesh::Mesh() : shader(nullptr) {
 	useLight = SceneManager::getInstance()->useLight;
+	castShadows = SceneManager::getInstance()->castShadows;
 }

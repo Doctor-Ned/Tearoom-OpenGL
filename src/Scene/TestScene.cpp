@@ -112,7 +112,7 @@ void TestScene::render() {
 	renderSpotLights();
 	renderPointLights();
 
-	uboLights->inject(0.05f, dirLights.size(), spotLights.size(), pointLights.size(), &dirLights[0], &spotLights[0], &pointLights[0]);
+	uboLights->inject(BASE_AMBIENT, dirLights.size(), spotLights.size(), pointLights.size(), &dirLights[0], &spotLights[0], &pointLights[0]);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -301,7 +301,7 @@ void TestScene::renderDirLights() {
 		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 		glm::mat4 directionWorld = node->worldTransform.Matrix();
 		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = projection * lookAt(position, position + glm::vec3(directionWorld * glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+		light->lightSpace = projection * lookAt(position, position + glm::vec3(directionWorld * -glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());

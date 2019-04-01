@@ -25,6 +25,7 @@ protected:
 	float shininess = 1.0f;
 	Shader *shader;
 	bool useLight;
+	bool castShadows;
 };
 
 #endif

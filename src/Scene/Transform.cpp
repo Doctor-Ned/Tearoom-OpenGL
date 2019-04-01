@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Transform::Transform(bool& _dirty) {
-	transform = glm::mat4(1);
+	transform = glm::mat4(1.0f);
 	dirty = &_dirty;
 }
 
