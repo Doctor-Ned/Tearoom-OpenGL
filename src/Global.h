@@ -34,13 +34,18 @@
 
 #include <functional>
 
-
 struct Texture {
 	GLuint id{};
 	std::string path;
 };
 
 static const glm::ivec2 ENVMAP_SIZE(2048.0f, 2048.0f);
+
+static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED = "res/ui/ButtonClicked.png", *BTN_SHORT_HOVER = "res/ui/ButtonHover.png",
+*BTN_LONG_IDLE = "res/ui/ButtonLongIdle.png", *BTN_LONG_CLICKED = "res/ui/ButtonLongClicked.png", *BTN_LONG_HOVER = "res/ui/ButtonLongHover.png",
+*BTN_TICK_IDLE = "res/ui/ButtonTickIdle.png", *BTN_TICK_CLICKED = "res/ui/ButtonTickClicked.png", *BTN_TICK_HOVER = "res/ui/ButtonTickHover.png";
+
+static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_WIDTH = 0.1f, BASE_BTN_HEIGHT = BASE_BTN_WIDTH;
 
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 

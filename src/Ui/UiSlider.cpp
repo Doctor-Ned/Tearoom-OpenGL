@@ -2,8 +2,8 @@
 #include "Scene/SceneManager.h"
 
 UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
-                   glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
-                   float min, float max, glm::vec4 lineColor, bool center) : UiElement(nullptr, position, size, center) {
+	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
+	float min, float max, glm::vec4 lineColor, bool center) : UiElement(nullptr, position, size, center) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
@@ -15,6 +15,10 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	setup();
 }
 
+UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, float value, float min, float max,
+	glm::vec4 lineColor, bool center) :
+	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createScaledSize(BASE_BTN_WIDTH, BASE_BTN_HEIGHT), value, min, max, lineColor, center) {}
+
 void UiSlider::render() {
 	UiElement::render();
 	shader->setColor(lineColor);
@@ -24,7 +28,7 @@ void UiSlider::render() {
 	glBindVertexArray(0);
 	glUseProgram(0);
 	button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x,
-	                              actualPosition.y + size.y / 2.0f));
+		actualPosition.y + size.y / 2.0f));
 	button->render();
 }
 
@@ -42,26 +46,22 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 					value = min;
 					callback(value);
 				}
-			}
-			else if (xpos > resPosition.x + resSize.x) {
+			} else if (xpos > resPosition.x + resSize.x) {
 				if (value != max) {
 					value = max;
 					callback(value);
 				}
-			}
-			else {
+			} else {
 				const double currentX = Global::remap(value, min, max, 0.0, size.x);
 				value = Global::remap(currentX + xpos - moveX, 0.0, size.x, min, max);
 				moveX = xpos;
 				callback(value);
 			}
-		}
-		else {
+		} else {
 			moving = true;
 			moveX = xpos;
 		}
-	}
-	else {
+	} else {
 		moving = false;
 	}
 }
