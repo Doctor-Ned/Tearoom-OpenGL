@@ -38,6 +38,11 @@ MiszukScene::MiszukScene() {
 
 	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 
+	OctreeNode::toInsert.push(planeNode);
+	OctreeNode::toInsert.push(sphereNode);
+	OctreeNode::toInsert.push(boxNode);
+	OctreeNode::toInsert.push(sphereNode2);
+
 	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree->Calculate();
 }

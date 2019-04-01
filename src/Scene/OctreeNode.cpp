@@ -1,14 +1,21 @@
 #include "OctreeNode.h"
 #include <iostream>
 
+std::queue<GraphNode*> OctreeNode::toInsert = std::queue<GraphNode*>();
+
 void OctreeNode::Calculate()
 {
-	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 2.5f)
+	if(gameObjects.size() <= 1)
 	{
 		return;
 	}
 
-	std::vector<Box> boxes;
+	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 2.5f) //only x because it's a box
+	{
+		return;
+	}
+
+	std::vector<Box> boxes(8);
 	divideSpace(boxes);
 	for (int i = 0; i < boxes.size(); i++)
 	{
@@ -28,59 +35,42 @@ void OctreeNode::divideSpace(std::vector<Box>& boxes)
 	min = boxPos.minPos;
 	max = boxPos.middle;
 	middle = (min + max) / 2.0f;
-	//boxes[0] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[0] = Box{ min, max, middle };
 	
 	min = glm::vec3(boxPos.middle.x, boxPos.minPos.y, boxPos.minPos.z);
 	max = glm::vec3(boxPos.maxPos.x, boxPos.middle.y, boxPos.middle.z);
 	middle = (min + max) / 2.0f;	
-	//boxes[1] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[1] = Box{ min, max, middle };
 
 	min = glm::vec3(boxPos.middle.x, boxPos.minPos.y, boxPos.middle.z);
 	max = glm::vec3(boxPos.maxPos.x, boxPos.middle.y, boxPos.maxPos.z);
 	middle = (min + max) / 2.0f;
-	//boxes[2] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[2] = Box{ min, max, middle };
 
 	min = glm::vec3(boxPos.minPos.x, boxPos.minPos.y, boxPos.middle.z);
 	max = glm::vec3(boxPos.middle.x, boxPos.middle.y, boxPos.maxPos.z);
 	middle = (min + max) / 2.0f;
-	//boxes[3] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[3] = Box{ min, max, middle };
 
 	min = glm::vec3(boxPos.minPos.x, boxPos.middle.y, boxPos.minPos.z);
 	max = glm::vec3(boxPos.middle.x, boxPos.maxPos.y, boxPos.middle.z);
 	middle = (min + max) / 2.0f;
-	//boxes[4] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[4] = Box{ min, max, middle };
 
 	min = glm::vec3(boxPos.middle.x, boxPos.middle.y, boxPos.minPos.z);
 	max = glm::vec3(boxPos.maxPos.x, boxPos.maxPos.y, boxPos.middle.z);
 	middle = (min + max) / 2.0f;
-	//boxes[5] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[5] = Box{ min, max, middle };
 
 	min = boxPos.middle;
 	max = boxPos.maxPos;
 	middle = (min + max) / 2.0f;
-	//boxes[6] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
+	boxes[6] = Box{ min, max, middle };
 
 	min = glm::vec3(boxPos.minPos.x, boxPos.middle.y, boxPos.middle.z);
 	max = glm::vec3(boxPos.middle.x, boxPos.maxPos.y, boxPos.maxPos.z);
 	middle = (min + max) / 2.0f;
-	//boxes[7] = { min, max, middle };
-	boxes.push_back(Box{ min, max, middle });
-
-	//octant[0] = new BoundingBox(m_region.Min, center);
-	//octant[1] = new BoundingBox(new Vector3(center.X, m_region.Min.Y, m_region.Min.Z), new Vector3(m_region.Max.X, center.Y, center.Z));
-	//octant[2] = new BoundingBox(new Vector3(center.X, m_region.Min.Y, center.Z), new Vector3(m_region.Max.X, center.Y, m_region.Max.Z));
-	//octant[3] = new BoundingBox(new Vector3(m_region.Min.X, m_region.Min.Y, center.Z), new Vector3(center.X, center.Y, m_region.Max.Z));
-	//octant[4] = new BoundingBox(new Vector3(m_region.Min.X, center.Y, m_region.Min.Z), new Vector3(center.X, m_region.Max.Y, center.Z));
-	//octant[5] = new BoundingBox(new Vector3(center.X, center.Y, m_region.Min.Z), new Vector3(m_region.Max.X, m_region.Max.Y, center.Z));
-	//octant[6] = new BoundingBox(center, m_region.Max);
-	//octant[7] = new BoundingBox(new Vector3(m_region.Min.X, center.Y, center.Z), new Vector3(center.X, m_region.Max.Y, m_region.Max.Z));
+	boxes[7] = Box{ min, max, middle };
 }
 
 OctreeNode::~OctreeNode()
@@ -119,6 +109,12 @@ OctreeNode::OctreeNode(glm::vec3 _minPos, glm::vec3 _maxPos)
 	tmp->setUseLight(false);
 	
 	box = new GraphNode(tmp);
+
+	while(toInsert.empty())
+	{
+		gameObjects.push_back(toInsert.front());
+		toInsert.pop();
+	}
 }
 
 OctreeNode::OctreeNode(Box _box, OctreeNode* _parent) : boxPos(_box), parent(_parent)
