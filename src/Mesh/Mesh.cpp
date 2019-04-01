@@ -45,4 +45,8 @@ Mesh::~Mesh() {
 	}
 }
 
-Mesh::Mesh() : shader(nullptr) {}
+Mesh::Mesh() : shader(nullptr) {
+#ifdef USE_LIGHT
+	useLight = true;
+#endif
+}

@@ -3,6 +3,7 @@
 
 #include "Global.h"
 #include "Ubo/Ubo.h"
+#include <map>
 
 class Shader {
 public:
@@ -27,6 +28,7 @@ public:
 	GLint getUniformLocation(const char* name);
 	virtual ~Shader();
 protected:
+	std::map<std::string, std::string> sharedData;
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);
 	GLuint createAndCompileShader(int shaderType, const char* file);
 	virtual void createShaders();
@@ -37,6 +39,7 @@ protected:
 	char* fragmentPath;
 	char* vertexPath;
 	const char* SHADER_DIR = "Shaders/";
+	const char* SHARED_DIR = "Shaders/Shared";
 };
 
 #endif

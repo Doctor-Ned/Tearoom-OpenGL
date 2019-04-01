@@ -1,9 +1,31 @@
 #include "Render/Shader.h"
 #include <fstream>
+#include <filesystem>
+#include <string>
+#include <iostream>
+#include <streambuf>
+
+namespace fs = std::experimental::filesystem;
 
 Shader::Shader(char* vertexPath, char* fragmentPath) : Shader(vertexPath, fragmentPath, true) {}
 
 Shader::Shader(char* vertexPath, char* fragmentPath, bool initialise) {
+	for (const auto & entry : fs::directory_iterator(SHARED_DIR)) {
+		std::ifstream t(entry.path());
+		if (t) {
+			std::string str;
+			t.seekg(0, std::ios::end);
+			str.reserve(t.tellg());
+			t.seekg(0, std::ios::beg);
+			str.assign((std::istreambuf_iterator<char>(t)),
+				std::istreambuf_iterator<char>());
+			sharedData.emplace(entry.path().filename().string(), str);
+		} else {
+			printf("Cannot read shared shader file %s!", entry.path().filename().string().c_str());
+			exit(5);
+		}
+	}
+
 	this->vertexPath = vertexPath;
 	this->fragmentPath = fragmentPath;
 	id = glCreateProgram();
@@ -142,7 +164,7 @@ void Shader::setLightSpace(glm::mat4 lightSpace) {
 void Shader::updateShadowData(std::vector<LightShadowData*> dirs, std::vector<LightShadowData*> spots, std::vector<LightShadowData*> points) {
 	use();
 	int padding = 0;
-	for(int i=0;i<dirs.size();i++) {
+	for (int i = 0; i < dirs.size(); i++) {
 		glActiveTexture(GL_TEXTURE31 - padding--);
 		glBindTexture(GL_TEXTURE_2D, dirs[i]->texture);
 		setInt(("dir_shadows[" + std::to_string(i) + "]").c_str(), dirs[i]->texture);
@@ -188,7 +210,17 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	shaderText[fileSize] = '\0';
 	if (data.read(shaderText, fileSize)) {
 		delete[] fullFile;
-		glShaderSource(shader, 1, (const GLchar**)&shaderText, nullptr);
+		std::string text(shaderText);
+		for (std::pair<std::string, std::string> pair : sharedData) {
+			size_t start_pos = 0;
+			std::string from = "//%" + pair.first + "%";
+			while ((start_pos = text.find(from, start_pos)) != std::string::npos) {
+				text.replace(start_pos, from.length(), pair.second);
+				start_pos += pair.second.length();
+			}
+		}
+		const char* finalText = text.c_str();
+		glShaderSource(shader, 1, (const GLchar**)&finalText, nullptr);
 		glCompileShader(shader);
 		GLint isFine, maxLength;
 		char* errorLog;
