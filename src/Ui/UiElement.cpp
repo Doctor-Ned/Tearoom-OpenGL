@@ -10,7 +10,7 @@ UiElement::UiElement(const char* texture, glm::vec2 position, glm::vec2 size, bo
 	this->center = center;
 	glGenVertexArrays(1, &vao);
 	updateProjection(manager->getWindowWidth(), manager->getWindowHeight(), manager->getScreenWidth(), manager->getScreenHeight());
-	setPosition(position);
+	UiElement::setPosition(position);
 }
 
 void UiElement::render() {
@@ -58,7 +58,17 @@ ShaderType UiElement::getShaderType() {
 }
 
 glm::vec2 UiElement::createScaledSize(float width, float height) {
-	return glm::vec2(windowWidth*width, windowHeight*height);
+	return glm::vec2(SceneManager::getInstance()->getWindowWidth()*width, SceneManager::getInstance()->getWindowHeight()*height);
+}
+
+glm::vec2 UiElement::createSizeScaledByWidth(float size) {
+	float value = SceneManager::getInstance()->getWindowWidth()*size;
+	return glm::vec2(value, value);
+}
+
+glm::vec2 UiElement::createSizeScaledByHeight(float size) {
+	float value = SceneManager::getInstance()->getWindowHeight()*size;
+	return glm::vec2(value, value);
 }
 
 glm::vec2 UiElement::getRescaledPosition() {

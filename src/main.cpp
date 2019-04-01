@@ -174,9 +174,8 @@ int main(int argc, char** argv) {
 
 	sceneManager->setup();
 
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST); it gets enabled later.
 	glFrontFace(GL_CCW);
-	glDisable(GL_CULL_FACE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);
@@ -251,18 +250,11 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 	sceneManager->setFramebuffer(fbo);
 
-	/*MiszukScene* miszukScene = new MiszukScene();
-	sceneManager->setCurrentScene(miszukScene);*/
-
-	TestScene *testScene = new TestScene();
-	sceneManager->setCurrentScene(testScene);
-	//sceneManager->setCursorLocked(true);
-
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
 	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
 
-	while (!glfwWindowShouldClose(window) && !sceneManager->quitPending) {
+	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -272,7 +264,7 @@ int main(int argc, char** argv) {
 		currentTime = glfwGetTime();
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
-		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debuging game loop
+		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debugging game loop
 		sceneManager->update(timeDelta);
 		glfwMakeContextCurrent(window);
 

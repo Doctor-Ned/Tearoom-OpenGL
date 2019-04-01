@@ -6,6 +6,7 @@
 #include "Ubo/UboLights.h"
 #include "Render/GeometryShader.h"
 #include "Render/TextRenderer.h"
+#include "MenuScene.h"
 #include "Scene.h"
 #include "Global.h"
 #include "GLFW/glfw3.h"
@@ -36,7 +37,7 @@ public:
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	GLFWwindow* getWindow();
-	bool quitPending = false;
+	void quit();
 	UboLights* getUboLights();
 	UboTextureColor* getUboTextureColor();
 	UboViewProjection* getUboViewProjection();
@@ -56,9 +57,11 @@ public:
 	float getWindowCenterY();
 	void setWindow(GLFWwindow *window);
 	void setCursorLocked(bool locked);
+	void goToMenu(bool destroyPreviousScene = true);
 	Shader* getShader(ShaderType type);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	void setup();
+	bool useLight = true;
 	~SceneManager();
 protected:
 	GLFWwindow *window;
@@ -70,6 +73,7 @@ protected:
 	GeometryShader *depthPointShader;
 	TextRenderer* textRenderer;
 	Scene* currentScene = nullptr;
+	MenuScene* menuScene;
 	UboLights* uboLights;
 	UboTextureColor* uboTextureColor;
 	UboViewProjection* uboViewProjection;

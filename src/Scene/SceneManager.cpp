@@ -56,6 +56,15 @@ void SceneManager::setCursorLocked(bool locked) {
 	glfwSetInputMode(window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
+void SceneManager::goToMenu(bool destroyPreviousScene) {
+	Scene* old = currentScene;
+	currentScene = menuScene;
+	setCursorLocked(false);
+	if (old != nullptr && old != menuScene && destroyPreviousScene) {
+		delete old;
+	}
+}
+
 Shader* SceneManager::getShader(ShaderType type) {
 	if (type == STNone) {
 		return nullptr;
@@ -111,6 +120,9 @@ void SceneManager::setup() {
 
 	textRenderer = new TextRenderer(0.5f);
 	textRenderer->load("res/fonts/ButterLayer.ttf", 60);
+
+	menuScene = new MenuScene();
+	goToMenu();
 }
 
 SceneManager::~SceneManager() {
@@ -123,6 +135,11 @@ SceneManager::~SceneManager() {
 	}
 	shaders.clear();
 
+	if(currentScene == menuScene) {
+		setCurrentScene(nullptr);
+	}
+
+	delete menuScene;
 	delete currentScene;
 }
 
@@ -162,6 +179,10 @@ void SceneManager::mouse_button_callback(GLFWwindow* window, int butt, int actio
 
 GLFWwindow* SceneManager::getWindow() {
 	return window;
+}
+
+void SceneManager::quit() {
+	glfwSetWindowShouldClose(window, true);
 }
 
 UboLights* SceneManager::getUboLights() {

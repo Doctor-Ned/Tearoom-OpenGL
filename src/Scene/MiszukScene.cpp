@@ -113,6 +113,7 @@ void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, 
 }
 
 void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
+	Scene::mouse_callback(window, xpos, ypos);
 	if (initMouse) {
 		mouseX = xpos;
 		mouseY = ypos;
@@ -126,7 +127,9 @@ void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) 
 	}
 }
 
-void MiszukScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {}
+void MiszukScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {
+	Scene::mouse_button_callback(window, butt, action, mods);
+}
 
 void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
 	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);

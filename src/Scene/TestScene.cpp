@@ -265,6 +265,7 @@ void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, in
 }
 
 void TestScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
+	Scene::mouse_callback(window, xpos, ypos);
 	if (initMouse) {
 		mouseX = xpos;
 		mouseY = ypos;
@@ -277,7 +278,9 @@ void TestScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
 	}
 }
 
-void TestScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {}
+void TestScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {
+	Scene::mouse_button_callback(window, butt, action, mods);
+}
 
 void TestScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
 	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
@@ -413,7 +416,8 @@ void TestScene::keyEvent(int key, bool pressed) {
 			}
 			break;
 		case KEY_QUIT:
-			glfwSetWindowShouldClose(sceneManager->getWindow(), true);
+			sceneManager->goToMenu(true);
+			//glfwSetWindowShouldClose(sceneManager->getWindow(), true);
 			break;
 	}
 }

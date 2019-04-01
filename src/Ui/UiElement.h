@@ -29,7 +29,9 @@ public:
 	virtual ~UiElement();
 	virtual ShaderType getShaderType() = 0;
 protected:
-	glm::vec2 createScaledSize(float width, float height);
+	static glm::vec2 createScaledSize(float width, float height);
+	glm::vec2 createSizeScaledByWidth(float size);
+	glm::vec2 createSizeScaledByHeight(float size);
 	glm::vec2 getRescaledPosition();
 	glm::vec2 getRescaledSize();
 	float windowWidth, windowHeight, screenWidth, screenHeight;
