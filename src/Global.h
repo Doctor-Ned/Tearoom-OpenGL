@@ -13,8 +13,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#define USE_LIGHT
-
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -45,7 +43,7 @@ static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED 
 *BTN_LONG_IDLE = "res/ui/ButtonLongIdle.png", *BTN_LONG_CLICKED = "res/ui/ButtonLongClicked.png", *BTN_LONG_HOVER = "res/ui/ButtonLongHover.png",
 *BTN_TICK_IDLE = "res/ui/ButtonTickIdle.png", *BTN_TICK_CLICKED = "res/ui/ButtonTickClicked.png", *BTN_TICK_HOVER = "res/ui/ButtonTickHover.png";
 
-static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_WIDTH = 0.1f, BASE_BTN_HEIGHT = BASE_BTN_WIDTH;
+static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_SIZE = 0.1f;
 
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 

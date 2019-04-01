@@ -46,7 +46,5 @@ Mesh::~Mesh() {
 }
 
 Mesh::Mesh() : shader(nullptr) {
-#ifdef USE_LIGHT
-	useLight = true;
-#endif
+	useLight = SceneManager::getInstance()->useLight;
 }

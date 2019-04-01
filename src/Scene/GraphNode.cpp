@@ -239,6 +239,6 @@ GraphNode::~GraphNode() {
 		delete mesh;
 	}
 	for(auto &child : children) {
-		delete child;
+		//delete child;
 	}
 }

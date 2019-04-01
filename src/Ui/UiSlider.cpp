@@ -12,12 +12,13 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	this->lineColor = lineColor;
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
+	UiSlider::setPosition(position, center);
 	setup();
 }
 
 UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, float value, float min, float max,
 	glm::vec4 lineColor, bool center) :
-	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createScaledSize(BASE_BTN_WIDTH, BASE_BTN_HEIGHT), value, min, max, lineColor, center) {}
+	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createSizeScaledByHeight(BASE_BTN_SIZE), value, min, max, lineColor, center) {}
 
 void UiSlider::render() {
 	UiElement::render();
