@@ -197,6 +197,14 @@ Shader::~Shader() {
 	glDeleteProgram(id);
 }
 
+void Shader::setCastShadows(bool castShadows) {
+	use();
+	GLint location = getUniformLocation("castShadows");
+	if (location != -1) {
+		glUniform1i(location, castShadows ? 1 : 0);
+	}
+}
+
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	GLuint shader;
 	shader = glCreateShader(shaderType);

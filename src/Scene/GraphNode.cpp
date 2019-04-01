@@ -2,8 +2,7 @@
 #include "Mesh/Mesh.h"
 #include <algorithm>
 
-GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) :
-	parent(parent), mesh(mesh), dirty(true), scale(1.0f), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
+GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), scale(1.0f), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	if (parent != nullptr) {
 		parent->addChild(this);
 	}

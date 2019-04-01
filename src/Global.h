@@ -45,6 +45,8 @@ static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED 
 
 static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_SIZE = 0.1f;
 
+static const float BASE_AMBIENT = 0.05f;
+
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 
 #define DIRLIGHT_SIZE sizeof(DirLight)

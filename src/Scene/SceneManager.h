@@ -62,6 +62,7 @@ public:
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	void setup();
 	bool useLight = true;
+	bool castShadows = true;
 	~SceneManager();
 protected:
 	GLFWwindow *window;
