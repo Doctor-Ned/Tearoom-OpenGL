@@ -35,6 +35,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
     float spec = pow(max(dot(fs_in.normal, halfwayDir), 0.0), shininess);
 
 	return (vec3(light.ambient) * diffuse) + ((vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular)) * (1 - vec3(shadow));
+	//return (vec3(light.ambient) * diffuse) + ((vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular));
 }
 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 specular, vec3 viewDir) {
@@ -84,6 +85,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
 	vec3 spe = vec3(light.specular) * spec * specular * intensity;
 
 	return ((amb + (dif + spe) * (1 - vec3(shadow)) * attenuation));
+	//return ((amb + (dif + spe) * attenuation));
 }
 
 vec3 gridSamplingDisk[20] = vec3[]
@@ -124,4 +126,5 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specul
 	float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
 	return (((vec3(light.ambient) * diffuse) + (vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular)) * vec3(1-shadow) * attenuation);
+	//return (((vec3(light.ambient) * diffuse) + (vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular)) * attenuation);
 }
