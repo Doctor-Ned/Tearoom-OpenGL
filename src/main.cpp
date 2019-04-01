@@ -14,6 +14,13 @@
 #include "Scene/MiszukScene.h"
 #include "Scene/TestScene.h"
 
+
+//comment extern below if you don't have NVidia GPU
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
+
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
