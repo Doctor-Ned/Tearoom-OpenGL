@@ -2,7 +2,7 @@
 #include "Mesh/Mesh.h"
 #include <algorithm>
 
-GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : //local(glm::mat4(1.0f)), 
+GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) :
 	parent(parent), mesh(mesh), dirty(true), scale(1.0f), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	if (parent != nullptr) {
 		parent->addChild(this);
@@ -67,18 +67,16 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 		}
 	}
 
-	if (excludedCount > 0 && excluded != nullptr) {
-		for (int i = 0; i < children.size(); i++) {
-			bool exclude = false;
-			for (int j = 0; j < excludedCount; j++) {
-				if (children[i] == excluded[j]) {
-					exclude = true;
-					break;
-				}
+	for (int i = 0; i < children.size(); i++) {
+		bool exclude = false;
+		for (int j = 0; j < excludedCount; j++) {
+			if (children[i] == excluded[j]) {
+				exclude = true;
+				break;
 			}
-			if (!exclude) {
-				children[i]->draw(shader, excluded, excludedCount);
-			}
+		}
+		if (!exclude) {
+			children[i]->draw(shader, excluded, excludedCount);
 		}
 	}
 
