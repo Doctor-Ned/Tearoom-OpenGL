@@ -5,7 +5,7 @@ layout (std140) uniform TextureColor {
 	bool disableTexture;
 };
 
-//%lights.sglsl%
+//%lights.glsl%
 
 in VS_OUT {
 	vec3 pos;
@@ -20,7 +20,7 @@ uniform mat4 model;
 
 out vec4 outColor;
 
-//%lightComputations.sglsl%
+//%lightComputations.glsl%
 
 void main() {
 	vec3 diffuse = tcolor.rgb * color.rgb;

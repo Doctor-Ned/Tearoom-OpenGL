@@ -44,7 +44,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
     float currentDepth = projCoords.z;
     vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
     float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
-    
+
 	float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(tex, 0);
     for(int x = -1; x <= 1; ++x)

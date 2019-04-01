@@ -42,7 +42,7 @@ void DirLightNode::drawGui(bool autoUpdate) {
 			localTransform.RotateByRadians(appliedX, glm::vec3(1.0f, 0.0f, 0.0f));
 			dirty = true;
 			//light->model = getWorld();
-			light->model = worldTransform.Matrix();
+			//light->model = worldTransform.Matrix(); the world transform is not updated here yet so it's pointless to reset it. It gets updated later anyway.
 		}
 		if (lastEnabled != enabled) {
 			enabled = lastEnabled;

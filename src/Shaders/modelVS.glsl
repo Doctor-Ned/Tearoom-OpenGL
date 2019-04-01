@@ -15,7 +15,7 @@ layout (std140) uniform ViewProjection {
 	mat4 projection;
 };
 
-//%lights.sglsl%
+//%lights.glsl%
 
 out VS_OUT {
 	vec3 pos;

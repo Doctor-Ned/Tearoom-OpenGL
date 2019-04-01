@@ -164,18 +164,19 @@ void Shader::setLightSpace(glm::mat4 lightSpace) {
 void Shader::updateShadowData(std::vector<LightShadowData*> dirs, std::vector<LightShadowData*> spots, std::vector<LightShadowData*> points) {
 	use();
 	int padding = 0;
+	const GLuint baseTex = GL_TEXTURE28;
 	for (int i = 0; i < dirs.size(); i++) {
-		glActiveTexture(GL_TEXTURE31 - padding--);
+		glActiveTexture(baseTex - padding--);
 		glBindTexture(GL_TEXTURE_2D, dirs[i]->texture);
 		setInt(("dir_shadows[" + std::to_string(i) + "]").c_str(), dirs[i]->texture);
 	}
 	for (int i = 0; i < spots.size(); i++) {
-		glActiveTexture(GL_TEXTURE31 - padding--);
+		glActiveTexture(baseTex - padding--);
 		glBindTexture(GL_TEXTURE_2D, spots[i]->texture);
 		setInt(("spot_shadows[" + std::to_string(i) + "]").c_str(), spots[i]->texture);
 	}
 	for (int i = 0; i < points.size(); i++) {
-		glActiveTexture(GL_TEXTURE31 - padding--);
+		glActiveTexture(baseTex - padding--);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, points[i]->texture);
 		setInt(("point_shadows[" + std::to_string(i) + "]").c_str(), points[i]->texture);
 	}

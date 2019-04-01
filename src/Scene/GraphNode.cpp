@@ -98,7 +98,7 @@ void GraphNode::draw(Shader* shader) {
 		dirty |= parent->dirty;
 		if (dirty) {
 			//world = parent->getWorld() * local;
-			worldTransform.SetMatrix(localTransform.Matrix());
+			worldTransform.SetMatrix(parent->worldTransform.Matrix() * localTransform.Matrix());
 		}
 	} else if (dirty) {
 		//world = local;
