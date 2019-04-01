@@ -5,6 +5,8 @@
 #include "Mesh/Model.h"
 #include "TestScene.h"
 #include "Mesh/MeshColorBox.h"
+#include "OctreeNode.h"
+#include <iostream>
 
 MiszukScene::MiszukScene() {
 	uboLights = sceneManager->getUboLights();
@@ -35,6 +37,15 @@ MiszukScene::MiszukScene() {
 	boxNode->localTransform.Translate(glm::vec3(2.0f, 0.0f, 0.0f));
 
 	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
+
+	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+	octree->Calculate();
+}
+
+MiszukScene::~MiszukScene()
+{
+	delete octree;
+	delete rootNode;
 }
 
 void MiszukScene::render() {
@@ -46,6 +57,8 @@ void MiszukScene::render() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
+	octree->draw();
+
 	sceneManager->getTextRenderer()->renderText("Miszuk Scene", SceneManager::getInstance()->getScreenWidth() / 2, SceneManager::getInstance()->getScreenHeight() / 2, 1.0f);
 }
 
@@ -94,7 +107,7 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->getChild(3)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
 	rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 	rootNode->update(deltaTime);
-
+	std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

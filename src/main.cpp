@@ -14,6 +14,13 @@
 #include "Scene/MiszukScene.h"
 #include "Scene/TestScene.h"
 
+
+//comment extern below if you don't have NVidia GPU
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
+
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
@@ -250,12 +257,12 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 	sceneManager->setFramebuffer(fbo);
 
-	/*MiszukScene* miszukScene = new MiszukScene();
-	sceneManager->setCurrentScene(miszukScene);*/
+	MiszukScene* miszukScene = new MiszukScene();
+	sceneManager->setCurrentScene(miszukScene);
 
-	TestScene *testScene = new TestScene();
-	sceneManager->setCurrentScene(testScene);
-	//sceneManager->setCursorLocked(true);
+	//TestScene *testScene = new TestScene();
+	//sceneManager->setCurrentScene(testScene);
+	sceneManager->setCursorLocked(true);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
