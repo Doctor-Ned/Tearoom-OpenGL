@@ -147,17 +147,15 @@ void GraphNode::removeComponent(int index)
 	components.erase(components.begin() + index);
 }
 
-Component* GraphNode::getComponent(std::string&& componentType)
-{
-	for(Component* component: components)
-	{
-		
-		if(component->toString() == componentType)
-		{
-			std::cout << component->toString() << std::endl;
-			return component;
+
+template <typename T> Component* GraphNode::getComponent() {
+	for(auto &comp : components) {
+		Component* result = dynamic_cast<T*>(comp);
+		if(result) {
+			return result;
 		}
 	}
+	return nullptr;
 }
 
 GraphNode* GraphNode::getChild(int index) {

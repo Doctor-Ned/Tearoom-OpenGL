@@ -17,7 +17,6 @@ protected:
 	glm::vec3 positionOffset;
 	glm::vec4 data; // vec3 position, float radius or box edge size
 public:
-	std::string toString() override;
 	void update() override;
 	void draw() override;
 	bool checkCollision(Collider* collider);

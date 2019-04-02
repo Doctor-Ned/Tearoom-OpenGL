@@ -14,7 +14,7 @@ void MeshTorus::draw(Shader *shader, glm::mat4 world, float scale) {
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(TextureVertex));
-	glDrawArrays(GL_TRIANGLES, 0, vertexAmount);
+	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }

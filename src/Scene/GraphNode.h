@@ -30,7 +30,7 @@ public:
 	void removeChild(GraphNode* child);
 	void addComponent(Component*component);
 	void removeComponent(int index);
-	Component* getComponent(std::string&& ComponentType);
+	template <typename T> Component* getComponent();
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
 	virtual ~GraphNode();

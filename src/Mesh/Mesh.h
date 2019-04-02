@@ -17,9 +17,12 @@ public:
 	float getShininess() const;
 	virtual void draw(Shader *shader, glm::mat4 world, float scale = 1.0f);
 	virtual ShaderType getShaderType() = 0;
+	GLuint getRenderMode();
+	void setRenderMode(GLuint renderMode);
 	~Mesh();
 protected:
-	Mesh();
+	Mesh(GLuint renderMode = GL_TRIANGLES);
+	GLuint renderMode;
 	GLuint VAO = 0;
 	GLuint VBO = 0, EBO = 0;
 	float shininess = 1.0f;

@@ -50,7 +50,7 @@ MiszukScene::MiszukScene() {
 
 	boxNode->addComponent(new Collider(SphereCollider, boxNode));
 
-	boxNode->getComponent(std::string("Collider"));
+	boxNode->getComponent<Collider>();
 }
 
 MiszukScene::~MiszukScene()

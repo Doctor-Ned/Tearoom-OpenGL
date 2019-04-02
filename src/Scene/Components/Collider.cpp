@@ -4,11 +4,6 @@
 #include "Scene/SceneManager.h"
 #include <iostream>
 
-std::string Collider::toString()
-{
-	return "Collider";
-}
-
 void Collider::update()
 {
 	glm::vec3 gameObjectPos = gameObject->worldTransform.getPosition();
@@ -53,6 +48,9 @@ Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data)
 	{
 		colliderMesh = new MeshColorBox(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
+
+	colliderMesh->setUseLight(false);
+	colliderMesh->setRenderMode(GL_LINES);
 }
 
 Collider::~Collider()

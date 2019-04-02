@@ -10,7 +10,7 @@ void MeshRefBox::draw(Shader *shader, glm::mat4 world, float scale) {
 	MeshRef::draw(shader, world, scale);
 	//glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
-	glDrawArrays(GL_TRIANGLES, 0, vertexAmount);
+	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }

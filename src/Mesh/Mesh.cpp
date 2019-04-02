@@ -34,6 +34,13 @@ void Mesh::draw(Shader *shader, glm::mat4 world, float scale) {
 	shader->setCastShadows(castShadows);
 }
 
+GLuint Mesh::getRenderMode() {
+	return renderMode;
+}
+void Mesh::setRenderMode(GLuint renderMode) {
+	this->renderMode = renderMode;
+}
+
 Mesh::~Mesh() {
 	if(VAO != 0) {
 		glDeleteVertexArrays(1, &VAO);
@@ -46,7 +53,8 @@ Mesh::~Mesh() {
 	}
 }
 
-Mesh::Mesh() : shader(nullptr) {
+Mesh::Mesh(GLuint renderMode) : shader(nullptr) {
+	this->renderMode = renderMode;
 	useLight = SceneManager::getInstance()->useLight;
 	castShadows = SceneManager::getInstance()->castShadows;
 }

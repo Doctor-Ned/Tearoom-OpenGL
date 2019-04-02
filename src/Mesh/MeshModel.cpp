@@ -33,7 +33,7 @@ void MeshModel::draw(Shader *shader, glm::mat4 world, float scale) {
 
 	shader->setUseSpecular(specularNr > 1);
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(renderMode, indices.size(), GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);
