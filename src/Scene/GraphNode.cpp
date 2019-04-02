@@ -11,10 +11,6 @@ GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh)
 
 void GraphNode::draw() {
 	draw(nullptr, nullptr, 0);
-	for(Component* component: components)
-	{
-		component->draw();
-	}
 }
 
 void GraphNode::draw(GraphNode* excluded) {
@@ -69,6 +65,11 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 		} else {
 			mesh->draw(shader, worldTransform.Matrix(), scale);
 		}
+	}
+
+	for (Component* component : components)
+	{
+		component->draw();
 	}
 
 	for (int i = 0; i < children.size(); i++) {

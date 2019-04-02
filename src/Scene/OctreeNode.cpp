@@ -5,12 +5,12 @@ std::queue<GraphNode*> OctreeNode::toInsert = std::queue<GraphNode*>();
 
 void OctreeNode::Calculate()
 {
-	if(gameObjects.size() <= 1)
+	/*if(gameObjects.size() <= 1)
 	{
 		return;
-	}
+	}*/
 
-	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 2.5f) //only x because it's a box
+	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 1.25f) //only x because it's a box
 	{
 		return;
 	}

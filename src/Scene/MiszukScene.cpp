@@ -10,6 +10,7 @@
 #include "Components/Collider.h"
 
 MiszukScene::MiszukScene() {
+	SceneManager::getInstance()->setCursorLocked(true);
 	uboLights = sceneManager->getUboLights();
 	uboTextureColor = sceneManager->getUboTextureColor();
 	uboViewProjection = sceneManager->getUboViewProjection();
@@ -67,7 +68,7 @@ void MiszukScene::render() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
-	octree->draw();
+	//octree->draw();
 
 	sceneManager->getTextRenderer()->renderText("Miszuk Scene", SceneManager::getInstance()->getScreenWidth() / 2, SceneManager::getInstance()->getScreenHeight() / 2, 1.0f);
 }
@@ -193,6 +194,11 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 		}
 		else {
 			movementSpeed /= 2.0f;
+		}
+		break;
+	case KEY_QUIT:
+		{
+		sceneManager->goToMenu(false);
 		}
 		break;
 	}
