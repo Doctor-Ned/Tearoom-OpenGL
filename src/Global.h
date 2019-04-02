@@ -51,26 +51,23 @@ static const float BASE_AMBIENT = 0.05f;
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 
 struct DirLight {
-	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
+	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)) {}
 	glm::mat4 lightSpace;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 	glm::mat4 model;
-	int enabled;
-	glm::vec3 padding;
 };
 
 struct PointLight {
-	PointLight() : constant(100.0f), linear(100.0f), quadratic(100.0f), near_plane(0.01f), enabled(1), far_plane(100.0f),
+	PointLight() : constant(100.0f), linear(100.0f), quadratic(100.0f), near_plane(0.01f), far_plane(10.0f),
 	ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)) {}
 	float constant;
 	float linear;
 	float quadratic;
 	float near_plane;
-	int enabled;
-	glm::vec2 padding;
 	float far_plane;
+	glm::vec3 padding;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -79,7 +76,7 @@ struct PointLight {
 
 struct SpotLight {
 	SpotLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), constant(100.0f), linear(100.0f), quadratic(100.0f),
-	cutOff(15.0f), outerCutOff(45.0f), enabled(1) {}
+	cutOff(15.0f), outerCutOff(45.0f) {}
 	glm::mat4 lightSpace;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
@@ -89,9 +86,8 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	int enabled;
-	glm::vec2 padding;
 	float outerCutOff;
+	glm::vec3 padding;
 };
 
 struct LightShadowData {

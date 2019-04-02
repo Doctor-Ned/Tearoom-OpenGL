@@ -29,10 +29,6 @@ float PointLightNode::getQuadratic() {
 	return light->quadratic;
 }
 
-bool PointLightNode::getEnabled() {
-	return light->enabled;
-}
-
 void PointLightNode::setAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
@@ -57,10 +53,10 @@ void PointLightNode::setQuadratic(float quadratic) {
 	light->quadratic = quadratic;
 }
 
-void PointLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
-}
-
 PointLight* PointLightNode::getLight() const {
 	return light;
+}
+
+void PointLightNode::setModel(glm::mat4 model) {
+	light->model = model;
 }

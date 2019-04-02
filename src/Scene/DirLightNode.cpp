@@ -17,10 +17,6 @@ glm::vec4 DirLightNode::getSpecular() {
 	return light->specular;
 }
 
-bool DirLightNode::getEnabled() {
-	return light->enabled;
-}
-
 void DirLightNode::setAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
@@ -33,10 +29,10 @@ void DirLightNode::setSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 
-void DirLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
-}
-
 DirLight* DirLightNode::getLight() const {
 	return light;
+}
+
+void DirLightNode::setModel(glm::mat4 model) {
+	light->model = model;
 }

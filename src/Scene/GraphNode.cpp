@@ -58,10 +58,10 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 	if (parent != nullptr) {
 		dirty |= parent->dirty;
 		if (dirty) {
-			worldTransform.SetMatrix(parent->worldTransform.Matrix() * localTransform.Matrix());
+			updateWorld();
 		}
 	} else if (dirty) {
-		worldTransform.SetMatrix(localTransform.Matrix());
+		updateWorld();
 	}
 
 	if (mesh) {
@@ -187,6 +187,16 @@ const char* GraphNode::getName() {
 
 void GraphNode::setName(const char* name) {
 	this->name = name;
+}
+
+void GraphNode::updateWorld() {
+	if(dirty) {
+		if(parent != nullptr) {
+			worldTransform.SetMatrix(parent->worldTransform.Matrix() * localTransform.Matrix());
+		} else {
+			worldTransform.SetMatrix(localTransform.Matrix());
+		}
+	}
 }
 
 void GraphNode::renderGui() {

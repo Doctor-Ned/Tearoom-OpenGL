@@ -37,10 +37,6 @@ float SpotLightNode::getOuterCutoff() {
 	return light->outerCutOff;
 }
 
-bool SpotLightNode::getEnabled() {
-	return light->enabled;
-}
-
 void SpotLightNode::setAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
@@ -73,17 +69,17 @@ void SpotLightNode::setOuterCutoff(float outerCutoff) {
 	light->outerCutOff = outerCutoff;
 }
 
-void SpotLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
-}
-
 SpotLight* SpotLightNode::getLight() const {
 	return light;
 }
 
+void SpotLightNode::setModel(glm::mat4 model) {
+	light->model = model;
+}
+
 void SpotLightNode::renderGui() {
 	QuadraticLightNode::renderGui();
-	if(active && getEnabled()) {
+	if(active) {
 		ImGui::SliderFloat("Cutoff", &light->cutOff, 0.0f, 360.0f);
 		ImGui::SliderFloat("Outer cutoff", &light->outerCutOff, 0.0f, 360.0f);
 	}

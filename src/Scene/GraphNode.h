@@ -19,7 +19,7 @@ public:
 	void draw(Shader *shader);
 	void draw(Shader *shader, GraphNode *excluded);
 	void draw(Shader *shader, std::vector<GraphNode*> excluded);
-	virtual void draw(Shader *shader, GraphNode **excluded, int excludedCount);
+	void draw(Shader *shader, GraphNode **excluded, int excludedCount);
 	virtual void update(double timeDiff);
 	GraphNode *getParent() const;
 	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
@@ -38,6 +38,7 @@ public:
 	const char* getName();
 	void setName(const char* name);
 protected:
+	virtual void updateWorld();
 	const char* name;
 	void renderGui() override;
 	bool active = true;

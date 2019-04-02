@@ -13,7 +13,6 @@ public:
 	float getQuadratic() override;
 	float getCutoff();
 	float getOuterCutoff();
-	bool getEnabled() override;
 	void setAmbient(glm::vec4 ambient) override;
 	void setDiffuse(glm::vec4 diffuse) override;
 	void setSpecular(glm::vec4 specular) override;
@@ -22,9 +21,9 @@ public:
 	void setQuadratic(float quadratic) override;
 	void setCutoff(float cutoff);
 	void setOuterCutoff(float outerCutoff);
-	void setEnabled(bool enabled) override;
 	SpotLight *getLight() const;
 protected:
+	void setModel(glm::mat4 model) override;
 	void renderGui() override;
 private:
 	SpotLight *light;

@@ -292,7 +292,7 @@ void TestScene::renderDirLights() {
 		glm::vec3 position = glm::vec3(node->worldTransform.Matrix()[3]);
 		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 		glm::mat4 directionWorld = node->worldTransform.Matrix();
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * -glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
@@ -311,11 +311,11 @@ void TestScene::renderSpotLights() {
 		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
-		//glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
+		////glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
 		glm::mat4 world = node->worldTransform.Matrix();
 		glm::vec3 pos = world[3];
 		glm::mat4 directionWorld = world;
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
