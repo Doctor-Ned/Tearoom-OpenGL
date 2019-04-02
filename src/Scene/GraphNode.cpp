@@ -147,17 +147,6 @@ void GraphNode::removeComponent(int index)
 	components.erase(components.begin() + index);
 }
 
-
-template <typename T> Component* GraphNode::getComponent() {
-	for(auto &comp : components) {
-		Component* result = dynamic_cast<T*>(comp);
-		if(result) {
-			return result;
-		}
-	}
-	return nullptr;
-}
-
 GraphNode* GraphNode::getChild(int index) {
 	if (index + 1 <= int(children.size())) {
 		return children[index];

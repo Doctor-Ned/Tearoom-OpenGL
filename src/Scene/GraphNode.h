@@ -3,7 +3,7 @@
 
 #include "Global.h"
 #include "Transform.h"
-#include "components/Component.h"
+#include "Components/Component.h"
 class Mesh;
 class Shader;
 
@@ -30,7 +30,7 @@ public:
 	void removeChild(GraphNode* child);
 	void addComponent(Component*component);
 	void removeComponent(int index);
-	template <typename T> Component* getComponent();
+	template <class T> Component* getComponent();
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
 	virtual ~GraphNode();
@@ -43,5 +43,15 @@ protected:
 	bool dirty;
 	float scale;
 };
+
+template <class T> Component* GraphNode::getComponent() {
+	for (auto &comp : components) {
+		Component* result = dynamic_cast<T*>(comp);
+		if (result) {
+			return result;
+		}
+	}
+	return nullptr;
+}
 
 #endif
