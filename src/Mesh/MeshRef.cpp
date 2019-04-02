@@ -29,7 +29,7 @@ MeshRef::MeshRef(bool reflective) : Mesh() {
 }
 
 void MeshRef::draw(Shader *shader, glm::mat4 model) {
-	Mesh::draw(shader, model, scale);
+	Mesh::draw(shader, model);
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, environmentMap);

@@ -5,7 +5,6 @@ SpotLightNode::SpotLightNode(SpotLight* light, Mesh* mesh, GraphNode* parent) : 
 	rotationX = 0.0f;
 	appliedZ = 0.0f;
 	appliedX = 0.0f;
-	pos = light->position;
 	constant = light->constant;
 	linear = light->linear;
 	quadratic = light->quadratic;
@@ -54,13 +53,11 @@ void SpotLightNode::drawGui(bool autoUpdate) {
 		light->quadratic = quadratic;
 		light->cutOff = cutOff;
 		light->outerCutOff = outerCutOff;
-		//if (rotationZ != appliedZ || rotationY != appliedY || light->position != pos) {
-		light->position = pos;
 		/*local = translate(glm::mat4(1.0f), glm::vec3(light->position));
 		local = rotate(local, rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
 		local = rotate(local, rotationX, glm::vec3(1.0f, 0.0f, 0.0f));*/
 		localTransform.SetMatrix(glm::mat4(1));
-		localTransform.Translate(glm::vec3(light->position));
+		localTransform.Translate(glm::vec3(pos));
 		localTransform.RotateByRadians(rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
 		localTransform.RotateByRadians(rotationX, glm::vec3(1.0f, 0.0f, 0.0f));
 		appliedZ = rotationZ;

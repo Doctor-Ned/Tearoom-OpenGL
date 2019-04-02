@@ -56,14 +56,6 @@ void Shader::use() {
 	glUseProgram(id);
 }
 
-void Shader::setScale(float scale) {
-	use();
-	GLint location = getUniformLocation("scale");
-	if (location != -1) {
-		glUniform1f(location, scale);
-	}
-}
-
 // currently injected via UboTextureColor, though it might be useful when dealing with non-texture shaders
 void Shader::setColor(glm::vec4 color) {
 	use();

@@ -6,7 +6,7 @@
 class MeshRef : public Mesh {
 public:
 	void regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
-	void draw(Shader *shader, glm::mat4 model, float scale) override;
+	void draw(Shader *shader, glm::mat4 model) override;
 	GLuint getEnvironmentMap() const;
 	ShaderType getShaderType() override;
 protected:
