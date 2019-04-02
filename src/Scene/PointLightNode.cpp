@@ -5,6 +5,7 @@ PointLightNode(PointLight* light, Mesh* mesh, GraphNode* parent) : GraphNode(mes
 	constant = light->constant;
 	linear = light->linear;
 	quadratic = light->quadratic;
+	pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	lastEnabled = true;
 }
 

@@ -5,6 +5,7 @@ SpotLightNode::SpotLightNode(SpotLight* light, Mesh* mesh, GraphNode* parent) : 
 	rotationX = 0.0f;
 	appliedZ = 0.0f;
 	appliedX = 0.0f;
+	pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	constant = light->constant;
 	linear = light->linear;
 	quadratic = light->quadratic;
