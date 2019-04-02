@@ -58,7 +58,6 @@ TestScene::TestScene() {
 	spotLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	spotLight->diffuse = glm::vec4(0.0f, 0.0f, 0.6f, 1.0f);
 	spotLight->specular = glm::vec4(0.0f, 0.0f, 0.6f, 1.0f);
-	spotLight->position = glm::vec4(0.0f, 3.0f, 3.0f, 1.0f);
 	spotLight->direction = normalize(glm::vec4(1.0f, -1.0f, 0.0f, 1.0f));
 	spotLight->model = glm::mat4(1.0f);
 	spotLight->constant = 0.18f;
@@ -76,7 +75,6 @@ TestScene::TestScene() {
 	pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->diffuse = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
 	pointLight->specular = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
-	pointLight->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->model = glm::mat4(1.0f);
 	pointLight->constant = 0.18f;
 	pointLight->linear = 0.1f;

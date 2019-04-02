@@ -8,7 +8,6 @@ struct DirLight {
 };
 
 struct PointLight {
-	vec4 position;
 	float constant;
 	float linear;
 	float quadratic;
@@ -23,7 +22,6 @@ struct PointLight {
 
 struct SpotLight {
 	mat4 lightSpace;
-	vec4 position;
 	vec4 direction;
 	vec4 ambient;
 	vec4 diffuse;

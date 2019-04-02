@@ -65,7 +65,6 @@ struct DirLight {
 };
 
 struct PointLight {
-	glm::vec4 position;
 	float constant;
 	float linear;
 	float quadratic;
@@ -80,7 +79,6 @@ struct PointLight {
 
 struct SpotLight {
 	glm::mat4 lightSpace;
-	glm::vec4 position;
 	glm::vec4 direction;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
