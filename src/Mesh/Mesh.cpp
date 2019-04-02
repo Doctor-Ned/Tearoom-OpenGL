@@ -4,10 +4,6 @@ void Mesh::draw(glm::mat4 world) {
 	draw(shader, world);
 }
 
-void Mesh::draw(glm::mat4 world, float scale) {
-	draw(shader, world, scale);
-}
-
 void Mesh::setShininess(float shininess) {
 	this->shininess = shininess;
 }
@@ -24,10 +20,9 @@ float Mesh::getShininess() const {
 	return shininess;
 }
 
-void Mesh::draw(Shader *shader, glm::mat4 world, float scale) {
+void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->use();
 	shader->setShininess(shininess);
-	shader->setScale(scale);
 	shader->setModel(world);
 	shader->setUseLight(useLight);
 	shader->setUseSpecular(false);

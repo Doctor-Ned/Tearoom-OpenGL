@@ -10,7 +10,7 @@ class MeshTorus : public MeshTexture {
 public:
 	MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath,
 	          glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radiusIn, float radiusOut, int sideAmount);
 	glm::vec3 baseCenter;
 protected:

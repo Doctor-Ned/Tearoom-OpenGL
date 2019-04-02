@@ -6,8 +6,8 @@ MeshRefBox::MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max)
 	setupMesh();
 }
 
-void MeshRefBox::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshRef::draw(shader, world, scale);
+void MeshRefBox::draw(Shader *shader, glm::mat4 world) {
+	MeshRef::draw(shader, world);
 	//glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

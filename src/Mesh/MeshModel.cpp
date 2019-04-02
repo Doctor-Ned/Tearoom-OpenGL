@@ -7,8 +7,8 @@ MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int
 	setupMesh();
 }
 
-void MeshModel::draw(Shader *shader, glm::mat4 world, float scale) {
-	Mesh::draw(shader, world, scale);
+void MeshModel::draw(Shader *shader, glm::mat4 world) {
+	Mesh::draw(shader, world);
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
 	GLuint normalNr = 1;

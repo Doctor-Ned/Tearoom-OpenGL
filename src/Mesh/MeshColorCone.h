@@ -9,7 +9,7 @@ class MeshColorCone : public MeshSimple {
 public:
 	MeshColorCone(float radius, float height, int sideAmount, glm::vec4 color,
 	              glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, float height, int sideAmount);
 	glm::vec3 baseCenter;
 protected:

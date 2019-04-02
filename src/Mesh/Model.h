@@ -11,7 +11,7 @@
 class Model : public Mesh {
 public:
 	Model(char* path);
-	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world) override;
 	ShaderType getShaderType() override;
 private:
 	std::vector<ModelTexture> textures_loaded;

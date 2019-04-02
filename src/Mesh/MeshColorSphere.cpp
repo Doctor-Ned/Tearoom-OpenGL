@@ -5,8 +5,8 @@ MeshColorSphere::MeshColorSphere(float radius, int precision, glm::vec4 color, g
 	setupMesh();
 }
 
-void MeshColorSphere::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshSimple::draw(shader, world, scale);
+void MeshColorSphere::draw(Shader *shader, glm::mat4 world) {
+	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

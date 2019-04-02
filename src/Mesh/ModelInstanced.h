@@ -11,7 +11,7 @@ class ModelInstanced : public Mesh {
 public:
 	ModelInstanced(char* path, glm::vec3* offsets, int offsetSize);
 	ShaderType getShaderType() override;
-	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world) override;
 private:
 	glm::vec3* offsets;
 	int offsetSize;

@@ -8,12 +8,8 @@ MeshModelInstanced::MeshModelInstanced(std::vector<ModelVertex> vertices,
 	setupMesh();
 }
 
-void MeshModelInstanced::draw(Shader *shader, glm::mat4 world, float scale) {
-	shader->use();
-	shader->setShininess(shininess);
-	shader->setScale(scale);
-	shader->setModel(world);
-	shader->setUseLight(useLight);
+void MeshModelInstanced::draw(Shader *shader, glm::mat4 world) {
+	Mesh::draw(shader, world);
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
 	GLuint normalNr = 1;

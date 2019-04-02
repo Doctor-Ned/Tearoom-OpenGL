@@ -5,7 +5,6 @@ layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inTexCoord;
 
 uniform mat4 model;
-uniform float scale;
 uniform vec3 viewPosition;
 
 layout (std140) uniform ViewProjection {
@@ -25,9 +24,8 @@ out VS_OUT {
 } vs_out;
 
 void main() {
-	vec3 pos = inPosition * scale;
     vs_out.texCoords = inTexCoord;
-    vs_out.pos = vec3(model * vec4(pos, 1.0f));
+    vs_out.pos = vec3(model * vec4(inPosition, 1.0f));
 	vs_out.normal = normalize(transpose(inverse(mat3(model))) * inNormal);
 	vs_out.viewPosition = vec3(model * vec4(viewPosition, 1.0f));
 	for(int i=0;i<dirLights;i++) {

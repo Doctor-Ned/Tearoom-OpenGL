@@ -22,7 +22,6 @@ public:
 	virtual void update(double timeDiff);
 	GraphNode *getParent() const;
 	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
-	void setScale(float scale);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component*component);
@@ -39,7 +38,6 @@ protected:
 	GraphNode* parent;
 	Mesh* mesh;
 	bool dirty;
-	float scale;
 };
 
 template <class T>

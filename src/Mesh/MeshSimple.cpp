@@ -4,8 +4,8 @@ MeshSimple::MeshSimple(glm::vec4 color) : Mesh(), color(color) {
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 }
 
-void MeshSimple::draw(Shader *shader, glm::mat4 world, float scale) {
-	Mesh::draw(shader, world, scale);
+void MeshSimple::draw(Shader *shader, glm::mat4 world) {
+	Mesh::draw(shader, world);
 	shader->setColor(color);
 }
 

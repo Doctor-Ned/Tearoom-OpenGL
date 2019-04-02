@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), scale(1.0f), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
+GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	if (parent != nullptr) {
 		parent->addChild(this);
 	}
@@ -61,9 +61,9 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 
 	if (mesh) {
 		if (shader == nullptr) {
-			mesh->draw(worldTransform.Matrix(), scale);
+			mesh->draw(worldTransform.Matrix());
 		} else {
-			mesh->draw(shader, worldTransform.Matrix(), scale);
+			mesh->draw(shader, worldTransform.Matrix());
 		}
 	}
 
@@ -110,10 +110,6 @@ void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
 	this->parent->removeChild(this);
 	parent->addChild(this);
 	dirty = true;
-}
-
-void GraphNode::setScale(float scale) {
-	this->scale = scale;
 }
 
 void GraphNode::addChild(GraphNode* child) {

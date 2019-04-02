@@ -7,8 +7,8 @@ MeshPlane::MeshPlane(float width, float length, char* texturePath, glm::vec3 bas
 	setupMesh();
 }
 
-void MeshPlane::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshTexture::draw(shader, world, scale);
+void MeshPlane::draw(Shader *shader, glm::mat4 world) {
+	MeshTexture::draw(shader, world);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(VAO);

@@ -5,8 +5,8 @@ MeshColorBox::MeshColorBox(glm::vec3 min, glm::vec3 max, glm::vec4 color)
 	setupMesh();
 }
 
-void MeshColorBox::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshSimple::draw(shader, world, scale);
+void MeshColorBox::draw(Shader *shader, glm::mat4 world) {
+	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

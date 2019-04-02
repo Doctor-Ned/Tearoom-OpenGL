@@ -6,8 +6,8 @@ MeshColorCylinder::MeshColorCylinder(float radius, float height, int sideAmount,
 	setupMesh();
 }
 
-void MeshColorCylinder::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshSimple::draw(shader, world, scale);
+void MeshColorCylinder::draw(Shader *shader, glm::mat4 world) {
+	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

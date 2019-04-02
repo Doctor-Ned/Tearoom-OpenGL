@@ -7,9 +7,9 @@ Model::Model(char* path) : Mesh() {
 	loadModel(std::string(path));
 }
 
-void Model::draw(Shader *shader, glm::mat4 world, float scale) {
+void Model::draw(Shader *shader, glm::mat4 world) {
 	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i]->draw(shader, world, scale);
+		meshes[i]->draw(shader, world);
 }
 
 ShaderType Model::getShaderType() {

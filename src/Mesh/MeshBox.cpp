@@ -6,8 +6,8 @@ MeshBox::MeshBox(glm::vec3 min, glm::vec3 max, char* texturePath)
 	setupMesh();
 }
 
-void MeshBox::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshTexture::draw(shader, world, scale);
+void MeshBox::draw(Shader *shader, glm::mat4 world) {
+	MeshTexture::draw(shader, world);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(VAO);

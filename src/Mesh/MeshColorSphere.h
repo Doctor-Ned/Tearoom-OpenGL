@@ -10,7 +10,7 @@ class MeshColorSphere : public MeshSimple {
 public:
 	MeshColorSphere(float radius, int precision, glm::vec4 color,
 	                glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world, float scale = 1.0f) override;
+	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, int precision);
 	float getRadius() const;
 	glm::vec3 baseCenter;

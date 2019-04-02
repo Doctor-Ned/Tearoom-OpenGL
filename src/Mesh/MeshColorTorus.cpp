@@ -7,8 +7,8 @@ MeshColorTorus::MeshColorTorus(float radiusIn, float radiusOut, int sideAmount, 
 	setupMesh();
 }
 
-void MeshColorTorus::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshSimple::draw(shader, world, scale);
+void MeshColorTorus::draw(Shader *shader, glm::mat4 world) {
+	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

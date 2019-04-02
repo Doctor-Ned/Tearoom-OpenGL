@@ -10,7 +10,6 @@ public:
 	Shader(char* vertexPath, char* fragmentPath);
 	virtual GLuint getID();
 	void use();
-	void setScale(float scale);
 	void setColor(glm::vec4 color);
 	void setModel(glm::mat4 model);
 	void setViewPosition(glm::vec3 viewPosition);

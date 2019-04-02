@@ -5,8 +5,8 @@ MeshColorPlane::MeshColorPlane(float width, float length, glm::vec4 color, glm::
 	setupMesh();
 }
 
-void MeshColorPlane::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshSimple::draw(shader, world, scale);
+void MeshColorPlane::draw(Shader *shader, glm::mat4 world) {
+	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);

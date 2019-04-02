@@ -8,8 +8,8 @@ MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* text
 	setupMesh();
 }
 
-void MeshTorus::draw(Shader *shader, glm::mat4 world, float scale) {
-	MeshTexture::draw(shader, world, scale);
+void MeshTorus::draw(Shader *shader, glm::mat4 world) {
+	MeshTexture::draw(shader, world);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(VAO);

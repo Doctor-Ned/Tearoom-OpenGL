@@ -7,8 +7,8 @@ MeshTexture::MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsign
 	texture = Global::createTexture(textureFile);
 }
 
-void MeshTexture::draw(Shader *shader, glm::mat4 world, float scale) {
-	Mesh::draw(shader, world, scale);
+void MeshTexture::draw(Shader *shader, glm::mat4 world) {
+	Mesh::draw(shader, world);
 }
 
 ShaderType MeshTexture::getShaderType() {

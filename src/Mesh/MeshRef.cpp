@@ -28,7 +28,7 @@ MeshRef::MeshRef(bool reflective) : Mesh() {
 	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-void MeshRef::draw(Shader *shader, glm::mat4 model, float scale) {
+void MeshRef::draw(Shader *shader, glm::mat4 model) {
 	Mesh::draw(shader, model, scale);
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
