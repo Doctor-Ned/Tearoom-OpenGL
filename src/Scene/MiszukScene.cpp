@@ -7,6 +7,7 @@
 #include "Mesh/MeshColorBox.h"
 #include "OctreeNode.h"
 #include <iostream>
+#include "Components/Collider.h"
 
 MiszukScene::MiszukScene() {
 	uboLights = sceneManager->getUboLights();
@@ -45,6 +46,10 @@ MiszukScene::MiszukScene() {
 
 	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree->Calculate();
+
+	boxNode->addComponent(new Collider(SphereCollider, boxNode));
+
+	boxNode->getComponent(std::string("Collider"));
 }
 
 MiszukScene::~MiszukScene()
@@ -112,7 +117,7 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->getChild(3)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
 	rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 	rootNode->update(deltaTime);
-	std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
+	//std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

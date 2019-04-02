@@ -3,6 +3,7 @@
 
 #include "Global.h"
 #include "Transform.h"
+#include "components/Component.h"
 class Mesh;
 class Shader;
 
@@ -27,12 +28,16 @@ public:
 	//void setLocal(glm::mat4 local);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
+	void addComponent(Component*component);
+	void removeComponent(int index);
+	Component* getComponent(std::string&& ComponentType);
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
 	virtual ~GraphNode();
 protected:
 	//glm::mat4 local, world;
 	std::vector<GraphNode*> children;
+	std::vector<Component*> components;
 	GraphNode* parent;
 	Mesh* mesh;
 	bool dirty;

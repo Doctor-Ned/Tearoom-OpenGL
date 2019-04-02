@@ -1,6 +1,7 @@
 #include "GraphNode.h"
 #include "Mesh/Mesh.h"
 #include <algorithm>
+#include <iostream>
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), scale(1.0f), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	if (parent != nullptr) {
@@ -10,6 +11,10 @@ GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh)
 
 void GraphNode::draw() {
 	draw(nullptr, nullptr, 0);
+	for(Component* component: components)
+	{
+		component->draw();
+	}
 }
 
 void GraphNode::draw(GraphNode* excluded) {
@@ -83,6 +88,10 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 }
 
 void GraphNode::update(double timeDiff) {
+	for(Component* component: components)
+	{
+		component->update();
+	}
 	for (auto &child : children) {
 		child->update(timeDiff);
 	}
@@ -127,6 +136,29 @@ void GraphNode::removeChild(GraphNode* child) {
 	}
 }
 
+void GraphNode::addComponent(Component* component)
+{
+	components.push_back(component);
+}
+
+void GraphNode::removeComponent(int index)
+{
+	components.erase(components.begin() + index);
+}
+
+Component* GraphNode::getComponent(std::string&& componentType)
+{
+	for(Component* component: components)
+	{
+		
+		if(component->toString() == componentType)
+		{
+			std::cout << component->toString() << std::endl;
+			return component;
+		}
+	}
+}
+
 GraphNode* GraphNode::getChild(int index) {
 	if (index + 1 <= int(children.size())) {
 		return children[index];
@@ -143,7 +175,12 @@ GraphNode::~GraphNode() {
 	if (mesh != nullptr) {
 		delete mesh;
 	}
+	for (Component* component : components )
+	{
+		delete component;
+	}
 	for (auto &child : children) {
 		//delete child;
 	}
+	
 }
