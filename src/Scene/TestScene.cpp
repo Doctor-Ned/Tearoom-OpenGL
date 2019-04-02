@@ -20,7 +20,7 @@ TestScene::TestScene() {
 	skybox = new Skybox(sceneManager->getShader(STSkybox), faces);
 	depthShader = sceneManager->getShader(STDepth);
 	depthDebugShader = sceneManager->getShader(STDepthDebug);
-	depthPointShader = static_cast<GeometryShader*>(sceneManager->getShader(STDepthPoint));
+	depthPointShader = dynamic_cast<GeometryShader*>(sceneManager->getShader(STDepthPoint));
 
 	uboLights = sceneManager->getUboLights();
 	uboTextureColor = sceneManager->getUboTextureColor();
@@ -39,50 +39,44 @@ TestScene::TestScene() {
 	GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
 	DirLight *dirLight = new DirLight();
-	dirLight->specular = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	dirLight->diffuse = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-	dirLight->direction = normalize(glm::vec4(0.0f, -1.0f, -1.0f, 1.0f));
+	dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
 	dirLight->model = glm::mat4(1.0f);
 	//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
-	GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
-	dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f)));
-	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	//dirLightNode->localTransform.SetMatrix(dirLight->model);
-	//GraphNode *light1 = new GraphNode(lightSphere, dirLightNode);
-	//light1->setLocal(dirLight->model);
+	//GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
+	//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
+	dirLightNode = new DirLightNode(dirLight, lightSphere, rotatingNode);
+	dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
 
 	SpotLight *spotLight = new SpotLight();
 	spotLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	spotLight->diffuse = glm::vec4(0.0f, 0.0f, 0.6f, 1.0f);
-	spotLight->specular = glm::vec4(0.0f, 0.0f, 0.6f, 1.0f);
-	spotLight->direction = normalize(glm::vec4(1.0f, -1.0f, 0.0f, 1.0f));
-	spotLight->model = glm::mat4(1.0f);
+	spotLight->diffuse = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
+	spotLight->specular = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	spotLight->constant = 0.18f;
 	spotLight->linear = 0.1f;
 	spotLight->quadratic = 0.1f;
-	spotLight->cutOff = glm::radians(12.5f);
-	spotLight->outerCutOff = glm::radians(25.0f);
 	spotLightNode = new SpotLightNode(spotLight, lightSphere, rotatingNode2);
-	spotLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 3.0f)));
+	//GraphNode *spotNode = new GraphNode(nullptr, rotatingNode);
+	//spotNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 0.0f)));
+	spotLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)));
+	//spotLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode3 = new RotatingNode(0.15f, nullptr, rootNode);
 
 	PointLight *pointLight = new PointLight();
-	pointLight->model = glm::mat4(1.0f);
 	pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->diffuse = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
 	pointLight->specular = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
-	pointLight->model = glm::mat4(1.0f);
 	pointLight->constant = 0.18f;
 	pointLight->linear = 0.1f;
 	pointLight->quadratic = 0.1f;
-	pointLight->near_plane = 0.01f;
-	pointLight->far_plane = 10.0f;
 	pointLightNode = new PointLightNode(pointLight, lightSphere, rotatingNode3);
-	pointLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.2f, 0.0f)));
+	pointLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
 
 	dirLights.push_back(dirLight);
 	spotLights.push_back(spotLight);
@@ -298,8 +292,8 @@ void TestScene::renderDirLights() {
 		glm::vec3 position = glm::vec3(node->worldTransform.Matrix()[3]);
 		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 		glm::mat4 directionWorld = node->worldTransform.Matrix();
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = projection * lookAt(position, position + glm::vec3(directionWorld * -glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * -glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
@@ -321,8 +315,8 @@ void TestScene::renderSpotLights() {
 		glm::mat4 world = node->worldTransform.Matrix();
 		glm::vec3 pos = world[3];
 		glm::mat4 directionWorld = world;
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = spotLightProjection * lookAt(pos, pos + glm::vec3(directionWorld * glm::vec4(glm::vec3(light->direction), 0.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());

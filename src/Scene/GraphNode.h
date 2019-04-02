@@ -4,10 +4,11 @@
 #include "Global.h"
 #include "Transform.h"
 #include "Components/Component.h"
+#include "GuiConfigurable.h"
 class Mesh;
 class Shader;
 
-class GraphNode {
+class GraphNode : public GuiConfigurable {
 public:
 	Transform worldTransform; //Transform has addres to dirty flag and can change it.
 	Transform localTransform;
@@ -32,7 +33,14 @@ public:
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
 	virtual ~GraphNode();
+	bool isActive();
+	void setActive(bool active);
+	const char* getName();
+	void setName(const char* name);
 protected:
+	const char* name;
+	void renderGui() override;
+	bool active = true;
 	std::vector<GraphNode*> children;
 	std::vector<Component*> components;
 	GraphNode* parent;

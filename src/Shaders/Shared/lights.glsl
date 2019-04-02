@@ -1,10 +1,11 @@
 struct DirLight {
 	mat4 lightSpace;
-	vec4 direction;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
 	mat4 model;
+	int enabled;
+	vec3 padding;
 };
 
 struct PointLight {
@@ -12,7 +13,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	vec3 padding;
+	int enabled;
+	vec2 padding;
 	float far_plane;
 	vec4 ambient;
 	vec4 diffuse;
@@ -22,7 +24,6 @@ struct PointLight {
 
 struct SpotLight {
 	mat4 lightSpace;
-	vec4 direction;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -31,7 +32,8 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	vec3 padding;
+	int enabled;
+	vec2 padding;
 	float outerCutOff;
 };
 

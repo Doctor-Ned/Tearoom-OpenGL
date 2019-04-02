@@ -1,25 +1,19 @@
-#ifndef DIRLIGHTNODE_H
-#define DIRLIGHTNODE_H
+#pragma once
 
-#include "GraphNode.h"
+#include "LightNode.h"
 
-class DirLightNode : public GraphNode {
+class DirLightNode : public LightNode {
 public:
-	DirLightNode(DirLight* light, Mesh* mesh = nullptr, GraphNode* parent = nullptr);
-	void update(double timeDiff) override;
-	void drawGui(bool autoUpdate = true);
-	DirLight* getLight();
-protected:
-	DirLight* light;
-	bool enabled = true;
-	glm::vec4 lastAmbient;
-	glm::vec4 lastDiffuse;
-	glm::vec4 lastSpecular;
-	float rotationZ;
-	float rotationX;
-	float appliedZ;
-	float appliedX;
-	bool lastEnabled;
+	DirLightNode(DirLight *light, Mesh *mesh, GraphNode *parent);
+	glm::vec4 getAmbient() override;
+	glm::vec4 getDiffuse() override;
+	glm::vec4 getSpecular() override;
+	bool getEnabled() override;
+	void setAmbient(glm::vec4 ambient) override;
+	void setDiffuse(glm::vec4 diffuse) override;
+	void setSpecular(glm::vec4 specular) override;
+	void setEnabled(bool enabled) override;
+	DirLight *getLight() const;
+private:
+	DirLight *light;
 };
-
-#endif

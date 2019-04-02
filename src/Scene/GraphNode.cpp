@@ -2,8 +2,10 @@
 #include "Mesh/Mesh.h"
 #include <algorithm>
 #include <iostream>
+#include <glm/gtx/matrix_decompose.inl>
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
+	this->name = "Node";
 	if (parent != nullptr) {
 		parent->addChild(this);
 	}
@@ -50,6 +52,9 @@ void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
 }
 
 void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
+	if (!active) {
+		return;
+	}
 	if (parent != nullptr) {
 		dirty |= parent->dirty;
 		if (dirty) {
@@ -88,6 +93,9 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 }
 
 void GraphNode::update(double timeDiff) {
+	if (!active) {
+		return;
+	}
 	for (Component* component : components) {
 		component->update();
 	}
@@ -163,4 +171,73 @@ GraphNode::~GraphNode() {
 		//delete child;
 	}
 
+}
+
+bool GraphNode::isActive() {
+	return active;
+}
+
+void GraphNode::setActive(bool active) {
+	this->active = active;
+}
+
+const char* GraphNode::getName() {
+	return name;
+}
+
+void GraphNode::setName(const char* name) {
+	this->name = name;
+}
+
+void GraphNode::renderGui() {
+	std::string title(name);
+	title.append(" - active");
+	ImGui::Checkbox(title.c_str(), &active);
+	ImGui::NewLine();
+	if (active) {
+		//glm::vec3 scale;
+		//glm::quat rotation;
+		//glm::vec3 translation;
+		//glm::vec3 skew;
+		//glm::vec4 perspective;
+		//decompose(localTransform.Matrix(), scale, rotation, translation, skew, perspective);
+		//rotation = conjugate(rotation);
+		//glm::vec3 euler = eulerAngles(rotation);
+		//ImGui::InputFloat3("Position", &translation[0]);
+		//ImGui::NewLine();
+		//ImGui::SliderAngle("Rotation", &euler[0]);
+		//ImGui::NewLine();
+		//ImGui::InputFloat3("Scale", &scale[0]);
+		//ImGui::NewLine();
+		//glm::mat4 matrix = translate(glm::mat4(1.0f), translation);
+		//matrix = glm::scale(matrix, scale);
+		//matrix = mat4_cast(glm::quat(euler)) * matrix;
+		//localTransform.SetMatrix(matrix);
+
+		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&localTransform.transform[3]));
+		ImGui::NewLine();
+		ImGui::SliderFloat3("Position (slider)", reinterpret_cast<float*>(&localTransform.transform[3]), -10.0f, 10.0f);
+		ImGui::NewLine();
+
+		if(ImGui::Button("RotX-")) {
+			localTransform.Rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+		if (ImGui::Button("RotY-")) {
+			localTransform.Rotate(-15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (ImGui::Button("RotZ-")) {
+			localTransform.Rotate(-15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		}
+		ImGui::NewLine();
+		if (ImGui::Button("RotX+")) {
+			localTransform.Rotate(15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+		if (ImGui::Button("RotY+")) {
+			localTransform.Rotate(15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (ImGui::Button("RotZ+")) {
+			localTransform.Rotate(15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		}
+		ImGui::NewLine();
+	}
 }

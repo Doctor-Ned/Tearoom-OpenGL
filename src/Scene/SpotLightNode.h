@@ -1,31 +1,31 @@
-#ifndef SPOTLIGHTNODE_H
-#define SPOTLIGHTNODE_H
+#pragma once
 
-#include "GraphNode.h"
+#include "QuadraticLightNode.h"
 
-class SpotLightNode : public GraphNode {
+class SpotLightNode : public QuadraticLightNode {
 public:
-	SpotLightNode(SpotLight* light, Mesh* mesh = nullptr, GraphNode* parent = nullptr);
-	void update(double timeDiff) override;
-	void drawGui(bool autoUpdate = true);
-	SpotLight* getLight();
-	float rotationZ;
-	float rotationX;
+	SpotLightNode(SpotLight *light, Mesh *mesh, GraphNode *parent);
+	glm::vec4 getAmbient() override;
+	glm::vec4 getDiffuse() override;
+	glm::vec4 getSpecular() override;
+	float getConstant() override;
+	float getLinear() override;
+	float getQuadratic() override;
+	float getCutoff();
+	float getOuterCutoff();
+	bool getEnabled() override;
+	void setAmbient(glm::vec4 ambient) override;
+	void setDiffuse(glm::vec4 diffuse) override;
+	void setSpecular(glm::vec4 specular) override;
+	void setConstant(float constant) override;
+	void setLinear(float linear) override;
+	void setQuadratic(float quadratic) override;
+	void setCutoff(float cutoff);
+	void setOuterCutoff(float outerCutoff);
+	void setEnabled(bool enabled) override;
+	SpotLight *getLight() const;
 protected:
-	SpotLight* light;
-	bool enabled = true;
-	glm::vec4 lastAmbient;
-	glm::vec4 lastDiffuse;
-	glm::vec4 lastSpecular;
-	float appliedZ;
-	float appliedX;
-	glm::vec4 pos;
-	float constant;
-	float linear;
-	float quadratic;
-	float cutOff;
-	float outerCutOff;
-	bool lastEnabled;
+	void renderGui() override;
+private:
+	SpotLight *light;
 };
-
-#endif

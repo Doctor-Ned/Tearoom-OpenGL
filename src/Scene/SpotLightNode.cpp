@@ -1,92 +1,90 @@
 #include "SpotLightNode.h"
 
-SpotLightNode::SpotLightNode(SpotLight* light, Mesh* mesh, GraphNode* parent) : GraphNode(mesh, parent), light(light) {
-	rotationZ = 0.0f;
-	rotationX = 0.0f;
-	appliedZ = 0.0f;
-	appliedX = 0.0f;
-	pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	constant = light->constant;
-	linear = light->linear;
-	quadratic = light->quadratic;
-	cutOff = light->cutOff;
-	outerCutOff = light->outerCutOff;
-	lastEnabled = true;
+SpotLightNode::SpotLightNode(SpotLight * light, Mesh *mesh, GraphNode *parent) : QuadraticLightNode(mesh, parent) {
+	this->name = "Spot light";
+	this->light = light;
 }
 
-void SpotLightNode::update(double timeDiff) {
-	//light->model = getWorld();
-	light->model = worldTransform.Matrix();
-	GraphNode::update(timeDiff);
+glm::vec4 SpotLightNode::getAmbient() {
+	return light->ambient;
 }
 
-void SpotLightNode::drawGui(bool autoUpdate) {
-	ImGui::PushID((uintptr_t)this);
-	ImGui::Checkbox("SpotLight enabled", &lastEnabled);
-	ImGui::NewLine();
-	if (lastEnabled) {
-		ImGui::SliderAngle("SpotLight rotationZ", &rotationZ);
-		ImGui::NewLine();
-		ImGui::SliderAngle("SpotLight rotationX", &rotationX);
-		ImGui::NewLine();
-		ImGui::SliderFloat3("SpotLight position", (float*)&pos, -10.0f, 10.0f);
-		ImGui::NewLine();
-		ImGui::SliderFloat("SpotLight constant", &constant, 0.0f, 10.0f);
-		ImGui::NewLine();
-		ImGui::SliderFloat("SpotLight linear", &linear, 0.0f, 10.0f);
-		ImGui::NewLine();
-		ImGui::SliderFloat("SpotLight quadratic", &quadratic, 0.0f, 10.0f);
-		ImGui::NewLine();
-		if (outerCutOff < cutOff) {
-			outerCutOff = cutOff;
-		}
-		ImGui::SliderAngle("SpotLight cutOff", &cutOff, 0.0f, 180.0f);
-		ImGui::NewLine();
-		ImGui::SliderAngle("SpotLight outerCutOff", &outerCutOff, cutOff, 180.0f);
-		ImGui::NewLine();
-		ImGui::ColorEdit3("SpotLight color", (float*)&(light->diffuse));
-		ImGui::NewLine();
-	}
-
-	if (autoUpdate || ImGui::Button("Apply SpotLight changes")) {
-		light->constant = constant;
-		light->linear = linear;
-		light->quadratic = quadratic;
-		light->cutOff = cutOff;
-		light->outerCutOff = outerCutOff;
-		/*local = translate(glm::mat4(1.0f), glm::vec3(light->position));
-		local = rotate(local, rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
-		local = rotate(local, rotationX, glm::vec3(1.0f, 0.0f, 0.0f));*/
-		localTransform.SetMatrix(glm::mat4(1));
-		localTransform.Translate(glm::vec3(pos));
-		localTransform.RotateByRadians(rotationZ, glm::vec3(0.0f, 0.0f, 1.0f));
-		localTransform.RotateByRadians(rotationX, glm::vec3(1.0f, 0.0f, 0.0f));
-		appliedZ = rotationZ;
-		appliedX = rotationX;
-		dirty = true;
-		//light->model = getWorld();
-		light->model = worldTransform.Matrix();
-		//}
-		if (lastEnabled != enabled) {
-			enabled = lastEnabled;
-			if (enabled) {
-				light->ambient = lastAmbient;
-				light->diffuse = lastDiffuse;
-				light->specular = lastSpecular;
-			}
-			else {
-				lastAmbient = light->ambient;
-				lastDiffuse = light->diffuse;
-				lastSpecular = light->specular;
-				light->ambient = glm::vec4(0.0f);
-				light->diffuse = glm::vec4(0.0f);
-				light->specular = glm::vec4(0.0f);
-			}
-		}
-	}
-	ImGui::PopID();
+glm::vec4 SpotLightNode::getDiffuse() {
+	return light->diffuse;
 }
 
-SpotLight* SpotLightNode::getLight() {
+glm::vec4 SpotLightNode::getSpecular() {
+	return light->specular;
+}
+
+float SpotLightNode::getConstant() {
+	return light->constant;
+}
+
+float SpotLightNode::getLinear() {
+	return light->linear;
+}
+
+float SpotLightNode::getQuadratic() {
+	return light->quadratic;
+}
+
+float SpotLightNode::getCutoff() {
+	return light->cutOff;
+}
+
+float SpotLightNode::getOuterCutoff() {
+	return light->outerCutOff;
+}
+
+bool SpotLightNode::getEnabled() {
+	return light->enabled;
+}
+
+void SpotLightNode::setAmbient(glm::vec4 ambient) {
+	light->ambient = ambient;
+}
+
+void SpotLightNode::setDiffuse(glm::vec4 diffuse) {
+	light->diffuse = diffuse;
+}
+
+void SpotLightNode::setSpecular(glm::vec4 specular) {
+	light->specular = specular;
+}
+
+void SpotLightNode::setConstant(float constant) {
+	light->constant = constant;
+}
+
+void SpotLightNode::setLinear(float linear) {
+	light->linear = linear;
+}
+
+void SpotLightNode::setQuadratic(float quadratic) {
+	light->quadratic = quadratic;
+}
+
+void SpotLightNode::setCutoff(float cutoff) {
+	light->cutOff = cutoff;
+}
+
+void SpotLightNode::setOuterCutoff(float outerCutoff) {
+	light->outerCutOff = outerCutoff;
+}
+
+void SpotLightNode::setEnabled(bool enabled) {
+	light->enabled = enabled;
+}
+
+SpotLight* SpotLightNode::getLight() const {
 	return light;
+}
+
+void SpotLightNode::renderGui() {
+	QuadraticLightNode::renderGui();
+	if(active && getEnabled()) {
+		ImGui::SliderFloat("Cutoff", &light->cutOff, 0.0f, 360.0f);
+		ImGui::SliderFloat("Outer cutoff", &light->outerCutOff, 0.0f, 360.0f);
+	}
 }
