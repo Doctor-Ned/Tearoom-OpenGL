@@ -20,22 +20,20 @@ public:
 	void draw(Shader *shader, std::vector<GraphNode*> excluded);
 	virtual void draw(Shader *shader, GraphNode **excluded, int excludedCount);
 	virtual void update(double timeDiff);
-	//glm::mat4 getLocal() const;
-	//glm::mat4 getWorld() const;
 	GraphNode *getParent() const;
 	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
 	void setScale(float scale);
-	//void setLocal(glm::mat4 local);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component*component);
-	void removeComponent(int index);
+	template <class T> void removeComponent(T *component);
+	template <class T> void removeComponents();
 	template <class T> Component* getComponent();
+	template <class T> std::vector<Component*> getComponents();
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
 	virtual ~GraphNode();
 protected:
-	//glm::mat4 local, world;
 	std::vector<GraphNode*> children;
 	std::vector<Component*> components;
 	GraphNode* parent;
@@ -43,6 +41,27 @@ protected:
 	bool dirty;
 	float scale;
 };
+
+template <class T>
+void GraphNode::removeComponent(T* component) {
+	for (std::vector<Component*>::iterator i = components.begin(); i != components.end(); ++i) {
+		if (*i == component) {
+			i = components.erase(i);
+			break;
+		}
+	}
+}
+
+template <class T>
+void GraphNode::removeComponents() {
+	for (std::vector<Component*>::iterator i = components.begin(); i != components.end();) {
+		if (dynamic_cast<T*>(*i)) {
+			components.erase(i);
+		} else {
+			++i;
+		}
+	}
+}
 
 template <class T> Component* GraphNode::getComponent() {
 	for (auto &comp : components) {
@@ -52,6 +71,18 @@ template <class T> Component* GraphNode::getComponent() {
 		}
 	}
 	return nullptr;
+}
+
+template <class T>
+std::vector<Component*> GraphNode::getComponents() {
+	std::vector<Component*> result;
+	for (auto &comp : components) {
+		Component* component = dynamic_cast<T*>(comp);
+		if (component) {
+			result.push_back(component);
+		}
+	}
+	return result;
 }
 
 #endif

@@ -67,8 +67,7 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 		}
 	}
 
-	for (Component* component : components)
-	{
+	for (Component* component : components) {
 		component->draw();
 	}
 
@@ -89,8 +88,7 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 }
 
 void GraphNode::update(double timeDiff) {
-	for(Component* component: components)
-	{
+	for (Component* component : components) {
 		component->update();
 	}
 	for (auto &child : children) {
@@ -137,14 +135,13 @@ void GraphNode::removeChild(GraphNode* child) {
 	}
 }
 
-void GraphNode::addComponent(Component* component)
-{
+void GraphNode::addComponent(Component* component) {
+	for (auto comp : components) {
+		if (comp == component) {
+			return;
+		}
+	}
 	components.push_back(component);
-}
-
-void GraphNode::removeComponent(int index)
-{
-	components.erase(components.begin() + index);
 }
 
 GraphNode* GraphNode::getChild(int index) {
@@ -163,12 +160,11 @@ GraphNode::~GraphNode() {
 	if (mesh != nullptr) {
 		delete mesh;
 	}
-	for (Component* component : components )
-	{
+	for (Component* component : components) {
 		delete component;
 	}
 	for (auto &child : children) {
 		//delete child;
 	}
-	
+
 }
