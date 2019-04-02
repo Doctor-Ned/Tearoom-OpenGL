@@ -21,6 +21,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* planeNode = new GraphNode(plane);
 	GraphNode* sphereNode = new GraphNode(sphere);
 	GraphNode* boxNode = new GraphNode(box);
+	GraphNode* boxNode2 = new GraphNode(box);
 	GraphNode* sphereNode2 = new GraphNode(sphere2);
 	sphereNode->localTransform.Translate(glm::vec3(0.0f, 0.0f, 0.0f));
 	planeNode->localTransform.RotateByRadians(0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -28,6 +29,7 @@ MiszukScene::MiszukScene() {
 	rootNode->addChild(sphereNode);
 	rootNode->addChild(boxNode);
 	rootNode->addChild(sphereNode2);
+	rootNode->addChild(boxNode2);
 	camera = new Camera();
 	updatableShaders.push_back(sceneManager->getShader(STModel));
 	updatableShaders.push_back(sceneManager->getShader(STModelInstanced));
@@ -44,12 +46,13 @@ MiszukScene::MiszukScene() {
 	OctreeNode::toInsert.push(sphereNode);
 	OctreeNode::toInsert.push(boxNode);
 	OctreeNode::toInsert.push(sphereNode2);
-
+	OctreeNode::toInsert.push(boxNode2);
+	
 	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree->Calculate();
 
-	boxNode->addComponent(new Collider(SphereCollider, boxNode));
-
+	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
+	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	boxNode->getComponent<Collider>();
 }
 
@@ -68,7 +71,7 @@ void MiszukScene::render() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
-	//octree->draw();
+	octree->draw();
 
 	sceneManager->getTextRenderer()->renderText("Miszuk Scene", SceneManager::getInstance()->getScreenWidth() / 2, SceneManager::getInstance()->getScreenHeight() / 2, 1.0f);
 }
@@ -119,6 +122,17 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 	rootNode->update(deltaTime);
 	//std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
+	rootNode->getChild(2)->getComponent<Collider>();
+	Collider* tmp1 = dynamic_cast<Collider*>(rootNode->getChild(2)->getComponent<Collider>());
+	Collider* tmp2 = dynamic_cast<Collider*>(rootNode->getChild(4)->getComponent<Collider>());
+	if(tmp1->checkCollision(tmp2))
+	{
+		std::cout << "Kolizja" << std::endl;
+	}
+	else
+	{
+		std::cout << "Nie ma kolizji" << std::endl;
+	}
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
