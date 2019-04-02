@@ -44,11 +44,11 @@ MiszukScene::MiszukScene() {
 	OctreeNode::toInsert.push(sphereNode);
 	OctreeNode::toInsert.push(boxNode);
 	OctreeNode::toInsert.push(sphereNode2);
-
+	
 	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree->Calculate();
 
-	boxNode->addComponent(new Collider(SphereCollider, boxNode));
+	boxNode->addComponent(new Collider(BoxCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
 
 	boxNode->getComponent<Collider>();
 }
@@ -68,7 +68,7 @@ void MiszukScene::render() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
-	//octree->draw();
+	octree->draw();
 
 	sceneManager->getTextRenderer()->renderText("Miszuk Scene", SceneManager::getInstance()->getScreenWidth() / 2, SceneManager::getInstance()->getScreenHeight() / 2, 1.0f);
 }

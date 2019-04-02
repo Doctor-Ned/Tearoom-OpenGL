@@ -10,7 +10,7 @@ void OctreeNode::Calculate()
 		return;
 	}*/
 
-	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 1.25f) //only x because it's a box
+	if (glm::distance(boxPos.maxPos.x, boxPos.minPos.x) <= 2.5f) //only x because it's a box
 	{
 		return;
 	}
@@ -107,6 +107,7 @@ OctreeNode::OctreeNode(glm::vec3 _minPos, glm::vec3 _maxPos)
 	color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	MeshColorBox* tmp = new MeshColorBox(boxPos.minPos, boxPos.maxPos, color);
 	tmp->setUseLight(false);
+	tmp->setRenderMode(GL_LINES);
 	
 	box = new GraphNode(tmp);
 
@@ -122,6 +123,7 @@ OctreeNode::OctreeNode(Box _box, OctreeNode* _parent) : boxPos(_box), parent(_pa
 	color = parent->color / 2.0f;
 	MeshColorBox* tmp = new MeshColorBox(boxPos.minPos, boxPos.maxPos, color);
 	tmp->setUseLight(false);
+	tmp->setRenderMode(GL_LINES);
 	box = new GraphNode(tmp);
 }
 
