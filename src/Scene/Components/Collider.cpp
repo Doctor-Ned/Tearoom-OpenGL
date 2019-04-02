@@ -7,16 +7,17 @@
 void Collider::update()
 {
 	glm::vec3 gameObjectPos = gameObject->worldTransform.getPosition();
-	//data.x = gameObjectPos.x + positionOffset.x;
-	//data.y = gameObjectPos.y + positionOffset.y;
-	//data.z = gameObjectPos.z + positionOffset.z;
+	
 	glm::mat4 tmp(1);
 	tmp[3][0] = positionOffset.x;
 	tmp[3][1] = positionOffset.y;
 	tmp[3][2] = positionOffset.z;
 	mat = gameObject->worldTransform.Matrix() * tmp;
-	std::cout << data.x << " " << data.y << " " << data.z << " " << data.w << std::endl;
-	std::cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << std::endl;
+	data.x = mat[3][0];
+	data.y = mat[3][1];
+	data.z = mat[3][2];
+	//std::cout << data.x << " " << data.y << " " << data.z << " " << data.w << std::endl;
+	//std::cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << std::endl;
 }
 
 void Collider::draw()
