@@ -2,7 +2,7 @@
 #include "Scene/SceneManager.h"
 
 UiColorPlane::
-UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(nullptr, position, size, center) {
+UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(position, size, center) {
 	this->color = color;
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setup();

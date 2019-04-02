@@ -20,13 +20,13 @@ MenuScene::MenuScene() {
 	uiElements.emplace_back(testScene);
 	uiElements.emplace_back(options);
 	uiElements.emplace_back(quit);
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 
 void MenuScene::render() {
 	if(showingOptions) {
 		optionsScene->render();
 	} else {
-		sceneManager->getTextRenderer()->renderText("MAIN MENU", windowCenterX, 1.5f * windowCenterY / 9.0f, 1.5f, true);
 		Scene::render();
 	}
 }

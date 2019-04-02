@@ -1,8 +1,8 @@
 #ifndef UIPLANE_H
 #define UIPLANE_H
-#include "UiElement.h"
+#include "UiTexturedElement.h"
 
-class UiPlane : public UiElement {
+class UiPlane : public UiTexturedElement {
 public:
 	UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
 	void render() override;

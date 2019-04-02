@@ -1,13 +1,13 @@
 #include "UiPlane.h"
 #include "Scene/SceneManager.h"
 
-UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiElement(texture, position, size, center) {
+UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(texture, position, size, center) {
 	this->shader = SceneManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
 void UiPlane::render() {
-	UiElement::render();
+	UiTexturedElement::render();
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));

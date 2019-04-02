@@ -1,8 +1,8 @@
 #ifndef UIBUTTON_H
 #define UIBUTTON_H
 
-#include "UiElement.h"
 #include <functional>
+#include "UiTexturedElement.h"
 
 enum UiButtonState {
 	Idle,
@@ -11,7 +11,7 @@ enum UiButtonState {
 };
 
 
-class UiButton : public UiElement {
+class UiButton : public UiTexturedElement {
 public:
 	UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	         glm::vec2 position, glm::vec2 size, bool center = true);
