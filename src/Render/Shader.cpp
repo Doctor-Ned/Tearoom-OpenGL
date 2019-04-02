@@ -57,76 +57,48 @@ void Shader::use() {
 }
 
 // currently injected via UboTextureColor, though it might be useful when dealing with non-texture shaders
-void Shader::setColor(glm::vec4 color) {
-	use();
-	GLint location = getUniformLocation("color");
-	if (location != -1) {
-		glUniform4f(location, color.x, color.y, color.z, color.w);
-	}
+void Shader::setColor(glm::vec4 &color) {
+	setVec4("color", color);
 }
 
-void Shader::setModel(glm::mat4 model) {
-	use();
-	GLint location = getUniformLocation("model");
-	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(model));
-	}
+void Shader::setModel(glm::mat4 &model) {
+	setMat4("model", model);
 }
 
-void Shader::setViewPosition(glm::vec3 viewPosition) {
-	use();
-	GLint location = getUniformLocation("viewPosition");
-	if (location != -1) {
-		glUniform3f(location, viewPosition.x, viewPosition.y, viewPosition.z);
-	}
+void Shader::setViewPosition(glm::vec3 &viewPosition) {
+	setVec3("viewPosition", viewPosition);
 }
 
-void Shader::setViewDirection(glm::vec3 viewDirection) {
-	use();
-	GLint location = getUniformLocation("viewDirection");
-	if (location != -1) {
-		glUniform3f(location, viewDirection.x, viewDirection.y, viewDirection.z);
-	}
+void Shader::setViewDirection(glm::vec3 &viewDirection) {
+	setVec3("viewDirection", viewDirection);
 }
 
 void Shader::setShininess(float shininess) {
-	use();
-	GLint location = getUniformLocation("shininess");
-	if (location != -1) {
-		glUniform1f(location, shininess);
-	}
+	setFloat("shininess", shininess);
 }
 
 void Shader::setUseSpecular(bool useSpecular) {
-	use();
-	GLint location = getUniformLocation("useSpecularMap");
-	if (location != -1) {
-		glUniform1i(location, useSpecular ? 1 : 0);
-	}
+	setBool("useSpecularMap", useSpecular);
 }
 
 void Shader::setUseLight(bool useLight) {
-	use();
-	GLint location = getUniformLocation("useLight");
-	if (location != -1) {
-		glUniform1i(location, useLight ? 1 : 0);
-	}
+	setBool("useLight", useLight);
 }
 
-void Shader::setView(glm::mat4 view) {
-	use();
-	GLint location = getUniformLocation("view");
-	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(view));
-	}
+void Shader::setView(glm::mat4 &view) {
+	setMat4("view", view);
 }
 
-void Shader::setProjection(glm::mat4 projection) {
-	use();
-	GLint location = getUniformLocation("projection");
-	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(projection));
-	}
+void Shader::setProjection(glm::mat4 &projection) {
+	setMat4("projection", projection);
+}
+
+void Shader::setLightSpace(glm::mat4 &lightSpace) {
+	setMat4("lightSpace", lightSpace);
+}
+
+void Shader::setCastShadows(bool castShadows) {
+	setBool("castShadows", castShadows);
 }
 
 void Shader::setInt(const char* name, int value) {
@@ -145,11 +117,59 @@ void Shader::setFloat(char* name, float value) {
 	}
 }
 
-void Shader::setLightSpace(glm::mat4 lightSpace) {
+void Shader::setBool(const char * name, bool value) {
 	use();
-	GLint location = getUniformLocation("lightSpace");
+	GLint location = getUniformLocation(name);
 	if (location != -1) {
-		glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(lightSpace));
+		glUniform1i(location, static_cast<int>(value));
+	}
+}
+
+void Shader::setVec2(const char * name, glm::vec2 & value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniform2f(location, value.x, value.y);
+	}
+}
+
+void Shader::setVec3(const char * name, glm::vec3 & value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniform3f(location, value.x, value.y, value.z);
+	}
+}
+
+void Shader::setVec4(const char * name, glm::vec4 & value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniform4f(location, value.x, value.y, value.z, value.w);
+	}
+}
+
+void Shader::setMat2(const char * name, glm::mat2 & value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniformMatrix2fv(location, 1, GL_FALSE, &value[0][0]);
+	}
+}
+
+void Shader::setMat3(const char * name, glm::mat3 & value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniformMatrix3fv(location, 1, GL_FALSE, &value[0][0]);
+	}
+}
+
+void Shader::setMat4(const char* name, glm::mat4& value) {
+	use();
+	GLint location = getUniformLocation(name);
+	if (location != -1) {
+		glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
 	}
 }
 
@@ -187,14 +207,6 @@ GLint Shader::getUniformLocation(const char* name) {
 
 Shader::~Shader() {
 	glDeleteProgram(id);
-}
-
-void Shader::setCastShadows(bool castShadows) {
-	use();
-	GLint location = getUniformLocation("castShadows");
-	if (location != -1) {
-		glUniform1i(location, castShadows ? 1 : 0);
-	}
 }
 
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
