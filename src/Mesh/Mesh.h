@@ -3,9 +3,7 @@
 
 #include "Global.h"
 #include "Render/Shader.h"
-#include <string>
-#include <vector>
-#include "Scene/SceneManager.h"
+#include "Scene/AssetManager.h"
 
 class Mesh {
 public:

@@ -1,12 +1,11 @@
 #include "TestScene.h"
 #include "Mesh/MeshColorPlane.h"
-#include "SceneManager.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/Model.h"
-#include "DirLightNode.h"
-#include "RotatingNode.h"
-#include "SpotLightNode.h"
-#include "PointLightNode.h"
+#include "Scene/DirLightNode.h"
+#include "Scene/RotatingNode.h"
+#include "Scene/SpotLightNode.h"
+#include "Scene/PointLightNode.h"
 
 TestScene::TestScene() {
 	std::vector<std::string> faces;
@@ -17,14 +16,14 @@ TestScene::TestScene() {
 	faces.emplace_back("res/skybox/arrakisday/arrakisday_ft.tga");
 	faces.emplace_back("res/skybox/arrakisday/arrakisday_bk.tga");
 
-	skybox = new Skybox(sceneManager->getShader(STSkybox), faces);
-	depthShader = sceneManager->getShader(STDepth);
-	depthDebugShader = sceneManager->getShader(STDepthDebug);
-	depthPointShader = dynamic_cast<GeometryShader*>(sceneManager->getShader(STDepthPoint));
+	skybox = new Skybox(assetManager->getShader(STSkybox), faces);
+	depthShader = assetManager->getShader(STDepth);
+	depthDebugShader = assetManager->getShader(STDepthDebug);
+	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 
-	uboLights = sceneManager->getUboLights();
-	uboTextureColor = sceneManager->getUboTextureColor();
-	uboViewProjection = sceneManager->getUboViewProjection();
+	uboLights = assetManager->getUboLights();
+	uboTextureColor = assetManager->getUboTextureColor();
+	uboViewProjection = assetManager->getUboViewProjection();
 	MeshColorPlane *plane = new MeshColorPlane(10.0f, 10.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorSphere *sphere = new MeshColorSphere(0.125f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	GraphNode* planeNode = new GraphNode(plane, rootNode);
@@ -91,12 +90,12 @@ TestScene::TestScene() {
 	pointLightNodes.push_back(pointLightNode);
 
 	camera = new Camera();
-	updatableShaders.push_back(sceneManager->getShader(STModel));
-	updatableShaders.push_back(sceneManager->getShader(STModelInstanced));
-	updatableShaders.push_back(sceneManager->getShader(STTexture));
-	updatableShaders.push_back(sceneManager->getShader(STColor));
-	updatableShaders.push_back(sceneManager->getShader(STReflect));
-	updatableShaders.push_back(sceneManager->getShader(STRefract));
+	updatableShaders.push_back(assetManager->getShader(STModel));
+	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
+	updatableShaders.push_back(assetManager->getShader(STTexture));
+	updatableShaders.push_back(assetManager->getShader(STColor));
+	updatableShaders.push_back(assetManager->getShader(STReflect));
+	updatableShaders.push_back(assetManager->getShader(STRefract));
 }
 
 void TestScene::render() { 
@@ -106,7 +105,7 @@ void TestScene::render() {
 	
 	uboLights->inject(BASE_AMBIENT,
 		dirLights.size(), spotLights.size(), pointLights.size(),
-		sceneManager->spotDirShadowTexelResolution, sceneManager->pointShadowSamples,
+		gameManager->spotDirShadowTexelResolution, gameManager->pointShadowSamples,
 		&dirLights[0], &spotLights[0], &pointLights[0]);
 
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -159,7 +158,7 @@ void TestScene::render() {
 		elem->render();
 	}
 
-	sceneManager->getTextRenderer()->renderText("dupa", 0, 0, 1.0f, false);
+	assetManager->getTextRenderer()->renderText("dupa", 0, 0, 1.0f, false);
 
 	if (renderDepthMap == 1 || renderDepthMap == 2) {
 		depthDebugShader->use();
@@ -299,7 +298,7 @@ void TestScene::renderDirLights() {
 		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
 	}
 }
 
@@ -321,7 +320,7 @@ void TestScene::renderSpotLights() {
 		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
 	}
 }
 
@@ -365,7 +364,7 @@ void TestScene::renderPointLights() {
 		}
 		depthPointShader->setPointSpaces(pointSpaces);
 		rootNode->draw(depthPointShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
 	}
 }
 
@@ -405,13 +404,13 @@ void TestScene::keyEvent(int key, bool pressed) {
 		case KEY_TOGGLE_MOUSE_LOCK:
 			if (pressed) {
 				lockMouse = !lockMouse;
-				sceneManager->setCursorLocked(lockMouse);
+				gameManager->setCursorLocked(lockMouse);
 				initMouse = true;
 			}
 			break;
 		case KEY_QUIT:
-			sceneManager->goToMenu(true);
-			//glfwSetWindowShouldClose(sceneManager->getWindow(), true);
+			gameManager->goToMenu(true);
+			//glfwSetWindowShouldClose(gameManager->getWindow(), true);
 			break;
 	}
 }

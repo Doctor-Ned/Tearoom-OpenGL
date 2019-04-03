@@ -1,14 +1,14 @@
 #pragma once
-#include "Scene/Scene.h"
+#include "Scene.h"
 #include "Render/Camera.h"
 #include "GLFW/glfw3.h"
 #include <map>
 #include "Ubo/UboLights.h"
 #include "Ubo/UboViewProjection.h"
 #include "Ubo/UboTextureColor.h"
-#include "DirLightNode.h"
-#include "PointLightNode.h"
-#include "SpotLightNode.h"
+#include "Scene/DirLightNode.h"
+#include "Scene/PointLightNode.h"
+#include "Scene/SpotLightNode.h"
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
 

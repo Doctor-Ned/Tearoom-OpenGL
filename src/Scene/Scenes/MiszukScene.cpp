@@ -1,22 +1,21 @@
 #include "MiszukScene.h"
 #include "Mesh/MeshColorPlane.h"
-#include "SceneManager.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/Model.h"
 #include "TestScene.h"
 #include "Mesh/MeshColorBox.h"
-#include "OctreeNode.h"
+#include "Scene/OctreeNode.h"
 #include <iostream>
-#include "Components/Collider.h"
+#include "Scene/Components/Collider.h"
 
 MiszukScene::MiszukScene() {
-	SceneManager::getInstance()->setCursorLocked(true);
-	uboLights = sceneManager->getUboLights();
-	uboTextureColor = sceneManager->getUboTextureColor();
-	uboViewProjection = sceneManager->getUboViewProjection();
+	GameManager::getInstance()->setCursorLocked(true);
+	uboLights = assetManager->getUboLights();
+	uboTextureColor = assetManager->getUboTextureColor();
+	uboViewProjection = assetManager->getUboViewProjection();
 	MeshColorPlane *plane = new MeshColorPlane(1.0f, 1.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	MeshColorBox* box = new MeshColorBox(glm::vec3(-1,-1,-1), glm::vec3(1,1,1), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	MeshColorBox* box = new MeshColorBox(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 1), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
 	GraphNode* planeNode = new GraphNode(plane);
 	GraphNode* sphereNode = new GraphNode(sphere);
@@ -31,12 +30,12 @@ MiszukScene::MiszukScene() {
 	rootNode->addChild(sphereNode2);
 	rootNode->addChild(boxNode2);
 	camera = new Camera();
-	updatableShaders.push_back(sceneManager->getShader(STModel));
-	updatableShaders.push_back(sceneManager->getShader(STModelInstanced));
-	updatableShaders.push_back(sceneManager->getShader(STTexture));
-	updatableShaders.push_back(sceneManager->getShader(STColor));
-	updatableShaders.push_back(sceneManager->getShader(STReflect));
-	updatableShaders.push_back(sceneManager->getShader(STRefract));
+	updatableShaders.push_back(assetManager->getShader(STModel));
+	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
+	updatableShaders.push_back(assetManager->getShader(STTexture));
+	updatableShaders.push_back(assetManager->getShader(STColor));
+	updatableShaders.push_back(assetManager->getShader(STReflect));
+	updatableShaders.push_back(assetManager->getShader(STRefract));
 
 	boxNode->localTransform.Translate(glm::vec3(2.0f, 0.0f, 0.0f));
 
@@ -47,7 +46,7 @@ MiszukScene::MiszukScene() {
 	OctreeNode::toInsert.push(boxNode);
 	OctreeNode::toInsert.push(sphereNode2);
 	OctreeNode::toInsert.push(boxNode2);
-	
+
 	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree->Calculate();
 
@@ -56,8 +55,7 @@ MiszukScene::MiszukScene() {
 	boxNode->getComponent<Collider>();
 }
 
-MiszukScene::~MiszukScene()
-{
+MiszukScene::~MiszukScene() {
 	delete octree;
 	delete rootNode;
 }
@@ -73,7 +71,7 @@ void MiszukScene::render() {
 	}
 	octree->draw();
 
-	sceneManager->getTextRenderer()->renderText("Miszuk Scene", SceneManager::getInstance()->getScreenWidth() / 2, SceneManager::getInstance()->getScreenHeight() / 2, 1.0f);
+	assetManager->getTextRenderer()->renderText("Miszuk Scene", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 
 void MiszukScene::update(double deltaTime) {
@@ -125,12 +123,9 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->getChild(2)->getComponent<Collider>();
 	Collider* tmp1 = dynamic_cast<Collider*>(rootNode->getChild(2)->getComponent<Collider>());
 	Collider* tmp2 = dynamic_cast<Collider*>(rootNode->getChild(4)->getComponent<Collider>());
-	if(tmp1->checkCollision(tmp2))
-	{
+	if (tmp1->checkCollision(tmp2)) {
 		std::cout << "Kolizja" << std::endl;
-	}
-	else
-	{
+	} else {
 		std::cout << "Nie ma kolizji" << std::endl;
 	}
 }
@@ -156,8 +151,7 @@ void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) 
 		mouseX = xpos;
 		mouseY = ypos;
 		initMouse = false;
-	}
-	else {
+	} else {
 		mouseMovementX += xpos - mouseX;
 		mouseMovementY += ypos - mouseY;
 		mouseX = xpos;
@@ -186,33 +180,30 @@ void MiszukScene::setKeyState(int key, bool pressed) {
 	auto pair = keyStates.find(key);
 	if (pair != keyStates.end()) {
 		pair->second = pressed;
-	}
-	else {
+	} else {
 		keyStates.emplace(key, pressed);
 	}
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {
 	switch (key) {
-	case KEY_FAST:
-		if (pressed) {
-			movementSpeed *= 2.0f;
-		}
-		else {
-			movementSpeed /= 2.0f;
-		}
-		break;
-	case KEY_SLOW:
-		if (!pressed) {
-			movementSpeed *= 2.0f;
-		}
-		else {
-			movementSpeed /= 2.0f;
-		}
-		break;
-	case KEY_QUIT:
+		case KEY_FAST:
+			if (pressed) {
+				movementSpeed *= 2.0f;
+			} else {
+				movementSpeed /= 2.0f;
+			}
+			break;
+		case KEY_SLOW:
+			if (!pressed) {
+				movementSpeed *= 2.0f;
+			} else {
+				movementSpeed /= 2.0f;
+			}
+			break;
+		case KEY_QUIT:
 		{
-		sceneManager->goToMenu(false);
+			gameManager->goToMenu(false);
 		}
 		break;
 	}

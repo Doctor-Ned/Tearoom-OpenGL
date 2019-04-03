@@ -2,8 +2,8 @@
 
 MeshPlane::MeshPlane(float width, float length, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), width(width), length(length) {
-	texture = Global::createTexture(texturePath);
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	texture = AssetManager::getInstance()->getTexture(texturePath);
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 

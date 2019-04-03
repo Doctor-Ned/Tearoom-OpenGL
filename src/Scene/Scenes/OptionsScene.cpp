@@ -8,25 +8,25 @@
 
 OptionsScene::OptionsScene(MenuScene* menuScene) {
 	this->menuScene = menuScene;
-	textRenderer = sceneManager->getTextRenderer();
+	textRenderer = assetManager->getTextRenderer();
 	const float checkboxShift = windowWidth / 8.0f;
-	UiCheckbox *useLight = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 2 * windowHeight / 9.0f), sceneManager->useLight, true);
-	useLight->setCheckboxCallback([&manager = sceneManager](bool useLight) { manager->useLight = useLight; });
-	UiCheckbox *castShadows = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 3 * windowHeight / 9.0f), sceneManager->castShadows, true);
-	castShadows->setCheckboxCallback([&manager = sceneManager](bool castShadows) { manager->castShadows = castShadows; });
+	UiCheckbox *useLight = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 2 * windowHeight / 9.0f), gameManager->useLight, true);
+	useLight->setCheckboxCallback([&manager = gameManager](bool useLight) { manager->useLight = useLight; });
+	UiCheckbox *castShadows = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 3 * windowHeight / 9.0f), gameManager->castShadows, true);
+	castShadows->setCheckboxCallback([&manager = gameManager](bool castShadows) { manager->castShadows = castShadows; });
 	UiText *texelText = new UiText(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), glm::vec2(windowWidth, windowHeight / 9.0f),
-		"Texel resolution: " + std::to_string(sceneManager->spotDirShadowTexelResolution));
+		"Texel resolution: " + std::to_string(gameManager->spotDirShadowTexelResolution));
 	UiSliderInt *texelSlider = new UiSliderInt(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), glm::vec2(windowWidth / 2.0f, windowHeight / 9.0f), windowHeight / 9.0f / 2.0f,
-		sceneManager->spotDirShadowTexelResolution / 3, 0, 3);
-	texelSlider->setCallback([&manager = sceneManager, texelText](int power) {
+		gameManager->spotDirShadowTexelResolution / 3, 0, 3);
+	texelSlider->setCallback([&manager = gameManager, texelText](int power) {
 		manager->spotDirShadowTexelResolution = static_cast<int>(pow(3, power));
 		texelText->setText("Texel resolution: " + std::to_string(manager->spotDirShadowTexelResolution));
 	});
 	UiText *samplesText = new UiText(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), glm::vec2(windowWidth, windowHeight / 9.0f),
-		"Point shadow samples: " + std::to_string(sceneManager->pointShadowSamples));
+		"Point shadow samples: " + std::to_string(gameManager->pointShadowSamples));
 	UiSliderInt *samplesSlider = new UiSliderInt(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), glm::vec2(windowWidth / 2.0f, windowHeight / 9.0f), windowHeight / 9.0f / 2.0f,
-		sceneManager->pointShadowSamples, 1, 250);
-	samplesSlider->setCallback([&manager = sceneManager, samplesText](int samples) {
+		gameManager->pointShadowSamples, 1, 250);
+	samplesSlider->setCallback([&manager = gameManager, samplesText](int samples) {
 		manager->pointShadowSamples = samples;
 		samplesText->setText("Point shadow samples: " + std::to_string(manager->pointShadowSamples));
 	});

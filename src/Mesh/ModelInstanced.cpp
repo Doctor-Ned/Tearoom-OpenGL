@@ -4,7 +4,7 @@
 #include <assimp/postprocess.h>
 
 ModelInstanced::ModelInstanced(char* path, glm::vec3* offsets, int offsetSize) : Mesh(), offsets(offsets), offsetSize(offsetSize) {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	loadModel(std::string(path));
 }
 

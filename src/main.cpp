@@ -8,11 +8,10 @@
 #include <GLFW/glfw3.h>
 #include "freetype/ftparams.h"
 #include <ctime>
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
 #include "Ui/UiElement.h"
 #include "Render/Shader.h"
-#include "Scene/MiszukScene.h"
-#include "Scene/TestScene.h"
+#include "Scene/Scenes/MiszukScene.h"
 
 
 //comment extern below if you don't have NVidia GPU
@@ -25,23 +24,23 @@ static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-static SceneManager* sceneManager;
+static GameManager* GameManager;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	sceneManager->keyboard_callback(window, key, scancode, action, mods);
+	GameManager->keyboard_callback(window, key, scancode, action, mods);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	sceneManager->mouse_callback(window, xpos, ypos);
+	GameManager->mouse_callback(window, xpos, ypos);
 }
 
 void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
-	sceneManager->mouse_button_callback(window, butt, action, mods);
+	GameManager->mouse_button_callback(window, butt, action, mods);
 }
 
 
 int main(int argc, char** argv) {
-	sceneManager = SceneManager::getInstance();
+	GameManager = GameManager::getInstance();
 	bool borderless = false;
 	bool fullscreen = false;
 
@@ -125,7 +124,7 @@ int main(int argc, char** argv) {
 		screenHeight = mode->height;
 	}
 
-	sceneManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	GameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 
 	// Create window with graphics context
 	GLFWwindow* window;
@@ -153,7 +152,7 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1); // Enable vsync
 
-	sceneManager->setWindow(window);
+	GameManager->setWindow(window);
 
 	// Initialize OpenGL loader
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
@@ -178,8 +177,6 @@ int main(int argc, char** argv) {
 	ImGui::StyleColorsDark();
 
 	srand(time(nullptr));
-
-	sceneManager->setup();
 
 	glfwMakeContextCurrent(window);
 	//glEnable(GL_DEPTH_TEST); it gets enabled later.
@@ -258,11 +255,13 @@ int main(int argc, char** argv) {
 
 	data.clear();
 	glBindVertexArray(0);
-	sceneManager->setFramebuffer(fbo);
+	GameManager->setFramebuffer(fbo);
 
 	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 
 	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
+
+	GameManager->setup();
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -275,7 +274,7 @@ int main(int argc, char** argv) {
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
 		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debugging game loop
-		sceneManager->update(timeDelta);
+		GameManager->update(timeDelta);
 
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -283,7 +282,7 @@ int main(int argc, char** argv) {
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-		sceneManager->render();
+		GameManager->render();
 
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -303,7 +302,7 @@ int main(int argc, char** argv) {
 		glfwMakeContextCurrent(window);
 		glfwSwapBuffers(window);
 	}
-	delete sceneManager;
+	delete GameManager;
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteRenderbuffers(1, &rbo);

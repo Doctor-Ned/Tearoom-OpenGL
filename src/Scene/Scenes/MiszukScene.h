@@ -1,14 +1,14 @@
 #ifndef MISZUK_SCENE
 #define MISZUK_SCENE
 
-#include "Scene/Scene.h"
+#include "Scene.h"
 #include "GLFW/glfw3.h"
 #include "Ubo/UboLights.h"
 #include "Ubo/UboTextureColor.h"
 #include "Ubo/UboViewProjection.h"
 #include <map>
 #include "Render/Camera.h"
-#include "OctreeNode.h"
+#include "Scene/OctreeNode.h"
 
 class MiszukScene : public Scene {
 public:

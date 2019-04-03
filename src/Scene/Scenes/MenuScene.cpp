@@ -1,6 +1,5 @@
 #include "MenuScene.h"
 #include "MiszukScene.h"
-#include "SceneManager.h"
 #include "TestScene.h"
 #include "Ui/UiTextButton.h"
 
@@ -9,13 +8,13 @@ class UiTextButton;
 MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(windowCenterX, 3 * windowHeight / 9.0f), "Miszuk scene");
-	miszukScene->setButtonCallback([]() {SceneManager::getInstance()->setCurrentScene(new MiszukScene()); });
+	miszukScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new MiszukScene()); });
 	UiTextButton *testScene = new UiTextButton(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), "Test scene");
-	testScene->setButtonCallback([]() {SceneManager::getInstance()->setCurrentScene(new TestScene()); });
+	testScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new TestScene()); });
 	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), "Options");
 	options->setButtonCallback([this]() {showOptions(); });
 	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Quit");
-	quit->setButtonCallback([]() {SceneManager::getInstance()->quit(); });
+	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
 	uiElements.emplace_back(miszukScene);
 	uiElements.emplace_back(testScene);
 	uiElements.emplace_back(options);

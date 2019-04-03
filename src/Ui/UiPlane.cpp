@@ -1,8 +1,8 @@
 #include "UiPlane.h"
-#include "Scene/SceneManager.h"
+#include "Scene/AssetManager.h"
 
 UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(texture, position, size, center) {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 

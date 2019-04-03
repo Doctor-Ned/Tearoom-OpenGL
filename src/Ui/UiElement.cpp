@@ -1,8 +1,9 @@
 #include "UiElement.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
+#include "Scene/AssetManager.h"
 
 UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
-	SceneManager *manager = SceneManager::getInstance();
+	GameManager *manager = GameManager::getInstance();
 	this->size = size;
 	this->center = center;
 	glGenVertexArrays(1, &vao);
@@ -55,16 +56,16 @@ ShaderType UiElement::getShaderType() {
 }
 
 glm::vec2 UiElement::createScaledSize(float width, float height) {
-	return glm::vec2(SceneManager::getInstance()->getWindowWidth()*width, SceneManager::getInstance()->getWindowHeight()*height);
+	return glm::vec2(GameManager::getInstance()->getWindowWidth()*width, GameManager::getInstance()->getWindowHeight()*height);
 }
 
 glm::vec2 UiElement::createSizeScaledByWidth(float size) {
-	float value = SceneManager::getInstance()->getWindowWidth()*size;
+	float value = GameManager::getInstance()->getWindowWidth()*size;
 	return glm::vec2(value, value);
 }
 
 glm::vec2 UiElement::createSizeScaledByHeight(float size) {
-	float value = SceneManager::getInstance()->getWindowHeight()*size;
+	float value = GameManager::getInstance()->getWindowHeight()*size;
 	return glm::vec2(value, value);
 }
 

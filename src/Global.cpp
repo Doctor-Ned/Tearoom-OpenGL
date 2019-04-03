@@ -1,5 +1,5 @@
 #include "Global.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
 
 glm::vec3* Global::createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
 	const float yPosition) {
@@ -57,64 +57,6 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-}
-
-Texture Global::createTexture(const char* textureFile) {
-	Texture texture;
-	int imgWidth, imgHeight, imgChannels;
-	unsigned char* imgData = stbi_load(textureFile, &imgWidth, &imgHeight, &imgChannels, 0);
-	if (!imgData) {
-		fprintf(stderr, "Failed to load texture from file \"%s\"!", textureFile);
-		exit(1);
-	}
-	GLenum format = GL_RGB;
-	if (imgChannels == 4) {
-		format = GL_RGBA;
-	}
-	GLuint imgTexture;
-	glGenTextures(1, &imgTexture);
-	glBindTexture(GL_TEXTURE_2D, imgTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, imgData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(imgData);
-	texture.id = imgTexture;
-	texture.path = textureFile;
-	glBindTexture(GL_TEXTURE_2D, 0);
-	return texture;
-}
-
-// order:
-// +X (right)
-// -X (left)
-// +Y (top)
-// -Y (bottom)
-// +Z (front) 
-// -Z (back)
-GLuint Global::loadCubemap(std::vector<std::string> faces) {
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-	int width, height, nrComponents;
-	for (unsigned int i = 0; i < faces.size(); i++) {
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
-		if (data) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-				data);
-			stbi_image_free(data);
-		} else {
-			printf("Cubemap texture failed to load at path '%s'!\n", faces[i].c_str());
-			stbi_image_free(data);
-		}
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	return textureID;
 }
 
 double Global::remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax,

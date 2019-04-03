@@ -1,7 +1,7 @@
 #include "Collider.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/MeshColorBox.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
 #include <iostream>
 
 void Collider::update()
@@ -22,7 +22,7 @@ void Collider::update()
 
 void Collider::draw()
 {
-	//colliderMesh->draw(SceneManager::getInstance()->getShader(STColor), gameObject->worldTransform.Matrix(), 1.0f);
+	//colliderMesh->draw(GameManager::getInstance()->getShader(STColor), gameObject->worldTransform.Matrix(), 1.0f);
 	colliderMesh->draw(mat);
 }
 

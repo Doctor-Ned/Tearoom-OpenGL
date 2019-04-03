@@ -1,5 +1,6 @@
 #include "UiSlider.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
+#include "Scene/AssetManager.h"
 
 UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
@@ -10,7 +11,7 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
 	UiSlider::setPosition(position, center);
 	setup();

@@ -1,4 +1,5 @@
 #include "Skybox.h"
+#include "Scene/AssetManager.h"
 
 Skybox::Skybox(Shader *shader, std::vector<std::string> faces) : shader(shader), faces(faces) {
 	setup();
@@ -33,7 +34,7 @@ void Skybox::draw(glm::mat4 untranslatedView, glm::mat4 projection, GLuint cubem
 }
 
 void Skybox::setup() {
-	textureId = Global::loadCubemap(faces);
+	textureId = AssetManager::getInstance()->createCubemap(faces);
 
 	GLfloat vertices[] = {
 		-1.0f, 1.0f, -1.0f,

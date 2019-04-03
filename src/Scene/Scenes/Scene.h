@@ -1,11 +1,11 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
 #include "Global.h"
 #include "Ui/UiElement.h"
-#include "GraphNode.h"
+#include "Scene/GraphNode.h"
 
-class SceneManager;
+class AssetManager;
+class GameManager;
 
 class Scene {
 public:
@@ -18,10 +18,9 @@ public:
 	Scene();
 	virtual ~Scene();
 protected:
-	SceneManager *sceneManager;
+	GameManager *gameManager;
+	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	std::vector<UiElement*> uiElements;
 	GraphNode *rootNode = new GraphNode();
 };
-
-#endif

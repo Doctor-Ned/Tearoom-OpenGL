@@ -3,8 +3,8 @@
 MeshTexture::MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
                          char* textureFile)
 	: Mesh(), indices(indices), vertices(vertices) {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
-	texture = Global::createTexture(textureFile);
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
+	texture = AssetManager::getInstance()->getTexture(textureFile);
 }
 
 void MeshTexture::draw(Shader *shader, glm::mat4 world) {
@@ -16,5 +16,5 @@ ShaderType MeshTexture::getShaderType() {
 }
 
 MeshTexture::MeshTexture() : Mesh() {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 }

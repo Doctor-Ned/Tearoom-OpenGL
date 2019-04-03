@@ -3,7 +3,7 @@
 #include <stb_image.h>
 
 Model::Model(char* path) : Mesh() {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	loadModel(std::string(path));
 }
 

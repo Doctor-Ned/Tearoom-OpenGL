@@ -1,10 +1,10 @@
 #include "UiColorPlane.h"
-#include "Scene/SceneManager.h"
+#include "Scene/AssetManager.h"
 
 UiColorPlane::
 UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(position, size, center) {
 	this->color = color;
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 

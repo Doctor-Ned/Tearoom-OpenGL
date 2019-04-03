@@ -3,7 +3,7 @@
 MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
                      std::vector<ModelTexture> textures)
 	: Mesh(), indices(indices), vertices(vertices), textures(textures) {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 

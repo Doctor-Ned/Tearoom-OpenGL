@@ -1,12 +1,13 @@
 #include "UiButton.h"
 #include "GLFW/glfw3.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
+#include "Scene/AssetManager.h"
 
 UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(textureIdle, position, size, center) {
-	this->textureHover = Global::createTexture(textureHover);
-	this->textureClicked = Global::createTexture(textureClicked);
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->textureHover = AssetManager::getInstance()->getTexture(textureHover);
+	this->textureClicked = AssetManager::getInstance()->getTexture(textureClicked);
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 

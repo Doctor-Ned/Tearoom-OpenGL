@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Scene/GameManager.h"
 
 void Mesh::draw(glm::mat4 world) {
 	draw(shader, world);
@@ -50,6 +51,6 @@ Mesh::~Mesh() {
 
 Mesh::Mesh(GLuint renderMode) : shader(nullptr) {
 	this->renderMode = renderMode;
-	useLight = SceneManager::getInstance()->useLight;
-	castShadows = SceneManager::getInstance()->castShadows;
+	useLight = GameManager::getInstance()->useLight;
+	castShadows = GameManager::getInstance()->castShadows;
 }

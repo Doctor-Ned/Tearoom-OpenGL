@@ -101,8 +101,6 @@ class Global {
 public:
 	static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max, const float yPosition = 0.0f);
 	static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb, const std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
-	static Texture createTexture(const char* textureFile);
-	static GLuint loadCubemap(std::vector<std::string> faces);
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static LightShadowData *getDirShadowData(int shadowWidth = 2048, int shadowHeight = 2048);

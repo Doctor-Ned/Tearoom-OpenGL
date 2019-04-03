@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Render/TextRenderer.h"
 #include "freetype/ftparams.h"
-#include "Scene/SceneManager.h"
+#include "Scene/GameManager.h"
 
 
 TextRenderer::TextRenderer(GLfloat defaultScale) {
@@ -153,7 +153,7 @@ void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 }
 
 void TextRenderer::updateProjection() {
-	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(SceneManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(SceneManager::getInstance()->getWindowHeight()),
+	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(GameManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(GameManager::getInstance()->getWindowHeight()),
 		0.0f));
 }
 

@@ -1,7 +1,7 @@
 #include "MeshSimple.h"
 
 MeshSimple::MeshSimple(glm::vec4 color) : Mesh(), color(color) {
-	this->shader = SceneManager::getInstance()->getShader(getShaderType());
+	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 }
 
 void MeshSimple::draw(Shader *shader, glm::mat4 world) {

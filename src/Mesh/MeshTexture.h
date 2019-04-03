@@ -2,6 +2,7 @@
 #define MESHTEXTURE_H
 
 #include "Mesh.h"
+#include "Scene/AssetManager.h"
 
 struct TextureVertex {
 	glm::vec3 Position;

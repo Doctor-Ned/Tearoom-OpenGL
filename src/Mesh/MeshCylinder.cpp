@@ -3,7 +3,7 @@
 MeshCylinder::MeshCylinder(float radius, float height, int sideAmount, char* texturePath,
                            glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
-	texture = Global::createTexture(texturePath);
+	texture = AssetManager::getInstance()->getTexture(texturePath);
 	setupMesh();
 }
 
