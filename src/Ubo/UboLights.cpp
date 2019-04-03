@@ -1,11 +1,11 @@
 #include "UboLights.h"
 
-UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, DirLight ** dirLight, SpotLight ** spotLight, PointLight ** pointLight) :
-	Ubo(sizeof(float) + 3 * sizeof(int) + MAX_LIGHTS_OF_TYPE * sizeof(DirLight) + MAX_LIGHTS_OF_TYPE * sizeof(SpotLight) + MAX_LIGHTS_OF_TYPE * sizeof(PointLight), "Lights", 5) {
-	inject(ambient, dirLights, spotLights, pointLights, dirLight, spotLight, pointLight);
+UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight ** dirLight, SpotLight ** spotLight, PointLight ** pointLight) :
+	Ubo(sizeof(float) + 7 * sizeof(int) + MAX_LIGHTS_OF_TYPE * sizeof(DirLight) + MAX_LIGHTS_OF_TYPE * sizeof(SpotLight) + MAX_LIGHTS_OF_TYPE * sizeof(PointLight), "Lights", 5) {
+	inject(ambient, dirLights, spotLights, pointLights, spotDirShadowTexelResolution, pointShadowSamples, dirLight, spotLight, pointLight);
 }
 
-void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, DirLight** dirLight, SpotLight** spotLight, PointLight** pointLight) {
+void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight** dirLight, SpotLight** spotLight, PointLight** pointLight) {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	size_t offset = 0;
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &ambient);
@@ -16,6 +16,10 @@ void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLi
 	offset += sizeof(int);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &pointLights);
 	offset += sizeof(int);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &spotDirShadowTexelResolution);
+	offset += sizeof(int);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &pointShadowSamples);
+	offset += 3 * sizeof(int);
 	std::vector<DirLight> dirs;
 	for(int i=0;i<dirLights;i++) {
 		dirs.emplace_back(*dirLight[i]);

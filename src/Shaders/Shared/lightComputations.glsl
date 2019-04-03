@@ -19,17 +19,21 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
 		float currentDepth = projCoords.z;
 		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
 		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
-		shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-		vec2 texelSize = 1.0 / textureSize(tex, 0);
-		for(int x = -1; x <= 1; ++x)
-		{
-			for(int y = -1; y <= 1; ++y)
+		if (spotDirShadowTexelResolution <= 1) {
+			shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+		} else {
+			vec2 texelSize = 1.0 / textureSize(tex, 0);
+			int offset = (spotDirShadowTexelResolution - 1) / 2;
+			for(int x = -offset; x <= offset; ++x)
 			{
-				float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r; 
-				shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
-			}    
+				for(int y = -offset; y <= offset; ++y)
+				{
+					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r; 
+					shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
+				}    
+			}
+			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
 		}
-		shadow /= 9.0;
     
 		if(projCoords.z > 1.0) {
 			shadow = 0.0;
@@ -58,16 +62,19 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
 		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
 		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
 
-		vec2 texelSize = 1.0 / textureSize(tex, 0);
-		for(int x = -1; x <= 1; ++x)
-		{
-			for(int y = -1; y <= 1; ++y)
-			{
-				float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r; 
-				shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
-			}    
+		if (spotDirShadowTexelResolution <= 1) {
+			shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+		} else {
+			vec2 texelSize = 1.0 / textureSize(tex, 0);
+			int offset = (spotDirShadowTexelResolution - 1) / 2;
+			for (int x = -offset; x <= offset; ++x) {
+				for (int y = -offset; y <= offset; ++y) {
+					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r;
+					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+				}
+			}
+			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
 		}
-		shadow /= 9.0;
     
 		if(projCoords.z > 1.0) {
 			shadow = 0.0;
@@ -121,17 +128,16 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specul
 		vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
 		float currentDepth = length(fragToLight);
 		float bias = 0.15;
-		int samples = 20;
 		float viewDistance = length(fs_in.viewPosition - fs_in.pos);
 		float diskRadius = (1.0 + (viewDistance / light.far_plane)) / 25.0;
-		for(int i = 0; i < samples; ++i)
+		for(int i = 0; i < pointShadowSamples; ++i)
 		{
 			float closestDepth = texture(tex, fragToLight + gridSamplingDisk[i] * diskRadius).r;
 			closestDepth *= light.far_plane;
 			if(currentDepth - bias > closestDepth)
 				shadow += 1.0;
 		}
-		shadow /= float(samples);
+		shadow /= float(pointShadowSamples);
 	}
 	vec3 position = vec3(light.model[3]);
 	vec3 direction = normalize(position - fs_in.pos);

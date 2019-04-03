@@ -123,6 +123,11 @@ void UiButton::setButtonCallback(std::function<void()> callback) {
 	this->callback = callback;
 }
 
+void UiButton::setPosition(glm::vec2 position, bool center) {
+	UiTexturedElement::setPosition(position, center);
+	setup();
+}
+
 UiButtonState UiButton::getState() {
 	return state;
 }

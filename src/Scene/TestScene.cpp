@@ -104,7 +104,10 @@ void TestScene::render() {
 	renderSpotLights();
 	renderPointLights();
 	
-	uboLights->inject(BASE_AMBIENT, dirLights.size(), spotLights.size(), pointLights.size(), &dirLights[0], &spotLights[0], &pointLights[0]);
+	uboLights->inject(BASE_AMBIENT,
+		dirLights.size(), spotLights.size(), pointLights.size(),
+		sceneManager->spotDirShadowTexelResolution, sceneManager->pointShadowSamples,
+		&dirLights[0], &spotLights[0], &pointLights[0]);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

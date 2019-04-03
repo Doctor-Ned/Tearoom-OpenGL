@@ -10,11 +10,25 @@ UiText::UiText(glm::vec2 position, glm::vec2 size, const char* text, glm::vec3 t
 	UiText::setPosition(position, center);
 }
 
+UiText::UiText(glm::vec2 position, glm::vec2 size, std::string text, glm::vec3 textColor, UiRescaleMode rescaleMode,
+	bool center, TextRenderer* textRenderer) : UiElement(position, size, center) {
+	this->color = textColor;
+	setText(text);
+	this->textRenderer = textRenderer;
+	this->rescaleMode = rescaleMode;
+	scale = textRenderer->getScaleToFitSize(text, size, rescaleMode);
+	UiText::setPosition(position, center);
+}
+
 void UiText::render() {
 	textRenderer->renderText(text, actualPosition, scale, center, color);
 }
 
 void UiText::setText(const char * text) {
+	this->text = text;
+}
+
+void UiText::setText(std::string text) {
 	this->text = text;
 }
 

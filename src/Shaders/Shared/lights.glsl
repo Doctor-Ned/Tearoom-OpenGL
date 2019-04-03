@@ -40,6 +40,10 @@ layout (std140) uniform Lights {
 	int dirLights;
 	int spotLights;
 	int pointLights;
+	int spotDirShadowTexelResolution; // this should be a power of 3. 3 is a nice base value btw. 1 should also be acceptable.
+	int pointShadowSamples;           // 20 gives a nice result but i could probably experiment with some other values.
+	int padding1;
+	int padding2;
 	DirLight dirLight[MAX_LIGHTS_OF_TYPE];
 	SpotLight spotLight[MAX_LIGHTS_OF_TYPE];
 	PointLight pointLight[MAX_LIGHTS_OF_TYPE];

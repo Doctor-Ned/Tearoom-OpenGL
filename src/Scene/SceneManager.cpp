@@ -97,7 +97,7 @@ void SceneManager::setup() {
 	shaders.emplace(STDepth, new Shader("Depth/depthVS.glsl", "Depth/depthFS.glsl"));
 	shaders.emplace(STDepthPoint, new GeometryShader("Depth/depthPointVS.glsl", "Depth/depthPointGS.glsl", "Depth/depthPointFS.glsl"));
 	shaders.emplace(STDepthDebug, new Shader("Depth/depthDebugVS.glsl", "Depth/depthDebugFS.glsl"));
-	uboLights = new UboLights(BASE_AMBIENT, 0, 0, 0, nullptr, nullptr, nullptr);
+	uboLights = new UboLights(BASE_AMBIENT, 0, 0, 0, spotDirShadowTexelResolution, pointShadowSamples, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	uboViewProjection = new UboViewProjection(glm::mat4(1.0f), glm::mat4(1.0f));
 	ubos.push_back(uboLights);
