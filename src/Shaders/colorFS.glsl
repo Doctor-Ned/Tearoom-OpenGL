@@ -33,15 +33,7 @@ void main() {
 
 		vec3 color = ambient;
 
-		for(int i=0;i<dirLights;i++) {
-			color += calcDirLight(dirLight[i], dir_shadows[i], fs_in.fragDirSpaces[i], diffuse, specular, viewDir);
-		}
-		for(int i=0;i<spotLights;i++) {
-			color += calcSpotLight(spotLight[i], spot_shadows[i], fs_in.fragSpotSpaces[i], diffuse, specular, viewDir);
-		}
-		for(int i=0;i<pointLights;i++) {
-			color += calcPointLight(pointLight[i], point_shadows[i], diffuse, specular, viewDir);
-		}
+		//%lightColorAddition.glsl%
 
 		outColor = vec4(color, 1.0f);
 	}

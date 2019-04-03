@@ -57,18 +57,18 @@ int main(int argc, char** argv) {
 			bool correct = true;
 			int count = 0;
 			for (count = 0; arg[count] != '\0'; count++) {
-				if(arg[count] < '0' || arg[count] > '9') {
+				if (arg[count] < '0' || arg[count] > '9') {
 					correct = false;
 					break;
 				}
 			}
-			if(correct) {
+			if (correct) {
 				int multiplier = 1;
-				for(int j=0;j<count;j++) {
+				for (int j = 0; j < count; j++) {
 					target += multiplier * (arg[count - 1 - j] - '0');
 					multiplier *= 10;
 				}
-				if(expectedWidth) {
+				if (expectedWidth) {
 					windowWidth = target;
 					expectedWidth = false;
 				} else {
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 				}
 			}
 		} else {
-			if(strcmp("-fullscreen", arg) == 0) {
+			if (strcmp("-fullscreen", arg) == 0) {
 				fullscreen = true;
 			} else if (strcmp("-windowed", arg) == 0) {
 				fullscreen = false;
@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
 	// Create window with graphics context
 	GLFWwindow* window;
 	if (borderless) {
-		if(fullscreen) {
+		if (fullscreen) {
 			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
@@ -181,12 +181,15 @@ int main(int argc, char** argv) {
 
 	sceneManager->setup();
 
+	glfwMakeContextCurrent(window);
 	//glEnable(GL_DEPTH_TEST); it gets enabled later.
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
 
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
@@ -273,7 +276,6 @@ int main(int argc, char** argv) {
 		lastTime = currentTime;
 		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debugging game loop
 		sceneManager->update(timeDelta);
-		glfwMakeContextCurrent(window);
 
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);

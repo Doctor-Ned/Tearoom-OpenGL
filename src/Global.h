@@ -66,8 +66,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	float far_plane;
 	glm::vec3 padding;
+	float far_plane;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -86,8 +86,8 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	float outerCutOff;
 	glm::vec3 padding;
+	float outerCutOff;
 };
 
 struct LightShadowData {

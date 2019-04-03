@@ -11,8 +11,8 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	float far_plane;
 	vec3 padding;
+	float far_plane;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -29,8 +29,8 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	float outerCutOff;
 	vec3 padding;
+	float outerCutOff;
 };
 
 #define MAX_LIGHTS_OF_TYPE 4

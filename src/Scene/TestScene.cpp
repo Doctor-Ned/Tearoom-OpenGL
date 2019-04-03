@@ -44,11 +44,11 @@ TestScene::TestScene() {
 	dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
 	dirLight->model = glm::mat4(1.0f);
 	//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
-	//GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
-	//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
+	dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	dirLightNode = new DirLightNode(dirLight, lightSphere, rotatingNode);
-	dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
+	//dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
@@ -99,11 +99,11 @@ TestScene::TestScene() {
 	updatableShaders.push_back(sceneManager->getShader(STRefract));
 }
 
-void TestScene::render() {
+void TestScene::render() { 
 	renderDirLights();
 	renderSpotLights();
 	renderPointLights();
-
+	
 	uboLights->inject(BASE_AMBIENT, dirLights.size(), spotLights.size(), pointLights.size(), &dirLights[0], &spotLights[0], &pointLights[0]);
 
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -119,7 +119,7 @@ void TestScene::render() {
 		elem->render();
 	}
 
-
+	dirLightNode->getParent()->drawGui();
 	dirLightNode->drawGui();
 	spotLightNode->drawGui();
 	pointLightNode->drawGui();
@@ -293,7 +293,7 @@ void TestScene::renderDirLights() {
 		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 		glm::mat4 directionWorld = node->worldTransform.Matrix();
 		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * -glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
+		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, sceneManager->getFramebuffer());
@@ -311,7 +311,6 @@ void TestScene::renderSpotLights() {
 		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		depthShader->use();
-		////glm::mat4 world = node->worldTransform.Matrix() * translate(glm::mat4(1.0f), glm::vec3(light->position));
 		glm::mat4 world = node->worldTransform.Matrix();
 		glm::vec3 pos = world[3];
 		glm::mat4 directionWorld = world;
