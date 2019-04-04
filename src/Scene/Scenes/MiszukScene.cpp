@@ -7,6 +7,7 @@
 #include "Scene/OctreeNode.h"
 #include <iostream>
 #include "Scene/Components/Collider.h"
+//#include "Scene/Components/AnimationController.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -52,6 +53,7 @@ MiszukScene::MiszukScene() {
 
 	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
+	//boxNode3->addComponent(new AnimationController());
 	boxNode->getComponent<Collider>();
 }
 
