@@ -8,19 +8,24 @@
 #include <vector>
 #include <string>
 
+struct ModelData {
+	std::vector<ModelVertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<ModelTexture> textures;
+};
+
 class Model : public Mesh {
 public:
-	Model(char* path);
+	Model(std::string path);
+	Model(std::vector<ModelData*> data);
 	void draw(Shader *shader, glm::mat4 world) override;
 	ShaderType getShaderType() override;
+	static std::vector<ModelData*> createModelData(std::string path);
 private:
-	std::vector<ModelTexture> textures_loaded;
 	std::vector<MeshModel*> meshes;
-	std::string directory;
-	void loadModel(std::string const& path);
-	void processNode(aiNode* node, const aiScene* scene);
-	MeshModel *processMesh(aiMesh* mesh, const aiScene* scene);
-	std::vector<ModelTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, std::vector<ModelData*> &output);
+	static ModelData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory, std::vector<ModelTexture> &textures_loaded);
+	static std::vector<ModelTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const std::string& directory, std::vector<ModelTexture> &textures_loaded);
 	static GLuint textureFromFile(const char* path, const std::string& directory);
 };
 

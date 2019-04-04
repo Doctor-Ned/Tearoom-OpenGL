@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Scenes/LoadingScene.h"
 #include <thread>
+#include "Mesh/Model.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -90,6 +91,20 @@ Texture AssetManager::getTexture(std::string path) {
 	throw "Critial error! An object tried to access an unknown texture: " + path;
 }
 
+Model * AssetManager::getModel(std::string path) {
+	return new Model(getModelData(path));
+}
+
+std::vector<ModelData*> AssetManager::getModelData(std::string path) {
+	for (auto &pair : models) {
+		if (pair.first.compare(path) == 0) {
+			return pair.second;
+		}
+	}
+
+	throw "Critical error! An object tried to access an unknown model: " + path;
+}
+
 bool AssetManager::endsWith(std::string const &fullString, std::string const &ending) {
 	if (fullString.length() >= ending.length()) {
 		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
@@ -117,6 +132,8 @@ void AssetManager::setup() {
 		if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
 			//loadingScene->setLoadingText("Loading '" + path + "'...");
 			textures.emplace_back(createTexture(path.c_str()));
+		} else if(endsWith(path, ".obj")) {
+			models.emplace(path, Model::createModelData(path));
 		}
 	}
 	gameManager->goToMenu();
