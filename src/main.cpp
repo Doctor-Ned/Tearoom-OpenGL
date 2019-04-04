@@ -12,6 +12,7 @@
 #include "Ui/UiElement.h"
 #include "Render/Shader.h"
 #include "Scene/Scenes/MiszukScene.h"
+#include "Render/PostProcessingShader.h"
 
 
 //comment extern below if you don't have NVidia GPU
@@ -25,6 +26,7 @@ static void glfw_error_callback(int error, const char* description) {
 }
 
 static GameManager* GameManager;
+static AssetManager* AssetManager;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	GameManager->keyboard_callback(window, key, scancode, action, mods);
@@ -41,6 +43,7 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 
 int main(int argc, char** argv) {
 	GameManager = GameManager::getInstance();
+	AssetManager = AssetManager::getInstance();
 	bool borderless = false;
 	bool fullscreen = false;
 
@@ -200,7 +203,7 @@ int main(int argc, char** argv) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowWidth, windowHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
 
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -257,11 +260,13 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 	GameManager->setFramebuffer(fbo);
 
-	Shader post_processing("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
-
 	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
 
 	GameManager->setup();
+
+	PostProcessingShader *post_processing = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
+	post_processing->setExposure(2.0f);
+	post_processing->setHdr(false);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -289,7 +294,7 @@ int main(int argc, char** argv) {
 		glDisable(GL_DEPTH_TEST);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		post_processing.use();
+		post_processing->use();
 		ImGui::Render();
 		glBindVertexArray(vao);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -303,6 +308,7 @@ int main(int argc, char** argv) {
 		glfwSwapBuffers(window);
 	}
 	delete GameManager;
+	delete AssetManager;
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteRenderbuffers(1, &rbo);

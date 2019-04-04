@@ -6,8 +6,17 @@ in vec2 exPos;
 in vec2 exTexCoords;
 
 uniform sampler2D text;
+uniform float exposure;
+uniform int useHdr;
 
 void main() {
-	vec3 color = vec3(texture(text, exTexCoords));
-	outColor = vec4(color, 1.0f);
+	vec3 color = texture(text, exTexCoords).rgb;
+	if (useHdr > 0) {
+		const float gamma = 1.0;
+		vec3 mapped = vec3(1.0) - exp(-color * exposure);
+		mapped = pow(mapped, vec3(1.0 / gamma));
+		outColor = vec4(mapped, 1.0f);
+	} else {
+		outColor = vec4(color, 1.0f);
+	}
 }

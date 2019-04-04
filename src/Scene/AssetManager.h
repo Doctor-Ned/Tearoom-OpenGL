@@ -23,7 +23,8 @@ enum ShaderType {
 	STDepthPoint,
 	STDepthDebug,
 	STUiTexture,
-	STUiColor
+	STUiColor,
+	STPostProcessing
 };
 
 
