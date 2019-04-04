@@ -20,7 +20,7 @@ UiSliderInt::UiSliderInt(const char* textureIdle, const char* textureHover, cons
 
 UiSliderInt::UiSliderInt(glm::vec2 position, glm::vec2 size, double lineThickness, int value, int min, int max,
 	glm::vec4 lineColor, bool center) :
-	UiSliderInt(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createSizeScaledByHeight(BASE_BTN_SIZE), value, min, max, lineColor, center) {}
+	UiSliderInt(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, center) {}
 
 void UiSliderInt::render() {
 	UiTexturedElement::render();
@@ -136,7 +136,7 @@ void UiSliderInt::setup() {
 }
 
 ShaderType UiSliderInt::getShaderType() {
-	return STColor;
+	return STUiColor;
 }
 
 UiSliderInt::~UiSliderInt() {

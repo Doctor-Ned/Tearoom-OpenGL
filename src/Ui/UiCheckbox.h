@@ -10,6 +10,7 @@ public:
 		const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked,
 		glm::vec2 position, glm::vec2 size, bool checked, bool center = true);
 	UiCheckbox(glm::vec2 position, bool checked, bool center = true);
+	UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, bool center = true);
 	void render() override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;

@@ -14,12 +14,12 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
 	UiSlider::setPosition(position, center);
-	setup();
+	//setup();
 }
 
 UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, float value, float min, float max,
 	glm::vec4 lineColor, bool center) :
-	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, createSizeScaledByHeight(BASE_BTN_SIZE), value, min, max, lineColor, center) {}
+	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, center) {}
 
 void UiSlider::render() {
 	UiTexturedElement::render();
@@ -75,6 +75,7 @@ void UiSlider::mouse_button_callback(GLFWwindow* window, int button, int action,
 void UiSlider::setPosition(glm::vec2 position, bool center) {
 	UiElement::setPosition(position, center);
 	this->button->setPosition(position, center);
+	setup();
 }
 
 void UiSlider::setup() {
@@ -118,7 +119,7 @@ void UiSlider::setup() {
 }
 
 ShaderType UiSlider::getShaderType() {
-	return STColor;
+	return STUiColor;
 }
 
 UiSlider::~UiSlider() {

@@ -16,8 +16,10 @@ UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const 
 	setup();
 }
 
-UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) :
-	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, createSizeScaledByHeight(BASE_BTN_SIZE), checked, center) {}
+UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) : UiCheckbox(position, createSizeScaledByHeight(BASE_BTN_SIZE), checked, center) {}
+
+UiCheckbox::UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, bool center) :
+	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, size, checked, center) {}
 
 void UiCheckbox::render() {
 	UiTexturedElement::render();

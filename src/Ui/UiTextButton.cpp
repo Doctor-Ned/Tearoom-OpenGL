@@ -9,8 +9,11 @@ UiTextButton::UiTextButton(const char* textureIdle, const char* textureHover, co
 }
 
 UiTextButton::UiTextButton(glm::vec2 position, const char* text, glm::vec3 textColor,
+	bool center, TextRenderer* textRenderer) : UiTextButton(position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), text, textColor, center, textRenderer) {}
+
+UiTextButton::UiTextButton(glm::vec2 position, glm::vec2 size, const char* text, glm::vec3 textColor,
 	bool center, TextRenderer* textRenderer) : UiTextButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED,
-		position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), text, BASE_TEXT_HEIGHT_SCALE, textColor, center, textRenderer) {}
+		position, size, text, BASE_TEXT_HEIGHT_SCALE, textColor, center, textRenderer) {}
 
 void UiTextButton::render() {
 	UiButton::render();

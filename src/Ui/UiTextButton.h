@@ -15,6 +15,8 @@ public:
 		TextRenderer* textRenderer = AssetManager::getInstance()->getTextRenderer());
 	UiTextButton(glm::vec2 position, const char* text, glm::vec3 textColor = glm::vec3(0.3f, 0.3f, 0.3f), bool center = true,
 		TextRenderer* textRenderer = AssetManager::getInstance()->getTextRenderer());
+	UiTextButton(glm::vec2 position, glm::vec2 size, const char* text, glm::vec3 textColor = glm::vec3(0.3f, 0.3f, 0.3f), bool center = true,
+		TextRenderer* textRenderer = AssetManager::getInstance()->getTextRenderer());
 	void render() override;
 	void setText(char* text);
 	void setPosition(glm::vec2 position, bool center) override;

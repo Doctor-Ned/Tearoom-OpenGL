@@ -11,7 +11,9 @@ UiButton::UiButton(const char* textureIdle, const char* textureHover, const char
 	setup();
 }
 
-UiButton::UiButton(glm::vec2 position, bool center) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), center) {}
+UiButton::UiButton(glm::vec2 position, bool center) : UiButton(position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), center) {}
+
+UiButton::UiButton(glm::vec2 position, glm::vec2 size, bool center) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position,size, center) {}
 
 void UiButton::render() {
 	UiElement::render();
