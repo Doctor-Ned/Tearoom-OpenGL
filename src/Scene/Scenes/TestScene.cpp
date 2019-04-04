@@ -9,12 +9,18 @@
 
 TestScene::TestScene() {
 	std::vector<std::string> faces;
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_rt.tga");
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_lf.tga");
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_up.tga");
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_dn.tga");
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_ft.tga");
-	faces.emplace_back("res/skybox/arrakisday/arrakisday_bk.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_rt.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_lf.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_up.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_dn.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_ft.tga");
+	//faces.emplace_back("res/skybox/arrakisday/arrakisday_bk.tga");
+	faces.emplace_back("res/skybox/test/right.jpg");
+	faces.emplace_back("res/skybox/test/left.jpg");
+	faces.emplace_back("res/skybox/test/top.jpg");
+	faces.emplace_back("res/skybox/test/bottom.jpg");
+	faces.emplace_back("res/skybox/test/front.jpg");
+	faces.emplace_back("res/skybox/test/back.jpg");
 
 	skybox = new Skybox(assetManager->getShader(STSkybox), faces);
 	depthShader = assetManager->getShader(STDepth);
@@ -44,10 +50,10 @@ TestScene::TestScene() {
 	dirLight->model = glm::mat4(1.0f);
 	//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
 	GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
-	dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
 	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	//dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
