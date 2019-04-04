@@ -48,6 +48,8 @@ static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE
 
 static const float BASE_AMBIENT = 0.05f;
 
+static const int SHADOW_SIZE = 2048;//
+
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 
 struct DirLight {
@@ -103,12 +105,12 @@ public:
 	static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb, const std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
-	static LightShadowData *getDirShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData*> getDirsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
-	static LightShadowData *getSpotShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData*> getSpotsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
-	static LightShadowData *getPointShadowData(int shadowWidth = 2048, int shadowHeight = 2048);
-	static std::vector<LightShadowData*> getPointsShadowData(int count, int shadowWidth = 2048, int shadowHeight = 2048);
+	static LightShadowData *getDirShadowData(int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
+	static std::vector<LightShadowData*> getDirsShadowData(int count, int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
+	static LightShadowData *getSpotShadowData(int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
+	static std::vector<LightShadowData*> getSpotsShadowData(int count, int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
+	static LightShadowData *getPointShadowData(int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
+	static std::vector<LightShadowData*> getPointsShadowData(int count, int shadowWidth = SHADOW_SIZE, int shadowHeight = SHADOW_SIZE);
 };
 
 #endif

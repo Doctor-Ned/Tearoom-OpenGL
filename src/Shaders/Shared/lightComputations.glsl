@@ -42,7 +42,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
 
 	//mat4 directionWorld = light.model;
 	//directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec3 direction = normalize(vec3(light.model * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
+	vec3 direction = normalize(vec3(light.model * vec4(0.0f, 0.0f, -1.0f, 1.0f)));
     float diff = max(dot(direction, fs_in.normal), 0.0);
 
 	vec3 reflectDir = reflect(-direction, fs_in.normal);
