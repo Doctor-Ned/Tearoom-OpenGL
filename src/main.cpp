@@ -265,8 +265,7 @@ int main(int argc, char** argv) {
 	GameManager->setup();
 
 	PostProcessingShader *post_processing = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
-	post_processing->setExposure(2.0f);
-	post_processing->setHdr(false);
+
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

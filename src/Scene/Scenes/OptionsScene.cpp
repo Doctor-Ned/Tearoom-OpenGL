@@ -5,6 +5,8 @@
 #include "Ui/UiCheckbox.h"
 #include <string>
 #include "Ui/UiSliderInt.h"
+#include "Render/PostProcessingShader.h"
+#include "Ui/UiSlider.h"
 
 OptionsScene::OptionsScene(MenuScene* menuScene) {
 	this->menuScene = menuScene;
@@ -31,6 +33,29 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		manager->pointShadowSamples = samples;
 		samplesText->setText("Point shadow samples: " + std::to_string(manager->pointShadowSamples));
 	});
+
+	PostProcessingShader *pps = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
+
+	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), true);
+	useHdr->setCheckboxCallback([pps](bool enabled) {
+		pps->setHdr(enabled);
+	});
+	UiText *exposureText = new UiText(glm::vec2(windowCenterX, 9 * heightSeg), glm::vec2(windowWidth, heightSeg),"Exposure: " + std::to_string(pps->getExposure()));
+	UiSlider *exposureSlider = new UiSlider(glm::vec2(windowCenterX, 10 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
+		pps->getExposure(), 0.0f, 10.0f);
+	exposureSlider->setCallback([pps, exposureText](float exposure) {
+		pps->setExposure(exposure);
+		exposureText->setText("Exposure: " + std::to_string(exposure));
+	});
+
+	UiText *gammaText = new UiText(glm::vec2(windowCenterX, 11 * heightSeg), glm::vec2(windowWidth, heightSeg), "Gamma: " + std::to_string(pps->getGamma()));
+	UiSlider *gammaSlider = new UiSlider(glm::vec2(windowCenterX, 12 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
+		pps->getGamma(), 0.0f, 10.0f);
+	gammaSlider->setCallback([pps, gammaText](float gamma) {
+		pps->setGamma(gamma);
+		gammaText->setText("Gamma: " + std::to_string(gamma));
+	});
+
 	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 14 * heightSeg), "Back to menu");
 	back->setButtonCallback([menuScene]() { menuScene->hideOptions(); });
 	uiElements.emplace_back(back);
@@ -40,8 +65,14 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(texelText);
 	uiElements.emplace_back(samplesSlider);
 	uiElements.emplace_back(samplesText);
+	uiElements.emplace_back(useHdr);
+	uiElements.emplace_back(exposureText);
+	uiElements.emplace_back(exposureSlider);
+	uiElements.emplace_back(gammaText);
+	uiElements.emplace_back(gammaSlider);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Cast shadows"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use light"));
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use HDR"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 2.0f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 

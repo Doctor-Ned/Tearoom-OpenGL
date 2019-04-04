@@ -4,8 +4,27 @@ PostProcessingShader::PostProcessingShader(char * vertexPath, char * fragmentPat
 
 void PostProcessingShader::setExposure(float exposure) {
 	setFloat("exposure", exposure);
+	this->exposure = exposure;
 }
 
 void PostProcessingShader::setHdr(bool enabled) {
 	setBool("useHdr", enabled);
+	this->useHdr = enabled;
+}
+
+void PostProcessingShader::setGamma(float gamma) {
+	setFloat("gamma", gamma);
+	this->gamma = gamma;
+}
+
+float PostProcessingShader::getExposure() {
+	return exposure;
+}
+
+float PostProcessingShader::getGamma() {
+	return gamma;
+}
+
+bool PostProcessingShader::isHdrEnabled() {
+	return useHdr;
 }
