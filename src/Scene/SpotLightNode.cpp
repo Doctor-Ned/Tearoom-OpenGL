@@ -80,7 +80,7 @@ void SpotLightNode::setModel(glm::mat4 model) {
 void SpotLightNode::renderGui() {
 	QuadraticLightNode::renderGui();
 	if(active) {
-		ImGui::SliderFloat("Cutoff", &light->cutOff, 0.0f, 360.0f);
-		ImGui::SliderFloat("Outer cutoff", &light->outerCutOff, 0.0f, 360.0f);
+		ImGui::SliderAngle("Cutoff", &light->cutOff, 0.0f, 360.0f);
+		ImGui::SliderAngle("Outer cutoff", &light->outerCutOff, 0.0f, 360.0f);
 	}
 }

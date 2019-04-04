@@ -76,7 +76,7 @@ struct PointLight {
 
 struct SpotLight {
 	SpotLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), constant(100.0f), linear(100.0f), quadratic(100.0f),
-	cutOff(15.0f), outerCutOff(45.0f) {}
+	cutOff(M_PI/12.0f), outerCutOff(M_PI/4.0f) {}
 	glm::mat4 lightSpace;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
