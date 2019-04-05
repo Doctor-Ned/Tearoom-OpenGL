@@ -13,6 +13,7 @@
 #include "Render/Shader.h"
 #include "Scene/Scenes/MiszukScene.h"
 #include "Render/PostProcessingShader.h"
+#include "Ui/UiPlane.h"
 
 
 //comment extern below if you don't have NVidia GPU
@@ -246,7 +247,7 @@ int main(int argc, char** argv) {
 	data.clear();
 	glBindVertexArray(0);
 
-	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
+	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
 
 	GameManager->setup();
 
@@ -254,7 +255,7 @@ int main(int argc, char** argv) {
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
 	postProcessingShader->setInt("ui", 2);
-	
+
 	Shader *blurShader = AssetManager->getShader(STBlur);
 
 	GameFramebuffers framebuffers = GameManager->getFramebuffers();
@@ -280,11 +281,10 @@ int main(int argc, char** argv) {
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GameManager->render();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// apply two-pass gaussian blur to bright fragments
 		bool horizontal = true, first_iteration = true;
-		unsigned int amount = 10;
+		static const unsigned int amount = 10;
 		blurShader->use();
 		for (unsigned int i = 0; i < amount; i++) {
 			if (!horizontal) {
@@ -293,7 +293,7 @@ int main(int argc, char** argv) {
 				glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
 			}
 			blurShader->setBool("horizontal", horizontal);
-			glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.fbo : framebuffers.pong.fbo));
+			glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
 			glBindVertexArray(vao);
 			glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 			glDrawArrays(GL_TRIANGLES, 0, 6);

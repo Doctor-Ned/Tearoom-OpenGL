@@ -29,6 +29,7 @@ void UiButton::render() {
 			txt = &textureClicked;
 			break;
 	}
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, txt->id);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));

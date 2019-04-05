@@ -9,6 +9,12 @@ ModelInstanced::ModelInstanced(std::vector<ModelData*> data, glm::vec3* offsets,
 	}
 }
 
+void ModelInstanced::draw(glm::mat4 world) {
+	for(auto &mesh : meshes) {
+		static_cast<Mesh*>(mesh)->draw(world);
+	}
+}
+
 void ModelInstanced::draw(Shader *shader, glm::mat4 world) {
 	for (auto& mesh : meshes) {
 		mesh->draw(shader, world);

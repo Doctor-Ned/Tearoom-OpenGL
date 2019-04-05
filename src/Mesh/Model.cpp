@@ -9,9 +9,16 @@ Model::Model(std::vector<ModelData*> data) : Mesh(STNone) {
 	}
 }
 
+void Model::draw(glm::mat4 world) {
+	for(auto &mesh : meshes) {
+		static_cast<Mesh*>(mesh)->draw(world);
+	}
+}
+
 void Model::draw(Shader *shader, glm::mat4 world) {
-	for (auto& meshe : meshes)
-		meshe->draw(shader, world);
+	for (auto& mesh : meshes) {
+		mesh->draw(shader, world);
+	}
 }
 
 std::vector<ModelData*> Model::createModelData(std::string path) {

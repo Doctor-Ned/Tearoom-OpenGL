@@ -18,6 +18,7 @@ class Model : public Mesh {
 public:
 	Model(std::string path);
 	Model(std::vector<ModelData*> data);
+	void draw(glm::mat4 world) override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	static std::vector<ModelData*> createModelData(std::string path);
 private:

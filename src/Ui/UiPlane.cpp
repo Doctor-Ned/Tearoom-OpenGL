@@ -8,6 +8,7 @@ UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool c
 
 void UiPlane::render() {
 	UiTexturedElement::render();
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));

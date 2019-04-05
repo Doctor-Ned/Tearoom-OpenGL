@@ -7,11 +7,11 @@
 
 class Mesh {
 public:
-	void draw(glm::mat4 world);
 	void setShininess(float shininess);
 	void setUseLight(bool useLight);
 	bool getUseLight() const;
 	float getShininess() const;
+	virtual void draw(glm::mat4 world);
 	virtual void draw(Shader *shader, glm::mat4 world);
 	ShaderType getShaderType();
 	void setShaderType(ShaderType shaderType);

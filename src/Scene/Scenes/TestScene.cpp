@@ -119,20 +119,21 @@ void TestScene::render() {
 		&dirLights[0], &spotLights[0], &pointLights[0]);
 
 	glViewport(0, 0, windowWidth, windowHeight);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	for (auto &shader : updatableShaders) {
 		shader->setViewPosition(camera->getPos());
 		shader->updateShadowData(dirLightShadows, spotLightShadows, pointLightShadows);
 	}
 	uboViewProjection->inject(camera->getView(), projection);
-	rootNode->draw();
 
 	if (renderDepthMap == 3) {
 		skybox->draw(camera->getUntranslatedView(), projection, pointLightShadows[0]->texture);
 	} else {
 		skybox->draw(camera->getUntranslatedView(), projection);
 	}
+
+	rootNode->draw();
 
 	if (renderDepthMap == 1 || renderDepthMap == 2) {
 		depthDebugShader->use();
@@ -303,7 +304,7 @@ void TestScene::renderDirLights() {
 		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
-		rootNode->draw(depthShader);
+		rootNode->draw(depthShader, true);
 		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }
@@ -327,7 +328,7 @@ void TestScene::renderSpotLights() {
 		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
-		rootNode->draw(depthShader);
+		rootNode->draw(depthShader, true);
 		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }
@@ -373,7 +374,7 @@ void TestScene::renderPointLights() {
 			pointSpaces[i] = projection * lookAt(position, position + targets[i], ups[i]);
 		}
 		depthPointShader->setPointSpaces(pointSpaces);
-		rootNode->draw(depthPointShader);
+		rootNode->draw(depthPointShader, true);
 		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }

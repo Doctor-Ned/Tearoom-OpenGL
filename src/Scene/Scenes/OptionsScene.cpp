@@ -11,7 +11,7 @@
 OptionsScene::OptionsScene(MenuScene* menuScene) {
 	this->menuScene = menuScene;
 	textRenderer = assetManager->getTextRenderer();
-	const float heightSeg = windowHeight / 15.0f;
+	const float heightSeg = windowHeight / 18.0f;
 	const float checkboxShift = windowWidth / 8.0f;
 	UiCheckbox *useLight = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 2 * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->useLight, true);
 	useLight->setCheckboxCallback([&manager = gameManager](bool useLight) { manager->useLight = useLight; });
@@ -61,7 +61,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		pps->setBloom(enabled);
 	});
 
-	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 14 * heightSeg), "Back to menu");
+	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 17 * heightSeg), "Back to menu");
 	back->setButtonCallback([menuScene]() { menuScene->hideOptions(); });
 	uiElements.emplace_back(back);
 	uiElements.emplace_back(useLight);
@@ -75,11 +75,12 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(exposureSlider);
 	uiElements.emplace_back(gammaText);
 	uiElements.emplace_back(gammaSlider);
+	uiElements.emplace_back(useBloom);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Cast shadows"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use light"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use HDR"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use bloom"));
-	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 2.0f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 1.5f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 
 void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {

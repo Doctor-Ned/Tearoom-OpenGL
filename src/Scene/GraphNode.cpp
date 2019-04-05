@@ -64,7 +64,7 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount, bo
 		updateWorld();
 	}
 
-	if (mesh && mesh->getShaderType() != STLight) {
+	if (mesh && !(ignoreLights && mesh->getShaderType() != STLight)) {
 		if (shader == nullptr) {
 			mesh->draw(worldTransform.Matrix());
 		} else {
