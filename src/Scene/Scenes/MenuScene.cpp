@@ -30,6 +30,14 @@ void MenuScene::render() {
 	}
 }
 
+void MenuScene::renderUi() {
+	if(showingOptions) {
+		optionsScene->renderUi();
+	} else {
+		Scene::renderUi();
+	}
+}
+
 void MenuScene::update(double deltaTime) {
 	if (showingOptions) {
 		optionsScene->update(deltaTime);

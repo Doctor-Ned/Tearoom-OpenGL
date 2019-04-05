@@ -1,6 +1,6 @@
 #version 330 core
-
-out vec4 outColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 BrightColor;
 
 uniform samplerCube environmentMap;
 
@@ -12,5 +12,6 @@ in VS_OUT {
 } fs_in;
 
 void main() {
-	outColor = vec4(texture(environmentMap, fs_in.reflection).rgb, 1.0);
+	BrightColor = vec4(0.0, 0.0, 0.0, 0.0);
+	FragColor = vec4(texture(environmentMap, fs_in.reflection).rgb, 1.0);
 }

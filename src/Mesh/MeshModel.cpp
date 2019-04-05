@@ -2,8 +2,7 @@
 
 MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
                      std::vector<ModelTexture> textures)
-	: Mesh(), indices(indices), vertices(vertices), textures(textures) {
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
+	: Mesh(STModel), indices(indices), vertices(vertices), textures(textures) {
 	setupMesh();
 }
 
@@ -38,10 +37,6 @@ void MeshModel::draw(Shader *shader, glm::mat4 world) {
 
 	glActiveTexture(GL_TEXTURE0);
 	glUseProgram(0);
-}
-
-ShaderType MeshModel::getShaderType() {
-	return STModel;
 }
 
 void MeshModel::setupMesh() {

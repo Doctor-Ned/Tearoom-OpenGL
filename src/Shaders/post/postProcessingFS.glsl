@@ -5,18 +5,26 @@ out vec4 outColor;
 in vec2 exPos;
 in vec2 exTexCoords;
 
-uniform sampler2D text;
+uniform sampler2D scene;
+uniform sampler2D bloomBlur;
+uniform sampler2D ui;
 uniform float exposure;
 uniform float gamma;
-uniform int useHdr;
+uniform bool useHdr;
+uniform bool bloom;
 
 void main() {
-	vec3 color = texture(text, exTexCoords).rgb;
-	if (useHdr > 0) {
-		vec3 mapped = vec3(1.0) - exp(-color * exposure);
-		mapped = pow(mapped, vec3(1.0 / gamma));
-		outColor = vec4(mapped, 1.0f);
+	vec4 uiColor = texture(ui, exTexCoords);
+	if (uiColor.a > 0.0f) {
+		outColor = uiColor;
 	} else {
-		outColor = vec4(color, 1.0f);
+		vec3 hdrColor = texture(scene, exTexCoords).rgb;
+		vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;
+		if (bloom) {
+			hdrColor += bloomColor;
+		}
+		vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
+		result = pow(result, vec3(1.0 / gamma));
+		outColor = vec4(result, 1.0);
 	}
 }

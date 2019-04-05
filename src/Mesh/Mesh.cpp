@@ -30,6 +30,15 @@ void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->setCastShadows(castShadows);
 }
 
+ShaderType Mesh::getShaderType() {
+	return shaderType;
+}
+
+void Mesh::setShaderType(ShaderType shaderType) {
+	this->shaderType = shaderType;
+	this->shader = AssetManager::getInstance()->getShader(shaderType);
+}
+
 GLuint Mesh::getRenderMode() {
 	return renderMode;
 }
@@ -49,8 +58,9 @@ Mesh::~Mesh() {
 	}
 }
 
-Mesh::Mesh(GLuint renderMode) : shader(nullptr) {
+Mesh::Mesh(ShaderType shaderType, GLuint renderMode) : shader(nullptr) {
 	this->renderMode = renderMode;
+	setShaderType(shaderType);
 	useLight = GameManager::getInstance()->useLight;
 	castShadows = GameManager::getInstance()->castShadows;
 }

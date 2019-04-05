@@ -17,6 +17,11 @@ void PostProcessingShader::setGamma(float gamma) {
 	this->gamma = gamma;
 }
 
+void PostProcessingShader::setBloom(bool enabled) {
+	setBool("bloom", enabled);
+	this->useBloom = enabled;
+}
+
 float PostProcessingShader::getExposure() {
 	return exposure;
 }
@@ -27,4 +32,8 @@ float PostProcessingShader::getGamma() {
 
 bool PostProcessingShader::isHdrEnabled() {
 	return useHdr;
+}
+
+bool PostProcessingShader::isBloomEnabled() {
+	return useBloom;
 }

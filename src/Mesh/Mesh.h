@@ -13,12 +13,14 @@ public:
 	bool getUseLight() const;
 	float getShininess() const;
 	virtual void draw(Shader *shader, glm::mat4 world);
-	virtual ShaderType getShaderType() = 0;
+	ShaderType getShaderType();
+	void setShaderType(ShaderType shaderType);
 	GLuint getRenderMode();
 	void setRenderMode(GLuint renderMode);
 	~Mesh();
 protected:
-	Mesh(GLuint renderMode = GL_TRIANGLES);
+	Mesh(ShaderType shaderType, GLuint renderMode = GL_TRIANGLES);
+	ShaderType shaderType;
 	GLuint renderMode;
 	GLuint VAO = 0;
 	GLuint VBO = 0, EBO = 0;

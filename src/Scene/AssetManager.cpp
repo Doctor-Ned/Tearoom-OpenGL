@@ -152,9 +152,12 @@ void AssetManager::setup() {
 	shaders.emplace(STDepthDebug, new Shader("Depth/depthDebugVS.glsl", "Depth/depthDebugFS.glsl"));
 	auto ppShader = new PostProcessingShader("Post/postProcessingVS.glsl", "Post/postProcessingFS.glsl");
 	shaders.emplace(STPostProcessing, ppShader);
+	shaders.emplace(STLight, new Shader("lightVS.glsl", "lightFS.glsl"));
+	shaders.emplace(STBlur, new Shader("Post/blurVS.glsl", "Post/blurFS.glsl"));
 	ppShader->setExposure(1.0f);
 	ppShader->setGamma(1.0f);
 	ppShader->setHdr(false);
+	ppShader->setBloom(true);
 	uboLights = new UboLights(BASE_AMBIENT, 0, 0, 0, gameManager->spotDirShadowTexelResolution, gameManager->pointShadowSamples, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	uboViewProjection = new UboViewProjection(glm::mat4(1.0f), glm::mat4(1.0f));
@@ -167,6 +170,7 @@ void AssetManager::setup() {
 	shaders.push_back(getShader(STTexture));
 	shaders.push_back(getShader(STColor));
 
+	getShader(STLight)->bind(uboViewProjection);
 	getShader(STReflect)->bind(uboViewProjection);
 	getShader(STRefract)->bind(uboViewProjection);
 

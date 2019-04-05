@@ -19,7 +19,6 @@ public:
 	Model(std::string path);
 	Model(std::vector<ModelData*> data);
 	void draw(Shader *shader, glm::mat4 world) override;
-	ShaderType getShaderType() override;
 	static std::vector<ModelData*> createModelData(std::string path);
 private:
 	std::vector<MeshModel*> meshes;

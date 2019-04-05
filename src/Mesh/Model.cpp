@@ -3,8 +3,7 @@
 
 Model::Model(std::string path) : Model(AssetManager::getInstance()->getModelData(path)) { }
 
-Model::Model(std::vector<ModelData*> data) {
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
+Model::Model(std::vector<ModelData*> data) : Mesh(STNone) {
 	for(auto &modelData : data) {
 		meshes.push_back(new MeshModel(modelData->vertices, modelData->indices, modelData->textures));
 	}
@@ -13,10 +12,6 @@ Model::Model(std::vector<ModelData*> data) {
 void Model::draw(Shader *shader, glm::mat4 world) {
 	for (auto& meshe : meshes)
 		meshe->draw(shader, world);
-}
-
-ShaderType Model::getShaderType() {
-	return STModel;
 }
 
 std::vector<ModelData*> Model::createModelData(std::string path) {

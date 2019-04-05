@@ -12,6 +12,7 @@
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
 
+class MeshColorSphere;
 const int
 KEY_FORWARD = GLFW_KEY_W,
 KEY_BACKWARD = GLFW_KEY_S,
@@ -32,6 +33,7 @@ class TestScene : public Scene {
 public:
 	TestScene();
 	void render() override;
+	void renderUi() override;
 	void update(double deltaTime) override;
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
@@ -59,6 +61,7 @@ protected:
 	std::vector<DirLightNode*> dirLightNodes;
 	std::vector<SpotLightNode*> spotLightNodes;
 	std::vector<PointLightNode*> pointLightNodes;
+	MeshColorSphere *pointLightSphere;
 	glm::mat4 spotLightProjection;
 	Shader *depthShader, *depthDebugShader;
 	GeometryShader *depthPointShader;

@@ -25,7 +25,6 @@ public:
 	MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
 	          std::vector<ModelTexture> textures);
 	void draw(Shader *shader, glm::mat4 world) override;
-	ShaderType getShaderType() override;
 protected:
 	void setupMesh();
 	std::vector<unsigned int> indices;

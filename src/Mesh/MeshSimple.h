@@ -14,7 +14,6 @@ struct SimpleVertex {
 class MeshSimple : public Mesh {
 public:
 	void draw(Shader *shader, glm::mat4 world) override;
-	ShaderType getShaderType() override;
 	void setColor(glm::vec4 color);
 protected:
 	MeshSimple(glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

@@ -44,8 +44,10 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 int main(int argc, char** argv) {
 	GameManager = GameManager::getInstance();
 	AssetManager = AssetManager::getInstance();
+	bool fullscreen_borderless = false;
 	bool borderless = false;
 	bool fullscreen = false;
+	bool windowSizeDefined = false;
 
 	float windowWidth = 1280.0f, windowHeight = 720.0f;
 
@@ -72,9 +74,11 @@ int main(int argc, char** argv) {
 				}
 				if (expectedWidth) {
 					windowWidth = target;
+					windowSizeDefined = true;
 					expectedWidth = false;
 				} else {
 					windowHeight = target;
+					windowSizeDefined = true;
 					expectedHeight = false;
 				}
 			}
@@ -89,6 +93,8 @@ int main(int argc, char** argv) {
 				expectedWidth = true;
 			} else if (strcmp("-height", arg) == 0) {
 				expectedHeight = true;
+			} else if (strcmp("-fs_borderless", arg) == 0) {
+				fullscreen_borderless = true;
 			}
 		}
 	}
@@ -120,18 +126,26 @@ int main(int argc, char** argv) {
 
 	float screenWidth = windowWidth, screenHeight = windowHeight;
 
-	if (fullscreen) {
+	if (fullscreen || fullscreen_borderless) {
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		screenWidth = mode->width;
 		screenHeight = mode->height;
 	}
 
+	if (fullscreen && !windowSizeDefined || fullscreen_borderless) {
+		windowWidth = screenWidth;
+		windowHeight = screenHeight;
+	}
+
 	GameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 
 	// Create window with graphics context
 	GLFWwindow* window;
-	if (borderless) {
+	if (fullscreen_borderless) {
+		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
+	} else if (borderless) {
 		if (fullscreen) {
 			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
@@ -195,33 +209,6 @@ int main(int argc, char** argv) {
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, keyboard_callback);
 
-	GLuint fbo, texture, rbo;
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowWidth, windowHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, windowWidth, windowHeight);
-
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	GLenum status;
-	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
-		return 0;
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	GLuint vao, vbo;
 
 	UiTextureVertex vertices[4];
@@ -258,14 +245,19 @@ int main(int argc, char** argv) {
 
 	data.clear();
 	glBindVertexArray(0);
-	GameManager->setFramebuffer(fbo);
 
 	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
 
 	GameManager->setup();
 
-	PostProcessingShader *post_processing = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
+	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
+	postProcessingShader->setInt("scene", 0);
+	postProcessingShader->setInt("bloomBlur", 1);
+	postProcessingShader->setInt("ui", 2);
+	
+	Shader *blurShader = AssetManager->getShader(STBlur);
 
+	GameFramebuffers framebuffers = GameManager->getFramebuffers();
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -280,23 +272,66 @@ int main(int argc, char** argv) {
 		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debugging game loop
 		GameManager->update(timeDelta);
 
+		glEnable(GL_DEPTH_TEST);
+
 		// Render to a separate framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.main.fbo);
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
 		GameManager->render();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// apply two-pass gaussian blur to bright fragments
+		bool horizontal = true, first_iteration = true;
+		unsigned int amount = 10;
+		blurShader->use();
+		for (unsigned int i = 0; i < amount; i++) {
+			if (!horizontal) {
+				glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
+			} else {
+				glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
+			}
+			blurShader->setBool("horizontal", horizontal);
+			glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.fbo : framebuffers.pong.fbo));
+			glBindVertexArray(vao);
+			glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBindVertexArray(0);
+			horizontal = !horizontal;
+			if (first_iteration) {
+				first_iteration = false;
+			}
+		}
+
+		glDisable(GL_DEPTH_TEST);
+
+		// Render UI to its framebuffer
+
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ui.fbo);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glViewport(0, 0, windowWidth, windowHeight);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GameManager->renderUi();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDisable(GL_DEPTH_TEST);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		post_processing->use();
+		postProcessingShader->use();
 		ImGui::Render();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[0]);
+		glActiveTexture(GL_TEXTURE1);
+		if (horizontal) {
+			glBindTexture(GL_TEXTURE_2D, framebuffers.ping.texture);
+		} else {
+			glBindTexture(GL_TEXTURE_2D, framebuffers.pong.texture);
+		}
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, framebuffers.ui.texture);
 		glBindVertexArray(vao);
-		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
@@ -310,9 +345,6 @@ int main(int argc, char** argv) {
 	delete AssetManager;
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);
-	glDeleteRenderbuffers(1, &rbo);
-	glDeleteTextures(1, &texture);
-	glDeleteFramebuffers(1, &fbo);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 

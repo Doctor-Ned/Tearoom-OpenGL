@@ -13,13 +13,13 @@ public:
 	Transform worldTransform; //Transform has addres to dirty flag and can change it.
 	Transform localTransform;
 	GraphNode(Mesh* mesh = nullptr, GraphNode* parent = nullptr);
-	void draw();
-	void draw(GraphNode *excluded);
-	void draw(std::vector<GraphNode*> excluded);
-	void draw(Shader *shader);
-	void draw(Shader *shader, GraphNode *excluded);
-	void draw(Shader *shader, std::vector<GraphNode*> excluded);
-	void draw(Shader *shader, GraphNode **excluded, int excludedCount);
+	void draw(bool ignoreLights = false);
+	void draw(GraphNode *excluded, bool ignoreLights = false);
+	void draw(std::vector<GraphNode*> excluded, bool ignoreLights = false);
+	void draw(Shader *shader, bool ignoreLights = false);
+	void draw(Shader *shader, GraphNode *excluded, bool ignoreLights = false);
+	void draw(Shader *shader, std::vector<GraphNode*> excluded, bool ignoreLights = false);
+	void draw(Shader *shader, GraphNode **excluded, int excludedCount, bool ignoreLights = false);
 	virtual void update(double timeDiff);
 	GraphNode *getParent() const;
 	void setParent(GraphNode *parent, bool preserveWorldPosition = false);

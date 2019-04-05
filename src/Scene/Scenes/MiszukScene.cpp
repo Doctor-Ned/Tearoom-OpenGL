@@ -68,11 +68,11 @@ void MiszukScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->draw();
-	for (auto &elem : uiElements) {
-		elem->render();
-	}
 	octree->draw();
+}
 
+void MiszukScene::renderUi() {
+	Scene::renderUi();
 	assetManager->getTextRenderer()->renderText("Miszuk Scene", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 

@@ -11,47 +11,47 @@ GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh)
 	}
 }
 
-void GraphNode::draw() {
-	draw(nullptr, nullptr, 0);
+void GraphNode::draw(bool ignoreLights) {
+	draw(nullptr, nullptr, 0, ignoreLights);
 }
 
-void GraphNode::draw(GraphNode* excluded) {
+void GraphNode::draw(GraphNode* excluded, bool ignoreLights) {
 	if (excluded != nullptr) {
-		draw(nullptr, &excluded, 1);
+		draw(nullptr, &excluded, 1, ignoreLights);
 	} else {
-		draw(nullptr, nullptr, 0);
+		draw(nullptr, nullptr, 0, ignoreLights);
 	}
 }
 
-void GraphNode::draw(std::vector<GraphNode*> excluded) {
+void GraphNode::draw(std::vector<GraphNode*> excluded, bool ignoreLights) {
 	if (excluded.empty()) {
-		draw(nullptr, nullptr, 0);
+		draw(nullptr, nullptr, 0, ignoreLights);
 	} else {
-		draw(nullptr, &excluded[0], excluded.size());
+		draw(nullptr, &excluded[0], excluded.size(), ignoreLights);
 	}
 }
 
-void GraphNode::draw(Shader* shader) {
-	draw(shader, nullptr, 0);
+void GraphNode::draw(Shader* shader, bool ignoreLights) {
+	draw(shader, nullptr, 0, ignoreLights);
 }
 
-void GraphNode::draw(Shader* shader, GraphNode* excluded) {
+void GraphNode::draw(Shader* shader, GraphNode* excluded, bool ignoreLights) {
 	if (excluded != nullptr) {
-		draw(shader, &excluded, 1);
+		draw(shader, &excluded, 1, ignoreLights);
 	} else {
-		draw(shader, nullptr, 0);
+		draw(shader, nullptr, 0, ignoreLights);
 	}
 }
 
-void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded) {
+void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded, bool ignoreLights) {
 	if (excluded.empty()) {
-		draw(shader, nullptr, 0);
+		draw(shader, nullptr, 0, ignoreLights);
 	} else {
-		draw(shader, &excluded[0], excluded.size());
+		draw(shader, &excluded[0], excluded.size(), ignoreLights);
 	}
 }
 
-void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
+void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount, bool ignoreLights) {
 	if (!active) {
 		return;
 	}
@@ -64,7 +64,7 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount) {
 		updateWorld();
 	}
 
-	if (mesh) {
+	if (mesh && mesh->getShaderType() != STLight) {
 		if (shader == nullptr) {
 			mesh->draw(worldTransform.Matrix());
 		} else {

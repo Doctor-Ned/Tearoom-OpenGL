@@ -1,5 +1,6 @@
 #include "MeshRefBox.h"
 #include "MeshSimple.h"
+#include "Scene/AssetManager.h"
 
 MeshRefBox::MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max)
 	: MeshRef(reflective), min(min), max(max) {

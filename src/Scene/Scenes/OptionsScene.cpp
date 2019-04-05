@@ -56,6 +56,11 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		gammaText->setText("Gamma: " + std::to_string(gamma));
 	});
 
+	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 13 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), true);
+	useBloom->setCheckboxCallback([pps](bool enabled) {
+		pps->setBloom(enabled);
+	});
+
 	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 14 * heightSeg), "Back to menu");
 	back->setButtonCallback([menuScene]() { menuScene->hideOptions(); });
 	uiElements.emplace_back(back);
@@ -73,6 +78,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Cast shadows"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use light"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use HDR"));
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use bloom"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 2.0f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 

@@ -1,9 +1,7 @@
 #include "MeshRef.h"
 #include "Scene/GameManager.h"
 
-MeshRef::MeshRef(bool reflective) : Mesh() {
-	type = reflective ? STReflect : STRefract;
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
+MeshRef::MeshRef(bool reflective) : Mesh(reflective ? STReflect : STRefract) {
 	glGenTextures(1, &environmentMap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, environmentMap);
 	glActiveTexture(GL_TEXTURE0);
@@ -24,7 +22,7 @@ MeshRef::MeshRef(bool reflective) : Mesh() {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, fbo);
 	glDrawBuffers(1, drawBufs);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, GameManager::getInstance()->getFramebuffer());
+	glBindFramebuffer(GL_FRAMEBUFFER, GameManager::getInstance()->getMainFramebuffer());
 	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
@@ -41,8 +39,4 @@ void MeshRef::regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4,
 
 GLuint MeshRef::getEnvironmentMap() const {
 	return environmentMap;
-}
-
-ShaderType MeshRef::getShaderType() {
-	return type;
 }

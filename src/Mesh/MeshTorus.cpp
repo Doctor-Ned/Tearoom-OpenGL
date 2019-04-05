@@ -4,7 +4,6 @@ MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* text
                      glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setupMesh();
 }
 

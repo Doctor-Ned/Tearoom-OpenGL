@@ -80,7 +80,9 @@ TestScene::TestScene() {
 	pointLight->constant = 0.18f;
 	pointLight->linear = 0.1f;
 	pointLight->quadratic = 0.1f;
-	pointLightNode = new PointLightNode(pointLight, lightSphere, rotatingNode3);
+	pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->diffuse);
+	pointLightSphere->setShaderType(STLight);
+	pointLightNode = new PointLightNode(pointLight, pointLightSphere, rotatingNode3);
 	pointLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
 
 	dirLights.push_back(dirLight);
@@ -108,6 +110,8 @@ void TestScene::render() {
 	renderDirLights();
 	renderSpotLights();
 	renderPointLights();
+
+	pointLightSphere->setColor(pointLights[0]->diffuse);
 	
 	uboLights->inject(BASE_AMBIENT,
 		dirLights.size(), spotLights.size(), pointLights.size(),
@@ -123,48 +127,12 @@ void TestScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->draw();
-	for (auto &elem : uiElements) {
-		elem->render();
-	}
-
-	dirLightNode->getParent()->drawGui();
-	dirLightNode->drawGui();
-	spotLightNode->drawGui();
-	pointLightNode->drawGui();
-
-	ImGui::SliderFloat("Dir near plane", &dirNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir far plane", &dirFar, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir proj size", &dirProjSize, 0.01f, 50.0f);
-	ImGui::SliderFloat("Spot near plane", &spotNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Spot far plane", &spotFar, 0.01f, 100.0f);
-
-	ImGui::SliderInt("Depth map", &renderDepthMap, 0, 3);
-	switch (renderDepthMap) {
-		case 0:
-			ImGui::Text("None");
-			break;
-		case 1:
-			ImGui::Text("Directional light depth map");
-			break;
-		case 2:
-			ImGui::Text("Spot light depth map");
-			break;
-		case 3:
-			ImGui::Text("Point light depth map");
-			break;
-	}
 
 	if (renderDepthMap == 3) {
 		skybox->draw(camera->getUntranslatedView(), projection, pointLightShadows[0]->texture);
 	} else {
 		skybox->draw(camera->getUntranslatedView(), projection);
 	}
-
-	for (auto &elem : uiElements) {
-		elem->render();
-	}
-
-	assetManager->getTextRenderer()->renderText("dupa", 0, 0, 1.0f, false);
 
 	if (renderDepthMap == 1 || renderDepthMap == 2) {
 		depthDebugShader->use();
@@ -199,6 +167,36 @@ void TestScene::render() {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
 		glUseProgram(0);
+	}
+}
+
+void TestScene::renderUi() {
+	Scene::renderUi();
+	dirLightNode->getParent()->drawGui();
+	dirLightNode->drawGui();
+	spotLightNode->drawGui();
+	pointLightNode->drawGui();
+
+	ImGui::SliderFloat("Dir near plane", &dirNear, 0.01f, 100.0f);
+	ImGui::SliderFloat("Dir far plane", &dirFar, 0.01f, 100.0f);
+	ImGui::SliderFloat("Dir proj size", &dirProjSize, 0.01f, 50.0f);
+	ImGui::SliderFloat("Spot near plane", &spotNear, 0.01f, 100.0f);
+	ImGui::SliderFloat("Spot far plane", &spotFar, 0.01f, 100.0f);
+
+	ImGui::SliderInt("Depth map", &renderDepthMap, 0, 3);
+	switch (renderDepthMap) {
+		case 0:
+			ImGui::Text("None");
+			break;
+		case 1:
+			ImGui::Text("Directional light depth map");
+			break;
+		case 2:
+			ImGui::Text("Spot light depth map");
+			break;
+		case 3:
+			ImGui::Text("Point light depth map");
+			break;
 	}
 }
 
@@ -288,6 +286,8 @@ void TestScene::updateWindowSize(float windowWidth, float windowHeight, float sc
 }
 
 void TestScene::renderDirLights() {
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	for (int i = 0; i < dirLights.size(); i++) {
 		LightShadowData *data = dirLightShadows[i];
 		DirLight *light = dirLights[i];
@@ -304,11 +304,13 @@ void TestScene::renderDirLights() {
 		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }
 
 void TestScene::renderSpotLights() {
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, spotNear, spotFar);
 	for (int i = 0; i < spotLights.size(); i++) {
 		LightShadowData *data = spotLightShadows[i];
@@ -326,11 +328,13 @@ void TestScene::renderSpotLights() {
 		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 		depthShader->setLightSpace(light->lightSpace);
 		rootNode->draw(depthShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }
 
 void TestScene::renderPointLights() {
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	for (int i = 0; i < pointLights.size(); i++) {
 		LightShadowData *data = pointLightShadows[i];
 		PointLight *light = pointLights[i];
@@ -370,7 +374,7 @@ void TestScene::renderPointLights() {
 		}
 		depthPointShader->setPointSpaces(pointSpaces);
 		rootNode->draw(depthPointShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, gameManager->getFramebuffer());
+		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	}
 }
 

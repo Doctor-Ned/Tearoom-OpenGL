@@ -3,6 +3,7 @@
 #include "Mesh/MeshColorBox.h"
 #include "Scene/GameManager.h"
 #include <iostream>
+#include "Scene/GraphNode.h"
 
 void Collider::update()
 {

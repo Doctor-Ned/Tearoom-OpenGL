@@ -7,6 +7,7 @@ class MenuScene : public Scene {
 public:
 	MenuScene();
 	void render() override;
+	void renderUi() override;
 	void update(double deltaTime) override;
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
