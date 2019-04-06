@@ -283,25 +283,27 @@ int main(int argc, char** argv) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GameManager->render();
 
-		// apply two-pass gaussian blur to bright fragments
 		bool horizontal = true, first_iteration = true;
-		static const unsigned int amount = 10;
-		blurShader->use();
-		for (unsigned int i = 0; i < amount; i++) {
-			if (!horizontal) {
-				glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
-			} else {
-				glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
-			}
-			blurShader->setBool("horizontal", horizontal);
-			glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
-			glBindVertexArray(vao);
-			glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindVertexArray(0);
-			horizontal = !horizontal;
-			if (first_iteration) {
-				first_iteration = false;
+		if (postProcessingShader->isBloomEnabled()) {
+		// apply two-pass gaussian blur to bright fragments
+			static const unsigned int amount = 10;
+			blurShader->use();
+			for (unsigned int i = 0; i < amount; i++) {
+				if (!horizontal) {
+					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
+				} else {
+					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
+				}
+				blurShader->setBool("horizontal", horizontal);
+				glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
+				glBindVertexArray(vao);
+				glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+				glBindVertexArray(0);
+				horizontal = !horizontal;
+				if (first_iteration) {
+					first_iteration = false;
+				}
 			}
 		}
 
