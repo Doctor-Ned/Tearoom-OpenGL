@@ -55,8 +55,6 @@ public:
 	void setup();
 	bool useLight = true;
 	bool castShadows = true;
-	int spotDirShadowTexelResolution = 3; // a non-negative power of 3. 
-	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.
 	~GameManager();
 protected:
 	GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);

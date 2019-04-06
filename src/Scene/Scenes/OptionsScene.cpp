@@ -7,6 +7,7 @@
 #include "Ui/UiSliderInt.h"
 #include "Render/PostProcessingShader.h"
 #include "Ui/UiSlider.h"
+#include "Render/LightManager.h"
 
 OptionsScene::OptionsScene(MenuScene* menuScene) {
 	this->menuScene = menuScene;
@@ -18,18 +19,18 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	UiCheckbox *castShadows = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 3 * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->castShadows, true);
 	castShadows->setCheckboxCallback([&manager = gameManager](bool castShadows) { manager->castShadows = castShadows; });
 	UiText *texelText = new UiText(glm::vec2(windowCenterX, 4 * heightSeg), glm::vec2(windowWidth, heightSeg),
-		"Texel resolution: " + std::to_string(gameManager->spotDirShadowTexelResolution));
+		"Texel resolution: " + std::to_string(lightManager->spotDirShadowTexelResolution));
 	UiSliderInt *texelSlider = new UiSliderInt(glm::vec2(windowCenterX, 5 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
-		gameManager->spotDirShadowTexelResolution / 3, 0, 3);
-	texelSlider->setCallback([&manager = gameManager, texelText](int power) {
+		lightManager->spotDirShadowTexelResolution / 3, 0, 3);
+	texelSlider->setCallback([&manager = lightManager, texelText](int power) {
 		manager->spotDirShadowTexelResolution = static_cast<int>(pow(3, power));
 		texelText->setText("Texel resolution: " + std::to_string(manager->spotDirShadowTexelResolution));
 	});
 	UiText *samplesText = new UiText(glm::vec2(windowCenterX, 6 * heightSeg), glm::vec2(windowWidth, heightSeg),
-		"Point shadow samples: " + std::to_string(gameManager->pointShadowSamples));
+		"Point shadow samples: " + std::to_string(lightManager->pointShadowSamples));
 	UiSliderInt *samplesSlider = new UiSliderInt(glm::vec2(windowCenterX, 7 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
-		gameManager->pointShadowSamples, 1, 250);
-	samplesSlider->setCallback([&manager = gameManager, samplesText](int samples) {
+		lightManager->pointShadowSamples, 1, 250);
+	samplesSlider->setCallback([&manager = lightManager, samplesText](int samples) {
 		manager->pointShadowSamples = samples;
 		samplesText->setText("Point shadow samples: " + std::to_string(manager->pointShadowSamples));
 	});

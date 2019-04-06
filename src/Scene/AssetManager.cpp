@@ -7,6 +7,7 @@
 #include <thread>
 #include "Mesh/Model.h"
 #include "Render/PostProcessingShader.h"
+#include "Render/LightManager.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -158,7 +159,8 @@ void AssetManager::setup() {
 	ppShader->setGamma(1.0f);
 	ppShader->setHdr(false);
 	ppShader->setBloom(true);
-	uboLights = new UboLights(BASE_AMBIENT, 0, 0, 0, gameManager->spotDirShadowTexelResolution, gameManager->pointShadowSamples, nullptr, nullptr, nullptr);
+	LightManager *lightManager = LightManager::getInstance();
+	uboLights = new UboLights(0.00f, 0, 0, 0, lightManager->spotDirShadowTexelResolution, lightManager->pointShadowSamples, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	uboViewProjection = new UboViewProjection(glm::mat4(1.0f), glm::mat4(1.0f));
 	ubos.push_back(uboLights);

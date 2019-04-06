@@ -2,6 +2,7 @@
 #include "GLFW/glfw3.h"
 #include "AssetManager.h"
 #include "Scene/Scenes/MenuScene.h"
+#include "Render/LightManager.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -100,6 +101,7 @@ void GameManager::setup() {
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
 	
 	AssetManager::getInstance()->setup();
+	LightManager::getInstance()->setup();
 	menuScene = new MenuScene();
 	goToMenu();
 }

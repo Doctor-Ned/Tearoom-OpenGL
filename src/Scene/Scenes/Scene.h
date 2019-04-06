@@ -5,6 +5,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
 
+class LightManager;
 struct GameFramebuffers;
 class AssetManager;
 class GameManager;
@@ -27,4 +28,5 @@ protected:
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	std::vector<UiElement*> uiElements;
 	GraphNode *rootNode = new GraphNode();
+	LightManager *lightManager;
 };

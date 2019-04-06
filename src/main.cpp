@@ -14,6 +14,7 @@
 #include "Scene/Scenes/MiszukScene.h"
 #include "Render/PostProcessingShader.h"
 #include "Ui/UiPlane.h"
+#include "Render/LightManager.h"
 
 
 //comment extern below if you don't have NVidia GPU
@@ -343,6 +344,7 @@ int main(int argc, char** argv) {
 	}
 	delete GameManager;
 	delete AssetManager;
+	delete LightManager::getInstance();
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);
 	glfwDestroyWindow(window);

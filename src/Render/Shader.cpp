@@ -173,7 +173,7 @@ void Shader::setMat4(const char* name, glm::mat4& value) {
 	}
 }
 
-void Shader::updateShadowData(std::vector<LightShadowData*> dirs, std::vector<LightShadowData*> spots, std::vector<LightShadowData*> points) {
+void Shader::updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points) {
 	use();
 	int padding = 0;
 	int current;
@@ -181,19 +181,19 @@ void Shader::updateShadowData(std::vector<LightShadowData*> dirs, std::vector<Li
 	for (int i = 0; i < dirs.size(); i++) {
 		current = baseTex - padding--;
 		glActiveTexture(GL_TEXTURE0 + current);
-		glBindTexture(GL_TEXTURE_2D, dirs[i]->texture);
+		glBindTexture(GL_TEXTURE_2D, dirs[i].texture);
 		setInt(("dir_shadows[" + std::to_string(i) + "]").c_str(), current);
 	}
 	for (int i = 0; i < spots.size(); i++) {
 		current = baseTex - padding--;
 		glActiveTexture(GL_TEXTURE0 +current);
-		glBindTexture(GL_TEXTURE_2D, spots[i]->texture);
+		glBindTexture(GL_TEXTURE_2D, spots[i].texture);
 		setInt(("spot_shadows[" + std::to_string(i) + "]").c_str(), current);
 	}
 	for (int i = 0; i < points.size(); i++) {
 		current = baseTex - padding--;
 		glActiveTexture(GL_TEXTURE0 + current);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, points[i]->texture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, points[i].texture);
 		setInt(("point_shadows[" + std::to_string(i) + "]").c_str(), current);
 	}
 }

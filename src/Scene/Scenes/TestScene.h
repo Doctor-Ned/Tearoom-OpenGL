@@ -11,6 +11,7 @@
 #include "Scene/SpotLightNode.h"
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
+#include "Render/LightManager.h"
 
 class MeshColorSphere;
 const int
@@ -44,27 +45,16 @@ protected:
 	int renderDepthMap = 0;
 	float spotNear = 1.0f, spotFar = 50.0f, dirNear = 4.0f, dirFar = 70.0f, dirProjSize = 10.0f;
 	Skybox *skybox;
-	void renderDirLights();
-	void renderSpotLights();
-	void renderPointLights();
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;
+	Lights lights;
 	UboLights *uboLights;
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
-	std::vector<DirLight*> dirLights;
-	std::vector<SpotLight*> spotLights;
-	std::vector<PointLight*> pointLights;
-	std::vector<LightShadowData*> dirLightShadows;
-	std::vector<LightShadowData*> spotLightShadows;
-	std::vector<LightShadowData*> pointLightShadows;
 	std::vector<DirLightNode*> dirLightNodes;
 	std::vector<SpotLightNode*> spotLightNodes;
 	std::vector<PointLightNode*> pointLightNodes;
 	MeshColorSphere *pointLightSphere;
-	glm::mat4 spotLightProjection;
-	Shader *depthShader, *depthDebugShader;
-	GeometryShader *depthPointShader;
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;
 	PointLightNode *pointLightNode;

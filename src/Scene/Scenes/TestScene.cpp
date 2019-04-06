@@ -6,6 +6,7 @@
 #include "Scene/RotatingNode.h"
 #include "Scene/SpotLightNode.h"
 #include "Scene/PointLightNode.h"
+#include "Render/LightManager.h"
 
 TestScene::TestScene() {
 	std::vector<std::string> faces;
@@ -23,9 +24,6 @@ TestScene::TestScene() {
 	faces.emplace_back("res/skybox/test/back.jpg");
 
 	skybox = new Skybox(assetManager->getShader(STSkybox), faces);
-	depthShader = assetManager->getShader(STDepth);
-	depthDebugShader = assetManager->getShader(STDepthDebug);
-	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 
 	uboLights = assetManager->getUboLights();
 	uboTextureColor = assetManager->getUboTextureColor();
@@ -43,7 +41,9 @@ TestScene::TestScene() {
 
 	GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
-	DirLight *dirLight = new DirLight();
+	lights = lightManager->recreateLights(1, 1, 1);
+
+	DirLight *dirLight = lights.dirLights[0];
 	dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
@@ -58,7 +58,7 @@ TestScene::TestScene() {
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
 
-	SpotLight *spotLight = new SpotLight();
+	SpotLight *spotLight = lights.spotLights[0];
 	spotLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	spotLight->diffuse = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 	spotLight->specular = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -73,7 +73,7 @@ TestScene::TestScene() {
 
 	GraphNode *rotatingNode3 = new RotatingNode(0.15f, nullptr, rootNode);
 
-	PointLight *pointLight = new PointLight();
+	PointLight *pointLight = lights.pointLights[0];
 	pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	pointLight->diffuse = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
 	pointLight->specular = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
@@ -84,14 +84,6 @@ TestScene::TestScene() {
 	pointLightSphere->setShaderType(STLight);
 	pointLightNode = new PointLightNode(pointLight, pointLightSphere, rotatingNode3);
 	pointLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
-
-	dirLights.push_back(dirLight);
-	spotLights.push_back(spotLight);
-	pointLights.push_back(pointLight);
-
-	dirLightShadows = Global::getDirsShadowData(dirLights.size());
-	spotLightShadows = Global::getSpotsShadowData(spotLights.size());
-	pointLightShadows = Global::getPointsShadowData(pointLights.size());
 
 	dirLightNodes.push_back(dirLightNode);
 	spotLightNodes.push_back(spotLightNode);
@@ -107,68 +99,23 @@ TestScene::TestScene() {
 }
 
 void TestScene::render() { 
-	renderDirLights();
-	renderSpotLights();
-	renderPointLights();
+	lightManager->renderAndUpdate([&rootNode = rootNode](Shader *shader) {
+		rootNode->draw(shader, true);
+	}, updatableShaders);
 
-	pointLightSphere->setColor(pointLights[0]->diffuse);
-	
-	uboLights->inject(BASE_AMBIENT,
-		dirLights.size(), spotLights.size(), pointLights.size(),
-		gameManager->spotDirShadowTexelResolution, gameManager->pointShadowSamples,
-		&dirLights[0], &spotLights[0], &pointLights[0]);
+	pointLightSphere->setColor(lights.pointLights[0]->diffuse);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto &shader : updatableShaders) {
 		shader->setViewPosition(camera->getPos());
-		shader->updateShadowData(dirLightShadows, spotLightShadows, pointLightShadows);
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
-	if (renderDepthMap == 3) {
-		skybox->draw(camera->getUntranslatedView(), projection, pointLightShadows[0]->texture);
-	} else {
-		skybox->draw(camera->getUntranslatedView(), projection);
-	}
+	skybox->draw(camera->getUntranslatedView(), projection);
 
 	rootNode->draw();
-
-	if (renderDepthMap == 1 || renderDepthMap == 2) {
-		depthDebugShader->use();
-		depthDebugShader->setInt("perspective", renderDepthMap == 1 ? 0 : 1);
-		depthDebugShader->setFloat("near_plane", renderDepthMap == 1 ? dirNear : spotNear);
-		depthDebugShader->setFloat("far_plane", renderDepthMap == 1 ? dirNear : spotFar);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, renderDepthMap == 1 ? dirLightShadows[0]->texture : spotLightShadows[0]->texture);
-
-		static unsigned int quadVAO = 0;
-		static unsigned int quadVBO;
-		if (quadVAO == 0) {
-			float quadVertices[] = {
-				// positions        // texture Coords
-				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			};
-			// setup plane VAO
-			glGenVertexArrays(1, &quadVAO);
-			glGenBuffers(1, &quadVBO);
-			glBindVertexArray(quadVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		}
-		glBindVertexArray(quadVAO);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBindVertexArray(0);
-		glUseProgram(0);
-	}
 }
 
 void TestScene::renderUi() {
@@ -178,27 +125,11 @@ void TestScene::renderUi() {
 	spotLightNode->drawGui();
 	pointLightNode->drawGui();
 
-	ImGui::SliderFloat("Dir near plane", &dirNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir far plane", &dirFar, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir proj size", &dirProjSize, 0.01f, 50.0f);
-	ImGui::SliderFloat("Spot near plane", &spotNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Spot far plane", &spotFar, 0.01f, 100.0f);
-
-	ImGui::SliderInt("Depth map", &renderDepthMap, 0, 3);
-	switch (renderDepthMap) {
-		case 0:
-			ImGui::Text("None");
-			break;
-		case 1:
-			ImGui::Text("Directional light depth map");
-			break;
-		case 2:
-			ImGui::Text("Spot light depth map");
-			break;
-		case 3:
-			ImGui::Text("Point light depth map");
-			break;
-	}
+	ImGui::SliderFloat("Dir near plane", &lightManager->dirNear, 0.01f, 100.0f);
+	ImGui::SliderFloat("Dir far plane", &lightManager->dirFar, 0.01f, 100.0f);
+	ImGui::SliderFloat("Dir proj size", &lightManager->dirProjSize, 0.01f, 50.0f);
+	ImGui::SliderFloat("Spot near plane", &lightManager->spotNear, 0.01f, 100.0f);
+	ImGui::SliderFloat("Spot far plane", &lightManager->spotFar, 0.01f, 100.0f);
 }
 
 void TestScene::update(double deltaTime) {
@@ -284,99 +215,6 @@ void TestScene::mouse_button_callback(GLFWwindow * window, int butt, int action,
 void TestScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
 	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
-}
-
-void TestScene::renderDirLights() {
-	int oldFbo;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	for (int i = 0; i < dirLights.size(); i++) {
-		LightShadowData *data = dirLightShadows[i];
-		DirLight *light = dirLights[i];
-		DirLightNode *node = dirLightNodes[i];
-
-		glViewport(0, 0, data->width, data->height);
-		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		depthShader->use();
-		glm::vec3 position = glm::vec3(node->worldTransform.Matrix()[3]);
-		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
-		glm::mat4 directionWorld = node->worldTransform.Matrix();
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
-		depthShader->setLightSpace(light->lightSpace);
-		rootNode->draw(depthShader, true);
-		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
-	}
-}
-
-void TestScene::renderSpotLights() {
-	int oldFbo;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, spotNear, spotFar);
-	for (int i = 0; i < spotLights.size(); i++) {
-		LightShadowData *data = spotLightShadows[i];
-		SpotLight *light = spotLights[i];
-		SpotLightNode *node = spotLightNodes[i];
-
-		glViewport(0, 0, data->width, data->height);
-		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		depthShader->use();
-		glm::mat4 world = node->worldTransform.Matrix();
-		glm::vec3 pos = world[3];
-		glm::mat4 directionWorld = world;
-		directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
-		depthShader->setLightSpace(light->lightSpace);
-		rootNode->draw(depthShader, true);
-		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
-	}
-}
-
-void TestScene::renderPointLights() {
-	int oldFbo;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	for (int i = 0; i < pointLights.size(); i++) {
-		LightShadowData *data = pointLightShadows[i];
-		PointLight *light = pointLights[i];
-		PointLightNode *node = pointLightNodes[i];
-
-		glViewport(0, 0, data->width, data->height);
-		glBindFramebuffer(GL_FRAMEBUFFER, data->fbo);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		depthPointShader->setFloat("near_plane", light->near_plane);
-		depthPointShader->setFloat("far_plane", light->far_plane);
-		glm::mat4 world = node->worldTransform.Matrix();
-		glm::vec3 position = world[3];
-		depthPointShader->setPointPosition(position);
-		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, light->near_plane, light->far_plane);
-
-		glm::mat4 pointSpaces[6];
-
-		static glm::vec3 targets[6] = {
-			glm::vec3(1.0f, 0.0f, 0.0f),
-			glm::vec3(-1.0f, 0.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.0f, -1.0f, 0.0f),
-			glm::vec3(0.0f, 0.0f, 1.0f),
-			glm::vec3(0.0f, 0.0f, -1.0f)
-		};
-		static glm::vec3 ups[6] = {
-			glm::vec3(0.0f, -1.0f, 0.0f),
-			glm::vec3(0.0f, -1.0f, 0.0f),
-			glm::vec3(0.0f, 0.0f, 1.0f),
-			glm::vec3(0.0f, 0.0f, -1.0f),
-			glm::vec3(0.0f, -1.0f, 0.0f),
-			glm::vec3(0.0f, -1.0f, 0.0f)
-		};
-
-		for (int i = 0; i < 6; i++) {
-			pointSpaces[i] = projection * lookAt(position, position + targets[i], ups[i]);
-		}
-		depthPointShader->setPointSpaces(pointSpaces);
-		rootNode->draw(depthPointShader, true);
-		glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
-	}
 }
 
 bool TestScene::getKeyState(int key) {

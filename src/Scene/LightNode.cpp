@@ -2,9 +2,9 @@
 
 void LightNode::updateWorld() {
 	GraphNode::updateWorld();
-	if (dirty) {
+	//if (dirty) {
 		setModel(worldTransform.Matrix());
-	}
+	//}
 }
 
 void LightNode::renderGui() {

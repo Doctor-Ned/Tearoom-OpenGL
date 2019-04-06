@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Scene/GameManager.h"
 #include "Scene/AssetManager.h"
+#include "Render/LightManager.h"
 
 void Scene::render() {
 	rootNode->draw();
@@ -45,6 +46,7 @@ void Scene::mouse_button_callback(GLFWwindow* window, int butt, int action, int 
 Scene::Scene() {
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
+	lightManager = LightManager::getInstance();
 	gameFramebuffers = gameManager->getFramebuffers();
 	windowWidth = gameManager->getWindowWidth();
 	windowHeight = gameManager->getWindowHeight();
