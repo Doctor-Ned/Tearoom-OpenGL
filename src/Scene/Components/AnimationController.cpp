@@ -29,7 +29,7 @@ AnimationController::~AnimationController()
 
 }
 
-void AnimationController::update()
+void AnimationController::update(float msec)
 {
 
 }

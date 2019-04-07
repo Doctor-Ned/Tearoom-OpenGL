@@ -7,6 +7,7 @@
 #include "Scene/OctreeNode.h"
 #include <iostream>
 #include "Scene/Components/Collider.h"
+#include "Scene/Scripts/CollisionTest.h"
 //#include "Scene/Components/AnimationController.h"
 
 MiszukScene::MiszukScene() {
@@ -52,6 +53,7 @@ MiszukScene::MiszukScene() {
 	octree->Calculate();
 
 	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
+	boxNode->addComponent(new CollisionTest(boxNode));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->getComponent<Collider>();
@@ -68,7 +70,7 @@ void MiszukScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->draw();
-	octree->draw();
+	//octree->draw();
 }
 
 void MiszukScene::renderUi() {
@@ -119,7 +121,7 @@ void MiszukScene::update(double deltaTime) {
 	mouseMovementY = 0.0f;
 
 	rootNode->getChild(3)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
-	rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
+	//rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 	rootNode->update(deltaTime);
 	//std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
 	rootNode->getChild(2)->getComponent<Collider>();

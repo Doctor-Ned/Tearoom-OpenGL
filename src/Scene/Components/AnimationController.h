@@ -24,7 +24,7 @@ public:
     virtual ~AnimationController();
 
     AnimationController(AnimationType _type, Mesh *mesh, GraphNode* _gameObject);
-    void update() override;
+    void update(float msec) override;
     void draw() override;
     void startAnimation();
     void calculatePath();

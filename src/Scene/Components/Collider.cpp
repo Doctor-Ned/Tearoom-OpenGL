@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Scene/GraphNode.h"
 
-void Collider::update()
+void Collider::update(float m_sec)
 {
 	glm::vec3 gameObjectPos = gameObject->worldTransform.getPosition();
 	
@@ -45,6 +45,16 @@ bool Collider::checkCollision(Collider* collider)
 	else if (type == SphereCollider && collider->type == BoxCollider)
 	{
 		collision = AABBtoSphere(collider, this);
+	}
+	if (collision)
+	{
+		if (!callbackFunctions.empty())
+		{
+			for (auto & f : callbackFunctions)
+			{
+				f(collider);
+			}
+		}
 	}
 	return collision;
 }
@@ -88,6 +98,11 @@ bool Collider::AABBtoSphere(Collider* _box, Collider* _sphere)
 	float sqRadius = _sphere->data.w * _sphere->data.w;
 	
 	return sqDist <= sqRadius;
+}
+
+void Collider::SetCollisionCallback(std::function<int(Collider*)> f)
+{
+	callbackFunctions.push_back(f);
 }
 
 Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data) 

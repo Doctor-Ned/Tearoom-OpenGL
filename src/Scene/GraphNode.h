@@ -28,7 +28,7 @@ public:
 	void addComponent(Component*component);
 	template <class T> void removeComponent(T *component);
 	template <class T> void removeComponents();
-	template <class T> Component* getComponent();
+	template <class T> T* getComponent();
 	template <class T> std::vector<Component*> getComponents();
 	GraphNode* getChild(int index);
 	Mesh* getMesh();
@@ -70,9 +70,9 @@ void GraphNode::removeComponents() {
 	}
 }
 
-template <class T> Component* GraphNode::getComponent() {
+template <class T> T* GraphNode::getComponent() {
 	for (auto &comp : components) {
-		Component* result = dynamic_cast<T*>(comp);
+		T* result = dynamic_cast<T*>(comp);
 		if (result) {
 			return result;
 		}

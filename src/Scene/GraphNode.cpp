@@ -97,7 +97,7 @@ void GraphNode::update(double timeDiff) {
 		return;
 	}
 	for (Component* component : components) {
-		component->update();
+		component->update(timeDiff);
 	}
 	for (auto &child : children) {
 		child->update(timeDiff);
