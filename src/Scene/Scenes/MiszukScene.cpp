@@ -138,11 +138,11 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->getChild(2)->getComponent<Collider>();
 	Collider* tmp1 = rootNode->getChild(2)->getComponent<Collider>();
 	Collider* tmp2 = rootNode->getChild(6)->getComponent<Collider>();
-	if (tmp1->checkCollision(tmp2)) {
+	/*if (tmp1->checkCollision(tmp2)) {
 		std::cout << "Kolizja" << std::endl;
 	} else {
 		std::cout << "Nie ma kolizji" << std::endl;
-	}
+	}*/
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

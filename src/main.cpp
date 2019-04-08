@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1); // Enable vsync
+	glfwSwapInterval(0); // Enable vsync
 
 	GameManager->setWindow(window);
 
@@ -271,7 +271,7 @@ int main(int argc, char** argv) {
 		currentTime = glfwGetTime();
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
-		timeDelta <= 1.0 / 60.0 ? timeDelta : timeDelta = 1.0 / 60.0; //for debugging game loop
+		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120.0; //for debugging game loop
 		GameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
