@@ -123,10 +123,10 @@ void MiszukScene::update(double deltaTime) {
 	}
 
 	if (abs(mouseMovementX) < 1000.0f) {
-		camera->rotateX(mouseMovementX * deltaTime);
+		camera->rotateX(mouseMovementX * 0.06f);
 	}
 	if (abs(mouseMovementY) < 1000.0f) {
-		camera->rotateY(-mouseMovementY * deltaTime);
+		camera->rotateY(-mouseMovementY * 0.06f);
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;

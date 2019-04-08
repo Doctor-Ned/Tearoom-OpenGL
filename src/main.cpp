@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(0); // Enable vsync
+	glfwSwapInterval(0); // vsync
 
 	GameManager->setWindow(window);
 
@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
 	srand(time(nullptr));
 
 	glfwMakeContextCurrent(window);
-	//glEnable(GL_DEPTH_TEST); it gets enabled later.
+	glEnable(GL_DEPTH_TEST); //it gets enabled later.
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

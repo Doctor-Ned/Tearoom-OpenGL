@@ -113,9 +113,10 @@ void TestScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
-	skybox->draw(camera->getUntranslatedView(), projection);
 
 	rootNode->draw();
+
+	skybox->draw(camera->getUntranslatedView(), projection);
 }
 
 void TestScene::renderUi() {
@@ -167,10 +168,10 @@ void TestScene::update(double deltaTime) {
 
 	if (lockMouse) {
 		if (abs(mouseMovementX) < 1000.0f) {
-			camera->rotateX(mouseMovementX * deltaTime);
+			camera->rotateX(mouseMovementX * 0.06f);
 		}
 		if (abs(mouseMovementY) < 1000.0f) {
-			camera->rotateY(-mouseMovementY * deltaTime);
+			camera->rotateY(-mouseMovementY * 0.06f);
 		}
 	}
 	mouseMovementX = 0.0f;
