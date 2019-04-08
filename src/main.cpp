@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
 	srand(time(nullptr));
 
 	glfwMakeContextCurrent(window);
-	glEnable(GL_DEPTH_TEST); //it gets enabled later.
+	//glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -248,7 +248,7 @@ int main(int argc, char** argv) {
 	data.clear();
 	glBindVertexArray(0);
 
-	const glm::vec4 clear_color(0.2f, 0.0f, 0.6f, 1.0f);
+	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
 
 	GameManager->setup();
 

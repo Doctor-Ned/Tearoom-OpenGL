@@ -9,11 +9,13 @@ class Scene;
 
 struct Framebuffer {
 	GLuint fbo;
+	GLuint depth;
 	GLuint texture;
 };
 
 struct MultitextureFramebuffer {
 	GLuint fbo;
+	GLuint depth;
 	GLuint *textures;
 	unsigned int textureAmount;
 };

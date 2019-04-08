@@ -113,7 +113,6 @@ void TestScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
-
 	rootNode->draw();
 
 	skybox->draw(camera->getUntranslatedView(), projection);

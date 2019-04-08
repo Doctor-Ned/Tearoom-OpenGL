@@ -95,10 +95,12 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 
 void GameManager::setup() {
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
+	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	uiFramebuffer = createFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
 	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
-	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
 	
 	AssetManager::getInstance()->setup();
 	LightManager::getInstance()->setup();
