@@ -8,7 +8,7 @@ UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
 	this->center = center;
 	glGenVertexArrays(1, &vao);
 	updateProjection(manager->getWindowWidth(), manager->getWindowHeight(), manager->getScreenWidth(), manager->getScreenHeight());
-	UiElement::setPosition(position);
+	UiElement::setPosition(position, center);
 }
 
 void UiElement::render() {
