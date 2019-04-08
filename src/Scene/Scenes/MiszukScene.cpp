@@ -18,6 +18,7 @@ MiszukScene::MiszukScene() {
 	MeshColorPlane *plane = new MeshColorPlane(1.0f, 1.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 1), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	box->setRenderMode(GL_LINES);
 	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
 	GraphNode* planeNode = new GraphNode(plane);
 	GraphNode* sphereNode = new GraphNode(sphere);
@@ -39,7 +40,7 @@ MiszukScene::MiszukScene() {
 	updatableShaders.push_back(assetManager->getShader(STReflect));
 	updatableShaders.push_back(assetManager->getShader(STRefract));
 
-	boxNode->localTransform.Translate(glm::vec3(2.0f, 0.0f, 0.0f));
+	boxNode->localTransform.Translate(glm::vec3(2.0f, 2.0f, 0.0f));
 
 	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 
@@ -57,6 +58,16 @@ MiszukScene::MiszukScene() {
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->getComponent<Collider>();
+
+	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	GraphNode* simpleBox1 = new GraphNode(meshBox);
+	GraphNode* simpleBox2 = new GraphNode(meshBox);
+	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, 0.0f);
+	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
+	rootNode->addChild(simpleBox1);
+	rootNode->addChild(simpleBox2);
+	simpleBox1->addComponent(new Collider(BoxCollider, simpleBox1, glm::vec4(0, 0, 0, 0.5f)));
+	simpleBox2->addComponent(new Collider(BoxCollider, simpleBox2, glm::vec4(0, 0, 0, 0.5f)));
 }
 
 MiszukScene::~MiszukScene() {
@@ -125,8 +136,8 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->update(deltaTime);
 	//std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
 	rootNode->getChild(2)->getComponent<Collider>();
-	Collider* tmp1 = dynamic_cast<Collider*>(rootNode->getChild(2)->getComponent<Collider>());
-	Collider* tmp2 = dynamic_cast<Collider*>(rootNode->getChild(4)->getComponent<Collider>());
+	Collider* tmp1 = rootNode->getChild(2)->getComponent<Collider>();
+	Collider* tmp2 = rootNode->getChild(6)->getComponent<Collider>();
 	if (tmp1->checkCollision(tmp2)) {
 		std::cout << "Kolizja" << std::endl;
 	} else {

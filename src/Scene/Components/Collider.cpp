@@ -86,18 +86,26 @@ bool Collider::AABBtoSphere(Collider* _box, Collider* _sphere)
 	for (int i = 0; i < 3; i++)
 	{
 		float v = _sphere->data[i]; // v = x, y, z (sphere center)
-		if (v < _box->data[i] - _box->data.w) v = _box->data[i] - _box->data.w;
-		if (v > _box->data[i] + _box->data.w) v = _box->data[i] + _box->data.w;
+		if (v < _box->data[i] - _box->data.w) 
+		{
+			v = _box->data[i] - _box->data.w;
+		}
+		if (v > _box->data[i] + _box->data.w) 
+		{
+			v = _box->data[i] + _box->data.w;
+		}
 		closestPoint[i] = v;
 	}
-	//calculating squred distance from the nearest point to sphere center
-	float sqDist = pow(_sphere->data.x + closestPoint.x, 2) +
-		pow(_sphere->data.y + closestPoint.y, 2) +
-		pow(_sphere->data.z + closestPoint.z, 2);
-
-	float sqRadius = _sphere->data.w * _sphere->data.w;
 	
+	//calculating squred distance from the nearest point to sphere center
+	float sqDist = pow(_sphere->data.x - closestPoint.x, 2) +
+		pow(_sphere->data.y - closestPoint.y, 2) +
+		pow(_sphere->data.z - closestPoint.z, 2);
+	
+	//float distance = glm::distance(glm::vec3(_sphere->data), closestPoint);
+	float sqRadius = _sphere->data.w * _sphere->data.w;
 	return sqDist <= sqRadius;
+	//return distance <= _sphere->data.w;
 }
 
 void Collider::SetCollisionCallback(std::function<int(Collider*)> f)
