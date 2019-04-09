@@ -10,7 +10,8 @@ enum UiRescaleMode {
 	Fit,
 	MatchHeight,
 	MatchWidth,
-	Stretch
+	Stretch,
+	None
 };
 
 enum UiAnchor {  //not used yet but i hope this thing will change the world some day

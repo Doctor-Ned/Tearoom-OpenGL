@@ -264,11 +264,11 @@ int main(int argc, char** argv) {
 	GameFramebuffers framebuffers = GameManager->getFramebuffers();
 
 
-	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(100.0f, 30.0f), false);
+	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(120.0f, 30.0f), false);
 	glm::vec2 planeCenter = fpsPlane->getPosition();
 	planeCenter.x += fpsPlane->getSize().x / 2.0f;
 	planeCenter.y += fpsPlane->getSize().y / 2.0f;
-	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), None);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
