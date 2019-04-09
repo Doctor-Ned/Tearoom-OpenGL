@@ -38,11 +38,14 @@ void UiText::render() {
 }
 
 void UiText::setText(const char * text) {
-	this->text = text;
+	setText(std::string(text));
 }
 
 void UiText::setText(std::string text) {
 	this->text = text;
+	if(rescaleMode != None) {
+		scale = textRenderer->getScaleToFitSize(text, size, rescaleMode);
+	}
 }
 
 void UiText::setup() {}
