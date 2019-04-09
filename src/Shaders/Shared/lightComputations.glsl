@@ -40,9 +40,9 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
 		}
 	}
 
-	//mat4 directionWorld = light.model;
-	//directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec3 direction = normalize(vec3(light.model * vec4(0.0f, 0.0f, -1.0f, 1.0f)));
+	mat4 directionWorld = light.model;
+	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec3 direction = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
     float diff = max(dot(direction, fs_in.normal), 0.0);
 
 	vec3 reflectDir = reflect(-direction, fs_in.normal);
@@ -82,9 +82,9 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
 	}
 	vec3 position = vec3(light.model[3]);
 	vec3 direction = normalize(position - fs_in.pos);
-	//mat4 directionWorld = light.model;
-	//directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec3 spotDirection = normalize(vec3(light.model * vec4(0.0f, 0.0f, -1.0f, 1.0f)));
+	mat4 directionWorld = light.model;
+	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec3 spotDirection = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
 	float diff = max(dot(direction, fs_in.normal), 0.0);
 
 	float cutOff = cos(light.cutOff);
