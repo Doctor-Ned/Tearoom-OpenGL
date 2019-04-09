@@ -277,15 +277,17 @@ int main(int argc, char** argv) {
 		ImGui::NewFrame();
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta, deltaSum = 100.0f;
+		static int lastFps = 0;
 		currentTime = glfwGetTime();
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
-		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120.0; //for debugging game loop
+		lastFps = static_cast<int>(1.0 / timeDelta);
 		deltaSum += timeDelta;
 		if (deltaSum >= 0.5f) {   //update FPS text every second
-			fpsText->setText("FPS: "+std::to_string(static_cast<int>(1.0 / timeDelta)));
+			fpsText->setText("FPS: "+std::to_string(lastFps));
 			deltaSum = 0.0f;
 		}
+		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
 		GameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
