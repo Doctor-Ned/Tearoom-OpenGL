@@ -359,6 +359,10 @@ int main(int argc, char** argv) {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwMakeContextCurrent(window);
 		glfwSwapBuffers(window);
+		if (!AssetManager->isLoaded()) {
+			AssetManager->loadResources();
+			GameManager->goToMenu();
+		}
 	}
 	delete GameManager;
 	delete AssetManager;

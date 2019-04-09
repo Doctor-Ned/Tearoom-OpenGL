@@ -116,31 +116,9 @@ bool AssetManager::endsWith(std::string const &fullString, std::string const &en
 
 void AssetManager::setup() {
 	textRenderer = new TextRenderer(0.5f);
-	textRenderer->load("res/fonts/ButterLayer.ttf", 60);
+	textRenderer->load("res/fonts/Merriweather-Regular.ttf", 60);
 	shaders.emplace(STUiTexture, new Shader("Ui/uiTextureVS.glsl", "Ui/uiTextureFS.glsl"));
 	shaders.emplace(STUiColor, new Shader("Ui/uiColorVS.glsl", "Ui/uiColorFS.glsl"));
-
-	//std::thread t([this] {
-	gameManager = GameManager::getInstance();
-	//LoadingScene *loadingScene = new LoadingScene();
-	//gameManager->setCurrentScene(loadingScene);
-	for (const auto & entry : fs::recursive_directory_iterator("res")) {
-		std::string path = entry.path().u8string();
-		for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
-			if(*i == '\\') {
-				*i = '/';
-			}
-		}
-		if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
-			//loadingScene->setLoadingText("Loading '" + path + "'...");
-			textures.emplace_back(createTexture(path.c_str()));
-		} else if(endsWith(path, ".obj")) {
-			models.emplace(path, Model::createModelData(path));
-		}
-	}
-	gameManager->goToMenu();
-//});
-
 	shaders.emplace(STSkybox, new Shader("skyboxVS.glsl", "skyboxFS.glsl"));
 	shaders.emplace(STModel, new Shader("modelVS.glsl", "modelFS.glsl"));
 	shaders.emplace(STModelInstanced, new Shader("instanceModelVS.glsl", "modelFS.glsl"));
@@ -184,6 +162,30 @@ void AssetManager::setup() {
 
 }
 
+void AssetManager::loadResources() {
+	//std::thread t([this] {
+	gameManager = GameManager::getInstance();
+	//LoadingScene *loadingScene = new LoadingScene();
+	//gameManager->setCurrentScene(loadingScene);
+	for (const auto & entry : fs::recursive_directory_iterator("res")) {
+		std::string path = entry.path().u8string();
+		for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
+			if (*i == '\\') {
+				*i = '/';
+			}
+		}
+		if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
+			//loadingScene->setLoadingText("Loading '" + path + "'...");
+			textures.emplace_back(createTexture(path.c_str()));
+		} else if (endsWith(path, ".obj")) {
+			models.emplace(path, Model::createModelData(path));
+		}
+	}
+	loaded = true;
+	//gameManager->goToMenu();
+//});
+}
+
 AssetManager::~AssetManager() {
 	for (auto &ubo : ubos) {
 		delete ubo;
@@ -197,6 +199,10 @@ AssetManager::~AssetManager() {
 	for (auto &texture : textures) {
 		glDeleteTextures(1, &texture.id);
 	}
+}
+
+bool AssetManager::isLoaded() {
+	return loaded;
 }
 
 TextRenderer* AssetManager::getTextRenderer() {

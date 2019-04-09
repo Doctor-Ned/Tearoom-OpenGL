@@ -6,8 +6,8 @@ class Transform
 {
 private:
 	bool* dirty;
+	glm::mat4 transform;
 public:
-	glm::mat4 transform; //shh, that's just for now
 	Transform(bool& dirty);
 	glm::mat4 Matrix();
 	void SetMatrix(const glm::mat4& matrix);

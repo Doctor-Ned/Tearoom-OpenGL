@@ -3,6 +3,7 @@
 #include "AssetManager.h"
 #include "Scene/Scenes/MenuScene.h"
 #include "Render/LightManager.h"
+#include "Scenes/LoadingScene.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -74,6 +75,9 @@ void GameManager::setCursorLocked(bool locked) {
 
 void GameManager::goToMenu(bool destroyPreviousScene) {
 	Scene* old = currentScene;
+	if(menuScene == nullptr) {
+		menuScene = new MenuScene();
+	}
 	currentScene = menuScene;
 	setCursorLocked(false);
 	if (old != menuScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
@@ -104,8 +108,9 @@ void GameManager::setup() {
 	
 	AssetManager::getInstance()->setup();
 	LightManager::getInstance()->setup();
-	menuScene = new MenuScene();
-	goToMenu();
+	//menuScene = new MenuScene();
+	//goToMenu();
+	setCurrentScene(new LoadingScene());
 }
 
 GameManager::~GameManager() {
