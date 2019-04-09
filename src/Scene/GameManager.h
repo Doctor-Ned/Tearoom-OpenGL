@@ -8,16 +8,22 @@ class MenuScene;
 class Scene;
 
 struct Framebuffer {
-	GLuint fbo;
-	GLuint depth;
-	GLuint texture;
+	GLuint fbo = 0;
+	GLuint depth = 0;
+	GLuint texture = 0;
+};
+
+struct SpecialFramebuffer {
+	GLuint fbo = 0;
+	GLuint rbo = 0;
+	GLuint texture = 0;
 };
 
 struct MultitextureFramebuffer {
-	GLuint fbo;
-	GLuint depth;
+	GLuint fbo = 0;
+	GLuint depth = 0;
 	GLuint *textures;
-	unsigned int textureAmount;
+	unsigned int textureAmount = 0;
 };
 
 struct GameFramebuffers {
@@ -58,10 +64,11 @@ public:
 	bool useLight = true;
 	bool castShadows = true;
 	~GameManager();
+	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
+	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
+	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment);
+	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 protected:
-	GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
-	Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
-	MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	Framebuffer uiFramebuffer, pingPongFramebuffers[2];

@@ -88,6 +88,7 @@ struct SpotLight {
 
 struct LightShadowData {
 	GLuint fbo = 0;
+	GLuint rbo = 0;
 	GLuint texture = 0;
 	GLsizei width = 0;
 	GLsizei height = 0;

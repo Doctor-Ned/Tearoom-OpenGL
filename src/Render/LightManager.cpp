@@ -308,23 +308,10 @@ LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
 	result.width = shadowSize;
 	result.height = shadowSize;
-	int oldFbo;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-	glGenFramebuffers(1, &result.fbo);
-	glGenTextures(1, &result.texture);
-	glBindTexture(GL_TEXTURE_2D, result.texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowSize, shadowSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, result.texture, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16, shadowSize, shadowSize, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT);
+	result.fbo = fb.fbo;
+	result.texture = fb.texture;
+	result.rbo = fb.rbo;
 	return result;
 }
 

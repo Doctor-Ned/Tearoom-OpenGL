@@ -164,6 +164,52 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	return result;
 }
 
+SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,
+	GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment) {
+	SpecialFramebuffer result;
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	glGenTextures(1, &result.texture);
+	glBindTexture(textureTarget, result.texture);
+	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+	if(clamp) {
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+	glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
+
+	GLenum drawBuffer = GL_NONE;
+
+	bool hasDepth = false;
+	if(attachment == GL_DEPTH_ATTACHMENT) {
+		hasDepth = true;
+	} else {
+		drawBuffer = attachment;
+	}
+
+	glGenFramebuffers(1, &result.fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, result.texture, 0);
+
+	if(!hasDepth) {
+		result.rbo = createDepthRenderbuffer(width, height);
+	}
+
+	glDrawBuffers(1, &drawBuffer);
+	GLenum status;
+	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		exit(6);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+
+	return result;
+}
+
 MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height,
 	GLenum format, GLenum type, int textureCount) {
 	int oldFbo;
