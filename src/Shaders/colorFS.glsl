@@ -19,14 +19,15 @@ in VS_OUT {
 
 uniform vec4 color;
 uniform mat4 model;
+uniform float opacity;
 
 //%lightComputations.glsl%
 
 void main() {
-	vec3 diffuse = tcolor.rgb * color.rgb;
-    vec3 ambient = initialAmbient * diffuse;
+	vec4 diffuse = tcolor * color;
+    vec3 ambient = initialAmbient * diffuse.rgb;
 	if(useLight == 0) {
-		FragColor = vec4(color.rgb, 1.0f);
+		FragColor = vec4(color.rgb, opacity);
 	} else {
 		vec3 specular = vec3(0.5f);
 		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
@@ -35,12 +36,12 @@ void main() {
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, 1.0f);
+		FragColor = vec4(color, opacity*diffuse.w);
 	}
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
-		BrightColor = vec4(FragColor.rgb, 1.0);
+		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
 	}
 }

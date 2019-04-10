@@ -125,9 +125,14 @@ void TestScene::render() {
 
 void TestScene::renderUi() {
 	Scene::renderUi();
+
 	if(modelNode != nullptr) {
+		static float opacity = 1.0f;
+		ImGui::SliderFloat("Model opacity", &opacity, 0.0f, 1.0f);
+		modelNode->setOpacity(opacity);
 		modelNode->drawGui();
 	}
+
 	dirLightNode->getParent()->drawGui();
 	dirLightNode->drawGui();
 	spotLightNode->drawGui();

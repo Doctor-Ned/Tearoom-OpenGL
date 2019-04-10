@@ -20,6 +20,7 @@ in VS_OUT {
 
 uniform sampler2D texture_diffuse1;
 uniform mat4 model;
+uniform float opacity;
 
 //%lightComputations.glsl%
 
@@ -28,7 +29,7 @@ void main() {
 	if(!disableTexture) diffuse = diffuse * texture(texture_diffuse1, fs_in.texCoords).rgb;
     vec3 ambient = initialAmbient * diffuse;
 	if(useLight == 0) {
-		FragColor = vec4(diffuse, 1.0f);
+		FragColor = vec4(diffuse, opacity);
 	} else {
 		vec3 specular = vec3(0.5f);
 		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
@@ -37,12 +38,12 @@ void main() {
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, 1.0f);
+		FragColor = vec4(color, opacity);
 	}
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
-		BrightColor = vec4(FragColor.rgb, 1.0);
+		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
 	}
 }

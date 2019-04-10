@@ -156,6 +156,16 @@ GraphNode* GraphNode::getChild(int index) {
 	}
 }
 
+float GraphNode::getOpacity() {
+	return mesh == nullptr ? 0.0f : mesh->getOpacity();
+}
+
+void GraphNode::setOpacity(float opacity) {
+	if(mesh != nullptr) {
+		mesh->setOpacity(opacity);
+	}
+}
+
 Mesh* GraphNode::getMesh() {
 	return mesh;
 }

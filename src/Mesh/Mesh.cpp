@@ -24,6 +24,7 @@ float Mesh::getShininess() const {
 void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->use();
 	shader->setShininess(shininess);
+	shader->setOpacity(opacity);
 	shader->setModel(world);
 	shader->setUseLight(useLight);
 	shader->setUseSpecular(false);
@@ -44,6 +45,14 @@ GLuint Mesh::getRenderMode() {
 }
 void Mesh::setRenderMode(GLuint renderMode) {
 	this->renderMode = renderMode;
+}
+
+void Mesh::setOpacity(float opacity) {
+	this->opacity = opacity;
+}
+
+float Mesh::getOpacity() const {
+	return opacity;
 }
 
 Mesh::~Mesh() {

@@ -31,6 +31,8 @@ public:
 	template <class T> T* getComponent();
 	template <class T> std::vector<Component*> getComponents();
 	GraphNode* getChild(int index);
+	float getOpacity();
+	void setOpacity(float opacity);
 	Mesh* getMesh();
 	virtual ~GraphNode();
 	bool isActive();

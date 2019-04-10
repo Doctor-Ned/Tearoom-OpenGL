@@ -14,6 +14,7 @@ UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
 void UiElement::render() {
 	shader->use();
 	shader->setProjection(projection);
+	shader->setOpacity(opacity);
 }
 
 void UiElement::setPosition(glm::vec2 position, bool center) {
@@ -22,6 +23,14 @@ void UiElement::setPosition(glm::vec2 position, bool center) {
 	} else {
 		actualPosition = position;
 	}
+}
+
+float UiElement::getOpacity() const {
+	return opacity;
+}
+
+void UiElement::setOpacity(float opacity) {
+	this->opacity = opacity;
 }
 
 glm::vec2 UiElement::getPosition() {

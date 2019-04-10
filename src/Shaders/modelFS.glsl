@@ -21,30 +21,32 @@ in VS_OUT {
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform mat4 model;
+uniform float opacity;
 uniform int useSpecularMap;
 
 //%lightComputations.glsl%
 
 void main() {
-	vec3 diffuse = tcolor.rgb;
-	if(!disableTexture) diffuse *= texture(texture_diffuse1, fs_in.texCoords).rgb;
-    vec3 ambient = initialAmbient * diffuse;
+	vec4 diffuse = vec4(tcolor.rgb, 1.0f);
+	if(!disableTexture) diffuse *= texture(texture_diffuse1, fs_in.texCoords);
+    vec4 ambient = initialAmbient * diffuse;
+	ambient.w = diffuse.w;
 	if(useLight == 0) {
-		FragColor = vec4(diffuse, 1.0f);
+		FragColor = vec4(diffuse.rgb, diffuse.w * opacity);
 	} else {
 		vec3 specular = useSpecularMap > 0 ? texture(texture_specular1, fs_in.texCoords).rgb : vec3(0.5f);
 		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
 
-		vec3 color = ambient;
+		vec3 color = ambient.rgb;
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, 1.0f);
+		FragColor = vec4(color, ambient.w * opacity);
 	}
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
-		BrightColor = vec4(FragColor.rgb, 1.0);
+		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
 	}
 }
