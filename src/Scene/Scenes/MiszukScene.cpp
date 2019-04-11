@@ -9,7 +9,7 @@
 #include "Scene/Components/Collider.h"
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/CollisionSystem.h"
-//#include "Scene/Components/AnimationController.h"
+#include "Scene/Components/AnimationController.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -26,6 +26,19 @@ MiszukScene::MiszukScene() {
 	updatableShaders.push_back(assetManager->getShader(STColor));
 	updatableShaders.push_back(assetManager->getShader(STReflect));
 	updatableShaders.push_back(assetManager->getShader(STRefract));
+
+	// for basic animation testing
+
+	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	MeshColorBox *slidingDoor = new MeshColorBox(glm::vec3(-0.3f, 0.4f, -1), glm::vec3(0.7f, 5.4f, 0.7f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	MeshColorBox *wall = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox *wall2 = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	GraphNode* animatedBoxNode = new GraphNode(animatedBox, rootNode);
+	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
+	GraphNode* wallNode = new GraphNode(wall, rootNode);
+	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
+
+	//-------------
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
@@ -48,6 +61,13 @@ MiszukScene::MiszukScene() {
 	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, -1.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
+
+	wallNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -5.0f));
+	wallNode2->localTransform.Translate(glm::vec3(0.0f, 8.0f, -15.0f));
+	slidingDoorNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -6.0f));
+	animatedBoxNode->localTransform.Translate(glm::vec3(0.0f, 9.0f, 0.0f));
+
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
@@ -67,6 +87,12 @@ MiszukScene::MiszukScene() {
 	OctreeNode::toInsert.push_back(simpleBox2);
 	OctreeNode::toInsert.push_back(pivot);
 	OctreeNode::toInsert.push_back(planete);
+
+	OctreeNode::toInsert.push_back(animatedBoxNode);
+	OctreeNode::toInsert.push_back(slidingDoorNode);
+	OctreeNode::toInsert.push_back(wallNode);
+	OctreeNode::toInsert.push_back(wallNode2);
+
 }
 
 MiszukScene::~MiszukScene() {
@@ -128,9 +154,12 @@ void MiszukScene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
-
 	rootNode->update(deltaTime);
+	//--------------ANIMACJA---------------------
+	if (getKeyState(GLFW_KEY_F)) {
 
+	}
+	//-----------------------------------------------
 	octree = OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 	octree.Calculate();
 	octree.CollisionTests();

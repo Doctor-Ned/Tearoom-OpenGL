@@ -8,27 +8,28 @@
 #include "Mesh/Mesh.h"
 
 enum AnimationType {
-    SafePullOut,
-    DoorOpening,
-    DoorClosing
+    DoorOpeningX,
+    DoorClosingX,
+    DoorOpeningY,
+    DoorClosingY,
+    SafePullOutX,
+    SafePullOutY
 };
 
 class AnimationController: public Component
 {
 protected:
+    bool F_keyState = false;
     Mesh* mesh;
-    glm::mat4 transformMatrix;
-    glm::float32 velocity;
-    AnimationType animType;
+    AnimationType type;
+    glm::float32 elapsed = 0.0f;
 public:
     virtual ~AnimationController();
-
-    AnimationController(AnimationType _type, Mesh *mesh, GraphNode* _gameObject);
+    AnimationController(AnimationType _type, GraphNode* _gameObject);
     void update(float msec) override;
     void draw() override;
     void startAnimation();
     void calculatePath();
 };
-
 
 #endif //TEAROOM_ANIMATION_H
