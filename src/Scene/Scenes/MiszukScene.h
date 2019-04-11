@@ -24,8 +24,6 @@ public:
 protected:
 	//--------------ANIMACJA---------------------
 	bool playAnimation = false;
-	glm::float32 elapsed = 0.0f;
-
 	//-----------------------------------------
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;

@@ -67,7 +67,7 @@ MiszukScene::MiszukScene() {
 	slidingDoorNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.Translate(glm::vec3(0.0f, 9.0f, 0.0f));
 
-	slidingDoorNode->addComponent(new AnimationController(DoorOpening, slidingDoorNode));
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
@@ -154,17 +154,10 @@ void MiszukScene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
-
 	rootNode->update(deltaTime);
 	//--------------ANIMACJA---------------------
 	if (getKeyState(GLFW_KEY_F)) {
-		playAnimation = true;
-	}
 
-	if (playAnimation && elapsed<1.8f) {
-		rootNode->getChild(1)->localTransform.Translate(glm::vec3(0.0f, 0.0f, -0.04f));
-		rootNode->getChild(0)->localTransform.Translate(glm::vec3(0.03f, 0.0f, 0.0f));
-		elapsed += 0.04f;
 	}
 	//-----------------------------------------------
 	octree = OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));

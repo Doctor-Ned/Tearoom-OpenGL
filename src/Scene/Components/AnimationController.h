@@ -8,17 +8,20 @@
 #include "Mesh/Mesh.h"
 
 enum AnimationType {
-    SafePullOut,
-    DoorOpening,
-    DoorClosing
+    DoorOpeningX,
+    DoorClosingX,
+    DoorOpeningY,
+    DoorClosingY,
+    SafePullOutX,
+    SafePullOutY
 };
 
 class AnimationController: public Component
 {
 protected:
+    bool F_keyState = false;
     Mesh* mesh;
     AnimationType type;
-    bool playAnimation = false;
     glm::float32 elapsed = 0.0f;
 public:
     virtual ~AnimationController();
