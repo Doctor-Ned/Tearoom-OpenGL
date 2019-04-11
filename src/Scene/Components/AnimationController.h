@@ -29,7 +29,6 @@ public:
     void update(float msec) override;
     void draw() override;
     void startAnimation();
-    void calculatePath();
 };
 
 #endif //TEAROOM_ANIMATION_H
