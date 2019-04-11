@@ -41,7 +41,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
 	GraphNode* planete = new GraphNode(box2, pivot);
 
-	boxNode->localTransform.Translate(glm::vec3(4.0f, 3.0f, 2.0f));
+	boxNode->localTransform.Translate(glm::vec3(4.0f, 3.0f, 1.0f));
 	boxNode->localTransform.Rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
@@ -50,7 +50,7 @@ MiszukScene::MiszukScene() {
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
-	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
 	boxNode->addComponent(new CollisionTest(boxNode));
 	simpleBox1->addComponent(new Collider(BoxCollider, simpleBox1, glm::vec4(0, 0, 0, 0.5f)));
 	simpleBox2->addComponent(new Collider(BoxCollider, simpleBox2, glm::vec4(0, 0, 0, 0.5f)));

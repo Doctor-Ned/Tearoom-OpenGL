@@ -98,12 +98,12 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 		}
 	}
 
-	for (int i = 0; i < thisNodeObjectsWithColliders.size(); i++)
+	for (GraphNode* thisNodeObject : thisNodeObjectsWithColliders)
 	{
-		Collider* collider1 = thisNodeObjectsWithColliders[i]->getComponent<Collider>();
-		for (int j = i + 1; j < objectsWithColliders.size(); j++)
+		Collider* collider1 = thisNodeObject->getComponent<Collider>();
+		for (GraphNode* NodeObject : objectsWithColliders)
 		{
-			Collider* collider2 = objectsWithColliders[j]->getComponent<Collider>();
+			Collider* collider2 = NodeObject->getComponent<Collider>();
 			CollisionSystem::getInstance()->checkCollision(collider1, collider2);
 		}
 	}
