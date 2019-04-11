@@ -18,6 +18,8 @@ class AnimationController: public Component
 protected:
     Mesh* mesh;
     AnimationType type;
+    bool playAnimation = false;
+    glm::float32 elapsed = 0.0f;
 public:
     virtual ~AnimationController();
     AnimationController(AnimationType _type, GraphNode* _gameObject);
@@ -26,6 +28,5 @@ public:
     void startAnimation();
     void calculatePath();
 };
-
 
 #endif //TEAROOM_ANIMATION_H

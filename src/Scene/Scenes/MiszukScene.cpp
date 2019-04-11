@@ -9,7 +9,7 @@
 #include "Scene/Components/Collider.h"
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/CollisionSystem.h"
-//#include "Scene/Components/AnimationController.h"
+#include "Scene/Components/AnimationController.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -67,6 +67,7 @@ MiszukScene::MiszukScene() {
 	slidingDoorNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.Translate(glm::vec3(0.0f, 9.0f, 0.0f));
 
+	slidingDoorNode->addComponent(new AnimationController(DoorOpening, slidingDoorNode));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
