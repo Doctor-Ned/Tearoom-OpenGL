@@ -11,9 +11,6 @@ enum ColliderType
 class Collider : public Component
 {
 protected:
-	inline bool SphereToSphere(Collider* _sphere1, Collider* _sphere2);
-	inline bool AABBtoAABB(Collider* _box1, Collider* _box2);
-	inline bool AABBtoSphere(Collider* _box, Collider* _sphere);
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
 	ColliderType type;
 	Mesh* colliderMesh;
@@ -23,9 +20,11 @@ protected:
 public:
 	void update(float mscec) override;
 	void draw() override;
-	bool checkCollision(Collider* collider);
 	void SetCollisionCallback(std::function<int(Collider*)> f);
 	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	virtual ~Collider();
+	glm::vec4 getData();
+	ColliderType getType();
+	std::vector < std::function<int(Collider*)>> getCallbackFunctions();
 };
 #endif

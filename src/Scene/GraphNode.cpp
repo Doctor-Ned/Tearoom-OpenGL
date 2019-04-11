@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <glm/gtx/matrix_decompose.inl>
+#include "OctreeNode.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";

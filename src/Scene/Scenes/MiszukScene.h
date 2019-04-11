@@ -37,7 +37,7 @@ protected:
 	float mouseX, mouseY;
 	float mouseMovementX, mouseMovementY;
 	bool initMouse = true;
-	OctreeNode* octree;
+	OctreeNode octree;
 };
 
 #endif

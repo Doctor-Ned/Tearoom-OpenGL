@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Scene/Components/Collider.h"
 #include "Scene/Scripts/CollisionTest.h"
+#include "Scene/CollisionSystem.h"
 //#include "Scene/Components/AnimationController.h"
 
 MiszukScene::MiszukScene() {
@@ -15,23 +16,7 @@ MiszukScene::MiszukScene() {
 	uboLights = assetManager->getUboLights();
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();
-	MeshColorPlane *plane = new MeshColorPlane(1.0f, 1.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	MeshColorSphere *sphere = new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	MeshColorBox* box = new MeshColorBox(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 1), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	box->setRenderMode(GL_LINES);
-	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
-	GraphNode* planeNode = new GraphNode(plane);
-	GraphNode* sphereNode = new GraphNode(sphere);
-	GraphNode* boxNode = new GraphNode(box);
-	GraphNode* boxNode2 = new GraphNode(box);
-	GraphNode* sphereNode2 = new GraphNode(sphere2);
-	sphereNode->localTransform.Translate(glm::vec3(0.0f, 0.0f, 0.0f));
-	planeNode->localTransform.RotateByRadians(0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	rootNode->addChild(planeNode);
-	rootNode->addChild(sphereNode);
-	rootNode->addChild(boxNode);
-	rootNode->addChild(sphereNode2);
-	rootNode->addChild(boxNode2);
+
 	camera = new Camera();
 	updatableShaders.push_back(assetManager->getShader(STModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
@@ -40,38 +25,49 @@ MiszukScene::MiszukScene() {
 	updatableShaders.push_back(assetManager->getShader(STReflect));
 	updatableShaders.push_back(assetManager->getShader(STRefract));
 
-	boxNode->localTransform.Translate(glm::vec3(2.0f, 2.0f, 0.0f));
+	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
+	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	MeshColorBox* meshBox1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	GraphNode* boxNode = new GraphNode(box, rootNode);
+	GraphNode* boxNode2 = new GraphNode(box1, rootNode);
+	GraphNode* sphereNode2 = new GraphNode(sphere2, rootNode);
+	GraphNode* simpleBox1 = new GraphNode(meshBox, rootNode);
+	GraphNode* simpleBox2 = new GraphNode(meshBox1, rootNode);
+	GraphNode* pivot = new GraphNode(nullptr, rootNode);
+	GraphNode* planete = new GraphNode(box2, pivot);
 
+	boxNode->localTransform.Translate(glm::vec3(4.0f, 3.0f, 2.0f));
+	boxNode->localTransform.Rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
-
-	OctreeNode::toInsert.push(planeNode);
-	OctreeNode::toInsert.push(sphereNode);
-	OctreeNode::toInsert.push(boxNode);
-	OctreeNode::toInsert.push(sphereNode2);
-	OctreeNode::toInsert.push(boxNode2);
-
-	octree = new OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
-	octree->Calculate();
-
-	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
-	boxNode->addComponent(new CollisionTest(boxNode));
+	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, -1.0f);
+	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
+	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
 	//boxNode3->addComponent(new AnimationController());
-	boxNode->getComponent<Collider>();
-
-	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	GraphNode* simpleBox1 = new GraphNode(meshBox);
-	GraphNode* simpleBox2 = new GraphNode(meshBox);
-	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, 0.0f);
-	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-	rootNode->addChild(simpleBox1);
-	rootNode->addChild(simpleBox2);
+	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	boxNode->addComponent(new CollisionTest(boxNode));
 	simpleBox1->addComponent(new Collider(BoxCollider, simpleBox1, glm::vec4(0, 0, 0, 0.5f)));
 	simpleBox2->addComponent(new Collider(BoxCollider, simpleBox2, glm::vec4(0, 0, 0, 0.5f)));
+	pivot->addComponent(new Collider(BoxCollider, pivot, glm::vec4(7.0f, 3.0f, 0.0f, 1.0f)));
+	pivot->addComponent(new CollisionTest(pivot));
+	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
+	
+	//octree = OctreeNode();
+	OctreeNode::toInsert.clear();
+	OctreeNode::toInsert.push_back(boxNode);
+	OctreeNode::toInsert.push_back(sphereNode2);
+	OctreeNode::toInsert.push_back(boxNode2);
+	OctreeNode::toInsert.push_back(simpleBox1);
+	OctreeNode::toInsert.push_back(simpleBox2);
+	OctreeNode::toInsert.push_back(pivot);
+	OctreeNode::toInsert.push_back(planete);
 }
 
 MiszukScene::~MiszukScene() {
-	delete octree;
 	delete rootNode;
 }
 
@@ -81,7 +77,7 @@ void MiszukScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->draw();
-	//octree->draw();
+	octree.draw();
 }
 
 void MiszukScene::renderUi() {
@@ -131,18 +127,11 @@ void MiszukScene::update(double deltaTime) {
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
 
-	rootNode->getChild(3)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(1.0f, 0.0f, 0.0f));
-	//rootNode->getChild(2)->localTransform.Rotate(40.0f * deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
 	rootNode->update(deltaTime);
-	//std::cout << "Cam pos: " << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << std::endl;
-	rootNode->getChild(2)->getComponent<Collider>();
-	Collider* tmp1 = rootNode->getChild(2)->getComponent<Collider>();
-	Collider* tmp2 = rootNode->getChild(6)->getComponent<Collider>();
-	/*if (tmp1->checkCollision(tmp2)) {
-		std::cout << "Kolizja" << std::endl;
-	} else {
-		std::cout << "Nie ma kolizji" << std::endl;
-	}*/
+
+	octree = OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+	octree.Calculate();
+	octree.CollisionTests();
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
