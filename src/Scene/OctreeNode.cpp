@@ -64,12 +64,11 @@ void OctreeNode::Calculate()
 	{
 		if(!octList[i].empty())
 		{
-			nodes.push_back(new OctreeNode(boxes[i], this, octList[i]));
-			bitmask |= 1 << i;
+			nodes.push_back(std::make_shared<OctreeNode>(boxes[i], this, octList[i]));
 		}
 	}
 
-	for (OctreeNode* child : nodes)
+	for (auto& child : nodes)
 	{
 		if(!child->gameObjects.empty())
 			child->Calculate();
@@ -113,7 +112,7 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 		objectsWithColliders.push_back(object);
 	}
 
-	for(OctreeNode* node : nodes)
+	for(auto& node : nodes)
 	{
 		node->CollisionTests(objectsWithColliders);
 	}
@@ -178,18 +177,14 @@ void OctreeNode::divideSpace(std::vector<Box>& boxes)
 
 OctreeNode::~OctreeNode()
 {
-	for(OctreeNode* child: nodes)
-	{
-		delete child;
-	}
+
 }
 
 void OctreeNode::draw()
 {
-	//if(!gameObjects.empty())
-		//mesh.draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
-	mesh2->draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
-	for(OctreeNode* octree : nodes)
+	if(mesh_ptr != nullptr)
+		mesh_ptr->draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
+	for(auto& octree : nodes)
 	{
 			octree->draw();
 	}
@@ -208,10 +203,9 @@ OctreeNode::OctreeNode(glm::vec3 _minPos, glm::vec3 _maxPos)
 	boxPos.minPos = glm::vec3(maxVal * (-1), maxVal * (-1), maxVal * (-1));
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
 
-	mesh2 = new MeshColorBox(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh2->setRenderMode(GL_LINES);
-	mesh2->setUseLight(false);
-
+	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
 	for(GraphNode* graphNode : toInsert)
 	{
 		gameObjects.push_back(graphNode);
@@ -222,9 +216,9 @@ OctreeNode::OctreeNode(Box _box, OctreeNode* _parent, std::vector<GraphNode*> _g
 	: boxPos(_box), parent(_parent), gameObjects(_gameObjects)
 {
 
-	mesh2 = new MeshColorBox(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh2->setRenderMode(GL_LINES);
-	mesh2->setUseLight(false);
+	mesh_ptr = std::make_shared<MeshColorBox>(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
 }
 
 OctreeNode::OctreeNode()

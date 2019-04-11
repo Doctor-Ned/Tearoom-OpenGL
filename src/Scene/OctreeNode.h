@@ -4,6 +4,7 @@
 #include <queue>
 #include <glm/glm.hpp>
 #include "Mesh/MeshColorBox.h"
+#include <memory>
 
 struct Box
 {
@@ -15,11 +16,10 @@ class GraphNode;
 class OctreeNode
 {
 private:
-	std::vector<OctreeNode*> nodes;
+	std::vector<std::shared_ptr<OctreeNode>> nodes;
 	std::vector<GraphNode*> gameObjects;
 	OctreeNode* parent;
-	MeshColorBox* mesh2;
-	char bitmask = 0;
+	std::shared_ptr<MeshColorBox> mesh_ptr;
 	Box boxPos;
 	inline void divideSpace(std::vector<Box>& boxes);
 	inline bool containTest(glm::vec3& point, Box& box);
