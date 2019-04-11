@@ -21,6 +21,7 @@ public:
 	void setProjection(glm::mat4 &projection);
 	void setLightSpace(glm::mat4 &lightSpace);
 	void setCastShadows(bool castShadows);
+	void setOpacity(float opacity);
 	void updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);

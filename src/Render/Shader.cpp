@@ -101,6 +101,10 @@ void Shader::setCastShadows(bool castShadows) {
 	setBool("castShadows", castShadows);
 }
 
+void Shader::setOpacity(float opacity) {
+	setFloat("opacity", opacity);
+}
+
 void Shader::setInt(const char* name, int value) {
 	use();
 	GLint location = getUniformLocation(name);

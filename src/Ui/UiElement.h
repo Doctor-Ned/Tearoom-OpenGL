@@ -10,7 +10,8 @@ enum UiRescaleMode {
 	Fit,
 	MatchHeight,
 	MatchWidth,
-	Stretch
+	Stretch,
+	None
 };
 
 enum UiAnchor {  //not used yet but i hope this thing will change the world some day
@@ -41,6 +42,8 @@ public:
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 	virtual void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
 	virtual void setPosition(glm::vec2 position, bool center = true);
+	float getOpacity() const;
+	void setOpacity(float opacity);
 	glm::vec2 getPosition();
 	glm::vec2 getCenter();
 	glm::vec2 getSize();
@@ -54,6 +57,7 @@ protected:
 	glm::vec2 getRescaledPosition();
 	glm::vec2 getRescaledSize();
 	float windowWidth, windowHeight, screenWidth, screenHeight;
+	float opacity = 1.0f;
 	glm::mat4 projection;
 	virtual void setup() = 0;
 	Shader* shader;

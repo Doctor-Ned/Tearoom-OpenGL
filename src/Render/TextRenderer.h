@@ -31,6 +31,7 @@ public:
 	glm::vec2 getScaleToFitSize(std::string text, glm::vec2 size, UiRescaleMode rescaleMode);
 	glm::vec2 getTextSize(std::string text, GLfloat scale = 1.0f);
 	glm::vec2 getTextSize(std::string text, GLfloat scaleX, GLfloat scaleY);
+	glm::vec2 getTextSize(std::string text, glm::vec2 scale);
 private:
 	GLfloat defaultScale;
 	GLuint vao, vbo;

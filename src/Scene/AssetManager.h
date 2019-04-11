@@ -46,8 +46,11 @@ public:
 	AssetManager(AssetManager const&) = delete;
 	void operator=(AssetManager const&) = delete;
 	void setup();
+	void loadResources();
 	~AssetManager();
+	bool isLoaded();
 private:
+	bool loaded = false;
 	GameManager *gameManager;
 	std::vector<Ubo*> ubos;
 	Texture createTexture(const char * textureFile);

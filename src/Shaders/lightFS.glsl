@@ -8,9 +8,9 @@ in VS_OUT{
 } fs_in;
 
 uniform vec4 color;
+uniform float opacity;
 
 void main() {
-	FragColor = color;
-	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	BrightColor = color;
+	FragColor = vec4(color.rgb, opacity);
+	BrightColor = FragColor;
 }

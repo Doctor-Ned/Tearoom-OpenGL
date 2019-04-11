@@ -20,3 +20,10 @@ void ModelInstanced::draw(Shader *shader, glm::mat4 world) {
 		mesh->draw(shader, world);
 	}
 }
+
+void ModelInstanced::setOpacity(float opacity) {
+	this->opacity = opacity;
+	for(auto &mesh: meshes) {
+		mesh->setOpacity(opacity);
+	}
+}

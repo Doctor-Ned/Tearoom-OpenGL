@@ -264,11 +264,11 @@ int main(int argc, char** argv) {
 	GameFramebuffers framebuffers = GameManager->getFramebuffers();
 
 
-	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(100.0f, 30.0f), false);
+	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(120.0f, 30.0f), false);
 	glm::vec2 planeCenter = fpsPlane->getPosition();
 	planeCenter.x += fpsPlane->getSize().x / 2.0f;
 	planeCenter.y += fpsPlane->getSize().y / 2.0f;
-	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), None);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -277,15 +277,17 @@ int main(int argc, char** argv) {
 		ImGui::NewFrame();
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta, deltaSum = 100.0f;
+		static int lastFps = 0;
 		currentTime = glfwGetTime();
 		timeDelta = currentTime - lastTime;
 		lastTime = currentTime;
-		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120.0; //for debugging game loop
+		lastFps = static_cast<int>(1.0 / timeDelta);
 		deltaSum += timeDelta;
 		if (deltaSum >= 0.5f) {   //update FPS text every second
-			fpsText->setText("FPS: "+std::to_string(static_cast<int>(1.0 / timeDelta)));
+			fpsText->setText("FPS: "+std::to_string(lastFps));
 			deltaSum = 0.0f;
 		}
+		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
 		GameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
@@ -359,6 +361,11 @@ int main(int argc, char** argv) {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwMakeContextCurrent(window);
 		glfwSwapBuffers(window);
+
+		if (!AssetManager->isLoaded()) {
+			AssetManager->loadResources();
+			GameManager->goToMenu();
+		}
 	}
 	delete GameManager;
 	delete AssetManager;

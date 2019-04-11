@@ -11,6 +11,8 @@ public:
 	void setUseLight(bool useLight);
 	bool getUseLight() const;
 	float getShininess() const;
+	virtual void setOpacity(float opacity);
+	float getOpacity() const;
 	virtual void draw(glm::mat4 world);
 	virtual void draw(Shader *shader, glm::mat4 world);
 	ShaderType getShaderType();
@@ -28,6 +30,7 @@ protected:
 	Shader *shader;
 	bool useLight;
 	bool castShadows;
+	float opacity = 1.0f;
 };
 
 #endif

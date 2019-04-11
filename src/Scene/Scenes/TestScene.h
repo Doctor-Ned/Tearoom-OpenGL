@@ -54,6 +54,7 @@ protected:
 	std::vector<DirLightNode*> dirLightNodes;
 	std::vector<SpotLightNode*> spotLightNodes;
 	std::vector<PointLightNode*> pointLightNodes;
+	GraphNode *modelNode = nullptr;
 	MeshColorSphere *pointLightSphere;
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;

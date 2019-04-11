@@ -168,6 +168,7 @@ glm::vec2 TextRenderer::getScaleToFitSize(std::string text, glm::vec2 size, UiRe
 	switch (rescaleMode) {
 		default:
 			throw std::exception("Unsupported UiRescaleMode provided!");
+		case None:
 		case Fit:
 			glm::vec2 heightBased = getScaleToFitSize(text, size, MatchHeight);
 			glm::vec2 widthBased = getScaleToFitSize(text, size, MatchWidth);
@@ -199,4 +200,8 @@ glm::vec2 TextRenderer::getTextSize(std::string text, GLfloat scaleX, GLfloat sc
 		totalHeight = totalHeight > height ? totalHeight : height;
 	}
 	return glm::vec2(totalWidth, totalHeight);
+}
+
+glm::vec2 TextRenderer::getTextSize(std::string text, glm::vec2 scale) {
+	return getTextSize(text, scale.x, scale.y);
 }

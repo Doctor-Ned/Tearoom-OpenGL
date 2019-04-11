@@ -28,6 +28,11 @@ TestScene::TestScene() {
 	uboLights = assetManager->getUboLights();
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();
+
+	Model *model = new Model("res/models/muro/muro.obj");
+	modelNode = new GraphNode(model, rootNode);
+	modelNode->localTransform.SetMatrix(scale(translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), glm::vec3(0.01, 0.01, 0.01f)));
+
 	MeshColorPlane *plane = new MeshColorPlane(10.0f, 10.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorSphere *sphere = new MeshColorSphere(0.125f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	GraphNode* planeNode = new GraphNode(plane, rootNode);
@@ -120,6 +125,14 @@ void TestScene::render() {
 
 void TestScene::renderUi() {
 	Scene::renderUi();
+
+	if(modelNode != nullptr) {
+		static float opacity = 1.0f;
+		ImGui::SliderFloat("Model opacity", &opacity, 0.0f, 1.0f);
+		modelNode->setOpacity(opacity);
+		modelNode->drawGui();
+	}
+
 	dirLightNode->getParent()->drawGui();
 	dirLightNode->drawGui();
 	spotLightNode->drawGui();

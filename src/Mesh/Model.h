@@ -21,6 +21,7 @@ public:
 	void draw(glm::mat4 world) override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	static std::vector<ModelData*> createModelData(std::string path);
+	void setOpacity(float opacity) override;
 private:
 	std::vector<MeshModel*> meshes;
 	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, std::vector<ModelData*> &output);

@@ -157,6 +157,16 @@ GraphNode* GraphNode::getChild(int index) {
 	}
 }
 
+float GraphNode::getOpacity() {
+	return mesh == nullptr ? 0.0f : mesh->getOpacity();
+}
+
+void GraphNode::setOpacity(float opacity) {
+	if(mesh != nullptr) {
+		mesh->setOpacity(opacity);
+	}
+}
+
 Mesh* GraphNode::getMesh() {
 	return mesh;
 }
@@ -225,10 +235,18 @@ void GraphNode::renderGui() {
 		//matrix = mat4_cast(glm::quat(euler)) * matrix;
 		//localTransform.SetMatrix(matrix);
 
-		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&localTransform.transform[3]));
+		glm::vec3 position = localTransform.Matrix()[3];
+
+		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&position));
 		ImGui::NewLine();
-		ImGui::SliderFloat3("Position (slider)", reinterpret_cast<float*>(&localTransform.transform[3]), -10.0f, 10.0f);
+		ImGui::SliderFloat3("Position (slider)", reinterpret_cast<float*>(&position), -10.0f, 10.0f);
 		ImGui::NewLine();
+
+		glm::mat4 local = localTransform.Matrix();
+		local[3].x = position.x;
+		local[3].y = position.y;
+		local[3].z = position.z;
+		localTransform.SetMatrix(local);
 
 		if(ImGui::Button("RotX-")) {
 			localTransform.Rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));

@@ -76,5 +76,5 @@ protected:
 	GLuint renderbuffer;
 	GameManager() {}
 	Scene* currentScene = nullptr;
-	MenuScene* menuScene;
+	MenuScene* menuScene = nullptr;
 };

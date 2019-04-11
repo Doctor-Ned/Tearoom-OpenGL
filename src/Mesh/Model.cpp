@@ -35,6 +35,13 @@ std::vector<ModelData*> Model::createModelData(std::string path) {
 	return result;
 }
 
+void Model::setOpacity(float opacity) {
+	this->opacity = opacity;
+	for(auto &mesh : meshes) {
+		mesh->setOpacity(opacity);
+	}
+}
+
 void Model::processNode(aiNode* node, const aiScene* scene, const std::string& directory, std::vector<ModelData*> &output) {
 	std::vector<ModelTexture> textures_loaded;
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
