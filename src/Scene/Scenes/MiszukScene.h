@@ -22,6 +22,11 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
+	//--------------ANIMACJA---------------------
+	bool playAnimation = false;
+	glm::float32 elapsed = 0.0f;
+
+	//-----------------------------------------
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;
 	UboLights *uboLights;
