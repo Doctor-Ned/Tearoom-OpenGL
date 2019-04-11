@@ -271,7 +271,7 @@ void TestScene::keyEvent(int key, bool pressed) {
 			}
 			break;
 		case KEY_QUIT:
-			gameManager->goToMenu(true);
+			gameManager->goToMenu();
 			//glfwSetWindowShouldClose(gameManager->getWindow(), true);
 			break;
 	}

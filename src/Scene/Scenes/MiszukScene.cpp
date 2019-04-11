@@ -17,6 +17,8 @@ MiszukScene::MiszukScene() {
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();
 
+	lightManager->recreateLights(0, 0, 0);
+	uboLights->inject(1.0f, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr);
 	camera = new Camera();
 	updatableShaders.push_back(assetManager->getShader(STModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
