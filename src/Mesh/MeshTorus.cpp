@@ -130,7 +130,6 @@ void MeshTorus::createRectangle(std::vector<TextureVertex>* vertices, glm::vec3*
 }
 
 void MeshTorus::bufferData(std::vector<TextureVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

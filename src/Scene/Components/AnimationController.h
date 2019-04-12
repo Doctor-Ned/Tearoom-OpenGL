@@ -6,6 +6,7 @@
 #define TEAROOM_ANIMATION_H
 #include "Component.h"
 #include "Mesh/Mesh.h"
+#include "Render/Renderable.h"
 
 enum AnimationType {
     SafePullOut,
@@ -13,7 +14,7 @@ enum AnimationType {
     DoorClosing
 };
 
-class AnimationController: public Component
+class AnimationController: public Component, public Renderable
 {
 protected:
     Mesh* mesh;
@@ -25,7 +26,9 @@ public:
 
     AnimationController(AnimationType _type, Mesh *mesh, GraphNode* _gameObject);
     void update(float msec) override;
-    void draw() override;
+	void updateDrawData() override;
+	void drawSelf(Shader* shader) override;
+	ShaderType getShaderType() override;
     void startAnimation();
     void calculatePath();
 };

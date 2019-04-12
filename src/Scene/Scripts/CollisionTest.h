@@ -7,7 +7,6 @@ class CollisionTest : public Component
 public:
 	int direction = 1;
 	void update(float msec) override;
-	void draw() override;
 	~CollisionTest() override;
 	void OnCollision(Collider* collider);
 	CollisionTest(GraphNode* _gameObject);

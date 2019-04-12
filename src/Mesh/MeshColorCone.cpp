@@ -94,7 +94,6 @@ void MeshColorCone::createTopTriangle(std::vector<SimpleVertex>* vertices) const
 }
 
 void MeshColorCone::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

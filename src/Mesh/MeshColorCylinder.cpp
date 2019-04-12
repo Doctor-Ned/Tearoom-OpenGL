@@ -138,7 +138,6 @@ void MeshColorCylinder::createSideTriangles(std::vector<SimpleVertex>* vertices)
 }
 
 void MeshColorCylinder::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

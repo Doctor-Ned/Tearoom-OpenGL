@@ -1,10 +1,6 @@
 #include "Mesh.h"
 #include "Scene/GameManager.h"
 
-void Mesh::draw(glm::mat4 world) {
-	draw(shader, world);
-}
-
 void Mesh::setShininess(float shininess) {
 	this->shininess = shininess;
 }
@@ -22,7 +18,7 @@ float Mesh::getShininess() const {
 }
 
 void Mesh::draw(Shader *shader, glm::mat4 world) {
-	shader->use();
+	//shader->use();
 	shader->setShininess(shininess);
 	shader->setOpacity(opacity);
 	shader->setModel(world);
@@ -33,11 +29,6 @@ void Mesh::draw(Shader *shader, glm::mat4 world) {
 
 ShaderType Mesh::getShaderType() {
 	return shaderType;
-}
-
-void Mesh::setShaderType(ShaderType shaderType) {
-	this->shaderType = shaderType;
-	this->shader = AssetManager::getInstance()->getShader(shaderType);
 }
 
 GLuint Mesh::getRenderMode() {
@@ -67,9 +58,9 @@ Mesh::~Mesh() {
 	}
 }
 
-Mesh::Mesh(ShaderType shaderType, GLuint renderMode) : shader(nullptr) {
+Mesh::Mesh(ShaderType shaderType, GLuint renderMode) {
 	this->renderMode = renderMode;
-	setShaderType(shaderType);
+	this->shaderType = shaderType;
 	useLight = GameManager::getInstance()->useLight;
 	castShadows = GameManager::getInstance()->castShadows;
 }

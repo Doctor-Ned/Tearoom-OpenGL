@@ -40,7 +40,6 @@ void MeshModel::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshModel::setupMesh() {
-	shader->use();
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);

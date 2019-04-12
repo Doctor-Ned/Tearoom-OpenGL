@@ -3,15 +3,9 @@
 
 Model::Model(std::string path) : Model(AssetManager::getInstance()->getModelData(path)) { }
 
-Model::Model(std::vector<ModelData*> data) : Mesh(STNone) {
+Model::Model(std::vector<ModelData*> data) : Mesh(STModel) {
 	for(auto &modelData : data) {
 		meshes.push_back(new MeshModel(modelData->vertices, modelData->indices, modelData->textures));
-	}
-}
-
-void Model::draw(glm::mat4 world) {
-	for(auto &mesh : meshes) {
-		static_cast<Mesh*>(mesh)->draw(world);
 	}
 }
 

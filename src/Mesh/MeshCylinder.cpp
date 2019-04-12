@@ -165,7 +165,6 @@ void MeshCylinder::createSideTriangles(std::vector<TextureVertex>* vertices) con
 }
 
 void MeshCylinder::bufferData(std::vector<TextureVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

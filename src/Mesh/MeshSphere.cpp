@@ -156,7 +156,6 @@ void MeshSphere::createTriangle(std::vector<TextureVertex>* vertices, glm::vec3*
 }
 
 void MeshSphere::bufferData(std::vector<TextureVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

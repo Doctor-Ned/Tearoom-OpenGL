@@ -119,7 +119,6 @@ void MeshColorTorus::createRectangle(std::vector<SimpleVertex>* vertices, glm::v
 }
 
 void MeshColorTorus::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

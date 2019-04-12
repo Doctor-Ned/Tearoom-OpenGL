@@ -84,6 +84,10 @@ Shader* AssetManager::getShader(ShaderType type) {
 	return shaders.find(type)->second;
 }
 
+std::map<ShaderType, Shader*> AssetManager::getShaders() const {
+	return shaders;
+}
+
 Texture AssetManager::getTexture(std::string path) {
 	for (auto &texture : textures) {
 		if (path == texture.path) {

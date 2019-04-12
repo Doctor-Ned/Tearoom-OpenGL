@@ -152,7 +152,7 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	}
 
 	vertexAmount = 36;
-	shader->use();
+
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}
@@ -165,13 +165,13 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	glBufferData(GL_ARRAY_BUFFER, vertexAmount * sizeof(TextureVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, Normal)));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*)offsetof(TextureVertex, TexCoords));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), reinterpret_cast<void*>(offsetof(TextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 	data.clear();

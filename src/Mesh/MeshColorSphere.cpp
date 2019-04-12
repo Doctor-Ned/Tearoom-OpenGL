@@ -43,6 +43,10 @@ float MeshColorSphere::getRadius() const {
 	return radius;
 }
 
+void MeshColorSphere::setShaderType(ShaderType shaderType) {
+	this->shaderType = shaderType;
+}
+
 void MeshColorSphere::createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) {
 	glm::vec3* circle = new glm::vec3[precision];
 
@@ -137,7 +141,6 @@ void MeshColorSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::v
 }
 
 void MeshColorSphere::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

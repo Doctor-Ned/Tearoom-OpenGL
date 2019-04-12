@@ -30,6 +30,27 @@ enum ShaderType {
 };
 
 
+// Yeah, it looks pretty nice but AFAIK there's no other good way to do this. Let's just make sure these two stay in sync.
+static const ShaderType ShaderTypes[] = {
+	STNone,
+	STSkybox,
+	STTexture,
+	STColor,
+	STModel,
+	STModelInstanced,
+	STReflect,
+	STRefract,
+	STDepth,
+	STDepthPoint,
+	STDepthDebug,
+	STUiTexture,
+	STUiColor,
+	STPostProcessing,
+	STLight,
+	STBlur 
+};
+
+
 class AssetManager {
 public:
 	static AssetManager *getInstance();
@@ -39,6 +60,7 @@ public:
 	UboTextureColor* getUboTextureColor();
 	UboViewProjection* getUboViewProjection();
 	Shader *getShader(ShaderType type);
+	std::map<ShaderType, Shader*> getShaders() const;
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
 	std::vector<ModelData*> getModelData(std::string path);

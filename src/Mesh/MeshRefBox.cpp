@@ -121,7 +121,6 @@ void MeshRefBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	}
 
 	vertexAmount = 36;
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

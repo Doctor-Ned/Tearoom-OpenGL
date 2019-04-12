@@ -17,10 +17,6 @@ void CollisionTest::update(float msec)
 	gameObject->localTransform.Rotate(40.0f * msec * direction, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void CollisionTest::draw()
-{
-}
-
 CollisionTest::~CollisionTest()
 {
 }

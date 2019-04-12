@@ -12,7 +12,6 @@ protected:
 	}
 public:
 	virtual void update(float msec) = 0;
-	virtual void draw() = 0;
 	virtual ~Component() { }
 };
 #endif

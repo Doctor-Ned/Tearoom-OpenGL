@@ -109,7 +109,6 @@ void MeshCone::createTopTriangle(std::vector<TextureVertex>* vertices) const {
 }
 
 void MeshCone::bufferData(std::vector<TextureVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

@@ -12,47 +12,7 @@ GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh)
 	}
 }
 
-void GraphNode::draw(bool ignoreLights) {
-	draw(nullptr, nullptr, 0, ignoreLights);
-}
-
-void GraphNode::draw(GraphNode* excluded, bool ignoreLights) {
-	if (excluded != nullptr) {
-		draw(nullptr, &excluded, 1, ignoreLights);
-	} else {
-		draw(nullptr, nullptr, 0, ignoreLights);
-	}
-}
-
-void GraphNode::draw(std::vector<GraphNode*> excluded, bool ignoreLights) {
-	if (excluded.empty()) {
-		draw(nullptr, nullptr, 0, ignoreLights);
-	} else {
-		draw(nullptr, &excluded[0], excluded.size(), ignoreLights);
-	}
-}
-
-void GraphNode::draw(Shader* shader, bool ignoreLights) {
-	draw(shader, nullptr, 0, ignoreLights);
-}
-
-void GraphNode::draw(Shader* shader, GraphNode* excluded, bool ignoreLights) {
-	if (excluded != nullptr) {
-		draw(shader, &excluded, 1, ignoreLights);
-	} else {
-		draw(shader, nullptr, 0, ignoreLights);
-	}
-}
-
-void GraphNode::draw(Shader* shader, std::vector<GraphNode*> excluded, bool ignoreLights) {
-	if (excluded.empty()) {
-		draw(shader, nullptr, 0, ignoreLights);
-	} else {
-		draw(shader, &excluded[0], excluded.size(), ignoreLights);
-	}
-}
-
-void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount, bool ignoreLights) {
+void GraphNode::updateDrawData() {
 	if (!active) {
 		return;
 	}
@@ -65,32 +25,36 @@ void GraphNode::draw(Shader* shader, GraphNode** excluded, int excludedCount, bo
 		updateWorld();
 	}
 
-	if (mesh && !(ignoreLights && mesh->getShaderType() != STLight)) {
-		if (shader == nullptr) {
-			mesh->draw(worldTransform.Matrix());
-		} else {
-			mesh->draw(shader, worldTransform.Matrix());
-		}
+	//if (mesh && !(ignoreLights && mesh->getShaderType() != STLight)) {
+	//	if (shader == nullptr) {
+	//		mesh->draw(worldTransform.Matrix());
+	//	} else {
+	//		mesh->draw(shader, worldTransform.Matrix());
+	//	}
+	//}
+
+	for (Renderable* renderable : renderableComponents) {
+		renderable->updateDrawData();
 	}
 
-	for (Component* component : components) {
-		component->draw();
-	}
-
-	for (int i = 0; i < children.size(); i++) {
-		bool exclude = false;
-		for (int j = 0; j < excludedCount; j++) {
-			if (children[i] == excluded[j]) {
-				exclude = true;
-				break;
-			}
-		}
-		if (!exclude) {
-			children[i]->draw(shader, excluded, excludedCount);
-		}
+	for (auto &child : children) {
+		child->updateDrawData();
 	}
 
 	dirty = false;
+}
+
+void GraphNode::drawSelf(Shader *shader) {
+	if (mesh != nullptr) {
+		mesh->draw(shader, worldTransform.Matrix());
+	}
+}
+
+ShaderType GraphNode::getShaderType() {
+	if(mesh == nullptr) {
+		return STNone;
+	}
+	return mesh->getShaderType();
 }
 
 void GraphNode::update(double timeDiff) {
@@ -145,8 +109,16 @@ void GraphNode::addComponent(Component* component) {
 		if (comp == component) {
 			return;
 		}
+		Renderable *r = dynamic_cast<Renderable*>(component);
+		if(r) {
+			renderableComponents.push_back(r);
+		}
 	}
 	components.push_back(component);
+}
+
+std::vector<Component*> GraphNode::getComponents() {
+	return getComponents<Component>();
 }
 
 GraphNode* GraphNode::getChild(int index) {
@@ -162,7 +134,7 @@ float GraphNode::getOpacity() {
 }
 
 void GraphNode::setOpacity(float opacity) {
-	if(mesh != nullptr) {
+	if (mesh != nullptr) {
 		mesh->setOpacity(opacity);
 	}
 }
@@ -178,13 +150,14 @@ GraphNode::~GraphNode() {
 	for (Component* component : components) {
 		delete component;
 	}
-	for (auto &child : children) {
+	renderableComponents.clear();
+	//for (auto &child : children) {
 		//delete child;
-	}
+	//}
 
 }
 
-bool GraphNode::isActive() {
+bool GraphNode::isActive() const {
 	return active;
 }
 
@@ -192,7 +165,7 @@ void GraphNode::setActive(bool active) {
 	this->active = active;
 }
 
-const char* GraphNode::getName() {
+const char* GraphNode::getName() const {
 	return name;
 }
 
@@ -200,9 +173,17 @@ void GraphNode::setName(const char* name) {
 	this->name = name;
 }
 
+std::vector<GraphNode*> GraphNode::getChildren() const {
+	return children;
+}
+
+std::vector<Renderable*> GraphNode::getRenderableComponents() const {
+	return renderableComponents;
+}
+
 void GraphNode::updateWorld() {
-	if(dirty) {
-		if(parent != nullptr) {
+	if (dirty) {
+		if (parent != nullptr) {
 			worldTransform.SetMatrix(parent->worldTransform.Matrix() * localTransform.Matrix());
 		} else {
 			worldTransform.SetMatrix(localTransform.Matrix());
@@ -248,7 +229,7 @@ void GraphNode::renderGui() {
 		local[3].z = position.z;
 		localTransform.SetMatrix(local);
 
-		if(ImGui::Button("RotX-")) {
+		if (ImGui::Button("RotX-")) {
 			localTransform.Rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 		if (ImGui::Button("RotY-")) {

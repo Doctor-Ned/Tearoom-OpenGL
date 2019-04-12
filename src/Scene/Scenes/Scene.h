@@ -14,6 +14,16 @@ class Scene {
 public:
 	virtual void render();
 	virtual void renderUi();
+	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
+	void removeNode(GraphNode* node, bool recurse = true);
+	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
+	void addComponent(GraphNode* node, Component *component);
+	void addToRenderMap(Renderable *rendearble);
+	void addToRenderMap(GraphNode *node, bool recurse = true);
+	void removeComponent(GraphNode *node, Component *component);
+	void removeFromRenderMap(Renderable *renderable);
+	void removeFromRenderMap(GraphNode *node, bool recurse = true);
+	void reinitializeRenderMap();
 	virtual void update(double deltaTime);
 	virtual void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	virtual void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -22,6 +32,10 @@ public:
 	Scene();
 	virtual ~Scene();
 protected:
+	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
+	void addToRenderMap(Renderable *renderable, bool checkIfExists);
+	std::map<ShaderType, Shader*> shaders;
+	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;

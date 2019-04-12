@@ -2,15 +2,108 @@
 #include "Scene/GameManager.h"
 #include "Scene/AssetManager.h"
 #include "Render/LightManager.h"
+#include "Mesh/Mesh.h"
 
 void Scene::render() {
-	rootNode->draw();
+	rootNode->updateDrawData();
+	renderNodesUsingRenderMap();
 }
 
 void Scene::renderUi() {
 	for (auto &elem : uiElements) {
 		elem->render();
 	}
+}
+
+void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
+	if (parent == nullptr) {
+		parent = rootNode;
+	}
+	node->setParent(parent);
+	addToRenderMap(node, recurse);
+}
+
+void Scene::removeNode(GraphNode* node, bool recurse) {
+	if (node->getParent() != nullptr) {
+		node->getParent()->removeChild(node);
+	}
+	for (auto &comp : node->getComponents()) {
+		Renderable*r = dynamic_cast<Renderable*>(comp);
+		if (r) {
+			removeFromRenderMap(r);
+		}
+	}
+	removeFromRenderMap(node, recurse);
+}
+
+void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight) {
+	if (shader == nullptr) {
+		for (auto &type : ShaderTypes) {
+			if (type != STNone && !(ignoreLight && type == STLight)) {
+				shader = shaders[type];
+				shader->use();
+				for (auto &node : *renderMap[type]) {
+					node->drawSelf(shader);
+				}
+			}
+		}
+	} else {
+		shader->use();
+		for (auto &type : ShaderTypes) {
+			if (type != STNone && !(ignoreLight && type == STLight)) {
+				for (auto &node : *renderMap[type]) {
+					node->drawSelf(shader);
+				}
+			}
+		}
+	}
+}
+
+void Scene::addComponent(GraphNode* node, Component* component) {
+	node->addComponent(component);
+	Renderable *r = dynamic_cast<Renderable*>(component);
+	if (r) {
+		addToRenderMap(r);
+	}
+}
+
+void Scene::addToRenderMap(Renderable* renderable) {
+	if (renderable->getShaderType() != STNone) {
+		renderMap[renderable->getShaderType()]->push_back(renderable);
+	}
+}
+
+void Scene::addToRenderMap(GraphNode* node, bool recurse) {
+	addToRenderMap(node, recurse, true);
+}
+
+void Scene::removeComponent(GraphNode* node, Component* component) {
+	node->removeComponent(component);
+	Renderable *r = dynamic_cast<Renderable*>(component);
+	if (r) {
+		removeFromRenderMap(r);
+	}
+}
+
+void Scene::removeFromRenderMap(GraphNode* node, bool recurse) {
+	Renderable *r = dynamic_cast<Renderable*>(node);
+	removeFromRenderMap(r);
+	if (recurse) {
+		for (auto &nod : node->getChildren()) {
+			removeFromRenderMap(nod, true);
+		}
+	}
+}
+
+void Scene::reinitializeRenderMap() {
+	for (auto &type : ShaderTypes) {
+		if (type != STNone) {
+			delete renderMap[type];
+			renderMap.erase(type);
+			renderMap.emplace(type, new std::vector<Renderable*>());
+		}
+	}
+	addToRenderMap(rootNode, true, false);
 }
 
 void Scene::update(double deltaTime) {
@@ -47,6 +140,7 @@ Scene::Scene() {
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
 	lightManager = LightManager::getInstance();
+	shaders = assetManager->getShaders();
 	gameFramebuffers = gameManager->getFramebuffers();
 	windowWidth = gameManager->getWindowWidth();
 	windowHeight = gameManager->getWindowHeight();
@@ -54,6 +148,11 @@ Scene::Scene() {
 	screenHeight = gameManager->getScreenHeight();
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
+	for (auto &type : ShaderTypes) {
+		if (type != STNone) {
+			renderMap.emplace(type, new std::vector<Renderable*>());
+		}
+	}
 }
 
 Scene::~Scene() {
@@ -61,5 +160,66 @@ Scene::~Scene() {
 		delete elem;
 	}
 	uiElements.clear();
+	for (auto &type : ShaderTypes) {
+		delete renderMap[type];
+	}
+	renderMap.clear();
 	delete rootNode;
+}
+
+void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
+	Renderable *r = dynamic_cast<Renderable*>(node);
+	if (r->getShaderType() != STNone) {
+		bool exists = false;
+		std::vector<Renderable*>* vec = renderMap[r->getShaderType()];
+		if (checkIfExists) {
+			for (auto &ren : *vec) {
+				if (ren == r) {
+					exists = true;
+					break;
+				}
+			}
+		}
+		if (!exists) {
+			vec->push_back(r);
+			for (auto &ren : node->getRenderableComponents()) {
+				addToRenderMap(ren, checkIfExists);
+			}
+		}
+	}
+	if (recurse) {
+		for (auto &nod : node->getChildren()) {
+			addToRenderMap(nod, recurse, checkIfExists);
+		}
+	}
+}
+
+void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
+	if (renderable->getShaderType() == STNone) {
+		return;
+	}
+	bool exists = false;
+	if (checkIfExists) {
+		for (auto &r : *renderMap[renderable->getShaderType()]) {
+			if (r == renderable) {
+				exists = true;
+				break;
+			}
+		}
+	}
+	if(!exists) {
+		renderMap[renderable->getShaderType()]->push_back(renderable);
+	}
+}
+
+void Scene::removeFromRenderMap(Renderable* renderable) {
+	if (renderable->getShaderType() != STNone) {
+		std::vector<Renderable*>* vec = renderMap[renderable->getShaderType()];
+		for (auto i = vec->begin(); i != vec->end();) {
+			if (*i == renderable) {
+				vec->erase(i);
+			}
+			++i;
+		}
+	}
 }

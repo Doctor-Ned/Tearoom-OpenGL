@@ -101,11 +101,15 @@ TestScene::TestScene() {
 	updatableShaders.push_back(assetManager->getShader(STColor));
 	updatableShaders.push_back(assetManager->getShader(STReflect));
 	updatableShaders.push_back(assetManager->getShader(STRefract));
+
+	reinitializeRenderMap();
 }
 
 void TestScene::render() { 
-	lightManager->renderAndUpdate([&rootNode = rootNode](Shader *shader) {
-		rootNode->draw(shader, true);
+	rootNode->updateDrawData();
+
+	lightManager->renderAndUpdate([this](Shader *shader) {
+		renderNodesUsingRenderMap(shader, true);
 	}, updatableShaders);
 
 	pointLightSphere->setColor(lights.pointLights[0]->diffuse);
@@ -118,7 +122,7 @@ void TestScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
-	rootNode->draw();
+	renderNodesUsingRenderMap();
 
 	skybox->draw(camera->getUntranslatedView(), projection);
 }

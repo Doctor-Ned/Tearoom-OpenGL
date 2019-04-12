@@ -13,6 +13,7 @@ public:
 	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, int precision);
 	float getRadius() const;
+	void setShaderType(ShaderType shader);
 	glm::vec3 baseCenter;
 protected:
 	void createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep);

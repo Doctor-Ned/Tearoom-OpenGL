@@ -142,7 +142,6 @@ void MeshRefSphere::createTriangle(std::vector<SimpleVertex>* vertices, glm::vec
 }
 
 void MeshRefSphere::bufferData(std::vector<SimpleVertex>* vertices) {
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

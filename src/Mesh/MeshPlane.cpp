@@ -64,7 +64,6 @@ void MeshPlane::updateValues(float width, float length) {
 	data.push_back(vertices[2]);
 
 	vertexAmount = 6;
-	shader->use();
 	if (VBO != 0) {
 		glDeleteBuffers(1, &VBO);
 	}

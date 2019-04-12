@@ -67,6 +67,8 @@ MiszukScene::MiszukScene() {
 	OctreeNode::toInsert.push_back(simpleBox2);
 	OctreeNode::toInsert.push_back(pivot);
 	OctreeNode::toInsert.push_back(planete);
+
+	reinitializeRenderMap();
 }
 
 MiszukScene::~MiszukScene() {
@@ -78,7 +80,8 @@ void MiszukScene::render() {
 		shader->setViewPosition(camera->getPos());
 	}
 	uboViewProjection->inject(camera->getView(), projection);
-	rootNode->draw();
+	rootNode->updateDrawData();
+	renderNodesUsingRenderMap();
 	octree.draw();
 }
 

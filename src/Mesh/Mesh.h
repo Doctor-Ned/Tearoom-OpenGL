@@ -13,10 +13,8 @@ public:
 	float getShininess() const;
 	virtual void setOpacity(float opacity);
 	float getOpacity() const;
-	virtual void draw(glm::mat4 world);
 	virtual void draw(Shader *shader, glm::mat4 world);
 	ShaderType getShaderType();
-	void setShaderType(ShaderType shaderType);
 	GLuint getRenderMode();
 	void setRenderMode(GLuint renderMode);
 	~Mesh();
@@ -27,7 +25,6 @@ protected:
 	GLuint VAO = 0;
 	GLuint VBO = 0, EBO = 0;
 	float shininess = 1.0f;
-	Shader *shader;
 	bool useLight;
 	bool castShadows;
 	float opacity = 1.0f;
