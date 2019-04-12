@@ -54,11 +54,6 @@ void AnimationController::update(float msec)
     }
 
 }
-void AnimationController::calculatePath() {
-
-}
-
-
 
 void AnimationController::draw()
 {
