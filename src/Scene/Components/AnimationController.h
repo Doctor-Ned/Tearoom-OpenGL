@@ -21,6 +21,8 @@ class AnimationController: public Component, public Renderable
 {
 protected:
     bool F_keyState = false;
+	bool animating = false;
+	glm::mat4 transformMatrix;
     Mesh* mesh;
     AnimationType type;
     glm::float32 elapsed = 0.0f;

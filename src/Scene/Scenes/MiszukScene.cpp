@@ -76,16 +76,6 @@ MiszukScene::MiszukScene() {
 	pivot->addComponent(new Collider(BoxCollider, pivot, glm::vec4(7.0f, 3.0f, 0.0f, 1.0f)));
 	pivot->addComponent(new CollisionTest(pivot));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-	
-	//octree = OctreeNode();
-	OctreeNode::toInsert.clear();
-	OctreeNode::toInsert.push_back(boxNode);
-	OctreeNode::toInsert.push_back(sphereNode2);
-	OctreeNode::toInsert.push_back(boxNode2);
-	OctreeNode::toInsert.push_back(simpleBox1);
-	OctreeNode::toInsert.push_back(simpleBox2);
-	OctreeNode::toInsert.push_back(pivot);
-	OctreeNode::toInsert.push_back(planete);
 
 	reinitializeRenderMap();
 }
@@ -101,8 +91,6 @@ void MiszukScene::render() {
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->updateDrawData();
 	renderNodesUsingRenderMap();
-	octree.draw();
-	rootNode->draw();
 	OctreeNode::getInstance()->draw();
 }
 

@@ -193,7 +193,10 @@ void OctreeNode::divideSpace(std::vector<Box>& boxes)
 
 void OctreeNode::draw()
 {
-	if(mesh_ptr != nullptr)
+	if (mesh_ptr != nullptr)
+		//todo: replace this with an implementation of Renderable interface so that it's properly managed by the scene
+		// though. rendering Octree is a debug-only thing, we won't do it in the game releases so i guess it doesn't matter
+		AssetManager::getInstance()->getShader(STColor)->use();
 		mesh_ptr->draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
 	for(auto& octree : nodes)
 	{

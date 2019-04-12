@@ -124,7 +124,6 @@ void TestScene::render() {
 
 	renderNodesUsingRenderMap();
 
-	rootNode->draw();
 	OctreeNode::getInstance()->draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
 }

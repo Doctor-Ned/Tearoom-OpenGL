@@ -15,10 +15,8 @@ class Collider : public Component, public Renderable
 protected:
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
 	ColliderType type;
-	Mesh* colliderMesh;
 	glm::mat4 mat, matrixWithoutRotation;
 	std::shared_ptr<Mesh> mesh_ptr;
-	glm::mat4 mat;
 	glm::vec3 positionOffset;
 	glm::vec4 data; // vec3 position, float radius or box edge size
 public:

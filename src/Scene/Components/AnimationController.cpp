@@ -8,13 +8,13 @@
 #include "Scene/GameManager.h"
 
 AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject)
-:Component(_gameObject), type(_type){}
+:Component(_gameObject), type(_type) {
+	mesh = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+}
 
 void AnimationController::startAnimation() {
-    mesh = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    glm::mat4 transformMatrix = glm::mat4(1.0f);
-    transformMatrix = glm::translate(transformMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
-    mesh->draw(transformMatrix);
+	animating = true;                   //TODO. i changed it a little bit just to match the new Renderable interface
+    transformMatrix = translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 }
 
 void AnimationController::update(float msec)
@@ -55,9 +55,18 @@ void AnimationController::update(float msec)
 
 }
 
-void AnimationController::draw()
-{
+void AnimationController::updateDrawData() {
+	
+}
 
+void AnimationController::drawSelf(Shader * shader) {
+	if(animating) {
+		mesh->draw(shader, transformMatrix);
+	}
+}
+
+ShaderType AnimationController::getShaderType() {
+	return mesh->getShaderType();
 }
 
 AnimationController::~AnimationController()

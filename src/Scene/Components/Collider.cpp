@@ -25,11 +25,11 @@ void Collider::updateDrawData() {
 }
 
 void Collider::drawSelf(Shader* shader) {
-	colliderMesh->draw(shader, matrixWithoutRotation);
+	mesh_ptr->draw(shader, matrixWithoutRotation);
 }
 
 ShaderType Collider::getShaderType() {
-	return colliderMesh->getShaderType();
+	return mesh_ptr->getShaderType();
 }
 
 void Collider::SetCollisionCallback(std::function<int(Collider*)> f) {
