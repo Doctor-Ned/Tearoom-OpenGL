@@ -2,7 +2,7 @@
 #define CAMERA_H
 
 #include "Global.h"
-
+class GraphNode;
 class Camera {
 public:
 	Camera(glm::vec3 cameraPos = glm::vec3(0.0f, 0.5f, 3.0f), glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f),
@@ -26,6 +26,7 @@ public:
 	void moveDown(float timeDelta, int steps = 1);
 	void setSpeed(float speed);
 	void setRotSpeed(float rotSpeed);
+	GraphNode* castRayFromCamera(glm::vec3 direction, float distance);
 protected:
 	void recalculateFront();
 	bool dirty = false;

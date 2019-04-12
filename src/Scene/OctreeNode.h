@@ -26,10 +26,10 @@ private:
 	Box boxPos;
 	OctreeNode(float dimension);
 	inline void divideSpace(std::vector<Box>& boxes);
-	inline bool containTest(glm::vec3& point, Box& box);
 public:
 	static std::shared_ptr<OctreeNode>& getInstance();
 	static std::set<GraphNode*> toInsert2;
+	static inline bool containTest(glm::vec3& point, Box& box);
 	void RebuildTree(float dimension);
 	OctreeNode(Box _box, OctreeNode* parrent, std::vector<GraphNode*> _gameObjects);
 	OctreeNode();
@@ -37,6 +37,8 @@ public:
 	void draw();
 	void Calculate();
 	void CollisionTests(std::vector<GraphNode*> objectsWithColliders = std::vector<GraphNode*>());
-	GraphNode* castRayFromCamera(Camera* camera, float distance);
+	std::vector<std::shared_ptr<OctreeNode>>& getNodes();
+	std::vector<GraphNode*>& getGameObjects();
+	Box& getBox();
 };
 #endif

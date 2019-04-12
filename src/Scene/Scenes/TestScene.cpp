@@ -192,8 +192,7 @@ void TestScene::update(double deltaTime) {
 	rootNode->update(deltaTime);
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
-	/*OctreeNode::getInstance()->CollisionTests();
-	OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);*/
+	//OctreeNode::getInstance()->CollisionTests();
 }
 
 void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

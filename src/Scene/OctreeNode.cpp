@@ -119,50 +119,19 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 	}
 }
 
-GraphNode* OctreeNode::castRayFromCamera(Camera* camera, float distance)
+std::vector<std::shared_ptr<OctreeNode>>& OctreeNode::getNodes()
 {
-	glm::vec3 startPos = camera->getPos();
-	glm::vec3 direction = camera->getFront();
-	glm::vec3 currentPos = startPos;
-	float k = 0.01f;
-	while(glm::distance(startPos, currentPos) < distance)
-	{
-		currentPos = startPos + direction * k;
-		k += 0.01f;
-		for (GraphNode* game_object : gameObjects)
-		{
-			Collider* collider = game_object->getComponent<Collider>();
-			if(collider != nullptr)
-			{
-				if(CollisionSystem::getInstance()->containTest(currentPos, collider))
-				{
-					std::cout << "ray hit gameobject" << std::endl;
-					return game_object;
-				}
-			}
-		}
+	return nodes;
+}
 
-		for(auto& node : nodes)
-		{
-			//check if node contain ray point
-			if (containTest(currentPos, node->boxPos)) {
-				for(GraphNode* nodeGameObject: node->gameObjects)
-				{
-					Collider* collider = nodeGameObject->getComponent<Collider>();
-					if (collider != nullptr)
-					{
-						//check if point collides with collider
-						if (CollisionSystem::getInstance()->containTest(currentPos, collider))
-						{
-							std::cout << "ray hit gameobject" << std::endl;
-							return nodeGameObject;
-						}
-					}
-				}
-			}
-		}
-	}
-	return nullptr;
+std::vector<GraphNode*>& OctreeNode::getGameObjects()
+{
+	return gameObjects;
+}
+
+Box& OctreeNode::getBox()
+{
+	return boxPos;
 }
 
 bool OctreeNode::containTest(glm::vec3& point, Box& box)

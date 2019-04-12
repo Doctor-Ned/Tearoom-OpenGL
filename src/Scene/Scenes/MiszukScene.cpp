@@ -143,10 +143,11 @@ void MiszukScene::update(double deltaTime) {
 
 	}
 	//-----------------------------------------------
+	camera->castRayFromCamera(camera->getFront(), 3.0f);
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
-	OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
+	//OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
