@@ -10,3 +10,4 @@ obj/
 Build/
 *.TMP
 StartRemote.bat
+cmake-build-debug/
