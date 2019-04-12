@@ -98,8 +98,10 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 	{
 		float radius = collider->getData().w;
 		glm::vec3 sphereCenter = collider->getData();
-		float distSpherePoint = glm::distance(sphereCenter, point);
-		return distSpherePoint < radius;
+		float squareDistSpherePoint = pow(collider->getData().x - point.x, 2) +
+			pow(collider->getData().y - point.y, 2) +
+			pow(collider->getData().z - point.z, 2);
+		return squareDistSpherePoint < radius * radius;
 	}
 }
 

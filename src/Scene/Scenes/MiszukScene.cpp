@@ -88,7 +88,7 @@ void MiszukScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->draw();
-	octree.draw();
+	OctreeNode::getInstance()->draw();
 }
 
 void MiszukScene::renderUi() {
@@ -143,11 +143,10 @@ void MiszukScene::update(double deltaTime) {
 
 	}
 	//-----------------------------------------------
-
-	octree = OctreeNode(15.0f);
-	octree.Calculate();
-	octree.CollisionTests();
-	octree.castRayFromCamera(camera, 3.0f);
+	OctreeNode::getInstance()->RebuildTree(15.0f);
+	OctreeNode::getInstance()->Calculate();
+	OctreeNode::getInstance()->CollisionTests();
+	OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

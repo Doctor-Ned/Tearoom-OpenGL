@@ -136,7 +136,7 @@ GraphNode* OctreeNode::castRayFromCamera(Camera* camera, float distance)
 			{
 				if(CollisionSystem::getInstance()->containTest(currentPos, collider))
 				{
-					std::cout << "Ray hit gameobject" << std::endl;
+					std::cout << "ray hit gameobject" << std::endl;
 					return game_object;
 				}
 			}
@@ -146,7 +146,6 @@ GraphNode* OctreeNode::castRayFromCamera(Camera* camera, float distance)
 		{
 			//check if node contain ray point
 			if (containTest(currentPos, node->boxPos)) {
-				//node->boxPos
 				for(GraphNode* nodeGameObject: node->gameObjects)
 				{
 					Collider* collider = nodeGameObject->getComponent<Collider>();
@@ -155,7 +154,7 @@ GraphNode* OctreeNode::castRayFromCamera(Camera* camera, float distance)
 						//check if point collides with collider
 						if (CollisionSystem::getInstance()->containTest(currentPos, collider))
 						{
-							std::cout << "Ray hit gameobject" << std::endl;
+							std::cout << "ray hit gameobject" << std::endl;
 							return nodeGameObject;
 						}
 					}
@@ -163,10 +162,6 @@ GraphNode* OctreeNode::castRayFromCamera(Camera* camera, float distance)
 			}
 		}
 	}
-	std::cout << glm::distance(startPos, currentPos) << std::endl;
-	//std::cout << camera->getFront().x << " "<< camera->getFront().y << " "<< camera->getFront().z << std::endl;
-	//std::cout << startPos.x << " " << startPos.y << " " << startPos.z;
-	//std::cout << " || "<<endPos.x << " "<< endPos.y << " "<< endPos.z << std::endl;
 	return nullptr;
 }
 
@@ -227,11 +222,6 @@ void OctreeNode::divideSpace(std::vector<Box>& boxes)
 	boxes[7] = Box{ min, max, middle };
 }
 
-OctreeNode::~OctreeNode()
-{
-
-}
-
 void OctreeNode::draw()
 {
 	if(mesh_ptr != nullptr)
@@ -240,6 +230,33 @@ void OctreeNode::draw()
 	{
 			octree->draw();
 	}
+}
+
+std::shared_ptr<OctreeNode>& OctreeNode::getInstance()
+{
+	static std::shared_ptr<OctreeNode> octreeRoot;
+	if (octreeRoot == nullptr)
+	{
+		octreeRoot = std::make_shared<OctreeNode>();
+	}
+	return octreeRoot;
+}
+
+void OctreeNode::RebuildTree(float dimension)
+{
+	gameObjects.clear();
+	nodes.clear();
+	boxPos.maxPos = glm::vec3(dimension);
+	boxPos.minPos = glm::vec3(-dimension);
+	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
+	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
+	for (GraphNode* graphNode : toInsert2)
+	{
+		gameObjects.push_back(graphNode);
+	}
+	toInsert2.clear();
 }
 
 OctreeNode::OctreeNode(float dimension)
@@ -269,4 +286,9 @@ OctreeNode::OctreeNode(Box _box, OctreeNode* _parent, std::vector<GraphNode*> _g
 OctreeNode::OctreeNode()
 {
 	
+}
+
+OctreeNode::~OctreeNode()
+{
+
 }

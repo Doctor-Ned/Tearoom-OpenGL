@@ -30,5 +30,4 @@ protected:
 	std::vector<UiElement*> uiElements;
 	GraphNode *rootNode = new GraphNode();
 	LightManager *lightManager;
-	OctreeNode octree;
 };

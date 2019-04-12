@@ -24,11 +24,13 @@ private:
 	OctreeNode* parent;
 	std::shared_ptr<MeshColorBox> mesh_ptr;
 	Box boxPos;
+	OctreeNode(float dimension);
 	inline void divideSpace(std::vector<Box>& boxes);
 	inline bool containTest(glm::vec3& point, Box& box);
 public:
+	static std::shared_ptr<OctreeNode>& getInstance();
 	static std::set<GraphNode*> toInsert2;
-	OctreeNode(float dimension);
+	void RebuildTree(float dimension);
 	OctreeNode(Box _box, OctreeNode* parrent, std::vector<GraphNode*> _gameObjects);
 	OctreeNode();
 	~OctreeNode();
