@@ -82,6 +82,29 @@ bool CollisionSystem::containTest(glm::vec3 min, glm::vec3 max, Collider* collid
 	}
 }
 
+bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
+{
+	if (collider->getType() == BoxCollider)
+	{
+		float halfDimension = collider->getData().w;
+		for (int i = 0; i < 3; i++)
+		{
+			if (point[i] < collider->getData()[i] - halfDimension || point[i] > collider->getData()[i] + halfDimension)
+				return false;
+		}
+		return true;
+	}
+	if (collider->getType() == SphereCollider) //testing it like a box inside other box (furthest distance from center in axis align directions)
+	{
+		float radius = collider->getData().w;
+		glm::vec3 sphereCenter = collider->getData();
+		float squareDistSpherePoint = pow(collider->getData().x - point.x, 2) +
+			pow(collider->getData().y - point.y, 2) +
+			pow(collider->getData().z - point.z, 2);
+		return squareDistSpherePoint < radius * radius;
+	}
+}
+
 bool CollisionSystem::SphereToSphere(Collider* _sphere1, Collider* _sphere2)
 {
 	float distanceSquared =

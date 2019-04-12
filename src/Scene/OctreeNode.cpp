@@ -3,8 +3,9 @@
 #include "Components/Collider.h"
 #include <iostream>
 #include "CollisionSystem.h"
+#include "Render/Camera.h"
 
-std::vector<GraphNode*> OctreeNode::toInsert = std::vector<GraphNode*>();
+std::set<GraphNode*> OctreeNode::toInsert2 = std::set<GraphNode*>();
 
 void OctreeNode::Calculate()
 {
@@ -64,12 +65,11 @@ void OctreeNode::Calculate()
 	{
 		if(!octList[i].empty())
 		{
-			nodes.push_back(new OctreeNode(boxes[i], this, octList[i]));
-			bitmask |= 1 << i;
+			nodes.push_back(std::make_shared<OctreeNode>(boxes[i], this, octList[i]));
 		}
 	}
 
-	for (OctreeNode* child : nodes)
+	for (auto& child : nodes)
 	{
 		if(!child->gameObjects.empty())
 			child->Calculate();
@@ -98,12 +98,12 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 		}
 	}
 
-	for (int i = 0; i < thisNodeObjectsWithColliders.size(); i++)
+	for (GraphNode* thisNodeObject : thisNodeObjectsWithColliders)
 	{
-		Collider* collider1 = thisNodeObjectsWithColliders[i]->getComponent<Collider>();
-		for (int j = i + 1; j < objectsWithColliders.size(); j++)
+		Collider* collider1 = thisNodeObject->getComponent<Collider>();
+		for (GraphNode* NodeObject : objectsWithColliders)
 		{
-			Collider* collider2 = objectsWithColliders[j]->getComponent<Collider>();
+			Collider* collider2 = NodeObject->getComponent<Collider>();
 			CollisionSystem::getInstance()->checkCollision(collider1, collider2);
 		}
 	}
@@ -113,10 +113,25 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 		objectsWithColliders.push_back(object);
 	}
 
-	for(OctreeNode* node : nodes)
+	for(auto& node : nodes)
 	{
 		node->CollisionTests(objectsWithColliders);
 	}
+}
+
+std::vector<std::shared_ptr<OctreeNode>>& OctreeNode::getNodes()
+{
+	return nodes;
+}
+
+std::vector<GraphNode*>& OctreeNode::getGameObjects()
+{
+	return gameObjects;
+}
+
+Box& OctreeNode::getBox()
+{
+	return boxPos;
 }
 
 bool OctreeNode::containTest(glm::vec3& point, Box& box)
@@ -176,58 +191,73 @@ void OctreeNode::divideSpace(std::vector<Box>& boxes)
 	boxes[7] = Box{ min, max, middle };
 }
 
-OctreeNode::~OctreeNode()
-{
-	for(OctreeNode* child: nodes)
-	{
-		delete child;
-	}
-}
-
 void OctreeNode::draw()
 {
-	//if(!gameObjects.empty())
-		//mesh.draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
-	mesh2->draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
-	for(OctreeNode* octree : nodes)
+	if(mesh_ptr != nullptr)
+		mesh_ptr->draw(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
+	for(auto& octree : nodes)
 	{
 			octree->draw();
 	}
 }
 
-OctreeNode::OctreeNode(glm::vec3 _minPos, glm::vec3 _maxPos)
+std::shared_ptr<OctreeNode>& OctreeNode::getInstance()
 {
-	float maxVal = _maxPos.x;
-	maxVal > _maxPos.y ? maxVal = _maxPos.y : maxVal;
-	maxVal > _maxPos.z ? maxVal = _maxPos.z : maxVal;
-	maxVal > glm::abs(_minPos.x) ? maxVal = glm::abs(_minPos.x) : maxVal;
-	maxVal > glm::abs(_minPos.y) ? maxVal = glm::abs(_minPos.y) : maxVal;
-	maxVal > glm::abs(_minPos.z) ? maxVal = glm::abs(_minPos.z) : maxVal;
-	
-	boxPos.maxPos = glm::vec3(maxVal, maxVal, maxVal);
-	boxPos.minPos = glm::vec3(maxVal * (-1), maxVal * (-1), maxVal * (-1));
+	static std::shared_ptr<OctreeNode> octreeRoot;
+	if (octreeRoot == nullptr)
+	{
+		octreeRoot = std::make_shared<OctreeNode>();
+	}
+	return octreeRoot;
+}
+
+void OctreeNode::RebuildTree(float dimension)
+{
+	gameObjects.clear();
+	nodes.clear();
+	boxPos.maxPos = glm::vec3(dimension);
+	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
-
-	mesh2 = new MeshColorBox(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh2->setRenderMode(GL_LINES);
-	mesh2->setUseLight(false);
-
-	for(GraphNode* graphNode : toInsert)
+	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
+	for (GraphNode* graphNode : toInsert2)
 	{
 		gameObjects.push_back(graphNode);
 	}
+	toInsert2.clear();
+}
+
+OctreeNode::OctreeNode(float dimension)
+{
+	boxPos.maxPos = glm::vec3(dimension);
+	boxPos.minPos = glm::vec3(-dimension);
+	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
+	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
+	for(GraphNode* graphNode : toInsert2)
+	{
+		gameObjects.push_back(graphNode);
+	}
+	toInsert2.clear();
 }
 
 OctreeNode::OctreeNode(Box _box, OctreeNode* _parent, std::vector<GraphNode*> _gameObjects) 
 	: boxPos(_box), parent(_parent), gameObjects(_gameObjects)
 {
 
-	mesh2 = new MeshColorBox(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh2->setRenderMode(GL_LINES);
-	mesh2->setUseLight(false);
+	mesh_ptr = std::make_shared<MeshColorBox>(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setUseLight(false);
 }
 
 OctreeNode::OctreeNode()
 {
 	
+}
+
+OctreeNode::~OctreeNode()
+{
+
 }

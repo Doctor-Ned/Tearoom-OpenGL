@@ -37,16 +37,19 @@ void Collider::SetCollisionCallback(std::function<int(Collider*)> f) {
 }
 
 Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data)
-	: Component(_gameObject), type(_type), positionOffset(_data), data(_data), matrixWithoutRotation(glm::mat4(1.0f)) {
-	if (type == SphereCollider) {
-		colliderMesh = new MeshColorSphere(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+: Component(_gameObject), type(_type), positionOffset(_data), data(_data)
+{
+	if(type == SphereCollider)
+	{
+		mesh_ptr = std::make_shared<MeshColorSphere>(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
-	if (type == BoxCollider) {
-		colliderMesh = new MeshColorBox(glm::vec3(-data.w, -data.w, -data.w), glm::vec3(data.w, data.w, data.w), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	if(type == BoxCollider)
+	{
+		mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-data.w, -data.w, -data.w), glm::vec3(data.w, data.w, data.w), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
-
-	colliderMesh->setUseLight(false);
-	colliderMesh->setRenderMode(GL_LINES);
+	
+	mesh_ptr->setUseLight(false);
+	mesh_ptr->setRenderMode(GL_LINES);
 
 	mat = glm::mat4(1);
 }
@@ -65,4 +68,30 @@ ColliderType Collider::getType() {
 
 std::vector<std::function<int(Collider*)>> Collider::getCallbackFunctions() {
 	return callbackFunctions;
+}
+
+void Collider::changeOffset(glm::vec3 offset)
+{
+	positionOffset = offset;
+}
+
+void Collider::setSize(float size)
+{
+	if(size <= 0.0f)
+	{
+		return;
+	}
+
+	data.w = size;
+	if (type == SphereCollider)
+	{
+		mesh_ptr = std::make_shared<MeshColorSphere>(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	}
+	if (type == BoxCollider)
+	{
+		mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-data.w, -data.w, -data.w), glm::vec3(data.w, data.w, data.w), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	}
+
+	mesh_ptr->setUseLight(false);
+	mesh_ptr->setRenderMode(GL_LINES);
 }

@@ -17,6 +17,8 @@ protected:
 	ColliderType type;
 	Mesh* colliderMesh;
 	glm::mat4 mat, matrixWithoutRotation;
+	std::shared_ptr<Mesh> mesh_ptr;
+	glm::mat4 mat;
 	glm::vec3 positionOffset;
 	glm::vec4 data; // vec3 position, float radius or box edge size
 public:
@@ -30,5 +32,7 @@ public:
 	glm::vec4 getData();
 	ColliderType getType();
 	std::vector < std::function<int(Collider*)>> getCallbackFunctions();
+	void changeOffset(glm::vec3 offset);
+	void setSize(float size);
 };
 #endif

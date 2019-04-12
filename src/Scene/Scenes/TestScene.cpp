@@ -124,6 +124,8 @@ void TestScene::render() {
 
 	renderNodesUsingRenderMap();
 
+	rootNode->draw();
+	OctreeNode::getInstance()->draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
 }
 
@@ -194,6 +196,9 @@ void TestScene::update(double deltaTime) {
 	mouseMovementY = 0.0f;
 
 	rootNode->update(deltaTime);
+	OctreeNode::getInstance()->RebuildTree(15.0f);
+	OctreeNode::getInstance()->Calculate();
+	//OctreeNode::getInstance()->CollisionTests();
 }
 
 void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

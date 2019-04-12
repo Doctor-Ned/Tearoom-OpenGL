@@ -61,6 +61,7 @@ void GraphNode::update(double timeDiff) {
 	if (!active) {
 		return;
 	}
+	OctreeNode::toInsert2.insert(this);
 	for (Component* component : components) {
 		component->update(timeDiff);
 	}
