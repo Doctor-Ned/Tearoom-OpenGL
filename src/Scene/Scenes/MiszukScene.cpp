@@ -76,22 +76,6 @@ MiszukScene::MiszukScene() {
 	pivot->addComponent(new Collider(BoxCollider, pivot, glm::vec4(7.0f, 3.0f, 0.0f, 1.0f)));
 	pivot->addComponent(new CollisionTest(pivot));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-	
-	//octree = OctreeNode();
-	OctreeNode::toInsert.clear();
-	OctreeNode::toInsert.push_back(boxNode);
-	OctreeNode::toInsert.push_back(sphereNode2);
-	OctreeNode::toInsert.push_back(boxNode2);
-	OctreeNode::toInsert.push_back(simpleBox1);
-	OctreeNode::toInsert.push_back(simpleBox2);
-	OctreeNode::toInsert.push_back(pivot);
-	OctreeNode::toInsert.push_back(planete);
-
-	OctreeNode::toInsert.push_back(animatedBoxNode);
-	OctreeNode::toInsert.push_back(slidingDoorNode);
-	OctreeNode::toInsert.push_back(wallNode);
-	OctreeNode::toInsert.push_back(wallNode2);
-
 }
 
 MiszukScene::~MiszukScene() {
@@ -109,7 +93,7 @@ void MiszukScene::render() {
 
 void MiszukScene::renderUi() {
 	Scene::renderUi();
-	assetManager->getTextRenderer()->renderText("Miszuk Scene", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
+	assetManager->getTextRenderer()->renderText("+", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 
 void MiszukScene::update(double deltaTime) {
@@ -159,9 +143,11 @@ void MiszukScene::update(double deltaTime) {
 
 	}
 	//-----------------------------------------------
-	octree = OctreeNode(glm::vec3(-10.0f, -10.0f, -10.0f), glm::vec3(10.0f, 10.0f, 10.0f));
+
+	octree = OctreeNode(15.0f);
 	octree.Calculate();
 	octree.CollisionTests();
+	octree.castRayFromCamera(camera, 3.0f);
 }
 
 void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {

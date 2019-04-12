@@ -24,7 +24,7 @@ void AnimationController::update(float msec)
         case DoorOpeningX:
             if(elapsed < 1.8f)
                 gameObject->localTransform.Translate(glm::vec3(0.0f, 0.0f, -0.04f));
-                elapsed += 0.04f;
+                elapsed += 0.01f;
             break;
         case DoorClosingX:
             if(elapsed < 1.8f)

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "Mesh/MeshColorBox.h"
 #include <memory>
+#include <set>
 
 struct Box
 {
@@ -12,7 +13,9 @@ struct Box
 	glm::vec3 maxPos;
 	glm::vec3 middle;
 };
+
 class GraphNode;
+class Camera;
 class OctreeNode
 {
 private:
@@ -24,13 +27,14 @@ private:
 	inline void divideSpace(std::vector<Box>& boxes);
 	inline bool containTest(glm::vec3& point, Box& box);
 public:
-	static std::vector<GraphNode*> toInsert;
-	OctreeNode(glm::vec3 _minPos, glm::vec3 _maxPos);
+	static std::set<GraphNode*> toInsert2;
+	OctreeNode(float dimension);
 	OctreeNode(Box _box, OctreeNode* parrent, std::vector<GraphNode*> _gameObjects);
 	OctreeNode();
 	~OctreeNode();
 	void draw();
 	void Calculate();
 	void CollisionTests(std::vector<GraphNode*> objectsWithColliders = std::vector<GraphNode*>());
+	GraphNode* castRayFromCamera(Camera* camera, float distance);
 };
 #endif

@@ -16,5 +16,6 @@ public:
 	~CollisionSystem();
 	bool checkCollision(Collider* collider1, Collider* collider2);
 	bool containTest(glm::vec3 min, glm::vec3 max, Collider* collider);
+	bool containTest(glm::vec3 point, Collider* collider);
 };
 #endif

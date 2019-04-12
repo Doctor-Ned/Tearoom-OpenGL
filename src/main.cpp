@@ -171,7 +171,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(0); // vsync
+	glfwSwapInterval(1); // vsync
 
 	GameManager->setWindow(window);
 

@@ -4,6 +4,7 @@
 #include "Ui/UiElement.h"
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
+#include "Scene/OctreeNode.h"
 
 class LightManager;
 struct GameFramebuffers;
@@ -29,4 +30,5 @@ protected:
 	std::vector<UiElement*> uiElements;
 	GraphNode *rootNode = new GraphNode();
 	LightManager *lightManager;
+	OctreeNode octree;
 };

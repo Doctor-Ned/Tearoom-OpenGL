@@ -8,7 +8,6 @@
 #include "Ubo/UboViewProjection.h"
 #include <map>
 #include "Render/Camera.h"
-#include "Scene/OctreeNode.h"
 
 class MiszukScene : public Scene {
 public:
@@ -40,7 +39,6 @@ protected:
 	float mouseX, mouseY;
 	float mouseMovementX, mouseMovementY;
 	bool initMouse = true;
-	OctreeNode octree;
 };
 
 #endif

@@ -60,6 +60,7 @@ Scene::~Scene() {
 	for (auto &elem : uiElements) {
 		delete elem;
 	}
+	OctreeNode::toInsert2.clear();
 	uiElements.clear();
 	delete rootNode;
 }

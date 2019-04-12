@@ -119,7 +119,7 @@ void TestScene::render() {
 	uboViewProjection->inject(camera->getView(), projection);
 
 	rootNode->draw();
-
+	octree.draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
 }
 
@@ -190,6 +190,8 @@ void TestScene::update(double deltaTime) {
 	mouseMovementY = 0.0f;
 
 	rootNode->update(deltaTime);
+	octree = OctreeNode(15.0f);
+	octree.Calculate();
 }
 
 void TestScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
