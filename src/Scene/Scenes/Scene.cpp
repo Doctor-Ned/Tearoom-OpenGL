@@ -170,22 +170,22 @@ Scene::~Scene() {
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
 	Renderable *r = dynamic_cast<Renderable*>(node);
-	if (r->getShaderType() != STNone) {
-		bool exists = false;
-		std::vector<Renderable*>* vec = renderMap[r->getShaderType()];
-		if (checkIfExists) {
-			for (auto &ren : *vec) {
-				if (ren == r) {
-					exists = true;
-					break;
-				}
+	bool exists = false;
+	std::vector<Renderable*>* vec = renderMap[r->getShaderType()];
+	if (checkIfExists) {
+		for (auto &ren : *vec) {
+			if (ren == r) {
+				exists = true;
+				break;
 			}
 		}
-		if (!exists) {
+	}
+	if (!exists) {
+		if (r->getShaderType() != STNone) {
 			vec->push_back(r);
-			for (auto &ren : node->getRenderableComponents()) {
-				addToRenderMap(ren, checkIfExists);
-			}
+		}
+		for (auto &ren : node->getRenderableComponents()) {
+			addToRenderMap(ren, checkIfExists);
 		}
 	}
 	if (recurse) {
@@ -208,7 +208,7 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 			}
 		}
 	}
-	if(!exists) {
+	if (!exists) {
 		renderMap[renderable->getShaderType()]->push_back(renderable);
 	}
 }

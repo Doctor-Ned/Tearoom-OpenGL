@@ -39,6 +39,7 @@ void Collider::SetCollisionCallback(std::function<int(Collider*)> f) {
 Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data)
 : Component(_gameObject), type(_type), positionOffset(_data), data(_data)
 {
+	matrixWithoutRotation = glm::mat4(1.0f);
 	if(type == SphereCollider)
 	{
 		mesh_ptr = std::make_shared<MeshColorSphere>(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));

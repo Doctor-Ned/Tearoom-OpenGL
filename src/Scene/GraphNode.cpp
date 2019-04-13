@@ -110,12 +110,12 @@ void GraphNode::addComponent(Component* component) {
 		if (comp == component) {
 			return;
 		}
-		Renderable *r = dynamic_cast<Renderable*>(component);
-		if(r) {
-			renderableComponents.push_back(r);
-		}
 	}
 	components.push_back(component);
+	Renderable *r = dynamic_cast<Renderable*>(component);
+	if (r) {
+		renderableComponents.push_back(r);
+	}
 }
 
 std::vector<Component*> GraphNode::getComponents() {
