@@ -6,15 +6,12 @@ BoxCollider::BoxCollider(GraphNode* _gameObject, glm::vec3 position, glm::vec3 h
 	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);
 	mesh_ptr->setRenderMode(GL_LINES);
-
-	mat = glm::mat4(1);
 }
 
 void BoxCollider::setHalfDimensions(glm::vec3 half_dimensions)
 {
-	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh_ptr->setUseLight(false);
-	mesh_ptr->setRenderMode(GL_LINES);
+	MeshColorBox *box = dynamic_cast<MeshColorBox*>(mesh_ptr.get());
+	box->updateValues(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z));
 }
 
 glm::vec3 BoxCollider::getHalfDimensions()

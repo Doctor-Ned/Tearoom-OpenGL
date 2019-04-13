@@ -7,8 +7,6 @@ SphereCollider::SphereCollider(GraphNode* _gameObject, glm::vec3 position, float
 	mesh_ptr = std::make_shared<MeshColorSphere>(radius, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);
 	mesh_ptr->setRenderMode(GL_LINES);
-
-	mat = glm::mat4(1);
 }
 
 void SphereCollider::setRadius(float size)
@@ -17,10 +15,9 @@ void SphereCollider::setRadius(float size)
 	{
 		return;
 	}
+	MeshColorSphere *sphere = dynamic_cast<MeshColorSphere*>(mesh_ptr.get());
+	sphere->updateValues(radius, 15);
 	radius = size;
-	mesh_ptr = std::make_shared<MeshColorSphere>(radius, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh_ptr->setRenderMode(GL_LINES);
-	mesh_ptr->setUseLight(false);
 }
 
 float SphereCollider::getRadius()
