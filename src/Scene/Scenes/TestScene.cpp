@@ -7,8 +7,12 @@
 #include "Scene/SpotLightNode.h"
 #include "Scene/PointLightNode.h"
 #include "Render/LightManager.h"
+#include "Mesh/MeshPlane.h"
+#include "Scene/BillboardNode.h"
 
 TestScene::TestScene() {
+	camera = new Camera();
+
 	std::vector<std::string> faces;
 	//faces.emplace_back("res/skybox/arrakisday/arrakisday_rt.tga");
 	//faces.emplace_back("res/skybox/arrakisday/arrakisday_lf.tga");
@@ -31,14 +35,13 @@ TestScene::TestScene() {
 
 	Model *model = new Model("res/models/muro/muro.obj");
 	modelNode = new GraphNode(model, rootNode);
-	modelNode->localTransform.SetMatrix(scale(translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), glm::vec3(0.01, 0.01, 0.01f)));
+	modelNode->localTransform.setMatrix(scale(translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), glm::vec3(0.01, 0.01, 0.01f)));
 
 	MeshColorPlane *plane = new MeshColorPlane(10.0f, 10.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorSphere *sphere = new MeshColorSphere(0.125f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	GraphNode* planeNode = new GraphNode(plane, rootNode);
 	GraphNode* sphereNode = new GraphNode(sphere, rootNode);
-	sphereNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	planeNode->localTransform.SetMatrix(rotate(glm::mat4(1.0f), 0.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	sphereNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 
 	MeshColorSphere *lightSphere = new MeshColorSphere(0.05f, 30, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	lightSphere->setUseLight(false);
@@ -58,7 +61,7 @@ TestScene::TestScene() {
 	//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
 	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	dirLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	dirLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
@@ -73,7 +76,7 @@ TestScene::TestScene() {
 	spotLightNode = new SpotLightNode(spotLight, lightSphere, rotatingNode2);
 	//GraphNode *spotNode = new GraphNode(nullptr, rotatingNode);
 	//spotNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 0.0f)));
-	spotLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)));
+	spotLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)));
 	//spotLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode3 = new RotatingNode(0.15f, nullptr, rootNode);
@@ -88,13 +91,19 @@ TestScene::TestScene() {
 	pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->diffuse);
 	pointLightSphere->setShaderType(STLight);
 	pointLightNode = new PointLightNode(pointLight, pointLightSphere, rotatingNode3);
-	pointLightNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+	pointLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
 
 	dirLightNodes.push_back(dirLightNode);
 	spotLightNodes.push_back(spotLightNode);
 	pointLightNodes.push_back(pointLightNode);
 
-	camera = new Camera();
+	BillboardNode *billboardNode = new BillboardNode(camera, nullptr, rootNode, true);
+	billboardNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, -3.0f)));
+	MeshPlane *emote = new MeshPlane(0.25f, 0.25f, "res/textures/face.png");
+	emote->setUseLight(false);
+	GraphNode *emoteNode = new GraphNode(emote, billboardNode);
+	emoteNode->localTransform.setMatrix(rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+
 	updatableShaders.push_back(assetManager->getShader(STModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
 	updatableShaders.push_back(assetManager->getShader(STTexture));

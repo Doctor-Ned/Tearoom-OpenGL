@@ -12,7 +12,7 @@ void Collider::update(float m_sec) {
 	tmp[3][0] = positionOffset.x;
 	tmp[3][1] = positionOffset.y;
 	tmp[3][2] = positionOffset.z;
-	mat = gameObject->worldTransform.Matrix() * tmp;
+	mat = gameObject->worldTransform.getMatrix() * tmp;
 	data.x = mat[3][0];
 	data.y = mat[3][1];
 	data.z = mat[3][2];

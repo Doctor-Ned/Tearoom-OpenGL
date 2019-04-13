@@ -26,10 +26,11 @@ uniform float opacity;
 
 void main() {
 	vec3 diffuse = tcolor.rgb;
-	if(!disableTexture) diffuse = diffuse * texture(texture_diffuse1, fs_in.texCoords).rgb;
+	vec4 texColor = texture(texture_diffuse1, fs_in.texCoords);
+	if(!disableTexture) diffuse = diffuse * texColor.rgb;
     vec3 ambient = initialAmbient * diffuse;
 	if(useLight == 0) {
-		FragColor = vec4(diffuse, opacity);
+		FragColor = vec4(diffuse, texColor.a * opacity);
 	} else {
 		vec3 specular = vec3(0.5f);
 		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
@@ -38,12 +39,12 @@ void main() {
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, opacity);
+		FragColor = vec4(color, texColor.a * opacity);
 	}
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
+		BrightColor = vec4(0.0, 0.0, 0.0, texColor.a * opacity);
 	}
 }

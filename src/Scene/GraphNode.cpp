@@ -46,7 +46,7 @@ void GraphNode::updateDrawData() {
 
 void GraphNode::drawSelf(Shader *shader) {
 	if (mesh != nullptr) {
-		mesh->draw(shader, worldTransform.Matrix());
+		mesh->draw(shader, worldTransform.getMatrix());
 	}
 }
 
@@ -77,9 +77,9 @@ GraphNode* GraphNode::getParent() const {
 void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
 	if (preserveWorldPosition) {
 		//local = (this->parent->getWorld() / parent->getWorld()) * local;
-		localTransform.SetMatrix(
-			(this->parent->worldTransform.Matrix() / parent->worldTransform.Matrix()
-				* localTransform.Matrix()));
+		localTransform.setMatrix(
+			(this->parent->worldTransform.getMatrix() / parent->worldTransform.getMatrix()
+				* localTransform.getMatrix()));
 	}
 	this->parent->removeChild(this);
 	parent->addChild(this);
@@ -185,9 +185,9 @@ std::vector<Renderable*> GraphNode::getRenderableComponents() const {
 void GraphNode::updateWorld() {
 	if (dirty) {
 		if (parent != nullptr) {
-			worldTransform.SetMatrix(parent->worldTransform.Matrix() * localTransform.Matrix());
+			worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
 		} else {
-			worldTransform.SetMatrix(localTransform.Matrix());
+			worldTransform.setMatrix(localTransform.getMatrix());
 		}
 	}
 }
@@ -217,37 +217,37 @@ void GraphNode::renderGui() {
 		//matrix = mat4_cast(glm::quat(euler)) * matrix;
 		//localTransform.SetMatrix(matrix);
 
-		glm::vec3 position = localTransform.Matrix()[3];
+		glm::vec3 position = localTransform.getMatrix()[3];
 
 		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&position));
 		ImGui::NewLine();
 		ImGui::SliderFloat3("Position (slider)", reinterpret_cast<float*>(&position), -10.0f, 10.0f);
 		ImGui::NewLine();
 
-		glm::mat4 local = localTransform.Matrix();
+		glm::mat4 local = localTransform.getMatrix();
 		local[3].x = position.x;
 		local[3].y = position.y;
 		local[3].z = position.z;
-		localTransform.SetMatrix(local);
+		localTransform.setMatrix(local);
 
 		if (ImGui::Button("RotX-")) {
-			localTransform.Rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+			localTransform.rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 		if (ImGui::Button("RotY-")) {
-			localTransform.Rotate(-15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			localTransform.rotate(-15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		}
 		if (ImGui::Button("RotZ-")) {
-			localTransform.Rotate(-15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			localTransform.rotate(-15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		ImGui::NewLine();
 		if (ImGui::Button("RotX+")) {
-			localTransform.Rotate(15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+			localTransform.rotate(15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 		if (ImGui::Button("RotY+")) {
-			localTransform.Rotate(15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			localTransform.rotate(15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		}
 		if (ImGui::Button("RotZ+")) {
-			localTransform.Rotate(15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			localTransform.rotate(15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		ImGui::NewLine();
 	}

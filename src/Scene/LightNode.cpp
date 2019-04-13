@@ -3,7 +3,7 @@
 void LightNode::updateWorld() {
 	GraphNode::updateWorld();
 	//if (dirty) {
-		setModel(worldTransform.Matrix());
+		setModel(worldTransform.getMatrix());
 	//}
 }
 

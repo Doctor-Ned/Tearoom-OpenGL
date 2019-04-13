@@ -53,18 +53,18 @@ MiszukScene::MiszukScene() {
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
 	GraphNode* planete = new GraphNode(box2, pivot);
 
-	boxNode->localTransform.Translate(glm::vec3(4.0f, 3.0f, 1.0f));
-	boxNode->localTransform.Rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 1.0f));
+	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
-	sphereNode2->localTransform.Translate(glm::vec3(-2.0f, 0.0f, 0.0f));
+	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, -1.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
 
-	wallNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -5.0f));
-	wallNode2->localTransform.Translate(glm::vec3(0.0f, 8.0f, -15.0f));
-	slidingDoorNode->localTransform.Translate(glm::vec3(0.0f, 8.0f, -6.0f));
-	animatedBoxNode->localTransform.Translate(glm::vec3(0.0f, 9.0f, 0.0f));
+	wallNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -5.0f));
+	wallNode2->localTransform.translate(glm::vec3(0.0f, 8.0f, -15.0f));
+	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
+	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));

@@ -6,31 +6,31 @@ Transform::Transform(bool& _dirty) {
 	dirty = &_dirty;
 }
 
-glm::mat4 Transform::Matrix()
+glm::mat4 Transform::getMatrix()
 {
 	return transform;
 }
 
-void Transform::SetMatrix(const glm::mat4& matrix)
+void Transform::setMatrix(const glm::mat4& matrix)
 {
 	transform = matrix;
 	*dirty = true;
 }
 
-void Transform::Rotate(const float& angle, const glm::vec3& axis) {
+void Transform::rotate(const float& angle, const glm::vec3& axis) {
 	transform = glm::rotate(transform, glm::radians(angle), axis);
 	*dirty = true;
 }
-void Transform::RotateByRadians(const float& angle, const glm::vec3& axis)
+void Transform::rotateByRadians(const float& angle, const glm::vec3& axis)
 {
 	transform = glm::rotate(transform, angle, axis);
 	*dirty = true;
 }
-void Transform::Translate(const glm::vec3& translation) {
+void Transform::translate(const glm::vec3& translation) {
 	transform = glm::translate(transform, translation);
 	*dirty = true;
 }
-void Transform::Scale(const glm::vec3& scale) {
+void Transform::scale(const glm::vec3& scale) {
 	transform = glm::scale(transform, scale);
 	*dirty = true;
 }
