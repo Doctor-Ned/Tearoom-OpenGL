@@ -9,6 +9,8 @@
 #include "Scene/Components/Collider.h"
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/Components/AnimationController.h"
+#include "Scene/Components/BoxCollider.h"
+#include "Scene/Components/SphereCollider.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -67,13 +69,13 @@ MiszukScene::MiszukScene() {
 	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
-	boxNode2->addComponent(new Collider(SphereCollider, boxNode2, glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f)));
+	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
-	boxNode->addComponent(new Collider(SphereCollider, boxNode, glm::vec4(1.0f, 0.0f, 0.0f, 2.0f)));
+	boxNode->addComponent(new SphereCollider(boxNode, glm::vec3(1.0f, 0.0f, 0.0f), 2.0f));
 	boxNode->addComponent(new CollisionTest(boxNode));
-	simpleBox1->addComponent(new Collider(BoxCollider, simpleBox1, glm::vec4(0, 0, 0, 0.5f)));
-	simpleBox2->addComponent(new Collider(BoxCollider, simpleBox2, glm::vec4(0, 0, 0, 0.5f)));
-	pivot->addComponent(new Collider(BoxCollider, pivot, glm::vec4(7.0f, 3.0f, 0.0f, 1.0f)));
+	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
+	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
+	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
 

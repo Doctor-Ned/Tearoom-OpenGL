@@ -9,13 +9,11 @@ void Collider::update(float m_sec) {
 	glm::vec3 gameObjectPos = gameObject->worldTransform.getPosition();
 
 	glm::mat4 tmp(1);
-	tmp[3][0] = positionOffset.x;
-	tmp[3][1] = positionOffset.y;
-	tmp[3][2] = positionOffset.z;
+	tmp[3] = glm::vec4(positionOffset, 1.0f);
 	mat = gameObject->worldTransform.getMatrix() * tmp;
-	data.x = mat[3][0];
-	data.y = mat[3][1];
-	data.z = mat[3][2];
+	position.x = mat[3][0];
+	position.y = mat[3][1];
+	position.z = mat[3][2];
 	//std::cout << data.x << " " << data.y << " " << data.z << " " << data.w << std::endl;
 	//std::cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << std::endl;
 }
@@ -28,39 +26,27 @@ void Collider::drawSelf(Shader* shader) {
 	mesh_ptr->draw(shader, matrixWithoutRotation);
 }
 
+glm::vec3 Collider::getPosition()
+{
+	return position;
+}
+
 ShaderType Collider::getShaderType() {
 	return mesh_ptr->getShaderType();
 }
 
-void Collider::SetCollisionCallback(std::function<int(Collider*)> f) {
+void Collider::setCollisionCallback(std::function<int(Collider*)> f) {
 	callbackFunctions.push_back(f);
 }
 
-Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data)
-: Component(_gameObject), type(_type), positionOffset(_data), data(_data)
+Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 position)
+: Component(_gameObject), type(_type), positionOffset(position)
 {
-	matrixWithoutRotation = glm::mat4(1.0f);
-	if(type == SphereCollider)
-	{
-		mesh_ptr = std::make_shared<MeshColorSphere>(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	}
-	if(type == BoxCollider)
-	{
-		mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-data.w, -data.w, -data.w), glm::vec3(data.w, data.w, data.w), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	}
-	
-	mesh_ptr->setUseLight(false);
-	mesh_ptr->setRenderMode(GL_LINES);
 
-	mat = glm::mat4(1);
 }
 
 Collider::~Collider() {
 
-}
-
-glm::vec4 Collider::getData() {
-	return data;
 }
 
 ColliderType Collider::getType() {
@@ -71,28 +57,7 @@ std::vector<std::function<int(Collider*)>> Collider::getCallbackFunctions() {
 	return callbackFunctions;
 }
 
-void Collider::changeOffset(glm::vec3 offset)
+void Collider::setPosition(glm::vec3 pos)
 {
-	positionOffset = offset;
-}
-
-void Collider::setSize(float size)
-{
-	if(size <= 0.0f)
-	{
-		return;
-	}
-
-	data.w = size;
-	if (type == SphereCollider)
-	{
-		mesh_ptr = std::make_shared<MeshColorSphere>(data.w, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	}
-	if (type == BoxCollider)
-	{
-		mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-data.w, -data.w, -data.w), glm::vec3(data.w, data.w, data.w), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	}
-
-	mesh_ptr->setUseLight(false);
-	mesh_ptr->setRenderMode(GL_LINES);
+	positionOffset = pos;
 }

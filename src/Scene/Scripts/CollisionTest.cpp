@@ -9,7 +9,7 @@ CollisionTest::CollisionTest(GraphNode* _gameObject) : Component(_gameObject)
 		this->OnCollision(collider);
 		return 1;
 	};
-	gameObject->getComponent<Collider>()->SetCollisionCallback(f);
+	gameObject->getComponent<Collider>()->setCollisionCallback(f);
 }
 
 void CollisionTest::update(float msec)
