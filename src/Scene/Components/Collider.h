@@ -6,11 +6,11 @@
 
 enum ColliderType
 {
-	SphereCollider,
-	BoxCollider
+	SphereCol,
+	BoxCol
 };
 
-class Collider : public Component, public Renderable
+class Collider abstract: public Component, public Renderable
 {
 protected:
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
@@ -18,19 +18,18 @@ protected:
 	glm::mat4 mat, matrixWithoutRotation;
 	std::shared_ptr<Mesh> mesh_ptr;
 	glm::vec3 positionOffset;
-	glm::vec4 data; // vec3 position, float radius or box edge size
+	glm::vec3 position;
 public:
+	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 position);
+	virtual ~Collider();
 	void update(float mscec) override;
 	void updateDrawData() override;
 	void drawSelf(Shader* shader) override;
+	glm::vec3 getPosition();
 	ShaderType getShaderType() override;
-	void SetCollisionCallback(std::function<int(Collider*)> f);
-	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec4 _data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	virtual ~Collider();
-	glm::vec4 getData();
 	ColliderType getType();
 	std::vector < std::function<int(Collider*)>> getCallbackFunctions();
-	void changeOffset(glm::vec3 offset);
-	void setSize(float size);
+	void setPosition(glm::vec3 pos);
+	void setCollisionCallback(std::function<int(Collider*)> f);
 };
 #endif

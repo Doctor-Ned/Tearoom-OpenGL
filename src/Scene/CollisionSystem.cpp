@@ -1,5 +1,7 @@
 #include "CollisionSystem.h"
 #include "Components/Collider.h"
+#include "Components/BoxCollider.h"
+#include "Components/SphereCollider.h"
 
 CollisionSystem::CollisionSystem()
 {
@@ -22,19 +24,19 @@ CollisionSystem::~CollisionSystem()
 bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 {
 	bool collision = false;
-	if (collider1->getType() == SphereCollider && collider2->getType() == SphereCollider)
+	if (collider1->getType() == SphereCol && collider2->getType() == SphereCol)
 	{
 		collision = SphereToSphere(collider1, collider2);
 	}
-	else if (collider1->getType() == BoxCollider && collider2->getType() == BoxCollider)
+	else if (collider1->getType() == BoxCol && collider2->getType() == BoxCol)
 	{
 		collision = AABBtoAABB(collider1, collider2);
 	}
-	else if (collider1->getType() == BoxCollider && collider2->getType() == SphereCollider)
+	else if (collider1->getType() == BoxCol && collider2->getType() == SphereCol)
 	{
 		collision = AABBtoSphere(collider1, collider2);
 	}
-	else if (collider1->getType() == SphereCollider && collider2->getType() == BoxCollider)
+	else if (collider1->getType() == SphereCol && collider2->getType() == BoxCol)
 	{
 		collision = AABBtoSphere(collider2, collider1);
 	}
@@ -60,22 +62,24 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 
 bool CollisionSystem::containTest(glm::vec3 min, glm::vec3 max, Collider* collider)
 {
-	if(collider->getType() == BoxCollider)
+	if(collider->getType() == BoxCol)
 	{	
-		float halfDimension = collider->getData().w;
+		BoxCollider* b_collider = dynamic_cast<BoxCollider*>(collider);
+		glm::vec3 halfDimension = b_collider->getHalfDimensions();
 		for(int i = 0; i < 3; i++)
 		{
-			if (collider->getData()[i] - halfDimension <= min[i] || collider->getData()[i] + halfDimension >= max[i])
+			if (b_collider->getPosition()[i] - halfDimension[i] <= min[i] || b_collider->getPosition()[i] + halfDimension[i] >= max[i])
 				return false;
 		}
 		return true;
 	}
-	if (collider->getType() == SphereCollider) //testing it like a box inside other box (furthest distance from center in axis align directions)
+	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis align directions)
 	{
-		float radius = collider->getData().w;
+		SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider);
+		float radius = sphere->getRadius();
 		for(int i = 0; i < 3; i++)
 		{
-			if (collider->getData()[i] - radius <= min[i] || collider->getData()[i] + radius >= max[i])
+			if (sphere->getPosition()[i] - radius <= min[i] || sphere->getPosition()[i] + radius >= max[i])
 				return false;
 		}
 		return true;
@@ -84,43 +88,49 @@ bool CollisionSystem::containTest(glm::vec3 min, glm::vec3 max, Collider* collid
 
 bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 {
-	if (collider->getType() == BoxCollider)
+	if (collider->getType() == BoxCol)
 	{
-		float halfDimension = collider->getData().w;
+		BoxCollider* b_collider = dynamic_cast<BoxCollider*>(collider);
+		glm::vec3 halfDimension = b_collider->getHalfDimensions();
 		for (int i = 0; i < 3; i++)
 		{
-			if (point[i] < collider->getData()[i] - halfDimension || point[i] > collider->getData()[i] + halfDimension)
+			if (point[i] < b_collider->getPosition()[i] - halfDimension[i] || b_collider->getPosition()[i] + halfDimension[i])
 				return false;
 		}
 		return true;
 	}
-	if (collider->getType() == SphereCollider) //testing it like a box inside other box (furthest distance from center in axis align directions)
+	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis align directions)
 	{
-		float radius = collider->getData().w;
-		glm::vec3 sphereCenter = collider->getData();
-		float squareDistSpherePoint = pow(collider->getData().x - point.x, 2) +
-			pow(collider->getData().y - point.y, 2) +
-			pow(collider->getData().z - point.z, 2);
+		SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider);
+		float radius = sphere->getRadius();
+		glm::vec3 sphereCenter = sphere->getPosition();
+		float squareDistSpherePoint = pow(sphereCenter.x - point.x, 2) +
+			pow(sphereCenter.y - point.y, 2) +
+			pow(sphereCenter.z - point.z, 2);
 		return squareDistSpherePoint < radius * radius;
 	}
 }
 
-bool CollisionSystem::SphereToSphere(Collider* _sphere1, Collider* _sphere2)
+bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)
 {
+	SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(collider1);
+	SphereCollider* sphere2 = dynamic_cast<SphereCollider*>(coliider2);
 	float distanceSquared =
-		pow(_sphere2->getData().x - _sphere1->getData().x, 2) +
-		pow(_sphere2->getData().y - _sphere1->getData().y, 2) +
-		pow(_sphere2->getData().z - _sphere1->getData().z, 2);
-	float radiusSumSquared = pow(_sphere1->getData().w + _sphere2->getData().w, 2);
+		pow(sphere2->getPosition().x - sphere1->getPosition().x, 2) +
+		pow(sphere2->getPosition().y - sphere1->getPosition().y, 2) +
+		pow(sphere2->getPosition().z - sphere1->getPosition().z, 2);
+	float radiusSumSquared = pow(sphere1->getRadius() + sphere2->getRadius(), 2);
 	return distanceSquared <= radiusSumSquared;
 }
 
-bool CollisionSystem::AABBtoAABB(Collider* _box1, Collider* _box2)
+bool CollisionSystem::AABBtoAABB(Collider* collider1, Collider* collider2)
 {
+	BoxCollider* box1 = dynamic_cast<BoxCollider*>(collider1);
+	BoxCollider* box2 = dynamic_cast<BoxCollider*>(collider2);
 	//box with center point and half-width
-	if (abs(_box1->getData().x - _box2->getData().x) > (_box1->getData().w + _box2->getData().w)) return false;
-	if (abs(_box1->getData().y - _box2->getData().y) > (_box1->getData().w + _box2->getData().w)) return false;
-	if (abs(_box1->getData().z - _box2->getData().z) > (_box1->getData().w + _box2->getData().w)) return false;
+	if (abs(box1->getPosition().x - box2->getPosition().x) > (box1->getHalfDimensions().x + box2->getHalfDimensions().x)) return false;
+	if (abs(box1->getPosition().y - box2->getPosition().y) > (box1->getHalfDimensions().y + box2->getHalfDimensions().y)) return false;
+	if (abs(box1->getPosition().z - box2->getPosition().z) > (box1->getHalfDimensions().z + box2->getHalfDimensions().z)) return false;
 	return true;
 }
 
@@ -128,28 +138,31 @@ bool CollisionSystem::AABBtoSphere(Collider* _box, Collider* _sphere)
 {
 	//collider is sphere
 	//finding closest point withing AABB to the sphere
+	
+	BoxCollider* box = dynamic_cast<BoxCollider*>(_box);
+	SphereCollider* sphere = dynamic_cast<SphereCollider*>(_sphere);
 	glm::vec3 closestPoint;
 	for (int i = 0; i < 3; i++)
 	{
-		float v = _sphere->getData()[i]; // v = x, y, z (sphere center)
-		if (v < _box->getData()[i] - _box->getData().w)
+		float v = sphere->getPosition()[i]; // v = x, y, z (sphere center)
+		if (v < box->getPosition()[i] - box->getHalfDimensions()[i])
 		{
-			v = _box->getData()[i] - _box->getData().w;
+			v = box->getPosition()[i] - box->getHalfDimensions()[i];
 		}
-		if (v > _box->getData()[i] + _box->getData().w)
+		if (v > box->getPosition()[i] + box->getHalfDimensions()[i])
 		{
-			v = _box->getData()[i] + _box->getData().w;
+			v = box->getPosition()[i] + box->getHalfDimensions()[i];
 		}
 		closestPoint[i] = v;
 	}
 
 	//calculating squred distance from the nearest point to sphere center
-	float sqDist = pow(_sphere->getData().x - closestPoint.x, 2) +
-		pow(_sphere->getData().y - closestPoint.y, 2) +
-		pow(_sphere->getData().z - closestPoint.z, 2);
+	float sqDist = pow(sphere->getPosition().x - closestPoint.x, 2) +
+		pow(sphere->getPosition().y - closestPoint.y, 2) +
+		pow(sphere->getPosition().z - closestPoint.z, 2);
 
-	//float distance = glm::distance(glm::vec3(_sphere->getData()), closestPoint);
-	float sqRadius = _sphere->getData().w * _sphere->getData().w;
+	//float distance = glm::distance(glm::vec3(_sphere->getPosition()), closestPoint);
+	float sqRadius = sphere->getRadius() * sphere->getRadius();
 	return sqDist <= sqRadius;
 	//return distance <= _sphere->getData().w;
 }
