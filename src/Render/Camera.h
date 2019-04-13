@@ -10,9 +10,11 @@ public:
 	       , float speed = 3.0f, float rotSpeed = 6.0f);
 	glm::mat4 getView();
 	glm::mat4 getUntranslatedView();
+	glm::vec3 getRight();
 	glm::vec3 getFront();
 	glm::vec3 getPos();
 	glm::vec3 getUp();
+	glm::vec3 getActualUp();
 	float getYaw();
 	float getPitch();
 	void setPos(glm::vec3 pos);

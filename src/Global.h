@@ -96,6 +96,8 @@ struct LightShadowData {
 
 class Global {
 public:
+	static glm::vec4 planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+	static float distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2);
 	static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max, const float yPosition = 0.0f);
 	static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb, const std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);

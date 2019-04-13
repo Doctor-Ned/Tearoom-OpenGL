@@ -1,6 +1,25 @@
 #include "Global.h"
 #include "Scene/GameManager.h"
 
+glm::vec4 Global::planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+	float a1 = p2.x - p1.x;
+	float b1 = p2.y - p1.y;
+	float c1 = p2.z - p1.z;
+	float a2 = p3.x - p1.x;
+	float b2 = p3.y - p1.y;
+	float c2 = p3.z - p1.z;
+	glm::vec4 result;
+	result.x = b1 * c2 - b2 * c1;
+	result.y = a2 * c1 - a1 * c2;
+	result.z = a1 * b2 - b1 * a2;
+	result.w = -result.x * p1.x - result.y * p1.y - result.z * p1.z;
+	return result;
+}
+
+float Global::distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2) {
+	return fabs((plane2.z*(-plane1.w/plane1.z) + plane2.w)) / (sqrt(plane2.x * plane2.x + plane2.y * plane2.y + plane2.z*plane2.z));
+}
+
 glm::vec3* Global::createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
 	const float yPosition) {
 	glm::vec3* result = new glm::vec3[width * length];
