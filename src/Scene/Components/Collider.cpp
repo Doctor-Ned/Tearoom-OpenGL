@@ -7,7 +7,7 @@
 
 void Collider::update(float m_sec) {
 	glm::vec3 gameObjectPos = gameObject->worldTransform.getPosition();
-
+	matrixWithoutRotation = glm::mat4(1.0f);
 	glm::mat4 tmp(1);
 	tmp[3] = glm::vec4(positionOffset, 1.0f);
 	mat = gameObject->worldTransform.getMatrix() * tmp;
