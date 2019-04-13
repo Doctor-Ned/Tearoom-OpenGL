@@ -131,7 +131,6 @@ GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 			{
 				if (CollisionSystem::getInstance()->containTest(currentPos, collider))
 				{
-					std::cout << "ray hit gameobject" << std::endl;
 					return game_object;
 				}
 			}
@@ -149,7 +148,6 @@ GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 						//check if point collides with collider
 						if (CollisionSystem::getInstance()->containTest(currentPos, collider))
 						{
-							std::cout << "ray hit gameobject" << std::endl;
 							return nodeGameObject;
 						}
 					}

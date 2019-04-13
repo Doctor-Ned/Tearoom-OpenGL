@@ -16,8 +16,8 @@ void SphereCollider::setRadius(float size)
 		return;
 	}
 	MeshColorSphere *sphere = dynamic_cast<MeshColorSphere*>(mesh_ptr.get());
-	sphere->updateValues(radius, 15);
 	radius = size;
+	sphere->updateValues(radius, 15);
 }
 
 float SphereCollider::getRadius()

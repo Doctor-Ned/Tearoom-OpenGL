@@ -71,11 +71,11 @@ MiszukScene::MiszukScene() {
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
-	boxNode->addComponent(new SphereCollider(boxNode, glm::vec3(1.0f, 0.0f, 0.0f), 2.0f));
+	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
 	boxNode->addComponent(new CollisionTest(boxNode));
 	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
 	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
-	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f)));
+	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
 
@@ -149,7 +149,14 @@ void MiszukScene::update(double deltaTime) {
 
 	}
 	//-----------------------------------------------
-	camera->castRayFromCamera(camera->getFront(), 3.0f);
+	if(camera->castRayFromCamera(camera->getFront(), 3.0f))
+	{
+		std::cout << "ray hit gameobject" << std::endl;
+	}
+	else
+	{
+		std::cout << "ray casted" << std::endl;
+	}
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
