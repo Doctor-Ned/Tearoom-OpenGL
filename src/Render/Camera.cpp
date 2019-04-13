@@ -25,6 +25,10 @@ glm::mat4 Camera::getUntranslatedView() {
 	return glm::mat4(glm::mat3(getView()));
 }
 
+glm::vec3 Camera::getRight() {
+	return normalize(cross(cameraFront, cameraUp));
+}
+
 glm::vec3 Camera::getFront() {
 	return cameraFront;
 }
@@ -35,6 +39,10 @@ glm::vec3 Camera::getPos() {
 
 glm::vec3 Camera::getUp() {
 	return cameraUp;
+}
+
+glm::vec3 Camera::getActualUp() {
+	return normalize(cross(cross(cameraFront, cameraUp), cameraFront));
 }
 
 float Camera::getYaw() {
@@ -85,7 +93,7 @@ void Camera::moveBackward(float timeDelta, int steps) {
 
 void Camera::moveRight(float timeDelta, int steps) {
 	if (timeDelta != 0.0f) {
-		cameraPos += normalize(cross(cameraFront, cameraUp)) * timeDelta * speed * (float)steps;
+		cameraPos += getRight() * timeDelta * speed * (float)steps;
 		dirty = true;
 	}
 }
@@ -96,7 +104,7 @@ void Camera::moveLeft(float timeDelta, int steps) {
 
 void Camera::moveUp(float timeDelta, int steps) {
 	if (timeDelta != 0.0f) {
-		cameraPos += normalize(cross(cross(cameraFront, cameraUp), cameraFront)) * timeDelta * speed * (float)steps;
+		cameraPos += getActualUp() * timeDelta * speed * (float)steps;
 		dirty = true;
 	}
 }
