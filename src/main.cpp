@@ -359,7 +359,7 @@ int main(int argc, char** argv) {
 		glBindVertexArray(0);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		glfwMakeContextCurrent(window);
+
 		glfwSwapBuffers(window);
 
 		if (!AssetManager->isLoaded()) {
