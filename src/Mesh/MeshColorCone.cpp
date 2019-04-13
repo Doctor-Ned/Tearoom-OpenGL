@@ -12,7 +12,6 @@ void MeshColorCone::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
-	glUseProgram(0);
 }
 
 void MeshColorCone::updateValues(float radius, float height, int sideAmount) {

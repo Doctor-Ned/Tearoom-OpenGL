@@ -14,7 +14,7 @@ void UiPlane::render() {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 }
 
 void UiPlane::setup() {

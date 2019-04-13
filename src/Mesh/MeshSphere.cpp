@@ -14,7 +14,7 @@ void MeshSphere::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexBuffer(0, VBO, 0, sizeof(TextureVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 }
 
 void MeshSphere::updateValues(float radius, int precision) {

@@ -13,7 +13,7 @@ void MeshColorTorus::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 }
 
 void MeshColorTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {

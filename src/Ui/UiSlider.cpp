@@ -28,7 +28,7 @@ void UiSlider::render() {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 	button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x,
 		actualPosition.y + size.y / 2.0f));
 	button->render();

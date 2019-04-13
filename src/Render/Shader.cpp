@@ -56,7 +56,6 @@ void Shader::use() {
 	glUseProgram(id);
 }
 
-// currently injected via UboTextureColor, though it might be useful when dealing with non-texture shaders
 void Shader::setColor(glm::vec4 &color) {
 	setVec4("color", color);
 }
@@ -162,7 +161,6 @@ void Shader::setMat3(const char * name, glm::mat3 & value) {
 }
 
 void Shader::setMat4(const char* name, glm::mat4& value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);

@@ -357,7 +357,6 @@ int main(int argc, char** argv) {
 		glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
-		glUseProgram(0);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwMakeContextCurrent(window);

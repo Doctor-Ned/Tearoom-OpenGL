@@ -36,7 +36,7 @@ void MeshModel::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);
-	glUseProgram(0);
+	
 }
 
 void MeshModel::setupMesh() {

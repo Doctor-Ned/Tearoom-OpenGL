@@ -41,7 +41,7 @@ void UiCheckbox::render() {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 }
 
 void UiCheckbox::mouse_callback(GLFWwindow* window, double xpos, double ypos) {

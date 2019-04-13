@@ -11,7 +11,7 @@ void MeshColorPlane::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	
 }
 
 void MeshColorPlane::updateValues(float width, float length) {
