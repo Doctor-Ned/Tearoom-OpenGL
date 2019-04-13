@@ -10,7 +10,7 @@ void Collider::update(float m_sec) {
 }
 
 void Collider::updateDrawData() {
-	matrix = translate(glm::mat4(1.0f), glm::vec3(gameObject->worldTransform.getMatrix()[3]) + positionOffset);
+	matrix = translate(glm::mat4(1.0f), glm::vec3(gameObject->worldTransform.getMatrix() * translate(glm::mat4(1.0f), positionOffset)[3]));
 }
 
 void Collider::drawSelf(Shader* shader) {
