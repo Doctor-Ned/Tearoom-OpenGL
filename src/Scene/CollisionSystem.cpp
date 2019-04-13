@@ -94,7 +94,7 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 		glm::vec3 halfDimension = b_collider->getHalfDimensions();
 		for (int i = 0; i < 3; i++)
 		{
-			if (point[i] < b_collider->getPosition()[i] - halfDimension[i] || b_collider->getPosition()[i] + halfDimension[i])
+			if (point[i] < b_collider->getPosition()[i] - halfDimension[i] || point[i] > b_collider->getPosition()[i] + halfDimension[i])
 				return false;
 		}
 		return true;
