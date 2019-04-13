@@ -63,12 +63,15 @@ public:
 	void setup();
 	bool useLight = true;
 	bool castShadows = true;
+	bool isVsyncEnabled();
+	void setVsync(bool enabled);
 	~GameManager();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
 	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 protected:
+	bool enableVsync = true;
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	Framebuffer uiFramebuffer, pingPongFramebuffers[2];

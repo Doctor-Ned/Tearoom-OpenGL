@@ -137,10 +137,6 @@ void AssetManager::setup() {
 	shaders.emplace(STPostProcessing, ppShader);
 	shaders.emplace(STLight, new Shader("lightVS.glsl", "lightFS.glsl"));
 	shaders.emplace(STBlur, new Shader("Post/blurVS.glsl", "Post/blurFS.glsl"));
-	ppShader->setExposure(1.0f);
-	ppShader->setGamma(1.0f);
-	ppShader->setHdr(false);
-	ppShader->setBloom(true);
 	LightManager *lightManager = LightManager::getInstance();
 	uboLights = new UboLights(0.00f, 0, 0, 0, lightManager->spotDirShadowTexelResolution, lightManager->pointShadowSamples, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

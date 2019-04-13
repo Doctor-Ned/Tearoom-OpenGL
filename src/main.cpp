@@ -171,7 +171,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(0); // vsync
+	//glfwSwapInterval(0); // vsync, now set by the GameManager
 
 	GameManager->setWindow(window);
 
@@ -255,6 +255,7 @@ int main(int argc, char** argv) {
 	GameManager->setup();
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
+	postProcessingShader->use();
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
 	postProcessingShader->setInt("ui", 2);

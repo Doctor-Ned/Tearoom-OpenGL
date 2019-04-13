@@ -75,7 +75,7 @@ void GameManager::setCursorLocked(bool locked) {
 
 void GameManager::goToMenu(bool destroyPreviousScene) {
 	Scene* old = currentScene;
-	if(menuScene == nullptr) {
+	if (menuScene == nullptr) {
 		menuScene = new MenuScene();
 	}
 	currentScene = menuScene;
@@ -98,6 +98,8 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 }
 
 void GameManager::setup() {
+	setVsync(enableVsync);
+
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
@@ -105,12 +107,23 @@ void GameManager::setup() {
 	uiFramebuffer = createFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
 	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
-	
+
 	AssetManager::getInstance()->setup();
 	LightManager::getInstance()->setup();
 	//menuScene = new MenuScene();
 	//goToMenu();
 	setCurrentScene(new LoadingScene());
+}
+
+bool GameManager::isVsyncEnabled() {
+	return enableVsync;
+}
+
+void GameManager::setVsync(bool enabled) {
+	if (enabled != enableVsync) {
+		glfwSwapInterval(enabled ? 1 : 0);
+		enableVsync = enabled;
+	}
 }
 
 GameManager::~GameManager() {
@@ -178,7 +191,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glBindTexture(textureTarget, result.texture);
 	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-	if(clamp) {
+	if (clamp) {
 		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	}
@@ -190,7 +203,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	GLenum drawBuffer = GL_NONE;
 
 	bool hasDepth = false;
-	if(attachment == GL_DEPTH_ATTACHMENT) {
+	if (attachment == GL_DEPTH_ATTACHMENT) {
 		hasDepth = true;
 	} else {
 		drawBuffer = attachment;
@@ -200,7 +213,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, result.texture, 0);
 
-	if(!hasDepth) {
+	if (!hasDepth) {
 		result.rbo = createDepthRenderbuffer(width, height);
 	}
 
@@ -255,7 +268,7 @@ void GameManager::render() {
 }
 
 void GameManager::renderUi() {
-	if(currentScene != nullptr) {
+	if (currentScene != nullptr) {
 		currentScene->renderUi();
 	}
 }

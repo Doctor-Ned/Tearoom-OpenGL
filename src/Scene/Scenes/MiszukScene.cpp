@@ -86,6 +86,7 @@ MiszukScene::~MiszukScene() {
 
 void MiszukScene::render() {
 	for (auto &shader : updatableShaders) {
+		shader->use();
 		shader->setViewPosition(camera->getPos());
 	}
 	uboViewProjection->inject(camera->getView(), projection);

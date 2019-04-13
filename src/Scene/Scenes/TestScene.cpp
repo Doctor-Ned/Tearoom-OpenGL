@@ -127,6 +127,7 @@ void TestScene::render() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto &shader : updatableShaders) {
+		shader->use();
 		shader->setViewPosition(camera->getPos());
 	}
 	uboViewProjection->inject(camera->getView(), projection);

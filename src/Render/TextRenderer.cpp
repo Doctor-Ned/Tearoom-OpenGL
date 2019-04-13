@@ -8,6 +8,7 @@ TextRenderer::TextRenderer(GLfloat defaultScale) {
 	// Load and configure shader
 	this->defaultScale = defaultScale;
 	textShader = new Shader("textVS.glsl", "textFS.glsl");
+	textShader->use();
 	textShader->setInt("text", 0);
 	updateProjection();
 	// Configure VAO/VBO for texture quads

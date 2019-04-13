@@ -22,13 +22,13 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 
+	depthShader->use();
 	for (int i = 0; i < dirLightAmount; i++) {
 		DirLightData data = dirLights[i];
 
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		depthShader->use();
 		glm::vec3 position = glm::vec3(data.light->model[3]);
 		glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 		glm::mat4 directionWorld = data.light->model;
@@ -46,7 +46,6 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		depthShader->use();
 		glm::mat4 world = data.light->model;
 		glm::vec3 pos = world[3];
 		glm::mat4 directionWorld = world;
@@ -56,9 +55,9 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 		renderCallback(depthShader);
 	}
 
+	depthPointShader->use();
 	for (int i = 0; i < pointLightAmount; i++) {
 		PointLightData data = pointLights[i];
-
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -98,7 +97,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 
 	DirLight *dirs = new DirLight[dirLightAmount];
-	for(int i=0;i<dirLightAmount;i++) {
+	for (int i = 0; i < dirLightAmount; i++) {
 		dirs[i] = *dirLights[i].light;
 	}
 	SpotLight *spots = new SpotLight[spotLightAmount];
@@ -120,19 +119,20 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	std::vector<LightShadowData> spotData;
 	std::vector<LightShadowData> pointData;
 
-	for(int i=0;i<dirLightAmount;i++) {
+	for (int i = 0; i < dirLightAmount; i++) {
 		dirData.push_back(dirLights[i].data);
 	}
 
-	for(int i=0;i<spotLightAmount;i++) {
+	for (int i = 0; i < spotLightAmount; i++) {
 		spotData.push_back(spotLights[i].data);
 	}
 
-	for(int i=0;i<pointLightAmount;i++) {
+	for (int i = 0; i < pointLightAmount; i++) {
 		pointData.push_back(pointLights[i].data);
 	}
 
-	for(auto &shader : updatableShaders) {
+	for (auto &shader : updatableShaders) {
+		shader->use();
 		shader->updateShadowData(dirData, spotData, pointData);
 	}
 }
@@ -142,13 +142,13 @@ Lights LightManager::getLights() {
 	std::vector<DirLight*> dirs;
 	std::vector<SpotLight*> spots;
 	std::vector<PointLight*> points;
-	for(int i=0;i<dirLightAmount;i++) {
+	for (int i = 0; i < dirLightAmount; i++) {
 		dirs.push_back(dirLights[i].light);
 	}
-	for(int i=0;i<spotLightAmount;i++) {
+	for (int i = 0; i < spotLightAmount; i++) {
 		spots.push_back(spotLights[i].light);
 	}
-	for(int i=0;i<pointLightAmount;i++) {
+	for (int i = 0; i < pointLightAmount; i++) {
 		points.push_back(pointLights[i].light);
 	}
 	result.dirLights = dirs;
@@ -159,21 +159,21 @@ Lights LightManager::getLights() {
 
 Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	disposeLights();
-	if(glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
+	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to create too many lights!";
 	}
 	dirLightAmount = dirs;
 	spotLightAmount = spots;
 	pointLightAmount = points;
-	for(int i=0;i<dirs;i++) {
+	for (int i = 0; i < dirs; i++) {
 		dirLights[i].light = new DirLight();
 		dirLights[i].data = createDirShadowData();
 	}
-	for(int i=0;i<spots;i++) {
+	for (int i = 0; i < spots; i++) {
 		spotLights[i].light = new SpotLight();
 		spotLights[i].data = createSpotShadowData();
 	}
-	for(int i=0;i<points;i++) {
+	for (int i = 0; i < points; i++) {
 		pointLights[i].light = new PointLight();
 		pointLights[i].data = createPointShadowData();
 	}
@@ -181,7 +181,7 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 }
 
 SpotLight* LightManager::addSpotLight() {
-	if(spotLightAmount == MAX_LIGHTS_OF_TYPE) {
+	if (spotLightAmount == MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = new SpotLight();
@@ -209,18 +209,18 @@ PointLight* LightManager::addPointLight() {
 
 void LightManager::remove(DirLight * light) {
 	int index = -1;
-	for(int i=0;i<dirLightAmount;i++) {
-		if(dirLights[i].light == light) {
+	for (int i = 0; i < dirLightAmount; i++) {
+		if (dirLights[i].light == light) {
 			index = i;
 			break;
 		}
 	}
-	if(index == -1) {
+	if (index == -1) {
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
 	dispose(dirLights[index]);
-	for(int i=index + 1;i<dirLightAmount;i++) {
+	for (int i = index + 1; i < dirLightAmount; i++) {
 		dirLights[i - 1] = dirLights[i];
 	}
 
@@ -272,13 +272,13 @@ LightManager::~LightManager() {
 }
 
 void LightManager::disposeLights() {
-	for(int i=0;i<dirLightAmount;i++) {
+	for (int i = 0; i < dirLightAmount; i++) {
 		dispose(dirLights[i]);
 	}
-	for(int i=0;i<spotLightAmount;i++) {
+	for (int i = 0; i < spotLightAmount; i++) {
 		dispose(spotLights[i]);
 	}
-	for(int i=0;i<pointLightAmount;i++) {
+	for (int i = 0; i < pointLightAmount; i++) {
 		dispose(pointLights[i]);
 	}
 	dirLightAmount = spotLightAmount = pointLightAmount = 0;

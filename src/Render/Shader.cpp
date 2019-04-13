@@ -106,7 +106,6 @@ void Shader::setOpacity(float opacity) {
 }
 
 void Shader::setInt(const char* name, int value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform1i(location, value);
@@ -114,7 +113,6 @@ void Shader::setInt(const char* name, int value) {
 }
 
 void Shader::setFloat(char* name, float value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform1f(location, value);
@@ -122,7 +120,6 @@ void Shader::setFloat(char* name, float value) {
 }
 
 void Shader::setBool(const char * name, bool value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform1i(location, static_cast<int>(value));
@@ -130,7 +127,6 @@ void Shader::setBool(const char * name, bool value) {
 }
 
 void Shader::setVec2(const char * name, glm::vec2 & value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform2f(location, value.x, value.y);
@@ -138,7 +134,6 @@ void Shader::setVec2(const char * name, glm::vec2 & value) {
 }
 
 void Shader::setVec3(const char * name, glm::vec3 & value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform3f(location, value.x, value.y, value.z);
@@ -146,7 +141,6 @@ void Shader::setVec3(const char * name, glm::vec3 & value) {
 }
 
 void Shader::setVec4(const char * name, glm::vec4 & value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniform4f(location, value.x, value.y, value.z, value.w);
@@ -154,7 +148,6 @@ void Shader::setVec4(const char * name, glm::vec4 & value) {
 }
 
 void Shader::setMat2(const char * name, glm::mat2 & value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniformMatrix2fv(location, 1, GL_FALSE, &value[0][0]);
@@ -162,7 +155,6 @@ void Shader::setMat2(const char * name, glm::mat2 & value) {
 }
 
 void Shader::setMat3(const char * name, glm::mat3 & value) {
-	use();
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
 		glUniformMatrix3fv(location, 1, GL_FALSE, &value[0][0]);
@@ -178,7 +170,6 @@ void Shader::setMat4(const char* name, glm::mat4& value) {
 }
 
 void Shader::updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points) {
-	use();
 	int padding = 0;
 	int current;
 	const GLuint baseTex = 28;

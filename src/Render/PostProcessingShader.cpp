@@ -1,6 +1,12 @@
 #include "PostProcessingShader.h"
 
-PostProcessingShader::PostProcessingShader(char * vertexPath, char * fragmentPath) : Shader(vertexPath, fragmentPath) {}
+PostProcessingShader::PostProcessingShader(char * vertexPath, char * fragmentPath) : Shader(vertexPath, fragmentPath) {
+	use();
+	setExposure(exposure);
+	setGamma(gamma);
+	setHdr(useHdr);
+	setBloom(useBloom);
+}
 
 void PostProcessingShader::setExposure(float exposure) {
 	setFloat("exposure", exposure);

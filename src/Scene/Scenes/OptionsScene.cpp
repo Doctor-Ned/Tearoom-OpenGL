@@ -39,12 +39,14 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 
 	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), true);
 	useHdr->setCheckboxCallback([pps](bool enabled) {
+		pps->use();
 		pps->setHdr(enabled);
 	});
 	UiText *exposureText = new UiText(glm::vec2(windowCenterX, 9 * heightSeg), glm::vec2(windowWidth, heightSeg),"Exposure: " + std::to_string(pps->getExposure()));
 	UiSlider *exposureSlider = new UiSlider(glm::vec2(windowCenterX, 10 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
 		pps->getExposure(), 0.0f, 10.0f);
 	exposureSlider->setCallback([pps, exposureText](float exposure) {
+		pps->use();
 		pps->setExposure(exposure);
 		exposureText->setText("Exposure: " + std::to_string(exposure));
 	});
@@ -53,13 +55,20 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	UiSlider *gammaSlider = new UiSlider(glm::vec2(windowCenterX, 12 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
 		pps->getGamma(), 0.0f, 10.0f);
 	gammaSlider->setCallback([pps, gammaText](float gamma) {
+		pps->use();
 		pps->setGamma(gamma);
 		gammaText->setText("Gamma: " + std::to_string(gamma));
 	});
 
 	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 13 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), true);
 	useBloom->setCheckboxCallback([pps](bool enabled) {
+		pps->use();
 		pps->setBloom(enabled);
+	});
+
+	UiCheckbox *enableVsync = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 14 * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->isVsyncEnabled(), true);
+	enableVsync->setCheckboxCallback([gameManager = gameManager](bool enabled) {
+		gameManager->setVsync(enabled);
 	});
 
 	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 17 * heightSeg), "Back to menu");
@@ -77,10 +86,12 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(gammaText);
 	uiElements.emplace_back(gammaSlider);
 	uiElements.emplace_back(useBloom);
+	uiElements.emplace_back(enableVsync);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Cast shadows"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use light"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use HDR"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use bloom"));
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Enable VSync"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 1.5f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 

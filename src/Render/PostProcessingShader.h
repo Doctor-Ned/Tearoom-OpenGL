@@ -13,8 +13,8 @@ public:
 	bool isHdrEnabled();
 	bool isBloomEnabled();
 protected:
-	float exposure;
-	float gamma;
-	bool useHdr;
-	bool useBloom;
+	float exposure = 1.0f;
+	float gamma = 1.0f;
+	bool useHdr = true;
+	bool useBloom = true;
 };
