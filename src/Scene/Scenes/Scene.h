@@ -33,6 +33,10 @@ public:
 	Scene();
 	virtual ~Scene();
 protected:
+	bool getKeyState(int key);
+	void setKeyState(int key, bool pressed);
+	virtual void keyEvent(int key, bool pressed);
+	std::map<int, bool> keyStates;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);

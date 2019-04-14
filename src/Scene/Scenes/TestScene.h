@@ -36,11 +36,11 @@ public:
 	void render() override;
 	void renderUi() override;
 	void update(double deltaTime) override;
-	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
+	void keyEvent(int key, bool pressed) override;
 	bool lockMouse = false;
 	int renderDepthMap = 0;
 	float spotNear = 1.0f, spotFar = 50.0f, dirNear = 4.0f, dirFar = 70.0f, dirProjSize = 10.0f;
@@ -59,10 +59,6 @@ protected:
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;
 	PointLightNode *pointLightNode;
-	bool getKeyState(int key);
-	void setKeyState(int key, bool pressed);
-	void keyEvent(int key, bool pressed);
-	std::map<int, bool> keyStates;
 	Camera *camera;
 	const float BASE_MOVEMENT_SPEED = 1.0f;
 	float movementSpeed = BASE_MOVEMENT_SPEED;

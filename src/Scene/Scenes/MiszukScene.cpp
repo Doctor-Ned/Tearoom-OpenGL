@@ -165,21 +165,6 @@ void MiszukScene::update(double deltaTime) {
 	//OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 
-void MiszukScene::keyboard_callback(GLFWwindow * window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_RELEASE) {
-		if (getKeyState(key)) {
-			setKeyState(key, false);
-			keyEvent(key, false);
-		}
-	}
-	if (action == GLFW_PRESS) {
-		if (!getKeyState(key)) {
-			setKeyState(key, true);
-			keyEvent(key, true);
-		}
-	}
-}
-
 void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
 	Scene::mouse_callback(window, xpos, ypos);
 	if (initMouse) {
@@ -201,23 +186,6 @@ void MiszukScene::mouse_button_callback(GLFWwindow * window, int butt, int actio
 void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
 	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
-}
-
-bool MiszukScene::getKeyState(int key) {
-	auto pair = keyStates.find(key);
-	if (pair != keyStates.end()) {
-		return pair->second;
-	}
-	return false;
-}
-
-void MiszukScene::setKeyState(int key, bool pressed) {
-	auto pair = keyStates.find(key);
-	if (pair != keyStates.end()) {
-		pair->second = pressed;
-	} else {
-		keyStates.emplace(key, pressed);
-	}
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {
