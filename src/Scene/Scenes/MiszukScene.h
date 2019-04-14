@@ -22,7 +22,7 @@ public:
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
 	//--------------ANIMACJA---------------------
-	bool playAnimation = false;
+	bool f_keyPressed = false;
 	//-----------------------------------------
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;

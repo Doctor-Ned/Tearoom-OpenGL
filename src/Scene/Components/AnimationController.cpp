@@ -7,8 +7,9 @@
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
 
-AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject)
+AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, bool* f_keyPressed)
 :Component(_gameObject), type(_type) {
+    F_keyState = f_keyPressed;
 	mesh = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
@@ -19,40 +20,40 @@ void AnimationController::startAnimation() {
 
 void AnimationController::update(float msec)
 {
-    switch (type)
-    {
-        case DoorOpeningX:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, -0.04f));
+    if(*F_keyState) {
+        switch (type) {
+            case DoorOpeningX:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, -0.04f));
                 elapsed += 0.01f;
-            break;
-        case DoorClosingX:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
+                break;
+            case DoorClosingX:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
                 elapsed += 0.04f;
-            break;
-        case DoorOpeningY:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
-            elapsed += 0.04f;
-            break;
-        case DoorClosingY:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
-            elapsed += 0.04f;
-            break;
-        case SafePullOutX:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.03f, 0.0f, 0.0f));
+                break;
+            case DoorOpeningY:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
                 elapsed += 0.04f;
-            break;
-        case SafePullOutY:
-            if(elapsed < 1.8f)
-                gameObject->localTransform.translate(glm::vec3(0.03f, 0.0f, 0.0f));
-            elapsed += 0.04f;
-            break;
+                break;
+            case DoorClosingY:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
+                elapsed += 0.04f;
+                break;
+            case SafePullOutX:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.03f, 0.0f, 0.0f));
+                elapsed += 0.04f;
+                break;
+            case SafePullOutY:
+                if (elapsed < 1.8f)
+                    gameObject->localTransform.translate(glm::vec3(0.03f, 0.0f, 0.0f));
+                elapsed += 0.04f;
+                break;
+        }
     }
-
 }
 
 void AnimationController::updateDrawData() {

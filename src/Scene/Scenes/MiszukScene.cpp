@@ -11,6 +11,7 @@
 #include "Scene/Components/AnimationController.h"
 #include "Scene/Components/BoxCollider.h"
 #include "Scene/Components/SphereCollider.h"
+#include "Scene/Components/PhysicalObject.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -29,7 +30,7 @@ MiszukScene::MiszukScene() {
 	updatableShaders.push_back(assetManager->getShader(STRefract));
 
 	// for basic animation testing
-
+	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox *slidingDoor = new MeshColorBox(glm::vec3(-0.3f, 0.4f, -1), glm::vec3(0.7f, 5.4f, 0.7f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorBox *wall = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -38,7 +39,6 @@ MiszukScene::MiszukScene() {
 	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
 	GraphNode* wallNode = new GraphNode(wall, rootNode);
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
-
 	//-------------
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -55,6 +55,8 @@ MiszukScene::MiszukScene() {
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
 	GraphNode* planete = new GraphNode(box2, pivot);
 
+	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
+	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
 	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 1.0f));
 	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
@@ -68,7 +70,7 @@ MiszukScene::MiszukScene() {
 	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
 
-	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
 	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
@@ -146,7 +148,7 @@ void MiszukScene::update(double deltaTime) {
 	rootNode->update(deltaTime);
 	//--------------ANIMACJA---------------------
 	if (getKeyState(GLFW_KEY_F)) {
-
+        f_keyPressed = true;
 	}
 	//-----------------------------------------------
 	if(camera->castRayFromCamera(camera->getFront(), 3.0f))

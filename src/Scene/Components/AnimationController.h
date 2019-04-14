@@ -19,16 +19,18 @@ enum AnimationType {
 
 class AnimationController: public Component, public Renderable
 {
+
 protected:
-    bool F_keyState = false;
+    bool *F_keyState;
 	bool animating = false;
 	glm::mat4 transformMatrix;
     Mesh* mesh;
     AnimationType type;
     glm::float32 elapsed = 0.0f;
+
 public:
     virtual ~AnimationController();
-    AnimationController(AnimationType _type, GraphNode* _gameObject);
+    AnimationController(AnimationType _type, GraphNode* _gameObject, bool* f_keyPressed);
     void update(float msec) override;
 	void updateDrawData() override;
 	void drawSelf(Shader* shader) override;
