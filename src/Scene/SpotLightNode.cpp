@@ -5,15 +5,15 @@ SpotLightNode::SpotLightNode(SpotLight * light, Mesh *mesh, GraphNode *parent) :
 	this->light = light;
 }
 
-glm::vec4 SpotLightNode::getAmbient() {
+glm::vec4 SpotLightNode::getLightAmbient() {
 	return light->ambient;
 }
 
-glm::vec4 SpotLightNode::getDiffuse() {
+glm::vec4 SpotLightNode::getLightDiffuse() {
 	return light->diffuse;
 }
 
-glm::vec4 SpotLightNode::getSpecular() {
+glm::vec4 SpotLightNode::getLightSpecular() {
 	return light->specular;
 }
 
@@ -37,15 +37,15 @@ float SpotLightNode::getOuterCutoff() {
 	return light->outerCutOff;
 }
 
-void SpotLightNode::setAmbient(glm::vec4 ambient) {
+void SpotLightNode::setLightAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
 
-void SpotLightNode::setDiffuse(glm::vec4 diffuse) {
+void SpotLightNode::setLightDiffuse(glm::vec4 diffuse) {
 	light->diffuse = diffuse;
 }
 
-void SpotLightNode::setSpecular(glm::vec4 specular) {
+void SpotLightNode::setLightSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 
@@ -79,7 +79,7 @@ void SpotLightNode::setModel(glm::mat4 model) {
 
 void SpotLightNode::renderGui() {
 	QuadraticLightNode::renderGui();
-	if(active) {
+	if (active) {
 		ImGui::SliderAngle("Cutoff", &light->cutOff, 0.0f, 360.0f);
 		ImGui::SliderAngle("Outer cutoff", &light->outerCutOff, 0.0f, 360.0f);
 	}

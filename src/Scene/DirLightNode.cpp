@@ -5,27 +5,27 @@ DirLightNode::DirLightNode(DirLight * light, Mesh *mesh, GraphNode *parent) : Li
 	this->light = light;
 }
 
-glm::vec4 DirLightNode::getAmbient() {
+glm::vec4 DirLightNode::getLightAmbient() {
 	return light->ambient;
 }
 
-glm::vec4 DirLightNode::getDiffuse() {
+glm::vec4 DirLightNode::getLightDiffuse() {
 	return light->diffuse;
 }
 
-glm::vec4 DirLightNode::getSpecular() {
+glm::vec4 DirLightNode::getLightSpecular() {
 	return light->specular;
 }
 
-void DirLightNode::setAmbient(glm::vec4 ambient) {
+void DirLightNode::setLightAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
 
-void DirLightNode::setDiffuse(glm::vec4 diffuse) {
+void DirLightNode::setLightDiffuse(glm::vec4 diffuse) {
 	light->diffuse = diffuse;
 }
 
-void DirLightNode::setSpecular(glm::vec4 specular) {
+void DirLightNode::setLightSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 

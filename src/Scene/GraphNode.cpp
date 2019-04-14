@@ -51,7 +51,7 @@ void GraphNode::drawSelf(Shader *shader) {
 }
 
 ShaderType GraphNode::getShaderType() {
-	if(mesh == nullptr) {
+	if (mesh == nullptr) {
 		return STNone;
 	}
 	return mesh->getShaderType();
@@ -199,7 +199,9 @@ void GraphNode::updateWorld() {
 void GraphNode::renderGui() {
 	std::string title(name);
 	title.append(" - active");
+	bool active = this->active;
 	ImGui::Checkbox(title.c_str(), &active);
+	if (active != this->active)setActive(active);
 	ImGui::NewLine();
 	if (active) {
 		//glm::vec3 scale;
