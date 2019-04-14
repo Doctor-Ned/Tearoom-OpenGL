@@ -93,6 +93,21 @@ double Global::remap(const double value, const double sourceMin, const double so
 	return result;
 }
 
+float Global::remap(const float value, const float sourceMin, const float sourceMax, float targetMin, float targetMax,
+	const bool revertTarget, const bool snapIfInvalid) {
+	if (value < sourceMin || value > sourceMax) {
+		if (snapIfInvalid) {
+			return value < sourceMin ? targetMin : targetMax;
+		}
+	}
+	float result = (value - sourceMin) / (sourceMax - sourceMin) * (targetMax - targetMin) + targetMin;
+	if (revertTarget) {
+		result = targetMax - result + targetMin;
+	}
+
+	return result;
+}
+
 int Global::remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget,
 	const bool snapIfInvalid) {
 	return static_cast<int>(remap(static_cast<double>(value), static_cast<double>(sourceMin), static_cast<double>(sourceMax), static_cast<double>(targetMin),

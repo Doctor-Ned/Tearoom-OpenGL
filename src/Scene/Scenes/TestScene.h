@@ -12,6 +12,7 @@
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
 #include "Render/LightManager.h"
+#include "Scene/SunNode.h"
 
 class MeshColorSphere;
 const int
@@ -59,6 +60,7 @@ protected:
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;
 	PointLightNode *pointLightNode;
+	SunNode *sunNode;
 	Camera *camera;
 	const float BASE_MOVEMENT_SPEED = 1.0f;
 	float movementSpeed = BASE_MOVEMENT_SPEED;

@@ -62,7 +62,7 @@ void AnimationController::updateDrawData() {
 
 void AnimationController::drawSelf(Shader * shader) {
 	if(animating) {
-		mesh->draw(shader, transformMatrix);
+		mesh->drawSelf(shader, transformMatrix);
 	}
 }
 

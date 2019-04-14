@@ -10,10 +10,10 @@ class MeshCone : public MeshTexture {
 public:
 	MeshCone(float radius, float height, int sideAmount, char* texturePath,
 	         glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, float height, int sideAmount);
 	glm::vec3 baseCenter;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	void createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const;
 	void createTopTriangle(std::vector<TextureVertex>* vertices) const;
 	void bufferData(std::vector<TextureVertex>* vertices);

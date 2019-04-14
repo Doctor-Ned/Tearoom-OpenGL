@@ -46,7 +46,7 @@ void GraphNode::updateDrawData() {
 
 void GraphNode::drawSelf(Shader *shader) {
 	if (mesh != nullptr) {
-		mesh->draw(shader, worldTransform.getMatrix());
+		mesh->drawSelf(shader, worldTransform.getMatrix());
 	}
 }
 
@@ -77,11 +77,17 @@ GraphNode* GraphNode::getParent() const {
 void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
 	if (preserveWorldPosition) {
 		//local = (this->parent->getWorld() / parent->getWorld()) * local;
-		localTransform.setMatrix(
-			(this->parent->worldTransform.getMatrix() / parent->worldTransform.getMatrix()
-				* localTransform.getMatrix()));
+		if (this->parent == nullptr) {
+			localTransform.setMatrix(glm::mat4(1.0f) / parent->worldTransform.getMatrix() * localTransform.getMatrix());
+		} else {
+			localTransform.setMatrix(
+				(this->parent->worldTransform.getMatrix() / parent->worldTransform.getMatrix()
+					* localTransform.getMatrix()));
+		}
 	}
-	this->parent->removeChild(this);
+	if (this->parent != nullptr) {
+		this->parent->removeChild(this);
+	}
 	parent->addChild(this);
 	dirty = true;
 }

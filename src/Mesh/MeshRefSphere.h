@@ -10,11 +10,11 @@
 class MeshRefSphere : public MeshRef {
 public:
 	MeshRefSphere(bool reflective, float radius, int precision, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, int precision);
 	float getRadius() const;
 	glm::vec3 baseCenter;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	glm::vec3 getUnmodeledCenter() override;
 	void createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep);
 	void createRectangle(std::vector<SimpleVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,

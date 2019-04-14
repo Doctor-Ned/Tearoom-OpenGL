@@ -10,8 +10,8 @@ class MeshModelInstanced : public Mesh {
 public:
 	MeshModelInstanced(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
 	                   std::vector<ModelTexture> textures, glm::vec3* offsets, int offsetSize);
-	void draw(Shader *shader, glm::mat4 world) override;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();
 	glm::vec3* offsets;
 	int offsetSize;
