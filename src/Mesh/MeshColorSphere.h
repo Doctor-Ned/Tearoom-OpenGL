@@ -12,7 +12,6 @@ public:
 	                glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void updateValues(float radius, int precision);
 	float getRadius() const;
-	void setShaderType(ShaderType shader);
 	glm::vec3 baseCenter;
 protected:
 	void draw(Shader *shader, glm::mat4 world) override;

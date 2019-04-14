@@ -43,10 +43,6 @@ float MeshColorSphere::getRadius() const {
 	return radius;
 }
 
-void MeshColorSphere::setShaderType(ShaderType shaderType) {
-	this->shaderType = shaderType;
-}
-
 void MeshColorSphere::createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) {
 	glm::vec3* circle = new glm::vec3[precision];
 

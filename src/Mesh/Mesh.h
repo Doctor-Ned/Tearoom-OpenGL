@@ -7,6 +7,7 @@
 
 class Mesh {
 public:
+	void setShaderType(ShaderType shaderType);
 	void setShininess(float shininess);
 	void setUseLight(bool useLight);
 	bool getUseLight() const;

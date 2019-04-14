@@ -1,6 +1,10 @@
 #include "Mesh.h"
 #include "Scene/GameManager.h"
 
+void Mesh::setShaderType(ShaderType shaderType) {
+	this->shaderType = shaderType;
+}
+
 void Mesh::setShininess(float shininess) {
 	this->shininess = shininess;
 }
