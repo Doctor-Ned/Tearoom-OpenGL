@@ -2,6 +2,8 @@
 #include "Components/Collider.h"
 #include "Components/BoxCollider.h"
 #include "Components/SphereCollider.h"
+#include "Scene/GraphNode.h"
+#include <iostream>
 
 CollisionSystem::CollisionSystem()
 {
@@ -84,6 +86,7 @@ bool CollisionSystem::containTest(glm::vec3 min, glm::vec3 max, Collider* collid
 		}
 		return true;
 	}
+	return false;
 }
 
 bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
@@ -94,12 +97,12 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 		glm::vec3 halfDimension = b_collider->getHalfDimensions();
 		for (int i = 0; i < 3; i++)
 		{
-			if (point[i] < b_collider->getPosition()[i] - halfDimension[i] || point[i] > b_collider->getPosition()[i] + halfDimension[i])
-				return false;
+			if(point[i] < b_collider->getPosition()[i] - halfDimension[i]) return false;
+			if(point[i] > b_collider->getPosition()[i] + halfDimension[i]) return false;
 		}
 		return true;
 	}
-	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis align directions)
+	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis aligned directions)
 	{
 		SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider);
 		float radius = sphere->getRadius();
@@ -109,6 +112,7 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 			pow(sphereCenter.z - point.z, 2);
 		return squareDistSpherePoint < radius * radius;
 	}
+	return false;
 }
 
 bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)

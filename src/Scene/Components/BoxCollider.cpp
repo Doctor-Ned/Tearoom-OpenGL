@@ -10,6 +10,7 @@ BoxCollider::BoxCollider(GraphNode* _gameObject, glm::vec3 position, glm::vec3 h
 
 void BoxCollider::setHalfDimensions(glm::vec3 half_dimensions)
 {
+	this->halfDimensions = half_dimensions;
 	MeshColorBox *box = dynamic_cast<MeshColorBox*>(mesh_ptr.get());
 	box->updateValues(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z));
 }

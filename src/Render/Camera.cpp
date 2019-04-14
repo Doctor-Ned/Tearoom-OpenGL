@@ -126,41 +126,16 @@ GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 	glm::vec3 startPos = cameraPos;
 	glm::vec3 direction = glm::normalize(_direction);
 	glm::vec3 currentPos = startPos;
-	float k = 0.01f;
+	float k = 0.5f;
 	std::shared_ptr<OctreeNode> octree = OctreeNode::getInstance();
 	while (glm::distance(startPos, currentPos) < distance)
 	{
 		currentPos = startPos + direction * k;
 		k += 0.01f;
-		for (GraphNode* game_object : octree->getGameObjects())
-		{
-			Collider* collider = game_object->getComponent<Collider>();
-			if (collider != nullptr)
-			{
-				if (CollisionSystem::getInstance()->containTest(currentPos, collider))
-				{
-					return game_object;
-				}
-			}
-		}
 
-		for (auto& node : octree->getNodes())
-		{
-			//check if node contain ray point
-			if (OctreeNode::containTest(currentPos, node->getBox())) {
-				for (GraphNode* nodeGameObject : node->getGameObjects())
-				{
-					Collider* collider = nodeGameObject->getComponent<Collider>();
-					if (collider != nullptr)
-					{
-						//check if point collides with collider
-						if (CollisionSystem::getInstance()->containTest(currentPos, collider))
-						{
-							return nodeGameObject;
-						}
-					}
-				}
-			}
+		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree);
+		if (detectedNode != nullptr) {
+			return detectedNode;
 		}
 	}
 	return nullptr;

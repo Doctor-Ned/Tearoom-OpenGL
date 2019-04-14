@@ -264,3 +264,28 @@ OctreeNode::~OctreeNode()
 {
 
 }
+
+GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node)
+{
+	if (containTest(glm::vec3(rayPos), node->boxPos)) 
+	{
+		for (GraphNode* game_object : node->gameObjects) {
+			Collider* collider = game_object->getComponent<Collider>();
+			if (collider != nullptr)
+			{
+				if (CollisionSystem::getInstance()->containTest(rayPos, collider))
+				{
+					return game_object;
+				}
+			}
+		}
+		for (auto& octreeNode : node->nodes) 
+		{
+			GraphNode* gameObject = findObjectByRayPoint(rayPos, octreeNode);
+			if (gameObject != nullptr) {
+				return gameObject;
+			}
+		}
+	}
+	return nullptr;
+}

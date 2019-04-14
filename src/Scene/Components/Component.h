@@ -12,6 +12,7 @@ protected:
 	}
 public:
 	virtual void update(float msec) = 0;
+	GraphNode* getGameObject() { return gameObject; }
 	virtual ~Component() { }
 };
 #endif

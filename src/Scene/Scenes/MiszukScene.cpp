@@ -55,7 +55,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
 	GraphNode* planete = new GraphNode(box2, pivot);
 
-	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 1.0f));
+	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
 	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
@@ -73,7 +73,7 @@ MiszukScene::MiszukScene() {
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
 	boxNode->addComponent(new CollisionTest(boxNode));
-	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
+	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
 	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
@@ -151,11 +151,11 @@ void MiszukScene::update(double deltaTime) {
 	//-----------------------------------------------
 	if(camera->castRayFromCamera(camera->getFront(), 3.0f))
 	{
-		std::cout << "ray hit gameobject" << std::endl;
+		//std::cout << "ray hit gameobject" << std::endl;
 	}
 	else
 	{
-		std::cout << "ray casted" << std::endl;
+		//std::cout << "ray casted" << std::endl;
 	}
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
