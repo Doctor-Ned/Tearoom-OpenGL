@@ -18,8 +18,8 @@ public:
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
 	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
+	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
 	void addComponent(GraphNode* node, Component *component);
-	void addToRenderMap(Renderable *rendearble);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);
@@ -35,8 +35,10 @@ public:
 protected:
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
+	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
+	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;

@@ -28,6 +28,10 @@ void Collider::setCollisionCallback(std::function<int(Collider*)> f) {
 Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset)
 	: Component(_gameObject), type(_type), positionOffset(positionOffset) { }
 
+bool Collider::isOpaque() {
+	return mesh_ptr == nullptr || mesh_ptr->isOpaque();
+}
+
 Collider::~Collider() {
 
 }

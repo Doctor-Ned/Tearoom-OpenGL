@@ -101,6 +101,7 @@ TestScene::TestScene() {
 	billboardNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, -3.0f)));
 	MeshPlane *emote = new MeshPlane(0.25f, 0.25f, "res/textures/face.png");
 	emote->setUseLight(false);
+	emote->setOpaque(false);
 	GraphNode *emoteNode = new GraphNode(emote, billboardNode);
 	emoteNode->localTransform.setMatrix(rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
@@ -136,6 +137,8 @@ void TestScene::render() {
 
 	OctreeNode::getInstance()->draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
+
+	renderNodesUsingTransparentRenderMap();
 }
 
 void TestScene::renderUi() {

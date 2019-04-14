@@ -16,10 +16,11 @@ protected:
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
 	ColliderType type;
 	glm::mat4 matrix;
-	std::shared_ptr<Mesh> mesh_ptr;
+	std::shared_ptr<Mesh> mesh_ptr = nullptr;
 	glm::vec3 positionOffset;
 public:
 	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset);
+	bool isOpaque() override;
 	virtual ~Collider();
 	glm::vec3 getPosition();
 	void update(float mscec) override;
