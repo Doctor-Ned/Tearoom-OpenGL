@@ -70,6 +70,10 @@ ShaderType AnimationController::getShaderType() {
 	return mesh->getShaderType();
 }
 
+bool AnimationController::isOpaque() {
+	return mesh == nullptr || mesh->isOpaque();
+}
+
 AnimationController::~AnimationController()
 {
 

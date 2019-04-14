@@ -13,6 +13,14 @@ bool Mesh::getUseLight() const {
 	return useLight;
 }
 
+bool Mesh::isOpaque() const {
+	return opacity > 0.99f && opaque;
+}
+
+void Mesh::setOpaque(bool opaque) {
+	this->opaque = opaque;
+}
+
 float Mesh::getShininess() const {
 	return shininess;
 }

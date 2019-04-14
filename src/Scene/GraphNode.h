@@ -33,6 +33,7 @@ public:
 	void setOpacity(float opacity);
 	Mesh* getMesh();
 	virtual ~GraphNode();
+	bool isOpaque() override;
 	bool isActive() const;
 	void setActive(bool active);
 	const char* getName() const;
@@ -48,7 +49,7 @@ protected:
 	std::vector<Component*> components;
 	std::vector<Renderable*> renderableComponents;
 	GraphNode* parent;
-	Mesh* mesh;
+	Mesh* mesh = nullptr;
 	bool dirty;
 };
 

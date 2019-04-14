@@ -16,12 +16,12 @@ public:
     void updateDrawData() override;
     void drawSelf(Shader* shader) override;
     ShaderType getShaderType() override;
-
+	bool isOpaque() override;
     bool castRayDown();
 
 protected:
     bool isFalling = false;
-    Mesh* mesh;
+    Mesh* mesh = nullptr;
 };
 
 

@@ -37,39 +37,18 @@ void Scene::removeNode(GraphNode* node, bool recurse) {
 }
 
 void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight) {
-	if (shader == nullptr) {
-		for (auto &type : ShaderTypes) {
-			if (type != STNone && !(ignoreLight && type == STLight)) {
-				shader = shaders[type];
-				shader->use();
-				for (auto &node : *renderMap[type]) {
-					node->drawSelf(shader);
-				}
-			}
-		}
-	} else {
-		shader->use();
-		for (auto &type : ShaderTypes) {
-			if (type != STNone && !(ignoreLight && type == STLight)) {
-				for (auto &node : *renderMap[type]) {
-					node->drawSelf(shader);
-				}
-			}
-		}
-	}
+	renderFromMap(true, shader, ignoreLight);
+}
+
+void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLight) {
+	renderFromMap(false, shader, ignoreLight);
 }
 
 void Scene::addComponent(GraphNode* node, Component* component) {
 	node->addComponent(component);
 	Renderable *r = dynamic_cast<Renderable*>(component);
 	if (r) {
-		addToRenderMap(r);
-	}
-}
-
-void Scene::addToRenderMap(Renderable* renderable) {
-	if (renderable->getShaderType() != STNone) {
-		renderMap[renderable->getShaderType()]->push_back(renderable);
+		addToRenderMap(r, false);
 	}
 }
 
@@ -101,6 +80,9 @@ void Scene::reinitializeRenderMap() {
 			delete renderMap[type];
 			renderMap.erase(type);
 			renderMap.emplace(type, new std::vector<Renderable*>());
+			//delete transparentRenderMap[type];
+			//transparentRenderMap.erase(type);
+			//transparentRenderMap.emplace(type, new std::vector<Renderable*>());
 		}
 	}
 	addToRenderMap(rootNode, true, false);
@@ -151,6 +133,7 @@ Scene::Scene() {
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			renderMap.emplace(type, new std::vector<Renderable*>());
+			transparentRenderMap.emplace(type, new std::vector<Renderable*>());
 		}
 	}
 }
@@ -200,8 +183,9 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 		return;
 	}
 	bool exists = false;
+	std::vector<Renderable*>* vec = renderMap[renderable->getShaderType()];
 	if (checkIfExists) {
-		for (auto &r : *renderMap[renderable->getShaderType()]) {
+		for (auto &r : *vec) {
 			if (r == renderable) {
 				exists = true;
 				break;
@@ -209,7 +193,45 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 		}
 	}
 	if (!exists) {
-		renderMap[renderable->getShaderType()]->push_back(renderable);
+		vec->push_back(renderable);
+	}
+}
+
+void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
+	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
+	if (shader == nullptr) {
+		for (auto &type : ShaderTypes) {
+			if (type != STNone && !(ignoreLight && type == STLight)) {
+				shader = shaders[type];
+				shader->use();
+				if (opaque) {
+					transparentRenderMap[type]->clear();
+				}
+				for (auto &node : *(*map)[type]) {
+					if (opaque && !node->isOpaque()) {
+						transparentRenderMap[type]->push_back(node);
+						continue;
+					}
+					node->drawSelf(shader);
+				}
+			}
+		}
+	} else {
+		shader->use();
+		for (auto &type : ShaderTypes) {
+			if (type != STNone && !(ignoreLight && type == STLight)) {
+				if (opaque) {
+					transparentRenderMap[type]->clear();
+				}
+				for (auto &node : *(*map)[type]) {
+					if (opaque && !node->isOpaque()) {
+						transparentRenderMap[type]->push_back(node);
+						continue;
+					}
+					node->drawSelf(shader);
+				}
+			}
+		}
 	}
 }
 

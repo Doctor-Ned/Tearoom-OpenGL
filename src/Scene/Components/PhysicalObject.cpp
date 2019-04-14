@@ -35,3 +35,7 @@ void PhysicalObject::drawSelf(Shader *shader) {
 ShaderType PhysicalObject::getShaderType() {
     return STTexture;
 }
+
+bool PhysicalObject::isOpaque() {
+	return mesh == nullptr || mesh->isOpaque();
+}
