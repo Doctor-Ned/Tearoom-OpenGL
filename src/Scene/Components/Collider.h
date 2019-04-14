@@ -19,6 +19,7 @@ protected:
 	std::shared_ptr<Mesh> mesh_ptr = nullptr;
 	glm::vec3 positionOffset;
 public:
+	bool isActive() override;
 	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset);
 	bool isOpaque() override;
 	virtual ~Collider();

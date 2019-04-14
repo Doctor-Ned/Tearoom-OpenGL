@@ -34,7 +34,7 @@ public:
 	Mesh* getMesh();
 	virtual ~GraphNode();
 	bool isOpaque() override;
-	bool isActive() const;
+	bool isActive() override;
 	void setActive(bool active);
 	const char* getName() const;
 	void setName(const char* name);

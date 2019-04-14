@@ -25,6 +25,10 @@ void Collider::setCollisionCallback(std::function<int(Collider*)> f) {
 	callbackFunctions.push_back(f);
 }
 
+bool Collider::isActive() {
+	return gameObject->isActive();
+}
+
 Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset)
 	: Component(_gameObject), type(_type), positionOffset(positionOffset) { }
 

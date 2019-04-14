@@ -240,6 +240,9 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					transparentRenderMap[type]->clear();
 				}
 				for (auto &node : *(*map)[type]) {
+					if(!node->isActive()) {
+						continue;
+					}
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;
@@ -256,6 +259,9 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					transparentRenderMap[type]->clear();
 				}
 				for (auto &node : *(*map)[type]) {
+					if (!node->isActive()) {
+						continue;
+					}
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;

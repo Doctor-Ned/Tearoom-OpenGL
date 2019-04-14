@@ -10,6 +10,7 @@
 
 class PhysicalObject: public Component, public Renderable {
 public:
+	bool isActive() override;
     PhysicalObject(GraphNode* _gameObject);
     virtual ~PhysicalObject();
     void update(float msec) override;

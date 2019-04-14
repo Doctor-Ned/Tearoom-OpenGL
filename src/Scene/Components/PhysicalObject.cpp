@@ -6,6 +6,10 @@
 #include "Scene/GraphNode.h"
 
 
+bool PhysicalObject::isActive() {
+	return gameObject->isActive();
+}
+
 PhysicalObject::PhysicalObject(GraphNode* _gameObject)
 :Component(_gameObject){}
 

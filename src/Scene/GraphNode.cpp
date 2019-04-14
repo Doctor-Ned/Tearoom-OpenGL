@@ -162,7 +162,7 @@ bool GraphNode::isOpaque() {
 	return mesh == nullptr || mesh->isOpaque();
 }
 
-bool GraphNode::isActive() const {
+bool GraphNode::isActive() {
 	return active;
 }
 

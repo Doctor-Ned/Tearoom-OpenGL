@@ -29,6 +29,7 @@ protected:
     glm::float32 elapsed = 0.0f;
 
 public:
+	bool isActive() override;
 	bool isOpaque() override;
     virtual ~AnimationController();
     AnimationController(AnimationType _type, GraphNode* _gameObject, bool* f_keyPressed);
