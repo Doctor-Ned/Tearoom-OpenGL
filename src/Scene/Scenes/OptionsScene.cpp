@@ -71,6 +71,12 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		gameManager->setVsync(enabled);
 	});
 
+	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 15 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), true);
+	enableAntialiasing->setCheckboxCallback([pps](bool enabled) {
+		pps->use();
+		pps->setAntialiasing(enabled);
+	});
+
 	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 17 * heightSeg), "Back to menu");
 	back->setButtonCallback([menuScene]() { menuScene->hideOptions(); });
 	uiElements.emplace_back(back);
@@ -87,11 +93,13 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(gammaSlider);
 	uiElements.emplace_back(useBloom);
 	uiElements.emplace_back(enableVsync);
+	uiElements.emplace_back(enableAntialiasing);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Cast shadows"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use light"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use HDR"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Use bloom"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Enable VSync"));
+	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Enable FXAA"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 1.5f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 

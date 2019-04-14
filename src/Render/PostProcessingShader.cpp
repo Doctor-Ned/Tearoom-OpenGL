@@ -6,6 +6,7 @@ PostProcessingShader::PostProcessingShader(char * vertexPath, char * fragmentPat
 	setGamma(gamma);
 	setHdr(useHdr);
 	setBloom(useBloom);
+	setAntialiasing(useAntialiasing);
 }
 
 void PostProcessingShader::setExposure(float exposure) {
@@ -24,8 +25,17 @@ void PostProcessingShader::setGamma(float gamma) {
 }
 
 void PostProcessingShader::setBloom(bool enabled) {
-	setBool("bloom", enabled);
+	setBool("useBloom", enabled);
 	this->useBloom = enabled;
+}
+
+void PostProcessingShader::setAntialiasing(bool enabled) {
+	setBool("useAntialiasing", enabled);
+	this->useAntialiasing = enabled;
+}
+
+void PostProcessingShader::setWindowSize(float width, float height) {
+	setVec2("inverseScreenSize", glm::vec2(1.0f / width, 1.0f / height));
 }
 
 float PostProcessingShader::getExposure() {
@@ -42,4 +52,8 @@ bool PostProcessingShader::isHdrEnabled() {
 
 bool PostProcessingShader::isBloomEnabled() {
 	return useBloom;
+}
+
+bool PostProcessingShader::isAntialiasingEnabled() {
+	return useAntialiasing;
 }

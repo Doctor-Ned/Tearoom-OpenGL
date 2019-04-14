@@ -18,36 +18,33 @@
 #include "Ui/UiText.h"
 #include "Ui/UiColorPlane.h"
 
-
 //comment extern below if you don't have NVidia GPU
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
 
-
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-static GameManager* GameManager;
-static AssetManager* AssetManager;
+static GameManager* gameManager;
+static AssetManager* assetManager;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	GameManager->keyboard_callback(window, key, scancode, action, mods);
+	gameManager->keyboard_callback(window, key, scancode, action, mods);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	GameManager->mouse_callback(window, xpos, ypos);
+	gameManager->mouse_callback(window, xpos, ypos);
 }
 
 void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
-	GameManager->mouse_button_callback(window, butt, action, mods);
+	gameManager->mouse_button_callback(window, butt, action, mods);
 }
 
-
 int main(int argc, char** argv) {
-	GameManager = GameManager::getInstance();
-	AssetManager = AssetManager::getInstance();
+	gameManager = GameManager::getInstance();
+	assetManager = AssetManager::getInstance();
 	bool fullscreen_borderless = false;
 	bool borderless = false;
 	bool fullscreen = false;
@@ -142,7 +139,7 @@ int main(int argc, char** argv) {
 		windowHeight = screenHeight;
 	}
 
-	GameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 
 	// Create window with graphics context
 	GLFWwindow* window;
@@ -173,7 +170,7 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	//glfwSwapInterval(0); // vsync, now set by the GameManager
 
-	GameManager->setWindow(window);
+	gameManager->setWindow(window);
 
 	// Initialize OpenGL loader
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
@@ -252,17 +249,18 @@ int main(int argc, char** argv) {
 
 	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
 
-	GameManager->setup();
+	gameManager->setup();
 
-	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(AssetManager->getShader(STPostProcessing));
+	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
 	postProcessingShader->use();
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
 	postProcessingShader->setInt("ui", 2);
+	postProcessingShader->setWindowSize(windowWidth, windowHeight);
 
-	Shader *blurShader = AssetManager->getShader(STBlur);
+	Shader *blurShader = assetManager->getShader(STBlur);
 
-	GameFramebuffers framebuffers = GameManager->getFramebuffers();
+	GameFramebuffers framebuffers = gameManager->getFramebuffers();
 
 
 	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(120.0f, 30.0f), false);
@@ -289,7 +287,7 @@ int main(int argc, char** argv) {
 			deltaSum = 0.0f;
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
-		GameManager->update(timeDelta);
+		gameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -298,7 +296,7 @@ int main(int argc, char** argv) {
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GameManager->render();
+		gameManager->render();
 
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {
@@ -332,7 +330,7 @@ int main(int argc, char** argv) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GameManager->renderUi();
+		gameManager->renderUi();
 		fpsPlane->render();
 		fpsText->render();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -362,13 +360,13 @@ int main(int argc, char** argv) {
 
 		glfwSwapBuffers(window);
 
-		if (!AssetManager->isLoaded()) {
-			AssetManager->loadResources();
-			GameManager->goToMenu();
+		if (!assetManager->isLoaded()) {
+			assetManager->loadResources();
+			gameManager->goToMenu();
 		}
 	}
-	delete GameManager;
-	delete AssetManager;
+	delete gameManager;
+	delete assetManager;
 	delete LightManager::getInstance();
 	glDeleteBuffers(1, &vbo);
 	glDeleteVertexArrays(1, &vao);

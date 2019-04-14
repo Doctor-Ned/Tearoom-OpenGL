@@ -115,7 +115,7 @@ TestScene::TestScene() {
 	reinitializeRenderMap();
 }
 
-void TestScene::render() { 
+void TestScene::render() {
 	rootNode->updateDrawData();
 
 	lightManager->renderAndUpdate([this](Shader *shader) {
@@ -144,7 +144,7 @@ void TestScene::render() {
 void TestScene::renderUi() {
 	Scene::renderUi();
 
-	if(modelNode != nullptr) {
+	if (modelNode != nullptr) {
 		static float opacity = 1.0f;
 		ImGui::SliderFloat("Model opacity", &opacity, 0.0f, 1.0f);
 		modelNode->setOpacity(opacity);
@@ -261,7 +261,6 @@ void TestScene::keyEvent(int key, bool pressed) {
 			break;
 		case KEY_QUIT:
 			gameManager->goToMenu();
-			//glfwSetWindowShouldClose(gameManager->getWindow(), true);
 			break;
 	}
 }
