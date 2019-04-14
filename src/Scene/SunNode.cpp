@@ -51,22 +51,22 @@ glm::vec4 SunNode::timeToColor(float time, bool light1) {
 			case 0:
 				return factor1 * dawnColor;
 			case 1:
-				return factor1 * dawnColor + factor2 * dayColor;
+				return factor2 * dawnColor + factor1 * dayColor;
 			case 2:
-				return factor2 * (factor1*dayColor + factor2 * dawnColor);
+				return factor2 * (factor2*dayColor + factor1 * dawnColor);
 			case 3:
 				return glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 		}
 	} else {
 		switch (quarter) {
 			case 0:
-				return factor2 * (factor1 * nightColor + factor2 * duskColor);
+				return factor2 * (factor2 * nightColor + factor1 * duskColor);
 			case 1:
 				return glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 			case 2:
 				return factor1 * duskColor;
 			case 3:
-				return factor1 * duskColor + factor2 * nightColor;
+				return factor2 * duskColor + factor1 * nightColor;
 		}
 	}
 	throw std::exception("The precalculated quarter is out of the expected range! This should NEVER happen.");
