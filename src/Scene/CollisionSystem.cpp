@@ -3,6 +3,7 @@
 #include "Components/BoxCollider.h"
 #include "Components/SphereCollider.h"
 #include "Scene/GraphNode.h"
+#include "Scene/OctreeNode.h"
 #include <iostream>
 
 CollisionSystem::CollisionSystem()
@@ -113,6 +114,26 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 		return squareDistSpherePoint < radius * radius;
 	}
 	return false;
+}
+
+GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction, float distance)
+{
+	glm::vec3 startPos = startPoint;
+	glm::vec3 direction = glm::normalize(_direction);
+	glm::vec3 currentPos = startPos;
+	float k = 0.5f;
+	std::shared_ptr<OctreeNode> octree = OctreeNode::getInstance();
+	while (glm::distance(startPos, currentPos) < distance)
+	{
+		currentPos = startPos + direction * k;
+		k += 0.01f;
+
+		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree);
+		if (detectedNode != nullptr) {
+			return detectedNode;
+		}
+	}
+	return nullptr;
 }
 
 bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)

@@ -123,22 +123,7 @@ void Camera::setRotSpeed(float rotSpeed) {
 
 GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 {
-	glm::vec3 startPos = cameraPos;
-	glm::vec3 direction = glm::normalize(_direction);
-	glm::vec3 currentPos = startPos;
-	float k = 0.5f;
-	std::shared_ptr<OctreeNode> octree = OctreeNode::getInstance();
-	while (glm::distance(startPos, currentPos) < distance)
-	{
-		currentPos = startPos + direction * k;
-		k += 0.01f;
-
-		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree);
-		if (detectedNode != nullptr) {
-			return detectedNode;
-		}
-	}
-	return nullptr;
+	return CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance);
 }
 
 void Camera::recalculateFront() {
