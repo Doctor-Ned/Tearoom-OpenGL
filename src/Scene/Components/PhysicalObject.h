@@ -7,7 +7,6 @@
 #include "Mesh/Mesh.h"
 #include "Render/Renderable.h"
 
-
 class PhysicalObject: public Component, public Renderable {
 public:
 	bool isActive() override;

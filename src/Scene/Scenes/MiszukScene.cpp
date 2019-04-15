@@ -30,7 +30,7 @@ MiszukScene::MiszukScene() {
 	updatableShaders.push_back(assetManager->getShader(STRefract));
 
 	// for basic animation testing
-	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox *slidingDoor = new MeshColorBox(glm::vec3(-0.3f, 0.4f, -1), glm::vec3(0.7f, 5.4f, 0.7f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorBox *wall = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -44,6 +44,7 @@ MiszukScene::MiszukScene() {
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox* floorMesh = new MeshColorBox(glm::vec3(-10.0f, -0.5f, -10.5f), glm::vec3(10.0f, 0.5f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
 	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	MeshColorBox* meshBox1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
@@ -54,6 +55,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* simpleBox2 = new GraphNode(meshBox1, rootNode);
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
 	GraphNode* planete = new GraphNode(box2, pivot);
+	GraphNode* floor = new GraphNode(floorMesh, rootNode);
 
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
@@ -61,14 +63,16 @@ MiszukScene::MiszukScene() {
 	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
-	simpleBox1->localTransform.setPosition(-0.6f, 2.0f, -1.0f);
+	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
-
+	floor->localTransform.setPosition(0.0f, -3.0f, 0.0f);
 	wallNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(0.0f, 8.0f, -15.0f));
 	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
+	fallingBoxNode->localTransform.setPosition(0.0f, 10.0f, -3.0f);
+
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
 	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
@@ -79,6 +83,8 @@ MiszukScene::MiszukScene() {
 	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
 	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
+
+	floor->addComponent(new BoxCollider(floor, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
 
 	reinitializeRenderMap();

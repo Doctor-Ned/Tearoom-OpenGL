@@ -4,22 +4,22 @@
 
 #include "PhysicalObject.h"
 #include "Scene/GraphNode.h"
-
+#include "Scene/CollisionSystem.h"
 
 bool PhysicalObject::isActive() {
 	return gameObject->isActive();
 }
 
 PhysicalObject::PhysicalObject(GraphNode* _gameObject)
-:Component(_gameObject){}
+:Component(_gameObject) {}
 
 void PhysicalObject::update(float msec)
 {
-    //TODO condition - checking if there is a ground
-    //if()
-   // {
-        gameObject->localTransform.translate(glm::vec3(0.0f,-0.07f,0.0f));
-   // }
+	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition(),glm::vec3(0,-1,0), 0.2f);
+	if(floor == nullptr)
+	{
+	  gameObject->localTransform.translate(glm::vec3(0.0f, -5.0f * msec, 0.0f));
+	}
 }
 
 bool PhysicalObject::castRayDown() {
