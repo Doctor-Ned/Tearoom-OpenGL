@@ -10,9 +10,10 @@
 class ModelInstanced : public Mesh {
 public:
 	ModelInstanced(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
-	void draw(Shader *shader, glm::mat4 world) override;
 	void setOpacity(float opacity) override;
+	void setCulled(bool culled) override;
 private:
+	void draw(Shader *shader, glm::mat4 world) override;
 	glm::vec3* offsets;
 	int offsetSize;
 	std::vector<MeshModelInstanced*> meshes;

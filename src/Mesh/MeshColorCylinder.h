@@ -9,10 +9,10 @@ class MeshColorCylinder : public MeshSimple {
 public:
 	MeshColorCylinder(float radius, float height, int sideAmount, glm::vec4 color,
 	                  glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
-	void draw(Shader *shader, glm::mat4 world) override;
 	void updateValues(float radius, float height, int sideAmount);
 	glm::vec3 baseCenter;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	void createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) const;
 	void createTopTriangle(std::vector<SimpleVertex>* vertices) const;
 	void createSideTriangles(std::vector<SimpleVertex>* vertices) const;

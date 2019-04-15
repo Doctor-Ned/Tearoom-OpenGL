@@ -12,8 +12,8 @@ struct TextureVertex {
 
 class MeshTexture : public Mesh {
 public:
-	void draw(Shader *shader, glm::mat4 world) override;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
 	            char* textureFile);
 	MeshTexture();

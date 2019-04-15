@@ -146,11 +146,7 @@ void MiszukScene::update(double deltaTime) {
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
 	rootNode->update(deltaTime);
-	//--------------ANIMACJA---------------------
-	if (getKeyState(GLFW_KEY_F)) {
-        f_keyPressed = true;
-	}
-	//-----------------------------------------------
+
 	if(camera->castRayFromCamera(camera->getFront(), 3.0f))
 	{
 		//std::cout << "ray hit gameobject" << std::endl;
@@ -194,6 +190,11 @@ void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float 
 
 void MiszukScene::keyEvent(int key, bool pressed) {
 	switch (key) {
+		case KEY_INTERACT:
+			if(pressed) {
+				f_keyPressed = true;
+			}
+			break;
 		case KEY_FAST:
 			if (pressed) {
 				movementSpeed *= 2.0f;

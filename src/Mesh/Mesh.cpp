@@ -1,6 +1,10 @@
 #include "Mesh.h"
 #include "Scene/GameManager.h"
 
+void Mesh::setShaderType(ShaderType shaderType) {
+	this->shaderType = shaderType;
+}
+
 void Mesh::setShininess(float shininess) {
 	this->shininess = shininess;
 }
@@ -17,8 +21,16 @@ bool Mesh::isOpaque() const {
 	return opacity > 0.99f && opaque;
 }
 
+bool Mesh::isCulled() const {
+	return culled;
+}
+
 void Mesh::setOpaque(bool opaque) {
 	this->opaque = opaque;
+}
+
+void Mesh::setCulled(bool culled) {
+	this->culled = culled;
 }
 
 float Mesh::getShininess() const {
@@ -50,12 +62,22 @@ void Mesh::setOpacity(float opacity) {
 	this->opacity = opacity;
 }
 
+void Mesh::drawSelf(Shader* shader, glm::mat4 world) {
+	if (culled) {
+		draw(shader, world);
+	} else {
+		glDisable(GL_CULL_FACE);
+		draw(shader, world);
+		glEnable(GL_CULL_FACE);
+	}
+}
+
 float Mesh::getOpacity() const {
 	return opacity;
 }
 
 Mesh::~Mesh() {
-	if(VAO != 0) {
+	if (VAO != 0) {
 		glDeleteVertexArrays(1, &VAO);
 	}
 	if (VBO != 0) {

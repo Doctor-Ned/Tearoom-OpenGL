@@ -10,3 +10,7 @@ void MeshSimple::draw(Shader *shader, glm::mat4 world) {
 void MeshSimple::setColor(glm::vec4 color) {
 	this->color = color;
 }
+
+bool MeshSimple::isOpaque() const {
+	return color.a > 0.99f && Mesh::isOpaque();
+}

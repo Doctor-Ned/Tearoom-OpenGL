@@ -13,9 +13,10 @@ struct SimpleVertex {
 
 class MeshSimple : public Mesh {
 public:
-	void draw(Shader *shader, glm::mat4 world) override;
 	void setColor(glm::vec4 color);
+	bool isOpaque() const override;
 protected:
+	void draw(Shader *shader, glm::mat4 world) override;
 	MeshSimple(glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	glm::vec4 color;
 	std::vector<SimpleVertex> vertices;

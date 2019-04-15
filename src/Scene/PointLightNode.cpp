@@ -5,15 +5,15 @@ PointLightNode::PointLightNode(PointLight * light, Mesh *mesh, GraphNode *parent
 	this->light = light;
 }
 
-glm::vec4 PointLightNode::getAmbient() {
+glm::vec4 PointLightNode::getLightAmbient() {
 	return light->ambient;
 }
 
-glm::vec4 PointLightNode::getDiffuse() {
+glm::vec4 PointLightNode::getLightDiffuse() {
 	return light->diffuse;
 }
 
-glm::vec4 PointLightNode::getSpecular() {
+glm::vec4 PointLightNode::getLightSpecular() {
 	return light->specular;
 }
 
@@ -29,15 +29,15 @@ float PointLightNode::getQuadratic() {
 	return light->quadratic;
 }
 
-void PointLightNode::setAmbient(glm::vec4 ambient) {
+void PointLightNode::setLightAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
 
-void PointLightNode::setDiffuse(glm::vec4 diffuse) {
+void PointLightNode::setLightDiffuse(glm::vec4 diffuse) {
 	light->diffuse = diffuse;
 }
 
-void PointLightNode::setSpecular(glm::vec4 specular) {
+void PointLightNode::setLightSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 

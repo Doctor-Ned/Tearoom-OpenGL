@@ -38,6 +38,7 @@ TestScene::TestScene() {
 	modelNode->localTransform.setMatrix(scale(translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), glm::vec3(0.01, 0.01, 0.01f)));
 
 	MeshColorPlane *plane = new MeshColorPlane(10.0f, 10.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	plane->setCulled(false);
 	MeshColorSphere *sphere = new MeshColorSphere(0.125f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	GraphNode* planeNode = new GraphNode(plane, rootNode);
 	GraphNode* sphereNode = new GraphNode(sphere, rootNode);
@@ -47,21 +48,24 @@ TestScene::TestScene() {
 	lightSphere->setUseLight(false);
 
 
-	GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
+	//GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
-	lights = lightManager->recreateLights(1, 1, 1);
+	lights = lightManager->recreateLights(2, 1, 1);
 
-	DirLight *dirLight = lights.dirLights[0];
-	dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
-	dirLight->model = glm::mat4(1.0f);
+	sunNode = new SunNode(lights.dirLights[0], lights.dirLights[1], normalize(glm::vec4(255.0f, 183.0f, 0.0f, 255.0f)),
+		normalize(glm::vec4(255.0f, 252.0f, 193.0f, 255.0f)), normalize(glm::vec4(52.0f, 86.0f, 181.0f, 255.0f)), normalize(glm::vec4(134.0f, 169.0f, 189.0f, 255.0f)), 10.0f, 12.0f, rootNode);
+
+	//DirLight *dirLight = lights.dirLights[0];
+	//dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	//dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	//dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
+	//dirLight->model = glm::mat4(1.0f);
 	//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
-	GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
+	//GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
 	//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-	dirLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
+	//dirLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
@@ -151,8 +155,8 @@ void TestScene::renderUi() {
 		modelNode->drawGui();
 	}
 
-	dirLightNode->getParent()->drawGui();
-	dirLightNode->drawGui();
+	//dirLightNode->getParent()->drawGui();
+	//dirLightNode->drawGui();
 	spotLightNode->drawGui();
 	pointLightNode->drawGui();
 
@@ -206,6 +210,8 @@ void TestScene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
+
+	sunNode->addTime(deltaTime);
 
 	rootNode->update(deltaTime);
 	OctreeNode::getInstance()->RebuildTree(15.0f);

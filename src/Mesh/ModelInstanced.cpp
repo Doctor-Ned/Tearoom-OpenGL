@@ -11,13 +11,20 @@ ModelInstanced::ModelInstanced(std::vector<ModelData*> data, glm::vec3* offsets,
 
 void ModelInstanced::draw(Shader *shader, glm::mat4 world) {
 	for (auto& mesh : meshes) {
-		mesh->draw(shader, world);
+		mesh->drawSelf(shader, world);
 	}
 }
 
 void ModelInstanced::setOpacity(float opacity) {
-	this->opacity = opacity;
+	Mesh::setOpacity(opacity);
 	for(auto &mesh: meshes) {
 		mesh->setOpacity(opacity);
+	}
+}
+
+void ModelInstanced::setCulled(bool culled) {
+	Mesh::setCulled(culled);
+	for (auto &mesh : meshes) {
+		mesh->setCulled(culled);
 	}
 }

@@ -35,7 +35,7 @@ public:
 	virtual ~GraphNode();
 	bool isOpaque() override;
 	bool isActive() override;
-	void setActive(bool active);
+	virtual void setActive(bool active);
 	const char* getName() const;
 	void setName(const char* name);
 	std::vector<GraphNode*> getChildren() const;

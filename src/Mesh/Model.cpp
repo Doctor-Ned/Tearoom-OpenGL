@@ -11,7 +11,7 @@ Model::Model(std::vector<ModelData*> data) : Mesh(STModel) {
 
 void Model::draw(Shader *shader, glm::mat4 world) {
 	for (auto& mesh : meshes) {
-		mesh->draw(shader, world);
+		mesh->drawSelf(shader, world);
 	}
 }
 
@@ -30,9 +30,16 @@ std::vector<ModelData*> Model::createModelData(std::string path) {
 }
 
 void Model::setOpacity(float opacity) {
-	this->opacity = opacity;
+	Mesh::setOpacity(opacity);
 	for(auto &mesh : meshes) {
 		mesh->setOpacity(opacity);
+	}
+}
+
+void Model::setCulled(bool culled) {
+	Mesh::setCulled(culled);
+	for(auto &mesh : meshes) {
+		mesh->setCulled(culled);
 	}
 }
 

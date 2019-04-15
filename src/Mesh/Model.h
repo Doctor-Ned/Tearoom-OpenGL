@@ -18,10 +18,11 @@ class Model : public Mesh {
 public:
 	Model(std::string path);
 	Model(std::vector<ModelData*> data);
-	void draw(Shader *shader, glm::mat4 world) override;
 	static std::vector<ModelData*> createModelData(std::string path);
 	void setOpacity(float opacity) override;
+	void setCulled(bool culled) override;
 private:
+	void draw(Shader *shader, glm::mat4 world) override;
 	std::vector<MeshModel*> meshes;
 	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, std::vector<ModelData*> &output);
 	static ModelData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory, std::vector<ModelTexture> &textures_loaded);

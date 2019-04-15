@@ -12,6 +12,7 @@
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
 #include "Render/LightManager.h"
+#include "Scene/SunNode.h"
 
 class MeshColorSphere;
 const int
@@ -28,7 +29,8 @@ KEY_MOUSE_RIGHT = GLFW_KEY_RIGHT,
 KEY_MOUSE_UP = GLFW_KEY_UP,
 KEY_MOUSE_DOWN = GLFW_KEY_DOWN,
 KEY_TOGGLE_MOUSE_LOCK = GLFW_KEY_SPACE,
-KEY_QUIT = GLFW_KEY_ESCAPE;
+KEY_QUIT = GLFW_KEY_ESCAPE,
+KEY_INTERACT = GLFW_KEY_F;
 
 class TestScene : public Scene {
 public:
@@ -59,6 +61,7 @@ protected:
 	DirLightNode *dirLightNode;
 	SpotLightNode *spotLightNode;
 	PointLightNode *pointLightNode;
+	SunNode *sunNode;
 	Camera *camera;
 	const float BASE_MOVEMENT_SPEED = 1.0f;
 	float movementSpeed = BASE_MOVEMENT_SPEED;
