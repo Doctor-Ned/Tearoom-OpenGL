@@ -23,6 +23,8 @@ public:
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component* component);
+	void beingHitByRay();
+	bool getHitByRay();
 	template <class T> void removeComponent(T *component);
 	template <class T> void removeComponents();
 	template <class T> T* getComponent();
@@ -45,6 +47,7 @@ protected:
 	const char* name;
 	void renderGui() override;
 	bool active = true;
+	bool hitByRay = false;
 	std::vector<GraphNode*> children;
 	std::vector<Component*> components;
 	std::vector<Renderable*> renderableComponents;

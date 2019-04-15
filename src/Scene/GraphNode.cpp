@@ -72,6 +72,8 @@ void GraphNode::update(double timeDiff) {
 	for (auto &child : children) {
 		child->update(timeDiff);
 	}
+
+	hitByRay = false;
 }
 
 GraphNode* GraphNode::getParent() const {
@@ -165,7 +167,6 @@ GraphNode::~GraphNode() {
 	//for (auto &child : children) {
 		//delete child;
 	//}
-
 }
 
 bool GraphNode::isOpaque() {
@@ -186,6 +187,14 @@ const char* GraphNode::getName() const {
 
 void GraphNode::setName(const char* name) {
 	this->name = name;
+}
+
+void GraphNode::beingHitByRay() {
+	hitByRay = true;
+}
+
+bool GraphNode::getHitByRay(){
+	return  hitByRay;
 }
 
 std::vector<GraphNode*> GraphNode::getChildren() const {

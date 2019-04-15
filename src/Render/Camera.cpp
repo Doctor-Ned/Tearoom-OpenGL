@@ -5,6 +5,8 @@
 #include "Scene/OctreeNode.h"
 #include "Scene/GraphNode.h"
 #include "Scene/Components/Collider.h"
+#include <algorithm>
+#include "Scene/Components/AnimationController.h"
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, float speed, float rotSpeed)
 	: speed(speed), rotSpeed(rotSpeed), cameraPos(cameraPos), cameraFront(cameraFront), cameraUp(cameraUp) {
@@ -128,6 +130,12 @@ void Camera::setRotSpeed(float rotSpeed) {
 
 GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 {
+	GraphNode *hitObject = CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance);
+	if(hitObject != nullptr)
+	{
+		hitObject->beingHitByRay();
+	}
+
 	return CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance);
 }
 

@@ -32,14 +32,9 @@ PhysicalObject::~PhysicalObject() {
 
 void PhysicalObject::updateDrawData() {}
 void PhysicalObject::drawSelf(Shader *shader) {
-    if(isFalling) {
-    }
+    if(isFalling) {}
 }
-
 ShaderType PhysicalObject::getShaderType() {
     return STTexture;
 }
-
-bool PhysicalObject::isOpaque() {
-	return mesh == nullptr || mesh->isOpaque();
-}
+bool PhysicalObject::isOpaque() {return mesh == nullptr || mesh->isOpaque();}

@@ -75,6 +75,7 @@ MiszukScene::MiszukScene() {
 
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
+	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
@@ -198,6 +199,9 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 		case KEY_INTERACT:
 			if(pressed) {
 				f_keyPressed = true;
+			}
+			else {
+				f_keyPressed = false;
 			}
 			break;
 		case KEY_FAST:

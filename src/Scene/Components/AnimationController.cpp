@@ -14,13 +14,15 @@ AnimationController::AnimationController(AnimationType _type, GraphNode *_gameOb
 }
 
 void AnimationController::startAnimation() {
-	animating = true;                   //TODO. i changed it a little bit just to match the new Renderable interface
-    transformMatrix = translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
+	animating = true;
+   // transformMatrix = translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 }
 
 void AnimationController::update(float msec)
 {
-    if(*F_keyState) {
+    if(*F_keyState && gameObject->getHitByRay()) {startAnimation();}
+
+    if(animating) {
         switch (type) {
             case DoorOpeningX:
                 if (elapsed < 1.8f)
@@ -54,6 +56,7 @@ void AnimationController::update(float msec)
                 break;
         }
     }
+
 }
 
 void AnimationController::updateDrawData() {
