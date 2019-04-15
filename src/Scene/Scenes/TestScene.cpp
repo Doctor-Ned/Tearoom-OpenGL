@@ -9,6 +9,7 @@
 #include "Render/LightManager.h"
 #include "Mesh/MeshPlane.h"
 #include "Scene/BillboardNode.h"
+#include <iostream>
 
 TestScene::TestScene() {
 	camera = new Camera();
@@ -139,7 +140,7 @@ void TestScene::render() {
 
 	renderNodesUsingRenderMap();
 
-	OctreeNode::getInstance()->draw();
+	//OctreeNode::getInstance()->draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
 
 	renderNodesUsingTransparentRenderMap();
@@ -222,6 +223,10 @@ void TestScene::update(double deltaTime) {
 	rootNode->update(deltaTime);
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
+	camera->RecalculateFrustum();
+	Frustum frustum = camera->getFrustum();
+	OctreeNode::getInstance()->frustumCulling(frustum);
+	std::cout << OctreeNode::frustumContainer.size() << std::endl;
 	//OctreeNode::getInstance()->CollisionTests();
 }
 

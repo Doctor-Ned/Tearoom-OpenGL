@@ -137,7 +137,9 @@ void Camera::RecalculateFrustum()
 	float farDistance = 100.0f;
 	float screenRatio = GameManager::getInstance()->getScreenWidth() / GameManager::getInstance()->getScreenHeight();
 
-	float tangens = 2 * glm::tan(M_PI / 4);
+	//float tangens = 2 * glm::tan(M_PI / 4);
+	float tangens = glm::tan((M_PI / 180.0f) * 45.0f * 0.5f);
+	
 	float nearHeight = tangens * nearDistance;
 	float nearWidth = nearHeight * screenRatio;
 
@@ -150,20 +152,20 @@ void Camera::RecalculateFrustum()
 	glm::vec3 actualUp = getActualUp();
 	glm::vec3 actualRight = normalize(cross(cameraFront, actualUp));
 	//4 corners of the near plane of frustum 
-	frustum.nearTopLeft = nearCenter + (actualUp * (nearHeight / 2)) - (actualRight * (nearWidth / 2));
-	frustum.nearTopRight = nearCenter + (actualUp * (nearHeight / 2)) + (actualRight * (nearWidth / 2));
-	frustum.nearBottomLeft = nearCenter - (actualUp * (nearHeight / 2)) - (actualRight * (nearWidth / 2));
-	frustum.nearBottomRight = nearCenter - (actualUp * (nearHeight / 2)) + (actualRight * (nearWidth / 2));
+	frustum.nearTopLeft = nearCenter + (actualUp * nearHeight) - (actualRight * nearWidth);
+	frustum.nearTopRight = nearCenter + (actualUp * nearHeight) + (actualRight * nearWidth);
+	frustum.nearBottomLeft = nearCenter - (actualUp * nearHeight) - (actualRight * nearWidth);
+	frustum.nearBottomRight = nearCenter - (actualUp * nearHeight) + (actualRight * nearWidth);
 	//4 corners of the far plane of frustum 
-	frustum.farTopLeft = farCenter + (actualUp * (farHeight / 2)) - (actualRight * (farWidth / 2));
-	frustum.farTopRight = farCenter + (actualUp * (farHeight / 2)) + (actualRight * (farWidth / 2));
-	frustum.farBottomLeft = farCenter - (actualUp * (farHeight / 2)) - (actualRight * (farWidth / 2));
-	frustum.farBottomRight = farCenter - (actualUp * (farHeight / 2)) + (actualRight * (farWidth / 2));
+	frustum.farTopLeft = farCenter + (actualUp * farHeight) - (actualRight * farWidth);
+	frustum.farTopRight = farCenter + (actualUp * farHeight) + (actualRight * farWidth);
+	frustum.farBottomLeft = farCenter - (actualUp * farHeight) - (actualRight * farWidth);
+	frustum.farBottomRight = farCenter - (actualUp * farHeight) + (actualRight * farWidth);
 
-	frustum.planes[TOP] = { frustum.nearBottomLeft, frustum.nearTopLeft, frustum.farTopLeft };
-	frustum.planes[BOTTOM] = { frustum.nearBottomLeft, frustum.farBottomRight, frustum.farBottomRight };
-	frustum.planes[LEFT] = { frustum.nearTopLeft, frustum.nearBottomLeft, frustum.nearBottomLeft };
-	frustum.planes[RIGHT] = { frustum.nearBottomRight, frustum.nearTopRight, frustum.nearBottomRight };
+	frustum.planes[TOP] = { frustum.nearTopRight, frustum.nearTopLeft, frustum.farTopLeft };
+	frustum.planes[BOTTOM] = { frustum.nearBottomLeft, frustum.nearBottomRight, frustum.farBottomRight };
+	frustum.planes[LEFT] = { frustum.nearTopLeft, frustum.nearBottomLeft, frustum.farBottomLeft };
+	frustum.planes[RIGHT] = { frustum.nearBottomRight, frustum.nearTopRight, frustum.farBottomRight };
 	frustum.planes[NEARP] = { frustum.nearTopLeft, frustum.nearTopRight, frustum.nearBottomRight };
 	frustum.planes[FARP] = { frustum.farTopRight, frustum.farTopLeft, frustum.farBottomLeft };
 
