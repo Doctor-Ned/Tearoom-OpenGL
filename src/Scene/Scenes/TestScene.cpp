@@ -47,7 +47,6 @@ TestScene::TestScene() {
 	MeshColorSphere *lightSphere = new MeshColorSphere(0.05f, 30, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	lightSphere->setUseLight(false);
 
-
 	//GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
 	lights = lightManager->recreateLights(2, 1, 1);
@@ -124,6 +123,7 @@ void TestScene::render() {
 
 	lightManager->renderAndUpdate([this](Shader *shader) {
 		renderNodesUsingRenderMap(shader, true);
+		renderNodesUsingTransparentRenderMap(shader, true);
 	}, updatableShaders);
 
 	pointLightSphere->setColor(lights.pointLights[0]->diffuse);
@@ -147,6 +147,12 @@ void TestScene::render() {
 
 void TestScene::renderUi() {
 	Scene::renderUi();
+
+	static float time = sunNode->getTime();
+	ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
+	if (time != sunNode->getTime()) {
+		sunNode->setTime(time);
+	}
 
 	if (modelNode != nullptr) {
 		static float opacity = 1.0f;
@@ -211,7 +217,7 @@ void TestScene::update(double deltaTime) {
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
 
-	sunNode->addTime(deltaTime);
+	//sunNode->addTime(deltaTime);
 
 	rootNode->update(deltaTime);
 	OctreeNode::getInstance()->RebuildTree(15.0f);

@@ -30,6 +30,10 @@ void SunNode::setVerticalRotation(float angle) {
 	dirty = true;
 }
 
+float SunNode::getTime() {
+	return time;
+}
+
 float SunNode::rescaleTime(float time) {
 	while (time >= 24.0f) {
 		time -= 24.0f;

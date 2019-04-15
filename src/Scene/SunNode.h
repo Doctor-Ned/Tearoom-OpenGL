@@ -10,6 +10,7 @@ public:
 	void setTime(float time); //in hours
 	void addTime(float time);
 	void setVerticalRotation(float angle); //in degrees
+	float getTime();
 protected:
 	float rescaleTime(float time);
 	glm::vec4 timeToColor(float time, bool light1);
