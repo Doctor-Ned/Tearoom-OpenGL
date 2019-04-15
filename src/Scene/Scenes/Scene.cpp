@@ -245,21 +245,23 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 						continue;
 					}
 #ifdef ENABLE_FRUSTUM_CULLING
-					GraphNode* gn = dynamic_cast<GraphNode*>(node);
-					if (gn == nullptr) {
-						Component *comp = dynamic_cast<Component*>(node);
-						gn = comp->getGameObject();
-					}
-					bool skip = true;
-					for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
-						if (*i == gn) {
-							skip = false;
-							break;
+					if (!ignoreLight) {
+						GraphNode* gn = dynamic_cast<GraphNode*>(node);
+						if (gn == nullptr) {
+							Component *comp = dynamic_cast<Component*>(node);
+							gn = comp->getGameObject();
 						}
-						++i;
-					}
-					if (skip) {
-						continue;
+						bool skip = true;
+						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+							if (*i == gn) {
+								skip = false;
+								break;
+							}
+							++i;
+						}
+						if (skip) {
+							continue;
+						}
 					}
 #endif
 					if (opaque && !node->isOpaque()) {
@@ -282,21 +284,23 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 						continue;
 					}
 #ifdef ENABLE_FRUSTUM_CULLING
-					GraphNode* gn = dynamic_cast<GraphNode*>(node);
-					if (gn == nullptr) {
-						Component *comp = dynamic_cast<Component*>(node);
-						gn = comp->getGameObject();
-					}
-					bool skip = true;
-					for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
-						if (*i == gn) {
-							skip = false;
-							break;
+					if (!ignoreLight) {
+						GraphNode* gn = dynamic_cast<GraphNode*>(node);
+						if (gn == nullptr) {
+							Component *comp = dynamic_cast<Component*>(node);
+							gn = comp->getGameObject();
 						}
-						++i;
-					}
-					if (skip) {
-						continue;
+						bool skip = true;
+						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+							if (*i == gn) {
+								skip = false;
+								break;
+							}
+							++i;
+						}
+						if (skip) {
+							continue;
+						}
 					}
 #endif
 					if (opaque && !node->isOpaque()) {
