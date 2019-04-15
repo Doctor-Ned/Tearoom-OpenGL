@@ -12,23 +12,24 @@ bool Frustum::pointInFrustum(glm::vec3 point)
 
 bool Frustum::sphereInFrustum(SphereCollider* sphere)
 {
+	bool result = true;
 	float distance;
 	if (sphere != nullptr)
 	{
 		for (int i = 0; i < 6; i++) {
 			distance = planes[i].distanceToPoint(sphere->getPosition());
 			if (distance < -sphere->getRadius())
-				return false;
+				result = false;
 			else if (distance < sphere->getRadius())
-				return true;
+				result = true;
 		}
 	}
-	return false;
+	return result;
 }
 
 bool Frustum::boxInFrustum(BoxCollider* box)
 {
-	int result = 0, out = 0, in = 0;
+	int result = 1, out = 0, in = 0;
 	glm::vec3 halfDimensions = box->getHalfDimensions();
 	glm::vec3 minPos = box->getPosition() - halfDimensions;
 	glm::vec3 maxPos = box->getPosition() + halfDimensions;
@@ -63,7 +64,7 @@ bool Frustum::boxInFrustum(BoxCollider* box)
 			return false;
 		// if some corners are out and others are in
 		if (out)
-			result = true;
+			result = 1;
 	}
 	return (bool)result;
 }

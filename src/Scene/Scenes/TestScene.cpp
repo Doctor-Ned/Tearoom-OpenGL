@@ -10,6 +10,7 @@
 #include "Mesh/MeshPlane.h"
 #include "Scene/BillboardNode.h"
 #include <iostream>
+#include "Scene/Scripts/CollisionTest.h"
 
 TestScene::TestScene() {
 	camera = new Camera();
@@ -73,6 +74,42 @@ TestScene::TestScene() {
 	//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
 	//dirLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
 	//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+
+	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox* floorMesh = new MeshColorBox(glm::vec3(-10.0f, -0.5f, -10.5f), glm::vec3(10.0f, 0.5f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
+	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	MeshColorBox* meshBox1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	GraphNode* boxNode = new GraphNode(box, rootNode);
+	GraphNode* boxNode2 = new GraphNode(box1, rootNode);
+	GraphNode* sphereNode2 = new GraphNode(sphere2, rootNode);
+	GraphNode* simpleBox1 = new GraphNode(meshBox, rootNode);
+	GraphNode* simpleBox2 = new GraphNode(meshBox1, rootNode);
+	GraphNode* pivot = new GraphNode(nullptr, rootNode);
+	GraphNode* planete = new GraphNode(box2, pivot);
+	GraphNode* floor1 = new GraphNode(floorMesh, rootNode);
+
+	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
+	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
+	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
+	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
+	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
+	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
+	floor1->localTransform.setPosition(0.0f, -3.0f, 0.0f);
+
+	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
+	//boxNode3->addComponent(new AnimationController());
+	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
+	boxNode->addComponent(new CollisionTest(boxNode));
+	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
+	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
+	pivot->addComponent(new CollisionTest(pivot));
+	floor1->addComponent(new BoxCollider(floor1, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
+
 
 	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
 
@@ -225,14 +262,15 @@ void TestScene::update(double deltaTime) {
 	mouseMovementY = 0.0f;
 
 	//sunNode->addTime(deltaTime);
-
 	rootNode->update(deltaTime);
+	
+	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
+	OctreeNode::getInstance()->CollisionTests();
 	camera->RecalculateFrustum();
 	Frustum frustum = camera->getFrustum();
 	OctreeNode::getInstance()->frustumCulling(frustum);
-	//std::cout << OctreeNode::frustumContainer.size() << std::endl;
 	//OctreeNode::getInstance()->CollisionTests();
 }
 

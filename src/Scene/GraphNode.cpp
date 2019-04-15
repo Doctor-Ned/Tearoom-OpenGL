@@ -4,6 +4,7 @@
 #include <iostream>
 #include <glm/gtx/matrix_decompose.inl>
 #include "OctreeNode.h"
+#include "Components/Collider.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
@@ -61,7 +62,10 @@ void GraphNode::update(double timeDiff) {
 	if (!active) {
 		return;
 	}
-	OctreeNode::toInsert2.insert(this);
+	if(mesh || !getComponents<Renderable>().empty())
+	{
+		OctreeNode::toInsert2.insert(this);
+	}
 	for (Component* component : components) {
 		component->update(timeDiff);
 	}

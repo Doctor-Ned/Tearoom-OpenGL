@@ -161,14 +161,13 @@ void MiszukScene::update(double deltaTime) {
 	{
 		//std::cout << "ray casted" << std::endl;
 	}
+	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
 	camera->RecalculateFrustum();
 	Frustum frustum = camera->getFrustum();
 	OctreeNode::getInstance()->frustumCulling(frustum);
-	//std::cout <<OctreeNode::frustumContainer.size() << std::endl;
-	//OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 
 void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {

@@ -259,7 +259,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 						++i;
 					}
 					if (skip) {
-						break;
+						continue;
 					}
 #endif
 					if (opaque && !node->isOpaque()) {
