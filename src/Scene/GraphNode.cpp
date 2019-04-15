@@ -1,4 +1,4 @@
-#include "GraphNode.h"
+#include "Scene/GraphNode.h"
 #include "Mesh/Mesh.h"
 #include <algorithm>
 #include <iostream>

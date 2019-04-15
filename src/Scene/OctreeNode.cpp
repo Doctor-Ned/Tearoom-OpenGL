@@ -6,6 +6,7 @@
 #include "Render/Camera.h"
 
 std::set<GraphNode*> OctreeNode::toInsert2 = std::set<GraphNode*>();
+std::vector<GraphNode*> OctreeNode::frustumContainer = std::vector<GraphNode*>();
 
 void OctreeNode::Calculate()
 {
@@ -134,6 +135,43 @@ Box& OctreeNode::getBox()
 	return boxPos;
 }
 
+void OctreeNode::frustumCulling(Frustum& frustum)
+{
+	for(GraphNode* gameObject: gameObjects)
+	{
+		Collider* collider = gameObject->getComponent<Collider>();
+		if(collider != nullptr)
+		{
+			if(collider->getType() == BoxCol)
+			{
+				if(frustum.boxInFrustum(dynamic_cast<BoxCollider*>(collider)))
+				{
+					frustumContainer.push_back(gameObject);
+				}
+			}
+			else if(collider->getType() == SphereCol)
+			{
+				if (frustum.sphereInFrustum(dynamic_cast<SphereCollider*>(collider)))
+				{
+					frustumContainer.push_back(gameObject);
+				}
+			}
+		}
+		else
+		{
+			if(frustum.pointInFrustum(gameObject->worldTransform.getPosition()))
+			{
+				frustumContainer.push_back(gameObject);
+			}
+		}
+	}
+
+	for(auto& node : nodes)
+	{
+		node->frustumCulling(frustum);
+	}
+}
+
 bool OctreeNode::containTest(glm::vec3& point, Box& box)
 {
 	for(int i = 0; i < 3; i++)
@@ -218,6 +256,7 @@ void OctreeNode::RebuildTree(float dimension)
 {
 	gameObjects.clear();
 	nodes.clear();
+	frustumContainer.clear();
 	boxPos.maxPos = glm::vec3(dimension);
 	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;

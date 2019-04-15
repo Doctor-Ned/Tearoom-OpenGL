@@ -14,11 +14,13 @@ struct Box
 	glm::vec3 middle;
 };
 
+struct Frustum;
 class GraphNode;
 class Camera;
 class OctreeNode
 {
 private:
+	
 	std::vector<std::shared_ptr<OctreeNode>> nodes;
 	std::vector<GraphNode*> gameObjects;
 	OctreeNode* parent;
@@ -29,6 +31,7 @@ private:
 public:
 	static std::shared_ptr<OctreeNode>& getInstance();
 	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node);
+	static std::vector<GraphNode*> frustumContainer;
 	static std::set<GraphNode*> toInsert2;
 	static inline bool containTest(glm::vec3& point, Box& box);
 	void RebuildTree(float dimension);
@@ -41,5 +44,6 @@ public:
 	std::vector<std::shared_ptr<OctreeNode>>& getNodes();
 	std::vector<GraphNode*>& getGameObjects();
 	Box& getBox();
+	void frustumCulling(Frustum& frustum);
 };
 #endif

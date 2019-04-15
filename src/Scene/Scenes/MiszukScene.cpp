@@ -162,6 +162,10 @@ void MiszukScene::update(double deltaTime) {
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
+	camera->RecalculateFrustum();
+	Frustum frustum = camera->getFrustum();
+	OctreeNode::getInstance()->frustumCulling(frustum);
+	std::cout <<OctreeNode::frustumContainer.size() << std::endl;
 	//OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 

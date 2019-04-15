@@ -45,6 +45,11 @@ glm::vec3 Camera::getActualUp() {
 	return normalize(cross(cross(cameraFront, cameraUp), cameraFront));
 }
 
+Frustum Camera::getFrustum()
+{
+	return frustum;
+}
+
 float Camera::getYaw() {
 	return yaw;
 }
@@ -124,6 +129,44 @@ void Camera::setRotSpeed(float rotSpeed) {
 GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
 {
 	return CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance);
+}
+
+void Camera::RecalculateFrustum()
+{
+	float nearDistance = 0.1f;
+	float farDistance = 100.0f;
+	float screenRatio = GameManager::getInstance()->getScreenWidth() / GameManager::getInstance()->getScreenHeight();
+
+	float tangens = 2 * glm::tan(M_PI / 4);
+	float nearHeight = tangens * nearDistance;
+	float nearWidth = nearHeight * screenRatio;
+
+	float farHeight = tangens * farDistance;
+	float farWidth = farHeight * screenRatio;
+
+	glm::vec3 nearCenter = cameraPos + cameraFront * nearDistance;
+	glm::vec3 farCenter = cameraPos + cameraFront * farDistance;
+
+	glm::vec3 actualUp = getActualUp();
+	glm::vec3 actualRight = normalize(cross(cameraFront, actualUp));
+	//4 corners of the near plane of frustum 
+	frustum.nearTopLeft = nearCenter + (actualUp * (nearHeight / 2)) - (actualRight * (nearWidth / 2));
+	frustum.nearTopRight = nearCenter + (actualUp * (nearHeight / 2)) + (actualRight * (nearWidth / 2));
+	frustum.nearBottomLeft = nearCenter - (actualUp * (nearHeight / 2)) - (actualRight * (nearWidth / 2));
+	frustum.nearBottomRight = nearCenter - (actualUp * (nearHeight / 2)) + (actualRight * (nearWidth / 2));
+	//4 corners of the far plane of frustum 
+	frustum.farTopLeft = farCenter + (actualUp * (farHeight / 2)) - (actualRight * (farWidth / 2));
+	frustum.farTopRight = farCenter + (actualUp * (farHeight / 2)) + (actualRight * (farWidth / 2));
+	frustum.farBottomLeft = farCenter - (actualUp * (farHeight / 2)) - (actualRight * (farWidth / 2));
+	frustum.farBottomRight = farCenter - (actualUp * (farHeight / 2)) + (actualRight * (farWidth / 2));
+
+	frustum.planes[TOP] = { frustum.nearBottomLeft, frustum.nearTopLeft, frustum.farTopLeft };
+	frustum.planes[BOTTOM] = { frustum.nearBottomLeft, frustum.farBottomRight, frustum.farBottomRight };
+	frustum.planes[LEFT] = { frustum.nearTopLeft, frustum.nearBottomLeft, frustum.nearBottomLeft };
+	frustum.planes[RIGHT] = { frustum.nearBottomRight, frustum.nearTopRight, frustum.nearBottomRight };
+	frustum.planes[NEARP] = { frustum.nearTopLeft, frustum.nearTopRight, frustum.nearBottomRight };
+	frustum.planes[FARP] = { frustum.farTopRight, frustum.farTopLeft, frustum.farBottomLeft };
+
 }
 
 void Camera::recalculateFront() {

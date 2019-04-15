@@ -2,6 +2,10 @@
 #define CAMERA_H
 
 #include "Global.h"
+#include "Scene/Components/Collider.h"
+#include "Scene/Frustum.h"
+
+
 class GraphNode;
 class Camera {
 public:
@@ -15,6 +19,7 @@ public:
 	glm::vec3 getPos();
 	glm::vec3 getUp();
 	glm::vec3 getActualUp();
+	Frustum getFrustum();
 	float getYaw();
 	float getPitch();
 	void setPos(glm::vec3 pos);
@@ -29,6 +34,7 @@ public:
 	void setSpeed(float speed);
 	void setRotSpeed(float rotSpeed);
 	GraphNode* castRayFromCamera(glm::vec3 direction, float distance);
+	void RecalculateFrustum();
 protected:
 	void recalculateFront();
 	bool dirty = false;
@@ -37,6 +43,7 @@ protected:
 	float yaw, pitch;
 	glm::mat4 view;
 	glm::vec3 cameraPos, cameraFront, cameraUp;
+	Frustum frustum;
 };
 
 #endif
