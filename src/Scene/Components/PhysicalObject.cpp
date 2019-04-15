@@ -18,7 +18,7 @@ void PhysicalObject::update(float msec)
 	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition(),glm::vec3(0,-1,0), 0.2f);
 	if(floor == nullptr)
 	{
-	  gameObject->localTransform.translate(glm::vec3(0.0f, -5.0f * msec, 0.0f));
+		gameObject->localTransform.translate(glm::vec3(0.0f, -5.0f * msec, 0.0f));
 	}
 }
 
