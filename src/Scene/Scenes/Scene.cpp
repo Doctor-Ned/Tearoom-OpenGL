@@ -181,7 +181,7 @@ void Scene::setKeyState(int key, bool pressed) {
 	}
 }
 
-void Scene::keyEvent(int key, bool pressed) { }
+void Scene::keyEvent(int key, bool pressed) {}
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
 	Renderable *r = dynamic_cast<Renderable*>(node);
@@ -231,6 +231,7 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 
 void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
+	auto octree = OctreeNode::getInstance();
 	if (shader == nullptr) {
 		for (auto &type : ShaderTypes) {
 			if (type != STNone && !(ignoreLight && type == STLight)) {
@@ -240,9 +241,27 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					transparentRenderMap[type]->clear();
 				}
 				for (auto &node : *(*map)[type]) {
-					if(!node->isActive()) {
+					if (!node->isActive()) {
 						continue;
 					}
+#ifdef ENABLE_FRUSTUM_CULLING
+					GraphNode* gn = dynamic_cast<GraphNode*>(node);
+					if (gn == nullptr) {
+						Component *comp = dynamic_cast<Component*>(node);
+						gn = comp->getGameObject();
+					}
+					bool skip = true;
+					for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+						if (*i == gn) {
+							skip = false;
+							break;
+						}
+						++i;
+					}
+					if (skip) {
+						break;
+					}
+#endif
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;
@@ -262,6 +281,24 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					if (!node->isActive()) {
 						continue;
 					}
+#ifdef ENABLE_FRUSTUM_CULLING
+					GraphNode* gn = dynamic_cast<GraphNode*>(node);
+					if (gn == nullptr) {
+						Component *comp = dynamic_cast<Component*>(node);
+						gn = comp->getGameObject();
+					}
+					bool skip = true;
+					for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+						if (*i == gn) {
+							skip = false;
+							break;
+						}
+						++i;
+					}
+					if (skip) {
+						break;
+					}
+#endif
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;

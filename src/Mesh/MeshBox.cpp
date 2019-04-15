@@ -1,5 +1,8 @@
 #include "MeshBox.h"
 
+MeshBox::MeshBox(glm::vec3 dimensions, char* texturePath) :
+MeshBox(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f), texturePath) {}
+
 MeshBox::MeshBox(glm::vec3 min, glm::vec3 max, char* texturePath)
 	: MeshTexture(), min(min), max(max) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);

@@ -6,6 +6,7 @@
 
 class MeshColorBox : public MeshSimple {
 public:
+	MeshColorBox(glm::vec3 dimensions, glm::vec4 color);
 	MeshColorBox(glm::vec3 min, glm::vec3 max, glm::vec4 color);
 	void updateValues(glm::vec3 min, glm::vec3 max);
 	glm::vec3 getMin();

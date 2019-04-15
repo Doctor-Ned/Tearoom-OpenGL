@@ -6,6 +6,7 @@
 
 class MeshRefBox : public MeshRef {
 public:
+	MeshRefBox(bool reflective, glm::vec3 dimensions);
 	MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max);
 	void updateValues(glm::vec3 min, glm::vec3 max);
 	glm::vec3 getMin() const;

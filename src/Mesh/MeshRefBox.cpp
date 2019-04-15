@@ -2,6 +2,9 @@
 #include "MeshSimple.h"
 #include "Scene/AssetManager.h"
 
+MeshRefBox::MeshRefBox(bool reflective, glm::vec3 dimensions) :
+MeshRefBox(reflective, glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f)) { }
+
 MeshRefBox::MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max)
 	: MeshRef(reflective), min(min), max(max) {
 	setupMesh();

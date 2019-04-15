@@ -1,5 +1,8 @@
 #include "MeshColorBox.h"
 
+MeshColorBox::MeshColorBox(glm::vec3 dimensions, glm::vec4 color) :
+MeshColorBox(glm::vec3(-dimensions.x/2.0f, -dimensions.y/2.0f, -dimensions.z/2.0f), glm::vec3(dimensions.x/2.0f, dimensions.y/2.0f, dimensions.z/2.0f), color) {}
+
 MeshColorBox::MeshColorBox(glm::vec3 min, glm::vec3 max, glm::vec4 color)
 	: MeshSimple(color), min(min), max(max) {
 	setupMesh();

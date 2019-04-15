@@ -167,7 +167,7 @@ void MiszukScene::update(double deltaTime) {
 	camera->RecalculateFrustum();
 	Frustum frustum = camera->getFrustum();
 	OctreeNode::getInstance()->frustumCulling(frustum);
-	std::cout <<OctreeNode::frustumContainer.size() << std::endl;
+	//std::cout <<OctreeNode::frustumContainer.size() << std::endl;
 	//OctreeNode::getInstance()->castRayFromCamera(camera, 3.0f);
 }
 

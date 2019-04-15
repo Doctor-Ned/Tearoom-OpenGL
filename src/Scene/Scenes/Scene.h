@@ -6,6 +6,8 @@
 #include "Scene/GameManager.h"
 #include "Scene/OctreeNode.h"
 
+//#define ENABLE_FRUSTUM_CULLING
+
 class LightManager;
 struct GameFramebuffers;
 class AssetManager;
