@@ -41,8 +41,23 @@ void Transform::setPosition(const float& x, const float& y, const float& z) {
 	*dirty = true;
 }
 
+void Transform::setPosition(glm::vec3 pos)
+{
+	transform[3] = glm::vec4(pos, 1.0f);
+}
+
 glm::vec3 Transform::getPosition()
 {
 	glm::vec3 position = glm::vec3(transform[3]);
 	return position;
+}
+
+glm::mat4 Transform::getLastMatrix()
+{
+	return last;
+}
+
+void Transform::setLastMatrix(glm::mat4 mat)
+{
+	last = mat;
 }

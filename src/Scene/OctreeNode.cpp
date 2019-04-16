@@ -159,10 +159,10 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 		}
 		else
 		{
-			if(frustum.pointInFrustum(gameObject->worldTransform.getPosition()))
-			{
+			//if(frustum.pointInFrustum(gameObject->worldTransform.getPosition()))
+			//{
 				frustumContainer.push_back(gameObject);
-			}
+			//}
 		}
 	}
 

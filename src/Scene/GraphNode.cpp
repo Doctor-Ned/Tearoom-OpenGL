@@ -207,6 +207,7 @@ std::vector<Renderable*> GraphNode::getRenderableComponents() const {
 
 void GraphNode::updateWorld() {
 	if (dirty) {
+		localTransform.setLastMatrix(localTransform.getMatrix());
 		if (parent != nullptr) {
 			worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
 		} else {

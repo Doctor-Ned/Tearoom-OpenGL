@@ -58,6 +58,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* floor = new GraphNode(floorMesh, rootNode);
 
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
+	fallingBoxNode->addComponent(new BoxCollider(fallingBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
 	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
 	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -66,28 +67,28 @@ MiszukScene::MiszukScene() {
 	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
-	floor->localTransform.setPosition(0.0f, -3.0f, 0.0f);
+	floor->localTransform.setPosition(0.0f, -10.0f, 0.0f);
 	wallNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(0.0f, 8.0f, -15.0f));
 	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
-	fallingBoxNode->localTransform.setPosition(0.0f, 10.0f, -3.0f);
+	fallingBoxNode->localTransform.setPosition(0.0f, 0.0f, -3.0f);
 
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
-	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
-	boxNode2->addComponent(new SphereCollider(boxNode2, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
+	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	boxNode2->addComponent(new SphereCollider(boxNode2, DYNAMIC, true, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
-	boxNode->addComponent(new BoxCollider(boxNode, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
+	boxNode->addComponent(new BoxCollider(boxNode, DYNAMIC, true, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
 	boxNode->addComponent(new CollisionTest(boxNode));
-	simpleBox1->addComponent(new BoxCollider(simpleBox1, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
-	simpleBox2->addComponent(new BoxCollider(simpleBox2, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
-	pivot->addComponent(new BoxCollider(pivot, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
+	simpleBox1->addComponent(new BoxCollider(simpleBox1, STATIC, false, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	simpleBox2->addComponent(new BoxCollider(simpleBox2, STATIC, false, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
+	pivot->addComponent(new BoxCollider(pivot, DYNAMIC, true, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
 
-	floor->addComponent(new BoxCollider(floor, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
+	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-
+	rootNode->updateDrawData();
 	reinitializeRenderMap();
 }
 
@@ -153,16 +154,16 @@ void MiszukScene::update(double deltaTime) {
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
 	rootNode->update(deltaTime);
-
-	if(camera->castRayFromCamera(camera->getFront(), 3.0f))
+	GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
+	if(node != nullptr)
 	{
-		//std::cout << "ray hit gameobject" << std::endl;
+		std::cout << node->getComponent<Collider>()->getCollisionType() << std::endl;
 	}
 	else
 	{
 		//std::cout << "ray casted" << std::endl;
 	}
-	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();

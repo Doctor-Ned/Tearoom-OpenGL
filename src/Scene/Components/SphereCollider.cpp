@@ -2,7 +2,7 @@
 #include "Mesh/MeshColorSphere.h"
 #include "Scene/GraphNode.h"
 
-SphereCollider::SphereCollider(GraphNode* _gameObject, glm::vec3 position, float _radius) : Collider(SphereCol, _gameObject, position), radius(_radius)
+SphereCollider::SphereCollider(GraphNode* _gameObject,  Collision classification, bool isTrigger, glm::vec3 position, float _radius) : Collider(SphereCol, _gameObject, classification, isTrigger,  position), radius(_radius)
 {
 	mesh_ptr = std::make_shared<MeshColorSphere>(radius, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);

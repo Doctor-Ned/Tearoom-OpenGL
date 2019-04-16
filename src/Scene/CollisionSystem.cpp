@@ -27,6 +27,11 @@ CollisionSystem::~CollisionSystem()
 bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 {
 	bool collision = false;
+	if(collider1->getCollisionType() == STATIC && collider2->getCollisionType() == STATIC)
+	{
+		return collision;
+	}
+
 	if (collider1->getType() == SphereCol && collider2->getType() == SphereCol)
 	{
 		collision = SphereToSphere(collider1, collider2);
@@ -43,16 +48,27 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 	{
 		collision = AABBtoSphere(collider2, collider1);
 	}
+	
 	if (collision)
 	{
-		if (!collider1->getCallbackFunctions().empty())
+		if(collider1->getCollisionType() == DYNAMIC)
+		{
+			collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
+		}
+
+		if (collider2->getCollisionType() == DYNAMIC)
+		{
+			collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
+		}
+
+		if (!collider1->getCallbackFunctions().empty() && collider1->getIsTrigger())
 		{
 			for (auto & f : collider1->getCallbackFunctions())
 			{
 				f(collider2);
 			}
 		}
-		if (!collider2->getCallbackFunctions().empty())
+		if (!collider2->getCallbackFunctions().empty() && collider2->getIsTrigger())
 		{
 			for (auto & f : collider2->getCallbackFunctions())
 			{

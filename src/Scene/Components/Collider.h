@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Mesh/Mesh.h"
 #include "Render/Renderable.h"
+#include <queue>
 
 enum ColliderType
 {
@@ -10,17 +11,25 @@ enum ColliderType
 	BoxCol
 };
 
+enum Collision
+{
+	STATIC,
+	DYNAMIC
+};
+
 class Collider abstract: public Component, public Renderable
 {
 protected:
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
 	ColliderType type;
+	Collision collisionType;
+	bool isTrigger = false;
 	glm::mat4 matrix;
 	std::shared_ptr<Mesh> mesh_ptr = nullptr;
 	glm::vec3 positionOffset;
 public:
 	bool isActive() override;
-	Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset);
+	Collider(ColliderType _type, GraphNode* _gameObject, Collision classification = STATIC, bool isTrigger = false, glm::vec3 positionOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 	bool isOpaque() override;
 	virtual ~Collider();
 	glm::vec3 getPosition();
@@ -29,6 +38,10 @@ public:
 	void drawSelf(Shader* shader) override;
 	ShaderType getShaderType() override;
 	ColliderType getType();
+	Collision getCollisionType();
+	bool getIsTrigger();
+	void setMatrix(glm::mat4 mat);
+	void setIsTrigger(bool _isTrigger);
 	std::vector < std::function<int(Collider*)>> getCallbackFunctions();
 	void setPositionOffset(glm::vec3 positionOffset);
 	void setCollisionCallback(std::function<int(Collider*)> f);

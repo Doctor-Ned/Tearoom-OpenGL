@@ -6,6 +6,7 @@
 #include "Components/Component.h"
 #include "GuiConfigurable.h"
 #include "Render/Renderable.h"
+#include <queue>
 class Mesh;
 class Shader;
 

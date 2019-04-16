@@ -1,12 +1,10 @@
 #include "Collider.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/MeshColorBox.h"
-#include "Scene/GameManager.h"
-#include <iostream>
 #include "Scene/GraphNode.h"
 
 void Collider::update(float m_sec) {
-	
+
 }
 
 void Collider::updateDrawData() {
@@ -29,8 +27,8 @@ bool Collider::isActive() {
 	return gameObject->isActive();
 }
 
-Collider::Collider(ColliderType _type, GraphNode* _gameObject, glm::vec3 positionOffset)
-	: Component(_gameObject), type(_type), positionOffset(positionOffset) { }
+Collider::Collider(ColliderType _type, GraphNode* _gameObject, Collision classification, bool _isTrigger, glm::vec3 positionOffset)
+	: Component(_gameObject), type(_type), collisionType(classification), isTrigger(_isTrigger), positionOffset(positionOffset) { }
 
 bool Collider::isOpaque() {
 	return mesh_ptr == nullptr || mesh_ptr->isOpaque();
@@ -46,6 +44,26 @@ glm::vec3 Collider::getPosition() {
 
 ColliderType Collider::getType() {
 	return type;
+}
+
+Collision Collider::getCollisionType()
+{
+	return collisionType;
+}
+
+bool Collider::getIsTrigger()
+{
+	return isTrigger;
+}
+
+void Collider::setMatrix(glm::mat4 mat)
+{
+	matrix = mat;
+}
+
+void Collider::setIsTrigger(bool _isTrigger)
+{
+	isTrigger = _isTrigger;
 }
 
 std::vector<std::function<int(Collider*)>> Collider::getCallbackFunctions() {
