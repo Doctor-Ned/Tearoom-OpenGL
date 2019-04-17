@@ -12,6 +12,7 @@
 #include "Scene/Components/BoxCollider.h"
 #include "Scene/Components/SphereCollider.h"
 #include "Scene/Components/PhysicalObject.h"
+#include "Scene/Components/PlayerMovement.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -57,6 +58,12 @@ MiszukScene::MiszukScene() {
 	GraphNode* planete = new GraphNode(box2, pivot);
 	GraphNode* floor = new GraphNode(floorMesh, rootNode);
 
+	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
+	GraphNode* player = new GraphNode(playerMesh, rootNode);
+	player->addComponent(new BoxCollider(player, DYNAMIC, false, glm::vec3(0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	player->addComponent(new PlayerMovement(player, camera, this));
+	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
+	player->addComponent(new PhysicalObject(player));
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new BoxCollider(fallingBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
@@ -67,12 +74,12 @@ MiszukScene::MiszukScene() {
 	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
-	floor->localTransform.setPosition(0.0f, -10.0f, 0.0f);
+	floor->localTransform.setPosition(0.0f, -3.0f, 0.0f);
 	wallNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(0.0f, 8.0f, -15.0f));
 	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
 	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
-	fallingBoxNode->localTransform.setPosition(0.0f, 0.0f, -3.0f);
+	fallingBoxNode->localTransform.setPosition(0.0f, -2.0f, -3.0f);
 
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
@@ -104,7 +111,7 @@ void MiszukScene::render() {
 	uboViewProjection->inject(camera->getView(), projection);
 	rootNode->updateDrawData();
 	renderNodesUsingRenderMap();
-	OctreeNode::getInstance()->draw();
+	//OctreeNode::getInstance()->draw();
 }
 
 void MiszukScene::renderUi() {
@@ -118,7 +125,7 @@ Camera* MiszukScene::getCamera() {
 
 void MiszukScene::update(double deltaTime) {
 
-	if (getKeyState(KEY_FORWARD)) {
+	/*if (getKeyState(KEY_FORWARD)) {
 		camera->moveForward(deltaTime * movementSpeed);
 	}
 	if (getKeyState(KEY_BACKWARD)) {
@@ -132,7 +139,7 @@ void MiszukScene::update(double deltaTime) {
 	}
 	if (getKeyState(KEY_UP)) {
 		camera->moveUp(deltaTime * movementSpeed);
-	}
+	}*/
 	if (getKeyState(KEY_DOWN)) {
 		camera->moveDown(deltaTime * movementSpeed);
 	}
@@ -161,13 +168,13 @@ void MiszukScene::update(double deltaTime) {
 	GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
 	if(node != nullptr)
 	{
-		std::cout << node->getComponent<Collider>()->getCollisionType() << std::endl;
+		//std::cout << "Game object hit" << std::endl;
 	}
 	else
 	{
 		//std::cout << "ray casted" << std::endl;
 	}
-	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();

@@ -3,8 +3,8 @@
 #include "Mesh/MeshColorBox.h"
 #include "Scene/GraphNode.h"
 
+using vec3 = glm::vec3;
 void Collider::update(float m_sec) {
-
 }
 
 void Collider::updateDrawData() {

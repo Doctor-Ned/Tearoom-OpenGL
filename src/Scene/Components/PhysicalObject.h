@@ -6,6 +6,7 @@
 #include "Component.h"
 #include "Mesh/Mesh.h"
 #include "Render/Renderable.h"
+#include <queue>
 
 class PhysicalObject: public Component, public Renderable {
 public:
@@ -18,10 +19,15 @@ public:
     ShaderType getShaderType() override;
 	bool isOpaque() override;
     bool castRayDown();
-
+	void pushTranslation(glm::vec3 translation);
+	glm::vec3 direction = glm::vec3(0);
+	float distance = 0.0f;
 protected:
+	std::queue<glm::vec3> lastKnownPosition;
+	std::queue<glm::vec3> translations;
     bool isFalling = false;
     Mesh* mesh = nullptr;
+	bool gravity = false;
 };
 
 
