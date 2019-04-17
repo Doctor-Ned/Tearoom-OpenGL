@@ -19,6 +19,14 @@ const float fxaaSpanMax = 8.0f;
 const float fxaaReduceMin = 1.0f / 128.0f;
 const float fxaaReduceMul = 1.0f / 4.0f;
 
+const float A = 0.15;
+const float B = 0.50;
+const float C = 0.10;
+const float D = 0.20;
+const float E = 0.02;
+const float F = 0.30;
+const float W = 11.2;
+
 vec3 getAntialiasedColor() {
 	vec3 luma = vec3(0.299, 0.587, 0.114);
 	float lumaTL = dot(luma, texture2D(scene, exTexCoords + (vec2(-1.0, -1.0) * inverseScreenSize)).rgb);
@@ -55,6 +63,28 @@ vec3 getAntialiasedColor() {
 	return result2;
 }
 
+vec3 uncharted2Tonemap(vec3 x) {
+	return ((x*(A*x + C * B) + D * E) / (x*(A*x + B) + D * F)) - E / F;
+}
+
+vec4 applyTonemapping(vec3 texColor) {
+   texColor *= 16;  // Hardcoded Exposure Adjustment
+
+   vec3 curr = uncharted2Tonemap(exposure*texColor);
+
+   vec3 whiteScale = uncharted2Tonemap(vec3(W, W, W));
+   whiteScale.r = 1.0f / whiteScale.r;
+   whiteScale.g = 1.0f / whiteScale.g;
+   whiteScale.b = 1.0f / whiteScale.b;
+   vec3 color = curr * whiteScale;
+
+   color.r = pow(color.r, 1.0f / gamma);
+   color.g = pow(color.g, 1.0f / gamma);
+   color.b = pow(color.b, 1.0f / gamma);
+
+   return vec4(color, 1.0f);
+}
+
 void main() {
 	vec4 uiColor = texture(ui, exTexCoords);
 	if (uiColor.a != 1.0) {
@@ -66,9 +96,7 @@ void main() {
 		}
 		vec4 output;
 		if (useHdr) {
-			vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
-			result = pow(result, vec3(1.0 / gamma));
-			output = vec4(result, 1.0);
+			output = applyTonemapping(hdrColor);
 		} else {
 			output = vec4(hdrColor, 1.0);
 		}

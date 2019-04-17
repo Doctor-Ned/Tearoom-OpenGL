@@ -16,8 +16,8 @@ public:
 	bool isBloomEnabled();
 	bool isAntialiasingEnabled();
 protected:
-	float exposure = 1.0f;
-	float gamma = 1.0f;
+	float exposure = 0.85f;
+	float gamma = 0.8f;
 	bool useHdr = true;
 	bool useBloom = true;
 	bool useAntialiasing = true;
