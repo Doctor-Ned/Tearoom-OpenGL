@@ -17,26 +17,19 @@ enum AnimationType {
     SafePullOutY
 };
 
-class AnimationController: public Component, public Renderable
+class AnimationController: public Component
 {
 
 protected:
     bool *F_keyState;
 	bool animating = false;
-	glm::mat4 transformMatrix;
-    Mesh* mesh = nullptr;
     AnimationType type;
     glm::float32 elapsed = 0.0f;
 
 public:
-	bool isActive() override;
-	bool isOpaque() override;
     virtual ~AnimationController();
     AnimationController(AnimationType _type, GraphNode* _gameObject, bool* f_keyPressed);
     void update(float msec) override;
-	void updateDrawData() override;
-	void drawSelf(Shader* shader) override;
-	ShaderType getShaderType() override;
     void startAnimation();
 };
 

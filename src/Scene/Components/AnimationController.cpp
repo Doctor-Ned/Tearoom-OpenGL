@@ -10,12 +10,10 @@
 AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, bool* f_keyPressed)
 :Component(_gameObject), type(_type) {
     F_keyState = f_keyPressed;
-	mesh = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 void AnimationController::startAnimation() {
 	animating = true;
-   // transformMatrix = translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 }
 
 void AnimationController::update(float msec)
@@ -57,28 +55,6 @@ void AnimationController::update(float msec)
         }
     }
 
-}
-
-void AnimationController::updateDrawData() {
-	
-}
-
-void AnimationController::drawSelf(Shader * shader) {
-	if(animating) {
-		mesh->drawSelf(shader, transformMatrix);
-	}
-}
-
-ShaderType AnimationController::getShaderType() {
-	return mesh->getShaderType();
-}
-
-bool AnimationController::isActive() {
-	return gameObject->isActive();
-}
-
-bool AnimationController::isOpaque() {
-	return mesh == nullptr || mesh->isOpaque();
 }
 
 AnimationController::~AnimationController()
