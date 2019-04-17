@@ -33,9 +33,10 @@ public:
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	Scene();
-	virtual ~Scene();
-protected:
+	virtual ~Scene(); 
 	bool getKeyState(int key);
+protected:
+	
 	void setKeyState(int key, bool pressed);
 	virtual void keyEvent(int key, bool pressed);
 	std::map<int, bool> keyStates;

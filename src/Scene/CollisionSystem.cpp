@@ -5,6 +5,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/OctreeNode.h"
 #include <iostream>
+#include "Components/PhysicalObject.h"
 
 CollisionSystem::CollisionSystem()
 {
@@ -49,26 +50,50 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 		collision = AABBtoSphere(collider2, collider1);
 	}
 	
-	if (collision)
+	if (!collision)
 	{
-		if(collider1->getCollisionType() == DYNAMIC)
-		{
-			collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
-		}
+		return false;
+	}
 
-		if (collider2->getCollisionType() == DYNAMIC)
-		{
-			collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
-		}
-
-		if (!collider1->getCallbackFunctions().empty() && collider1->getIsTrigger())
+	if (collider1->getIsTrigger())
+	{
+		if (!collider1->getCallbackFunctions().empty())
 		{
 			for (auto & f : collider1->getCallbackFunctions())
 			{
 				f(collider2);
 			}
 		}
-		if (!collider2->getCallbackFunctions().empty() && collider2->getIsTrigger())
+	}
+	else
+	{
+		if (collider1->getCollisionType() == DYNAMIC)
+		{
+			PhysicalObject* physObj = collider1->getGameObject()->getComponent<PhysicalObject>();
+			if (physObj != nullptr)
+			{
+				//collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
+				/*glm::vec3 lastPos = collider1->getGameObject()->localTransform.getLastMatrix()[3];
+				glm::vec3 actualPos = collider1->getGameObject()->localTransform.getPosition();
+				float distance = glm::distance(lastPos, actualPos);
+				glm::vec3 direction;
+				if (distance == 0)
+				{
+					direction = glm::vec3(0);
+				}
+				else
+				{
+					direction = glm::normalize(actualPos - lastPos);
+				}*/
+				//collider1->getGameObject()->localTransform.translate(-direction * distance);
+				physObj->pushTranslation(-physObj->direction * physObj->distance);
+			}
+		}
+	}
+
+	if (collider2->getIsTrigger())
+	{
+		if (!collider2->getCallbackFunctions().empty())
 		{
 			for (auto & f : collider2->getCallbackFunctions())
 			{
@@ -76,6 +101,32 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 			}
 		}
 	}
+	else
+	{
+		if (collider2->getCollisionType() == DYNAMIC)
+		{
+			PhysicalObject* physObj = collider2->getGameObject()->getComponent<PhysicalObject>();
+			if(physObj != nullptr)
+			{
+				//collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
+				/*glm::vec3 lastPos = collider2->getGameObject()->localTransform.getLastMatrix()[3];
+				glm::vec3 actualPos = collider2->getGameObject()->localTransform.getPosition();
+				float distance = glm::distance(lastPos, actualPos);
+				glm::vec3 direction;
+				if (distance == 0)
+				{
+					direction = glm::vec3(0);
+				}
+				else
+				{
+					direction = glm::normalize(actualPos - lastPos);
+				}*/
+				//collider2->getGameObject()->localTransform.translate(-direction * distance);
+				physObj->pushTranslation(-physObj->direction * physObj->distance);
+			}
+		}
+	}
+	
 	return collision;
 }
 
