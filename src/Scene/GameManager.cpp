@@ -115,7 +115,14 @@ void GameManager::setup() {
 	setCurrentScene(new LoadingScene());
 }
 
-bool GameManager::isVsyncEnabled() {
+Camera* GameManager::getCamera() const {
+	if(currentScene != nullptr) {
+		return currentScene->getCamera();
+	}
+	return nullptr;
+}
+
+bool GameManager::isVsyncEnabled() const {
 	return enableVsync;
 }
 
@@ -124,6 +131,50 @@ void GameManager::setVsync(bool enabled) {
 		glfwSwapInterval(enabled ? 1 : 0);
 		enableVsync = enabled;
 	}
+}
+
+void GameManager::addKeyCallback(int key, bool pressed, const std::function<void()>& callback) {
+	for(auto &pair : keyCallbacks) {
+		if(pair.first == key) {
+			for(auto &pair2 : pair.second) {
+				if(pair2.first == pressed) {
+					pair2.second.push_back(callback);
+					return;
+				}
+			}
+			std::vector<std::function<void()>> vec;
+			vec.push_back(callback);
+			pair.second.emplace(pressed, vec);
+			return;
+		}
+	}
+	std::map<bool, std::vector<std::function<void()>>> map;
+	std::vector<std::function<void()>> vec;
+	vec.push_back(callback);
+	map.emplace(pressed, vec);
+	keyCallbacks.emplace(key, map);
+}
+
+void GameManager::addMouseCallback(int key, bool pressed, const std::function<void()>& callback) {
+	for (auto &pair : mouseCallbacks) {
+		if (pair.first == key) {
+			for (auto &pair2 : pair.second) {
+				if (pair2.first == pressed) {
+					pair2.second.push_back(callback);
+					return;
+				}
+			}
+			std::vector<std::function<void()>> vec;
+			vec.push_back(callback);
+			pair.second.emplace(pressed, vec);
+			return;
+		}
+	}
+	std::map<bool, std::vector<std::function<void()>>> map;
+	std::vector<std::function<void()>> vec;
+	vec.push_back(callback);
+	map.emplace(pressed, vec);
+	mouseCallbacks.emplace(key, map);
 }
 
 GameManager::~GameManager() {
@@ -261,6 +312,90 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	return result;
 }
 
+bool GameManager::getKeyState(const int key) {
+	auto pair = keyStates.find(key);
+	if (pair != keyStates.end()) {
+		return pair->second;
+	}
+	return false;
+}
+
+void GameManager::setKeyState(int key, bool pressed) {
+	auto pair = keyStates.find(key);
+	if (pair != keyStates.end()) {
+		pair->second = pressed;
+	} else {
+		keyStates.emplace(key, pressed);
+	}
+}
+
+void GameManager::keyEvent(const int key, const bool pressed) const {
+	for(auto &pair : keyCallbacks) {
+		bool found = false;
+		if(pair.first == key) {
+			for(auto &pair2 : pair.second) {
+				if(pair2.first == pressed) {
+					for(auto &callback : pair2.second) {
+						callback();
+					}
+					found = true;
+					break;
+				}
+			}
+		}
+		if(found) {
+			break;
+		}
+	}
+	if(currentScene != nullptr) {
+		currentScene->keyEvent(key, pressed);
+	}
+}
+
+bool GameManager::getMouseState(const int key) {
+	auto pair = mouseStates.find(key);
+	if (pair != mouseStates.end()) {
+		return pair->second;
+	}
+	return false;
+}
+
+glm::vec2 GameManager::getMousePosition() const {
+	return mousePosition;
+}
+
+void GameManager::setMouseState(int key, bool pressed) {
+	auto pair = mouseStates.find(key);
+	if (pair != mouseStates.end()) {
+		pair->second = pressed;
+	} else {
+		mouseStates.emplace(key, pressed);
+	}
+}
+
+void GameManager::mouseEvent(int key, bool pressed) {
+	for (auto &pair : mouseCallbacks) {
+		bool found = false;
+		if (pair.first == key) {
+			for (auto &pair2 : pair.second) {
+				if (pair2.first == pressed) {
+					for (auto &callback : pair2.second) {
+						callback();
+					}
+					found = true;
+					break;
+				}
+			}
+		}
+		if (found) {
+			break;
+		}
+	}
+	if (currentScene != nullptr) {
+		currentScene->mouseEvent(key, pressed);
+	}
+}
+
 void GameManager::render() {
 	if (currentScene != nullptr) {
 		currentScene->render();
@@ -280,12 +415,26 @@ void GameManager::update(double timeDelta) {
 }
 
 void GameManager::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_RELEASE) {
+		if (getKeyState(key)) {
+			setKeyState(key, false);
+			keyEvent(key, false);
+		}
+	}
+	if (action == GLFW_PRESS) {
+		if (!getKeyState(key)) {
+			setKeyState(key, true);
+			keyEvent(key, true);
+		}
+	}
 	if (currentScene != nullptr) {
 		currentScene->keyboard_callback(window, key, scancode, action, mods);
 	}
 }
 
 void GameManager::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	mousePosition.x = xpos;
+	mousePosition.y = ypos;
 	if (currentScene != nullptr) {
 		currentScene->mouse_callback(window, xpos, ypos);
 	}

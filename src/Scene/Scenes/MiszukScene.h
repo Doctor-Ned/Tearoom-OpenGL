@@ -13,11 +13,11 @@ class MiszukScene : public Scene {
 public:
 	void render() override;
 	void renderUi() override;
+	Camera *getCamera() override;
 	void update(double deltaTime) override;
 	MiszukScene();
 	~MiszukScene();
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
-	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 protected:
 	//--------------ANIMACJA---------------------

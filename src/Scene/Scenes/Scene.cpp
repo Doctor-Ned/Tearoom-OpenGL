@@ -15,6 +15,10 @@ void Scene::renderUi() {
 	}
 }
 
+Camera *Scene::getCamera() {
+	return nullptr;
+}
+
 void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
 	if (parent == nullptr) {
 		parent = rootNode;
@@ -104,20 +108,7 @@ void Scene::updateWindowSize(float windowWidth, float windowHeight, float screen
 	}
 }
 
-void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_RELEASE) {
-		if (getKeyState(key)) {
-			setKeyState(key, false);
-			keyEvent(key, false);
-		}
-	}
-	if (action == GLFW_PRESS) {
-		if (!getKeyState(key)) {
-			setKeyState(key, true);
-			keyEvent(key, true);
-		}
-	}
-}
+void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) { }
 
 void Scene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	for (auto &elem : uiElements) {
@@ -164,24 +155,17 @@ Scene::~Scene() {
 	delete rootNode;
 }
 
-bool Scene::getKeyState(int key) {
-	auto pair = keyStates.find(key);
-	if (pair != keyStates.end()) {
-		return pair->second;
-	}
-	return false;
+bool Scene::getKeyState(const int key) const {
+	return gameManager->getKeyState(key);
 }
 
-void Scene::setKeyState(int key, bool pressed) {
-	auto pair = keyStates.find(key);
-	if (pair != keyStates.end()) {
-		pair->second = pressed;
-	} else {
-		keyStates.emplace(key, pressed);
-	}
+bool Scene::getMouseState(const int key) const {
+	return gameManager->getMouseState(key);
 }
 
 void Scene::keyEvent(int key, bool pressed) {}
+
+void Scene::mouseEvent(int key, bool pressed) {}
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
 	Renderable *r = dynamic_cast<Renderable*>(node);

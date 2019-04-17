@@ -112,6 +112,10 @@ void MiszukScene::renderUi() {
 	assetManager->getTextRenderer()->renderText("+", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 
+Camera* MiszukScene::getCamera() {
+	return camera;
+}
+
 void MiszukScene::update(double deltaTime) {
 
 	if (getKeyState(KEY_FORWARD)) {
@@ -184,10 +188,6 @@ void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) 
 		mouseX = xpos;
 		mouseY = ypos;
 	}
-}
-
-void MiszukScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {
-	Scene::mouse_button_callback(window, butt, action, mods);
 }
 
 void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {

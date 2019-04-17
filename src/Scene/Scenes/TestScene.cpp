@@ -218,6 +218,10 @@ void TestScene::renderUi() {
 	ImGui::SliderFloat("Spot far plane", &lightManager->spotFar, 0.01f, 100.0f);
 }
 
+Camera* TestScene::getCamera() {
+	return camera;
+}
+
 void TestScene::update(double deltaTime) {
 
 	if (getKeyState(KEY_FORWARD)) {
@@ -287,10 +291,6 @@ void TestScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
 		mouseX = xpos;
 		mouseY = ypos;
 	}
-}
-
-void TestScene::mouse_button_callback(GLFWwindow * window, int butt, int action, int mods) {
-	Scene::mouse_button_callback(window, butt, action, mods);
 }
 
 void TestScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {

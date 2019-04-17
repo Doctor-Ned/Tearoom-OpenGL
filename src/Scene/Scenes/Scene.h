@@ -17,6 +17,7 @@ class Scene {
 public:
 	virtual void render();
 	virtual void renderUi();
+	virtual Camera *getCamera();
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
 	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
@@ -27,6 +28,8 @@ public:
 	void removeFromRenderMap(Renderable *renderable);
 	void removeFromRenderMap(GraphNode *node, bool recurse = true);
 	void reinitializeRenderMap();
+	virtual void keyEvent(int key, bool pressed);
+	virtual void mouseEvent(int key, bool pressed);
 	virtual void update(double deltaTime);
 	virtual void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	virtual void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -35,10 +38,8 @@ public:
 	Scene();
 	virtual ~Scene();
 protected:
-	bool getKeyState(int key);
-	void setKeyState(int key, bool pressed);
-	virtual void keyEvent(int key, bool pressed);
-	std::map<int, bool> keyStates;
+	bool getKeyState(int key) const;
+	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);

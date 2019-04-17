@@ -2,10 +2,12 @@
 
 #include "Global.h"
 #include "GLFW/glfw3.h"
+#include <map>
 //#include "Scenes/MenuScene.h"
 
 class MenuScene;
 class Scene;
+class Camera;
 
 struct Framebuffer {
 	GLuint fbo = 0;
@@ -61,17 +63,32 @@ public:
 	void goToMenu(bool destroyPreviousScene = true);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	void setup();
+	Camera *getCamera() const;
 	bool useLight = true;
 	bool castShadows = true;
-	bool isVsyncEnabled();
+	bool isVsyncEnabled() const;
 	void setVsync(bool enabled);
+	void addKeyCallback(int key, bool pressed, const std::function<void()>& callback);
+	void addMouseCallback(int key, bool pressed, const std::function<void()>& callback);
 	~GameManager();
+	bool getKeyState(int key);
+	bool getMouseState(int key);
+	glm::vec2 getMousePosition() const;
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
 	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 protected:
+	void setKeyState(int key, bool pressed);
+	void keyEvent(int key, bool pressed) const;
+	std::map<int, bool> keyStates;
+	std::map<int, std::map<bool, std::vector<std::function<void()>>>> keyCallbacks;
+	void setMouseState(int key, bool pressed);
+	void mouseEvent(int key, bool pressed);
+	std::map<int, bool> mouseStates;
+	std::map<int, std::map<bool, std::vector<std::function<void()>>>> mouseCallbacks;
 	bool enableVsync = true;
+	glm::vec2 mousePosition;
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	Framebuffer uiFramebuffer, pingPongFramebuffers[2];
