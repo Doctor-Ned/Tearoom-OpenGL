@@ -23,10 +23,10 @@ void PlayerMovement::update(float msec)
 	glm::vec3 front = camera->getFront();
 	glm::vec2 xz = glm::vec2(front.x, front.z);
 	xz = glm::normalize(xz);
-	glm::vec3 camRight = glm::normalize(glm::cross(camera->getFront(), glm::vec3(0.0f, 1.0f, 0.0f)));
+	glm::vec3 camRight = camera->getRight();
 
 	glm::vec2 right = glm::normalize(glm::vec2(camRight.x, camRight.z));
-
+	
 	static float speed = 2.0f;
 	if(scene->getKeyState(KEY_FAST))
 	{
@@ -36,17 +36,23 @@ void PlayerMovement::update(float msec)
 	{
 		speed = 2.0f;
 	}
+
+	glm::vec3 direction = glm::vec3(0);
 	if (scene->getKeyState(KEY_FORWARD)) {
-		gameObject->localTransform.translate(glm::vec3(xz.x, 0, xz.y) * msec * speed);
+		direction += glm::vec3(xz.x, 0, xz.y);
 	}
 	if (scene->getKeyState(KEY_BACKWARD)) {
-		gameObject->localTransform.translate(-glm::vec3(xz.x, 0, xz.y) * msec * speed);
+		direction -= glm::vec3(xz.x, 0, xz.y);
 	}
 	if (scene->getKeyState(KEY_LEFT)) {
-		gameObject->localTransform.translate(-glm::vec3(right.x, 0, right.y) * msec * speed);
+		direction -= glm::vec3(right.x, 0, right.y);
 	}
 	if (scene->getKeyState(KEY_RIGHT)) {
-		gameObject->localTransform.translate(glm::vec3(right.x, 0, right.y) * msec * speed);
+		direction += glm::vec3(right.x, 0, right.y);
 	}
+	if(direction != glm::vec3(0))
+		direction = glm::normalize(direction);
+	gameObject->localTransform.translate(direction * msec * speed);
+
 	camera->setPos(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, 0.5f, 0.0f));
 }
