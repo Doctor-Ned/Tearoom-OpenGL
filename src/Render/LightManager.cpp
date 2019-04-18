@@ -25,6 +25,9 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	depthShader->use();
 	for (int i = 0; i < dirLightAmount; i++) {
 		DirLightData data = dirLights[i];
+		if (!data.light->enabled) {
+			continue;
+		}
 
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
@@ -42,6 +45,9 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 	for (int i = 0; i < spotLightAmount; i++) {
 		SpotLightData data = spotLights[i];
+		if (!data.light->enabled) {
+			continue;
+		}
 
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
@@ -58,6 +64,10 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	depthPointShader->use();
 	for (int i = 0; i < pointLightAmount; i++) {
 		PointLightData data = pointLights[i];
+		if (!data.light->enabled) {
+			continue;
+		}
+
 		glViewport(0, 0, data.data.width, data.data.height);
 		glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
 		glClear(GL_DEPTH_BUFFER_BIT);
