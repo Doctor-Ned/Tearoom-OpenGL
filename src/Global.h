@@ -47,26 +47,26 @@ static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED 
 static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_SIZE = 0.1f;
 
 struct DirLight {
-	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(true) {}
+	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
 	glm::mat4 lightSpace;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 	glm::mat4 model;
 	glm::vec3 padding;
-	bool enabled;
+	int enabled;
 };
 
 struct PointLight {
 	PointLight() : constant(100.0f), linear(100.0f), quadratic(100.0f), near_plane(0.01f), far_plane(10.0f),
-	ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(true) {}
+	ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
 	float constant;
 	float linear;
 	float quadratic;
 	float near_plane;
 	glm::vec2 padding;
 	float far_plane;
-	bool enabled;
+	int enabled;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
@@ -75,7 +75,7 @@ struct PointLight {
 
 struct SpotLight {
 	SpotLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), constant(100.0f), linear(100.0f), quadratic(100.0f),
-	cutOff(M_PI/12.0f), outerCutOff(M_PI/4.0f), enabled(true) {}
+	cutOff(M_PI/12.0f), outerCutOff(M_PI/4.0f), enabled(1) {}
 	glm::mat4 lightSpace;
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
@@ -87,7 +87,7 @@ struct SpotLight {
 	float cutOff;
 	glm::vec2 padding;
 	float outerCutOff;
-	bool enabled;
+	int enabled;
 };
 
 struct LightShadowData {

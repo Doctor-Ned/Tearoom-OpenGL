@@ -62,7 +62,7 @@ bool PointLightNode::getEnabled() {
 }
 
 void PointLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
+	light->enabled = enabled ? 1 : 0;
 }
 
 void PointLightNode::setModel(glm::mat4 model) {

@@ -38,7 +38,7 @@ bool DirLightNode::getEnabled() {
 }
 
 void DirLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
+	light->enabled = enabled ? 1 : 0;
 }
 
 void DirLightNode::setModel(glm::mat4 model) {

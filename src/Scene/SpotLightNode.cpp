@@ -78,7 +78,7 @@ bool SpotLightNode::getEnabled() {
 }
 
 void SpotLightNode::setEnabled(bool enabled) {
-	light->enabled = enabled;
+	light->enabled = enabled ? 1 : 0;
 }
 
 void SpotLightNode::setModel(glm::mat4 model) {
