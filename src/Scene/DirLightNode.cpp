@@ -5,32 +5,40 @@ DirLightNode::DirLightNode(DirLight * light, Mesh *mesh, GraphNode *parent) : Li
 	this->light = light;
 }
 
-glm::vec4 DirLightNode::getLightAmbient() {
+glm::vec4 DirLightNode::getAmbient() {
 	return light->ambient;
 }
 
-glm::vec4 DirLightNode::getLightDiffuse() {
+glm::vec4 DirLightNode::getDiffuse() {
 	return light->diffuse;
 }
 
-glm::vec4 DirLightNode::getLightSpecular() {
+glm::vec4 DirLightNode::getSpecular() {
 	return light->specular;
 }
 
-void DirLightNode::setLightAmbient(glm::vec4 ambient) {
+void DirLightNode::setAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
 
-void DirLightNode::setLightDiffuse(glm::vec4 diffuse) {
+void DirLightNode::setDiffuse(glm::vec4 diffuse) {
 	light->diffuse = diffuse;
 }
 
-void DirLightNode::setLightSpecular(glm::vec4 specular) {
+void DirLightNode::setSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 
 DirLight* DirLightNode::getLight() const {
 	return light;
+}
+
+bool DirLightNode::getEnabled() {
+	return light->enabled;
+}
+
+void DirLightNode::setEnabled(bool enabled) {
+	light->enabled = enabled;
 }
 
 void DirLightNode::setModel(glm::mat4 model) {

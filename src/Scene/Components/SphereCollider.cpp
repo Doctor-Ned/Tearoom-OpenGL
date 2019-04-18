@@ -6,7 +6,8 @@ SphereCollider::SphereCollider(GraphNode* _gameObject,  Collision classification
 {
 	mesh_ptr = std::make_shared<MeshColorSphere>(radius, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);
-	mesh_ptr->setRenderMode(GL_LINES);
+	//mesh_ptr->setRenderMode(GL_LINE_STRIP);
+	mesh_ptr->setOpacity(0.2f);
 }
 
 void SphereCollider::setRadius(float size)

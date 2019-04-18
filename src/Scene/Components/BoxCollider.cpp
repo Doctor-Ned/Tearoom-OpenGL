@@ -5,7 +5,7 @@ BoxCollider::BoxCollider(GraphNode* _gameObject, Collision classification , bool
 {
 	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);
-	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setRenderMode(GL_LINE_STRIP);
 }
 
 void BoxCollider::setHalfDimensions(glm::vec3 half_dimensions)

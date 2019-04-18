@@ -1,11 +1,11 @@
 #version 330 core
 
-out vec4 outColor;
+layout(location = 0) out vec4 outColor;
 
 uniform float opacity;
 
 void main() {
-	float depth = gl_FragCoord.z;
+	float depth = outColor.z;
 	float dx = dFdx(depth);
 	float dy = dFdy(depth);
 	float moment2 = depth * depth + 0.25f * (dx * dx + dy * dy);

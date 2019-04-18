@@ -4,6 +4,8 @@ struct DirLight {
 	vec4 diffuse;
 	vec4 specular;
 	mat4 model;
+	vec3 padding;
+	bool enabled;
 };
 
 struct PointLight {
@@ -11,8 +13,9 @@ struct PointLight {
 	float linear;
 	float quadratic;
 	float near_plane;
-	vec3 padding;
+	vec2 padding;
 	float far_plane;
+	bool enabled;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -29,8 +32,9 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	vec3 padding;
+	vec2 padding;
 	float outerCutOff;
+	bool enabled;
 };
 
 #define MAX_LIGHTS_OF_TYPE 4

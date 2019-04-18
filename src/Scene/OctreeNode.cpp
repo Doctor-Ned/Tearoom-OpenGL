@@ -261,7 +261,7 @@ void OctreeNode::RebuildTree(float dimension)
 	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
 	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setRenderMode(GL_LINE_STRIP);
 	mesh_ptr->setUseLight(false);
 	for (GraphNode* graphNode : toInsert2)
 	{
@@ -276,7 +276,7 @@ OctreeNode::OctreeNode(float dimension)
 	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
 	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setRenderMode(GL_LINE_STRIP);
 	mesh_ptr->setUseLight(false);
 	for(GraphNode* graphNode : toInsert2)
 	{
@@ -290,7 +290,7 @@ OctreeNode::OctreeNode(Box _box, OctreeNode* _parent, std::vector<GraphNode*> _g
 {
 
 	mesh_ptr = std::make_shared<MeshColorBox>(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	mesh_ptr->setRenderMode(GL_LINES);
+	mesh_ptr->setRenderMode(GL_LINE_STRIP);
 	mesh_ptr->setUseLight(false);
 }
 

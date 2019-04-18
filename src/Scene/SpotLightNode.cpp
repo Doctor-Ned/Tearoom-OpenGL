@@ -5,15 +5,15 @@ SpotLightNode::SpotLightNode(SpotLight * light, Mesh *mesh, GraphNode *parent) :
 	this->light = light;
 }
 
-glm::vec4 SpotLightNode::getLightAmbient() {
+glm::vec4 SpotLightNode::getAmbient() {
 	return light->ambient;
 }
 
-glm::vec4 SpotLightNode::getLightDiffuse() {
+glm::vec4 SpotLightNode::getDiffuse() {
 	return light->diffuse;
 }
 
-glm::vec4 SpotLightNode::getLightSpecular() {
+glm::vec4 SpotLightNode::getSpecular() {
 	return light->specular;
 }
 
@@ -37,15 +37,15 @@ float SpotLightNode::getOuterCutoff() {
 	return light->outerCutOff;
 }
 
-void SpotLightNode::setLightAmbient(glm::vec4 ambient) {
+void SpotLightNode::setAmbient(glm::vec4 ambient) {
 	light->ambient = ambient;
 }
 
-void SpotLightNode::setLightDiffuse(glm::vec4 diffuse) {
+void SpotLightNode::setDiffuse(glm::vec4 diffuse) {
 	light->diffuse = diffuse;
 }
 
-void SpotLightNode::setLightSpecular(glm::vec4 specular) {
+void SpotLightNode::setSpecular(glm::vec4 specular) {
 	light->specular = specular;
 }
 
@@ -71,6 +71,14 @@ void SpotLightNode::setOuterCutoff(float outerCutoff) {
 
 SpotLight* SpotLightNode::getLight() const {
 	return light;
+}
+
+bool SpotLightNode::getEnabled() {
+	return light->enabled;
+}
+
+void SpotLightNode::setEnabled(bool enabled) {
+	light->enabled = enabled;
 }
 
 void SpotLightNode::setModel(glm::mat4 model) {
