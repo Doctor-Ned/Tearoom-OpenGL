@@ -35,11 +35,11 @@ public:
 	virtual void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
+	Scene();
+	virtual ~Scene(); 
+protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
-	Scene();
-	virtual ~Scene();
-protected:
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);
