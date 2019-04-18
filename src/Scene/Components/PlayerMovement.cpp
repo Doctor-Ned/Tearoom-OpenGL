@@ -28,7 +28,8 @@ void PlayerMovement::update(float msec)
 	glm::vec2 right = glm::normalize(glm::vec2(camRight.x, camRight.z));
 	
 	static float speed = 2.0f;
-	if(scene->getKeyState(KEY_FAST))
+	GameManager* gameManager = GameManager::getInstance();
+	if(gameManager->getKeyState(KEY_FAST))
 	{
 		speed = 4.0f;
 	}
@@ -38,16 +39,16 @@ void PlayerMovement::update(float msec)
 	}
 
 	glm::vec3 direction = glm::vec3(0);
-	if (scene->getKeyState(KEY_FORWARD)) {
+	if (gameManager->getKeyState(KEY_FORWARD)) {
 		direction += glm::vec3(xz.x, 0, xz.y);
 	}
-	if (scene->getKeyState(KEY_BACKWARD)) {
+	if (gameManager->getKeyState(KEY_BACKWARD)) {
 		direction -= glm::vec3(xz.x, 0, xz.y);
 	}
-	if (scene->getKeyState(KEY_LEFT)) {
+	if (gameManager->getKeyState(KEY_LEFT)) {
 		direction -= glm::vec3(right.x, 0, right.y);
 	}
-	if (scene->getKeyState(KEY_RIGHT)) {
+	if (gameManager->getKeyState(KEY_RIGHT)) {
 		direction += glm::vec3(right.x, 0, right.y);
 	}
 	if(direction != glm::vec3(0))

@@ -37,7 +37,6 @@ public:
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	Scene();
 	virtual ~Scene(); 
-	bool getKeyState(int key);
 protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
