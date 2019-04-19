@@ -32,6 +32,7 @@
 #endif
 
 #include <functional>
+#include "json/json.h"
 
 struct Texture {
 	GLuint id{};
@@ -100,6 +101,11 @@ struct LightShadowData {
 
 class Global {
 public:
+	static std::string jsonValueToString(Json::Value value);
+	static std::string readFullFile(std::string path);
+	static Json::Value readJsonFile(std::string path);
+	static void saveToFile(std::string path, Json::Value value);
+	static void saveToFile(std::string path, std::string content);
 	static glm::vec4 planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 	static float distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2);
 	static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max, const float yPosition = 0.0f);

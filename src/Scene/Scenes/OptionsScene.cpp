@@ -10,8 +10,10 @@
 #include "Render/LightManager.h"
 
 OptionsScene::OptionsScene(MenuScene* menuScene) {
+	pps = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
 	this->menuScene = menuScene;
 	textRenderer = assetManager->getTextRenderer();
+	load();
 	const float heightSeg = windowHeight / 18.0f;
 	const float checkboxShift = windowWidth / 8.0f;
 	UiCheckbox *useLight = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 2 * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->useLight, true);
@@ -35,17 +37,15 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		samplesText->setText("Point shadow samples: " + std::to_string(manager->pointShadowSamples));
 	});
 
-	PostProcessingShader *pps = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
-
 	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), true);
-	useHdr->setCheckboxCallback([pps](bool enabled) {
+	useHdr->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setHdr(enabled);
 	});
-	UiText *exposureText = new UiText(glm::vec2(windowCenterX, 9 * heightSeg), glm::vec2(windowWidth, heightSeg),"Exposure: " + std::to_string(pps->getExposure()));
+	UiText *exposureText = new UiText(glm::vec2(windowCenterX, 9 * heightSeg), glm::vec2(windowWidth, heightSeg), "Exposure: " + std::to_string(pps->getExposure()));
 	UiSlider *exposureSlider = new UiSlider(glm::vec2(windowCenterX, 10 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
 		pps->getExposure(), 0.0f, 10.0f);
-	exposureSlider->setCallback([pps, exposureText](float exposure) {
+	exposureSlider->setCallback([pps = pps, exposureText](float exposure) {
 		pps->use();
 		pps->setExposure(exposure);
 		exposureText->setText("Exposure: " + std::to_string(exposure));
@@ -54,14 +54,14 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	UiText *gammaText = new UiText(glm::vec2(windowCenterX, 11 * heightSeg), glm::vec2(windowWidth, heightSeg), "Gamma: " + std::to_string(pps->getGamma()));
 	UiSlider *gammaSlider = new UiSlider(glm::vec2(windowCenterX, 12 * heightSeg), glm::vec2(windowWidth / 2.0f, heightSeg), heightSeg / 2.0f,
 		pps->getGamma(), 0.0f, 10.0f);
-	gammaSlider->setCallback([pps, gammaText](float gamma) {
+	gammaSlider->setCallback([pps = pps, gammaText](float gamma) {
 		pps->use();
 		pps->setGamma(gamma);
 		gammaText->setText("Gamma: " + std::to_string(gamma));
 	});
 
 	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 13 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), true);
-	useBloom->setCheckboxCallback([pps](bool enabled) {
+	useBloom->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setBloom(enabled);
 	});
@@ -72,7 +72,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	});
 
 	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 15 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), true);
-	enableAntialiasing->setCheckboxCallback([pps](bool enabled) {
+	enableAntialiasing->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setAntialiasing(enabled);
 	});
@@ -103,10 +103,44 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 1.5f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 }
 
+OptionsScene::~OptionsScene() {
+	save();
+}
+
 void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
 			menuScene->hideOptions();
 		}
 	}
+}
+
+void OptionsScene::load() {
+	Json::Value root = Global::readJsonFile(SETTINGS_FILE);
+	lightManager->pointShadowSamples = root.get("pointShadowSamples", lightManager->pointShadowSamples).asInt();
+	lightManager->spotDirShadowTexelResolution = root.get("spotDirShadowTexelResolution", lightManager->spotDirShadowTexelResolution).asInt();
+	gameManager->useLight = root.get("useLight", gameManager->useLight).asBool();
+	gameManager->castShadows = root.get("castShadows", gameManager->castShadows).asBool();
+	gameManager->setVsync(root.get("useVsync", gameManager->isVsyncEnabled()).asBool());
+	pps->use();
+	pps->setExposure(root.get("exposure", pps->getExposure()).asFloat());
+	pps->setGamma(root.get("gamma", pps->getGamma()).asFloat());
+	pps->setAntialiasing(root.get("useAntialiasing", pps->isAntialiasingEnabled()).asBool());
+	pps->setHdr(root.get("useHdr", pps->isHdrEnabled()).asBool());
+	pps->setBloom(root.get("useBloom", pps->isBloomEnabled()).asBool());
+}
+
+void OptionsScene::save() {
+	Json::Value root;
+	root["pointShadowSamples"] = lightManager->pointShadowSamples;
+	root["spotDirShadowTexelResolution"] = lightManager->spotDirShadowTexelResolution;
+	root["useLight"] = gameManager->useLight;
+	root["castShadows"] = gameManager->castShadows;
+	root["useVsync"] = gameManager->isVsyncEnabled();
+	root["exposure"] = pps->getExposure();
+	root["gamma"] = pps->getGamma();
+	root["useAntialiasing"] = pps->isAntialiasingEnabled();
+	root["useHdr"] = pps->isHdrEnabled();
+	root["useBloom"] = pps->isBloomEnabled();
+	Global::saveToFile(SETTINGS_FILE, root);
 }

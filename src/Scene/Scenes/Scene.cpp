@@ -103,9 +103,6 @@ void Scene::updateWindowSize(float windowWidth, float windowHeight, float screen
 	this->screenHeight = screenHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
-	for (auto &elem : uiElements) {
-		elem->updateProjection(windowWidth, windowHeight, screenWidth, screenHeight);
-	}
 }
 
 void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) { }

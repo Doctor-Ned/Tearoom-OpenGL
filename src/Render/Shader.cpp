@@ -213,14 +213,8 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	char* fullFile = new char[len_dir + len_file + 1];
 	strcpy(fullFile, SHADER_DIR);
 	strcat(fullFile, file);
-	std::ifstream data(fullFile, std::ios::binary | std::ios::ate);
-	const std::streamsize fileSize = data.tellg();
-	data.seekg(0, std::ios::beg);
-	char* shaderText = new char[fileSize + 1];
-	shaderText[fileSize] = '\0';
-	if (data.read(shaderText, fileSize)) {
-		delete[] fullFile;
-		std::string text(shaderText);
+	std::string text = Global::readFullFile(fullFile);
+	if (text.length() > 0) {
 		for (std::pair<std::string, std::string> pair : sharedData) {
 			size_t start_pos = 0;
 			std::string from = "//%" + pair.first + "%";

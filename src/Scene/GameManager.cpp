@@ -92,9 +92,6 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 	windowCenterY = windowHeight / 2.0f;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
-	if (currentScene != nullptr) {
-		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
-	}
 }
 
 void GameManager::setup() {

@@ -1,5 +1,52 @@
 #include "Global.h"
 #include "Scene/GameManager.h"
+#include <fstream>
+
+std::string Global::jsonValueToString(Json::Value value) {
+	static Json::StyledWriter styledWriter;
+	return styledWriter.write(value);
+}
+
+std::string Global::readFullFile(std::string path) {
+	std::ifstream data(path, std::ios::binary | std::ios::ate);
+	const std::streamsize fileSize = data.tellg();
+	data.seekg(0, std::ios::beg);
+	char* shaderText = new char[fileSize + 1];
+	shaderText[fileSize] = '\0';
+	std::string text = "";
+	if (data.read(shaderText, fileSize)) {
+		text = shaderText;
+	}
+	return text;
+}
+
+Json::Value Global::readJsonFile(std::string path) {
+	std::string text = readFullFile(path);
+	if(text.length() == 0) {
+		return Json::Value();
+	}
+	static Json::CharReaderBuilder builder;
+	Json::CharReader *reader = builder.newCharReader();
+	Json::Value root;
+	std::string errors;
+	if(reader->parse(text.c_str(), text.c_str() + text.size(), &root, &errors)) {
+		delete reader;
+		return root;
+	}
+	delete reader;
+	return Json::Value();
+}
+
+void Global::saveToFile(std::string path, Json::Value value) {
+	saveToFile(path, jsonValueToString(value));
+}
+
+void Global::saveToFile(std::string path, std::string content) {
+	std::remove(path.c_str());
+	std::ofstream out(path);
+	out << content;
+	out.close();
+}
 
 glm::vec4 Global::planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
 	float a1 = p2.x - p1.x;
