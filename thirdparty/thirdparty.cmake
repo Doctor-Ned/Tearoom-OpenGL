@@ -8,6 +8,13 @@ set(FREETYPE_INCLUDE_DIRS "${THIRDPARTY_DIR}/include")
 set(FREETYPE_LIBRARY "${FREETYPE_DIR}/freetype.lib")
 find_package(Freetype REQUIRED)
 
+# jsoncpp
+set(JSONCPP_INCLUDE_DIR "${THIRDPARTY_DIR}/jsoncpp/include")
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JSONCPP jsoncpp)
+link_libraries(${JSONCPP_LIBRARIES})
+
+
 # assimp
 find_library(ASSIMP_LIBRARY "assimp" "/usr/lib" "/usr/local/lib")
 find_path(ASSIMP_INCLUDE_DIR "assimp/mesh.h" "/usr/include" "/usr/local/include")
