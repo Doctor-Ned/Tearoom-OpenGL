@@ -48,12 +48,12 @@ float Sun::getTime() {
 void Sun::update(float msec) {
 	if (dirty) {
 		glm::vec4 light1Color = timeToColor(time, true), light2Color = timeToColor(time, false);
-		light1->ambient = light1Color * 0.1f;
+		light1->ambient = light1Color * ambientFactor;
 		light1->diffuse = light1Color;
-		light1->specular = light1Color * 0.5f;
-		light2->ambient = light2Color * 0.1f;
+		light1->specular = light1Color * specularFactor;
+		light2->ambient = light2Color * ambientFactor;
 		light2->diffuse = light2Color;
-		light2->specular = light2Color * 0.5f;
+		light2->specular = light2Color * specularFactor;
 		dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
 		dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 		glm::vec4 position = gameObject->localTransform.getMatrix()[3];
@@ -66,6 +66,10 @@ void Sun::renderGui() {
 	if(active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
 		ImGui::NewLine();
+		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f ,1.0f);
+		ImGui::NewLine();
+		ImGui::SliderFloat("Specular factor", &specularFactor, 0.0f, 1.0f);
+		ImGui::NewLine();
 		ImGui::ColorEdit3("Dawn color", reinterpret_cast<float*>(&dawnColor));
 		ImGui::NewLine();
 		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
@@ -76,6 +80,30 @@ void Sun::renderGui() {
 		ImGui::NewLine();
 		dirty = true;
 	}
+}
+
+void Sun::setComponentActive(bool active) {
+	Component::setComponentActive(active);
+	light1Comp->setComponentActive(active);
+	light2Comp->setComponentActive(active);
+}
+
+float Sun::getAmbientFactor() {
+	return ambientFactor;
+}
+
+void Sun::setAmbientFactor(float ambientFactor) {
+	this->ambientFactor = ambientFactor;
+	dirty = true;
+}
+
+float Sun::getSpecularFactor() {
+	return specularFactor;
+}
+
+void Sun::setSpecularFactor(float specularFactor) {
+	this->specularFactor = specularFactor;
+	dirty = true;
 }
 
 float Sun::rescaleTime(float time) {

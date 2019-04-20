@@ -14,7 +14,14 @@ public:
 	float getTime();
 	void update(float msec) override;
 	void renderGui() override;
+	void setComponentActive(bool active) override;
+	float getAmbientFactor();
+	void setAmbientFactor(float ambientFactor);
+	float getSpecularFactor();
+	void setSpecularFactor(float specularFactor);
 protected:
+	float ambientFactor = 0.01f;
+	float specularFactor = 0.3f;
 	bool dirty = false;
 	float rescaleTime(float time);
 	glm::vec4 timeToColor(float time, bool light1);
