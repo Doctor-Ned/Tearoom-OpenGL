@@ -17,6 +17,7 @@
 #include "Render/LightManager.h"
 #include "Ui/UiText.h"
 #include "Ui/UiColorPlane.h"
+#include "Serialization/Serializer.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -29,6 +30,7 @@ static void glfw_error_callback(int error, const char* description) {
 
 static GameManager* gameManager;
 static AssetManager* assetManager;
+static Serializer* serializer;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	gameManager->keyboard_callback(window, key, scancode, action, mods);
@@ -45,6 +47,8 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 int main(int argc, char** argv) {
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
+	serializer = Serializer::getInstance();
+
 	bool fullscreen_borderless = false;
 	bool borderless = false;
 	bool fullscreen = false;
@@ -248,6 +252,17 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0);
 
 	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
+
+	serializer->setup();
+
+	// just testing things!
+	GraphNode *root = new GraphNode();
+	root->localTransform.translate(glm::vec3(5.0f, 2.0f, -3.0f));
+	root->addChild(new GraphNode());
+	root->getChild(0)->localTransform.rotate(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	serializer->saveScene(root, "test");
+
+	GraphNode *loaded = serializer->loadScene("test");
 
 	gameManager->setup();
 

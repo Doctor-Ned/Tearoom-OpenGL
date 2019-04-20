@@ -5,6 +5,8 @@
 #include <glm/gtx/matrix_decompose.inl>
 #include "OctreeNode.h"
 #include "Components/Collider.h"
+#include "Serialization/DataSerializer.h"
+#include "Serialization/Serializer.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
@@ -62,8 +64,7 @@ void GraphNode::update(double timeDiff) {
 	if (!active) {
 		return;
 	}
-	if(mesh || !getComponents<Renderable>().empty())
-	{
+	if (mesh || !getComponents<Renderable>().empty()) {
 		OctreeNode::toInsert2.insert(this);
 	}
 	for (Component* component : components) {
@@ -81,7 +82,7 @@ GraphNode* GraphNode::getParent() const {
 }
 
 void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
-	if (preserveWorldPosition) {
+	if (preserveWorldPosition && parent != nullptr) {
 		//local = (this->parent->getWorld() / parent->getWorld()) * local;
 		if (this->parent == nullptr) {
 			localTransform.setMatrix(glm::mat4(1.0f) / parent->worldTransform.getMatrix() * localTransform.getMatrix());
@@ -94,11 +95,16 @@ void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
 	if (this->parent != nullptr) {
 		this->parent->removeChild(this);
 	}
-	parent->addChild(this);
+	if (parent != nullptr) {
+		parent->addChild(this);
+	}
 	dirty = true;
 }
 
 void GraphNode::addChild(GraphNode* child) {
+	if (child == nullptr) {
+		return;
+	}
 	child->parent = this;
 	if (std::find(children.begin(), children.end(), child) == children.end()) {
 		children.push_back(child);
@@ -106,6 +112,9 @@ void GraphNode::addChild(GraphNode* child) {
 }
 
 void GraphNode::removeChild(GraphNode* child) {
+	if (child == nullptr) {
+		return;
+	}
 	if (child->parent == this) {
 		child->parent = nullptr;
 	}
@@ -181,11 +190,11 @@ void GraphNode::setActive(bool active) {
 	this->active = active;
 }
 
-const char* GraphNode::getName() const {
+std::string GraphNode::getName() const {
 	return name;
 }
 
-void GraphNode::setName(const char* name) {
+void GraphNode::setName(std::string name) {
 	this->name = name;
 }
 
@@ -193,7 +202,7 @@ void GraphNode::beingHitByRay() {
 	hitByRay = true;
 }
 
-bool GraphNode::getHitByRay(){
+bool GraphNode::getHitByRay() {
 	return  hitByRay;
 }
 
@@ -203,6 +212,38 @@ std::vector<GraphNode*> GraphNode::getChildren() const {
 
 std::vector<Renderable*> GraphNode::getRenderableComponents() const {
 	return renderableComponents;
+}
+
+Json::Value GraphNode::serialize(Serializer* serializer) {
+	Json::Value root;
+	root["name"] = name;
+	root["active"] = active;
+	root["local"] = DataSerializer::serializeMat4(localTransform.getMatrix());
+	root["lastLocal"] = DataSerializer::serializeMat4(localTransform.getLastMatrix());
+	for (int i = 0; i < children.size(); i++) {
+		root["children"][i] = serializer->serialize(children[i]);
+	}
+	root["parent"] = serializer->serialize(parent);
+	return root;
+}
+
+void GraphNode::deserialize(Json::Value& root, Serializer* serializer) {
+	name = root.get("name", name).asString();
+	active = root.get("active", active).asBool();
+	localTransform.setMatrix(DataSerializer::deserializeMat4(root.get("local", DataSerializer::serializeMat4(localTransform.getMatrix()))));
+	localTransform.setLastMatrix(DataSerializer::deserializeMat4(root.get("lastLocal", DataSerializer::serializeMat4(localTransform.getLastMatrix()))));
+	Json::Value children = root["children"];
+	int size = children.size();
+	if (size > 0) {
+		for (int i = 0; i < size; i++) {
+			addChild(dynamic_cast<GraphNode*>(serializer->deserialize(children[i]).object));
+		}
+	}
+	setParent(dynamic_cast<GraphNode*>(serializer->deserialize(root["parent"]).object));
+}
+
+SerializableType GraphNode::getSerializableType() {
+	return SGraphNode;
 }
 
 void GraphNode::updateWorld() {

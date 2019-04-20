@@ -13,6 +13,9 @@ Serializer *Serializer::getInstance() {
 }
 
 void Serializer::setup() {
+	if(!fs::exists(SCENES_DIR)) {
+		fs::create_directory(SCENES_DIR);
+	}
 	loadScenes();
 }
 
@@ -20,8 +23,7 @@ void Serializer::saveScene(GraphNode* scene, const std::string& name) {
 	idCounter = 0;
 	ids.clear();
 	SerializablePointer pointer(SGraphNode, scene);
-	Json::Value root;
-	serialize(pointer, root);
+	Json::Value root = serialize(pointer);
 	std::string file = SCENES_DIR + "/" + name + FORMAT;
 	if (fs::exists(file)) {
 		std::string oldFile = SCENES_DIR + "/" + name + OLD_FORMAT;
@@ -51,7 +53,7 @@ GraphNode* Serializer::loadScene(const std::string& name) {
 	return deserializeScene(root);
 }
 
-void* Serializer::getPointer(const int id) {
+Serializable* Serializer::getPointer(const int id) {
 	for (auto &pair : ids) {
 		if (pair.second == id) {
 			return pair.first;
@@ -60,7 +62,7 @@ void* Serializer::getPointer(const int id) {
 	return nullptr;
 }
 
-int Serializer::getId(void* pointer) {
+int Serializer::getId(Serializable* pointer) {
 	if (pointer == nullptr) {
 		return -1;
 	}
@@ -72,27 +74,34 @@ int Serializer::getId(void* pointer) {
 	return -1;
 }
 
+Json::Value Serializer::serialize(Serializable* ser) {
+	return serialize(SerializablePointer(ser));
+}
 
-void Serializer::serialize(SerializablePointer ser, Json::Value& root) {
+
+Json::Value Serializer::serialize(SerializablePointer ser) {
+	Json::Value root;
 	if (ser.object == nullptr) {
 		// if object is nullptr (this happens if we encounter a real nullptr in the tree
 		// OR if the object has already been serialized and we just want to save the reference ID)
 		root["id"] = -1;
-		root["type"] = static_cast<int>(ser.type);
-		return;
+		root["type"] = static_cast<int>(SNone);
+		return root;
 	}
 	int id = getId(ser.object);
 	if (id != -1) {
 		// if the object has already been serialized, set the pointer to nullptr and just serialize the reference ID
 		ser.object = nullptr;
-		serialize(ser, root);
-		return;
+		return serialize(ser);
 	}
 	// if it gets here then it means this is the first time serializing given object pointer
 	// assign the ID and apply the serialization
 	ser.id = idCounter++;
 	ids.emplace(ser.object, ser.id);
-	//todo
+	root["id"] = ser.id;
+	root["type"] = ser.object->getSerializableType();
+	root["object"] = ser.object->serialize(this);
+	return root;
 }
 
 GraphNode* Serializer::deserializeScene(Json::Value& root) {
@@ -100,31 +109,33 @@ GraphNode* Serializer::deserializeScene(Json::Value& root) {
 	if (pointer.object == nullptr) {
 		return nullptr;
 	}
-	return reinterpret_cast<GraphNode*>(pointer.object);
+	return dynamic_cast<GraphNode*>(pointer.object);
 }
 
 SerializablePointer Serializer::deserialize(Json::Value& root) {
 	SerializablePointer pointer;
 	pointer.id = root["id"].asInt();
-	pointer.type = static_cast<SerializableType>(root["type"].asInt());
 	if (pointer.id == -1) {   // entry is nullptr
 		return pointer;
 	}
-	void *ptr = getPointer(pointer.id);
+	Serializable *ptr = getPointer(pointer.id);
 	if (ptr != nullptr) {     // entry is a reference to an already deserialized object pointer
 		pointer.object = ptr;
 		return pointer;
 	}
 
+	SerializableType type = static_cast<SerializableType>(root["type"].asInt());
+
 	Json::Value data = root["object"];
-	switch (pointer.type) {
+	switch (type) {
 		default:
 			throw std::exception("Unsupported SerializableType encountered!");
-		// remember to always emplace the pointer in the 'ids' map before recursively going down!
+		// remember to always emplace the pointer in the 'ids' map before calling serialize (which can recursively go down the tree)!
 		case SGraphNode:
 			GraphNode *node = new GraphNode();
+			pointer.object = node;
 			ids.emplace(node, pointer.id);
-			//todo
+			node->deserialize(data, this);
 			break;
 	}
 	return pointer;

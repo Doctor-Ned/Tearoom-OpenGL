@@ -7,10 +7,11 @@
 #include "GuiConfigurable.h"
 #include "Render/Renderable.h"
 #include <queue>
+#include "Serialization/Serializable.h"
 class Mesh;
 class Shader;
 
-class GraphNode : public GuiConfigurable, public Renderable {
+class GraphNode : public GuiConfigurable, public Renderable, public Serializable {
 public:
 	Transform worldTransform; //Transform has addres to dirty flag and can change it.
 	Transform localTransform;
@@ -39,13 +40,16 @@ public:
 	bool isOpaque() override;
 	bool isActive() override;
 	virtual void setActive(bool active);
-	const char* getName() const;
-	void setName(const char* name);
+	std::string getName() const;
+	void setName(std::string name);
 	std::vector<GraphNode*> getChildren() const;
 	std::vector<Renderable*> getRenderableComponents() const;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer *serializer) override;
+	SerializableType getSerializableType() override;
 protected:
 	virtual void updateWorld();
-	const char* name;
+	std::string name;
 	void renderGui() override;
 	bool active = true;
 	bool hitByRay = false;

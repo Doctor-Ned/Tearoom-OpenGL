@@ -3,21 +3,16 @@
 #include <string>
 #include <map>
 #include "Global.h"
+#include "Serializable.h"
 
 class GraphNode;
 
-enum SerializableType {
-	SNone,
-	SGraphNode
-};
-
 struct SerializablePointer {
-	SerializablePointer() : id(-1), type(SNone), object(nullptr) {}
-	SerializablePointer(SerializableType type, void* object) : id(-1), type(type), object(object) {}
-	SerializablePointer(int id, SerializableType type, void* object) : id(id), type(type), object(object) {}
+	SerializablePointer() : id(-1), object(nullptr) {}
+	SerializablePointer(Serializable* object) : id(-1), object(object) {}
+	SerializablePointer(int id, Serializable* object) : id(id), object(object) {}
 	int id;
-	SerializableType type;
-	void *object;
+	Serializable* object;
 };
 
 class Serializer {
@@ -28,14 +23,15 @@ public:
 	void operator=(Serializer const&) = delete;
 	void saveScene(GraphNode *scene, const std::string& name);
 	GraphNode *loadScene(const std::string& name);
-private:
-	void *getPointer(int id);
-	int getId(void *pointer);
-	int idCounter;
-	std::map<void*, int> ids;
-	void serialize(SerializablePointer ser, Json::Value &root);
-	GraphNode *deserializeScene(Json::Value &root);
+	Serializable *getPointer(int id);
+	int getId(Serializable *pointer);
+	Json::Value serialize(Serializable *ser);
+	Json::Value serialize(SerializablePointer ser);
 	SerializablePointer deserialize(Json::Value &root);
+private:
+	int idCounter;
+	std::map<Serializable*, int> ids;
+	GraphNode *deserializeScene(Json::Value &root);
 	void loadScenes();
 	Serializer() = default;
 	const std::string SCENES_DIR = "Scenes";
