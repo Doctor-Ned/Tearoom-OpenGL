@@ -4,13 +4,13 @@
 #include "Scene/GraphNode.h"
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject), light1(light1), light2(light2),
+	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
 	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), light1Comp(dirLightComp1), light2Comp(dirLightComp2) {
 	setTime(initialTime);
 }
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject) : Component(gameObject), light1(light1), light2(light2),
+	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject) : Component(gameObject, "Sun"), light1(light1), light2(light2),
 	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance) {
 	setTime(initialTime);
 	GraphNode *light1Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), gameObject);
@@ -58,6 +58,23 @@ void Sun::update(float msec) {
 		dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 		glm::vec4 position = gameObject->localTransform.getMatrix()[3];
 		gameObject->localTransform.setMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(position)), glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	}
+}
+
+void Sun::renderGui() {
+	Component::renderGui();
+	if(active) {
+		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
+		ImGui::NewLine();
+		ImGui::ColorEdit3("Dawn color", reinterpret_cast<float*>(&dawnColor));
+		ImGui::NewLine();
+		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
+		ImGui::NewLine();
+		ImGui::ColorEdit3("Dusk color", reinterpret_cast<float*>(&duskColor));
+		ImGui::NewLine();
+		ImGui::ColorEdit3("Night color", reinterpret_cast<float*>(&nightColor));
+		ImGui::NewLine();
+		dirty = true;
 	}
 }
 

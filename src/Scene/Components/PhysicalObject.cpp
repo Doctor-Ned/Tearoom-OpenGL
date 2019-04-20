@@ -13,7 +13,7 @@ bool PhysicalObject::isActive() {
 }
 
 PhysicalObject::PhysicalObject(GraphNode* _gameObject)
-:Component(_gameObject) {}
+:Component(_gameObject, "Physical object") {}
 
 void PhysicalObject::update(float msec)
 {

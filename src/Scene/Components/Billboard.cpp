@@ -1,7 +1,7 @@
 #include "Billboard.h"
 #include "Render/Camera.h"
 
-Billboard::Billboard(Camera* camera, GraphNode* gameObject, bool rescale) : Component(gameObject) {
+Billboard::Billboard(Camera* camera, GraphNode* gameObject, bool rescale) : Component(gameObject, "Billboard") {
 	this->camera = camera;
 }
 

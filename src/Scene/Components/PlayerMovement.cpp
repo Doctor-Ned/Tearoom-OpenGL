@@ -7,7 +7,7 @@
 #include "Scene/Scenes/Scene.h"
 #include "glm/glm.hpp"
 
-PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _scene) : Component(_gameObject), camera(_camera), scene(_scene)
+PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _scene) : Component(_gameObject, "Player movement"), camera(_camera), scene(_scene)
 {
 
 }

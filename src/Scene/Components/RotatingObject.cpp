@@ -1,7 +1,7 @@
 #include "RotatingObject.h"
 #include "Scene/GraphNode.h"
 
-RotatingObject::RotatingObject(float rotationSpeed, GraphNode* gameObject) : Component(gameObject),
+RotatingObject::RotatingObject(float rotationSpeed, GraphNode* gameObject) : Component(gameObject, "Rotating object"),
                                                                                  rotationSpeed(rotationSpeed) {}
 
 void RotatingObject::update(float timeDiff) {

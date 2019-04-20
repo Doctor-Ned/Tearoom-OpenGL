@@ -58,10 +58,10 @@ TestScene::TestScene() {
 	lights = lightManager->recreateLights(2, 1, 1);
 	sunNode = new GraphNode(nullptr, rootNode);
 	sun = new Sun(lights.dirLights[0], lights.dirLights[1],
-		normalize(glm::vec4(255.0f, 183.0f, 0.0f, 255.0f)),
-		normalize(glm::vec4(255.0f, 210.0f, 120.0f, 255.0f)),
-		normalize(glm::vec4(52.0f, 86.0f, 181.0f, 255.0f) * 0.8f),
-		normalize(glm::vec4(70.0f, 115.0f, 189.0f, 255.0f) * 0.8f), 10.0f, 12.0f, sunNode);
+		normalize(glm::vec4(254, 107, 0, 255)),
+		normalize(glm::vec4(173, 161, 70, 255)),
+		normalize(glm::vec4(0, 2, 15, 255)),
+		normalize(glm::vec4(2, 5, 18, 255)), 10.0f, 12.0f, sunNode);
 	sunNode->addComponent(sun);
 
 	//DirLight *dirLight = lights.dirLights[0];
@@ -202,11 +202,7 @@ void TestScene::render() {
 void TestScene::renderUi() {
 	Scene::renderUi();
 
-	static float time = sun->getTime();
-	ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
-	if (time != sun->getTime()) {
-		sun->setTime(time);
-	}
+	sun->renderGui();
 
 	if (modelNode != nullptr) {
 		static float opacity = 1.0f;

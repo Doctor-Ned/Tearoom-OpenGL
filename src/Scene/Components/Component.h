@@ -10,9 +10,9 @@ class Component abstract : public GuiConfigurable
 {
 protected:
 	GraphNode* gameObject;
-	Component(GraphNode* _gameObject) : gameObject(_gameObject) {}
+	Component(GraphNode* _gameObject, std::string name = "Component") : gameObject(_gameObject), name(name) {}
 	bool active = true;
-	std::string name = "Component";
+	std::string name;
 public:
 	void setName(std::string name) { this->name = name; }
 	virtual void updateWorld() {}

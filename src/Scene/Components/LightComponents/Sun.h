@@ -13,6 +13,7 @@ public:
 	void setVerticalRotation(float angle); //in degrees
 	float getTime();
 	void update(float msec) override;
+	void renderGui() override;
 protected:
 	bool dirty = false;
 	float rescaleTime(float time);

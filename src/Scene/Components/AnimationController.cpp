@@ -8,7 +8,7 @@
 #include "Scene/GameManager.h"
 
 AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, bool* f_keyPressed)
-:Component(_gameObject), type(_type) {
+:Component(_gameObject, "Animation controller"), type(_type) {
     F_keyState = f_keyPressed;
 }
 

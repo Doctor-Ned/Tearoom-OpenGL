@@ -4,6 +4,7 @@
 
 SphereCollider::SphereCollider(GraphNode* _gameObject,  Collision classification, bool isTrigger, glm::vec3 position, float _radius) : Collider(SphereCol, _gameObject, classification, isTrigger,  position), radius(_radius)
 {
+	name = "Sphere collider";
 	mesh_ptr = std::make_shared<MeshColorSphere>(radius, 15, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setUseLight(false);
 	//mesh_ptr->setRenderMode(GL_LINE_STRIP);
