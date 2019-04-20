@@ -1,6 +1,12 @@
 #include "Global.h"
-#include "Scene/GameManager.h"
 #include <fstream>
+
+bool Global::endsWith(std::string text, std::string end) {
+	if(text.length() < end.length()) {
+		return false;
+	}
+	return std::equal(end.rbegin(), end.rend(), text.rbegin());
+}
 
 std::string Global::jsonValueToString(Json::Value value) {
 	static Json::StyledWriter styledWriter;

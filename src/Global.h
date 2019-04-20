@@ -101,6 +101,7 @@ struct LightShadowData {
 
 class Global {
 public:
+	static bool endsWith(std::string text, std::string end);
 	static std::string jsonValueToString(Json::Value value);
 	static std::string readFullFile(std::string path);
 	static Json::Value readJsonFile(std::string path);
