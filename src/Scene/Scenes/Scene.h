@@ -46,6 +46,7 @@ protected:
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
+	std::vector<Renderable*> lightIgnoredObjects;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;

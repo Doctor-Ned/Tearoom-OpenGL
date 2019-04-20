@@ -37,7 +37,10 @@ void GraphNode::updateDrawData() {
 	//}
 
 	for (Renderable* renderable : renderableComponents) {
-		renderable->updateDrawData();
+		Component *comp = dynamic_cast<Component*>(renderable);
+		if (renderable->isActive() && comp->isComponentActive()) {
+			renderable->updateDrawData();
+		}
 	}
 
 	for (auto &child : children) {
@@ -68,7 +71,9 @@ void GraphNode::update(double timeDiff) {
 		OctreeNode::toInsert2.insert(this);
 	}
 	for (Component* component : components) {
-		component->update(timeDiff);
+		if (component->isComponentActive()) {
+			component->update(timeDiff);
+		}
 	}
 	for (auto &child : children) {
 		child->update(timeDiff);
@@ -234,10 +239,8 @@ void GraphNode::deserialize(Json::Value& root, Serializer* serializer) {
 	localTransform.setLastMatrix(DataSerializer::deserializeMat4(root.get("lastLocal", DataSerializer::serializeMat4(localTransform.getLastMatrix()))));
 	Json::Value children = root["children"];
 	int size = children.size();
-	if (size > 0) {
-		for (int i = 0; i < size; i++) {
-			addChild(dynamic_cast<GraphNode*>(serializer->deserialize(children[i]).object));
-		}
+	for (int i = 0; i < size; i++) {
+		addChild(dynamic_cast<GraphNode*>(serializer->deserialize(children[i]).object));
 	}
 	setParent(dynamic_cast<GraphNode*>(serializer->deserialize(root["parent"]).object));
 }
@@ -255,35 +258,19 @@ void GraphNode::updateWorld() {
 			worldTransform.setMatrix(localTransform.getMatrix());
 		}
 	}
+	for (auto &comp : components) {
+		if (comp->isComponentActive()) {
+			comp->updateWorld();
+		}
+	}
 }
 
 void GraphNode::renderGui() {
-	std::string title(name);
-	title.append(" - active");
 	bool active = this->active;
-	ImGui::Checkbox(title.c_str(), &active);
+	ImGui::Checkbox(name.c_str(), &active);
 	if (active != this->active)setActive(active);
 	ImGui::NewLine();
 	if (active) {
-		//glm::vec3 scale;
-		//glm::quat rotation;
-		//glm::vec3 translation;
-		//glm::vec3 skew;
-		//glm::vec4 perspective;
-		//decompose(localTransform.Matrix(), scale, rotation, translation, skew, perspective);
-		//rotation = conjugate(rotation);
-		//glm::vec3 euler = eulerAngles(rotation);
-		//ImGui::InputFloat3("Position", &translation[0]);
-		//ImGui::NewLine();
-		//ImGui::SliderAngle("Rotation", &euler[0]);
-		//ImGui::NewLine();
-		//ImGui::InputFloat3("Scale", &scale[0]);
-		//ImGui::NewLine();
-		//glm::mat4 matrix = translate(glm::mat4(1.0f), translation);
-		//matrix = glm::scale(matrix, scale);
-		//matrix = mat4_cast(glm::quat(euler)) * matrix;
-		//localTransform.SetMatrix(matrix);
-
 		glm::vec3 position = localTransform.getMatrix()[3];
 
 		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&position));
@@ -317,5 +304,9 @@ void GraphNode::renderGui() {
 			localTransform.rotate(15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		ImGui::NewLine();
+		for (auto &comp : components) {
+			comp->renderGui();
+			ImGui::NewLine();
+		}
 	}
 }

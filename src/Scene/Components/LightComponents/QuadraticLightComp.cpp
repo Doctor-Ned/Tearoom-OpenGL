@@ -1,6 +1,6 @@
-#include "QuadraticLightNode.h"
-void QuadraticLightNode::renderGui() {
-	LightNode::renderGui();
+#include "QuadraticLightComp.h"
+void QuadraticLightComp::renderGui() {
+	LightComp::renderGui();
 	if(active) {
 		float constant = getConstant(), linear = getLinear(), quadratic = getQuadratic();
 		ImGui::SliderFloat("Constant", &constant, 0.001f, 100.0f);

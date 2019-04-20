@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LightNode.h"
+#include "LightComp.h"
 
-class DirLightNode : public LightNode {
+class DirLightComp : public LightComp {
 public:
-	DirLightNode(DirLight *light, Mesh *mesh, GraphNode *parent);
+	DirLightComp(DirLight *light, GraphNode *parent);
 	DirLight *getLight() const;
 protected:
 	bool getEnabled() override;

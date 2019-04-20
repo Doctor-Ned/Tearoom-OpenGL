@@ -1,7 +1,9 @@
 #pragma once
 
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
-#include "Scene/DirLightNode.h"
+
+#include "Global.h"
+#include "Shader.h"
 
 class GeometryShader;
 class UboLights;

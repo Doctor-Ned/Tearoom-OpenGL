@@ -1,33 +1,36 @@
-#include "BillboardNode.h"
+#include "Billboard.h"
 #include "Render/Camera.h"
 
-BillboardNode::BillboardNode(Camera* camera, Mesh* mesh, GraphNode* parent, bool rescale) : GraphNode(mesh, parent) {
+Billboard::Billboard(Camera* camera, GraphNode* gameObject, bool rescale) : Component(gameObject) {
 	this->camera = camera;
 }
 
-void BillboardNode::setCamera(Camera* camera) {
+void Billboard::setCamera(Camera* camera) {
 	this->camera = camera;
 }
 
-void BillboardNode::update(double timeDiff) {
-	GraphNode::update(timeDiff);
+void Billboard::update(float msec) {
 	recalculateMatrix();
 }
 
-Camera* BillboardNode::getCamera() {
+void Billboard::updateWorld() {
+	recalculateMatrix();
+}
+
+Camera* Billboard::getCamera() {
 	return camera;
 }
 
-void BillboardNode::setRescaling(bool rescale) {
+void Billboard::setRescaling(bool rescale) {
 	this->rescale = rescale;
 }
 
-bool BillboardNode::getRescaling() {
+bool Billboard::getRescaling() {
 	return rescale;
 }
 
-void BillboardNode::recalculateMatrix() {
-	glm::vec3 pos = worldTransform.getMatrix()[3] + localTransform.getMatrix()[3];
+void Billboard::recalculateMatrix() {
+	glm::vec3 pos = gameObject->worldTransform.getMatrix()[3] + gameObject->localTransform.getMatrix()[3];
 	glm::mat4 world = translate(glm::mat4(1.0f), pos);
 	if (rescale) {
 		glm::vec3 right = camera->getRight();
@@ -47,12 +50,5 @@ void BillboardNode::recalculateMatrix() {
 	rotation[0][1] = -rotation[0][1];
 	rotation[0][2] = -rotation[0][2];
 	world *= rotation;
-	worldTransform.setMatrix(world);
-}
-
-void BillboardNode::updateWorld() {
-	GraphNode::updateWorld();
-	if (dirty) {
-		recalculateMatrix();
-	}
+	gameObject->worldTransform.setMatrix(world);
 }

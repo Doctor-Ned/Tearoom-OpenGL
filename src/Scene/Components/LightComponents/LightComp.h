@@ -1,12 +1,13 @@
 #pragma once
 
-#include "GraphNode.h"
-#include "GuiConfigurable.h"
+#include "Scene/Components/Component.h"
+#include "Global.h"
 
-class LightNode : public GraphNode {
+class LightComp : public Component {
 public:
-	LightNode(Mesh *mesh, GraphNode *parent) : GraphNode(mesh, parent) {}
-	void setActive(bool active) override;
+	LightComp(GraphNode *gameObject);
+	void updateWorld() override;
+	void setComponentActive(bool active) override;
 	virtual glm::vec4 getAmbient() = 0;
 	virtual glm::vec4 getDiffuse() = 0;
 	virtual glm::vec4 getSpecular() = 0;
@@ -16,8 +17,6 @@ public:
 protected:
 	virtual bool getEnabled() = 0;
 	virtual void setEnabled(bool enabled) = 0;
-	glm::vec4 lastAmbient, lastDiffuse, lastSpecular;
-	void updateWorld() override;
 	virtual void setModel(glm::mat4 model) = 0;
 	void renderGui() override;
 };

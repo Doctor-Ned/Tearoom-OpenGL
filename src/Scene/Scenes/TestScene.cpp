@@ -2,15 +2,16 @@
 #include "Mesh/MeshColorPlane.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/Model.h"
-#include "Scene/DirLightNode.h"
-#include "Scene/RotatingNode.h"
-#include "Scene/SpotLightNode.h"
-#include "Scene/PointLightNode.h"
+#include "Scene/Components/LightComponents/DirLightComp.h"
+#include "Scene/Components/LightComponents/SpotLightComp.h"
+#include "Scene/Components/LightComponents/SpotLightComp.h"
+#include "Scene/Components/RotatingObject.h"
 #include "Render/LightManager.h"
 #include "Mesh/MeshPlane.h"
-#include "Scene/BillboardNode.h"
+#include "Scene/Components/Billboard.h"
 #include <iostream>
 #include "Scene/Scripts/CollisionTest.h"
+#include "Scene/Components/LightComponents/PointLightComp.h"
 
 TestScene::TestScene() {
 	camera = new Camera();
@@ -55,12 +56,13 @@ TestScene::TestScene() {
 	//GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
 	lights = lightManager->recreateLights(2, 1, 1);
-
-	sunNode = new SunNode(lights.dirLights[0], lights.dirLights[1],
+	sunNode = new GraphNode(nullptr, rootNode);
+	sun = new Sun(lights.dirLights[0], lights.dirLights[1],
 		normalize(glm::vec4(255.0f, 183.0f, 0.0f, 255.0f)),
 		normalize(glm::vec4(255.0f, 210.0f, 120.0f, 255.0f)),
 		normalize(glm::vec4(52.0f, 86.0f, 181.0f, 255.0f) * 0.8f),
-		normalize(glm::vec4(70.0f, 115.0f, 189.0f, 255.0f) * 0.8f), 10.0f, 12.0f, rootNode);
+		normalize(glm::vec4(70.0f, 115.0f, 189.0f, 255.0f) * 0.8f), 10.0f, 12.0f, sunNode);
+	sunNode->addComponent(sun);
 
 	//DirLight *dirLight = lights.dirLights[0];
 	//dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -112,7 +114,8 @@ TestScene::TestScene() {
 	//floor1->addComponent(new BoxCollider(floor1, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 
 
-	GraphNode *rotatingNode2 = new RotatingNode(0.075f, nullptr, rootNode);
+	GraphNode *rotatingNode2 = new GraphNode(nullptr, rootNode);
+	rotatingNode2->addComponent(new RotatingObject(0.075f, rotatingNode2));
 
 	SpotLight *spotLight = lights.spotLights[0];
 	spotLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -121,13 +124,15 @@ TestScene::TestScene() {
 	spotLight->constant = 0.18f;
 	spotLight->linear = 0.1f;
 	spotLight->quadratic = 0.1f;
-	spotLightNode = new SpotLightNode(spotLight, lightSphere, rotatingNode2);
+	GraphNode *spotLightNode = new GraphNode(lightSphere, rotatingNode2);
+	spotLightNode->addComponent(new SpotLightComp(spotLight, spotLightNode));
 	//GraphNode *spotNode = new GraphNode(nullptr, rotatingNode);
 	//spotNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 0.0f)));
 	spotLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)));
 	//spotLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-	GraphNode *rotatingNode3 = new RotatingNode(0.15f, nullptr, rootNode);
+	GraphNode *rotatingNode3 = new GraphNode(nullptr, rootNode);
+	rotatingNode3->addComponent(new RotatingObject(0.15f, rotatingNode3));
 
 	PointLight *pointLight = lights.pointLights[0];
 	pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -138,19 +143,23 @@ TestScene::TestScene() {
 	pointLight->quadratic = 0.1f;
 	pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->diffuse);
 	pointLightSphere->setShaderType(STLight);
-	pointLightNode = new PointLightNode(pointLight, pointLightSphere, rotatingNode3);
+	GraphNode *pointLightNode = new GraphNode(pointLightSphere, rotatingNode3);
 	pointLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+	pointLightNode->addComponent(new PointLightComp(pointLight, pointLightNode));
 
-	dirLightNodes.push_back(dirLightNode);
-	spotLightNodes.push_back(spotLightNode);
-	pointLightNodes.push_back(pointLightNode);
+	//dirLightComps.push_back(dirLightNode->getComponent<DirLightComp>());
+	spotLightComps.push_back(spotLightNode->getComponent<SpotLightComp>());
+	pointLightComps.push_back(pointLightNode->getComponent<PointLightComp>());
 
-	BillboardNode *billboardNode = new BillboardNode(camera, nullptr, rootNode, true);
+	GraphNode *billboardNode = new GraphNode(nullptr, rootNode);
+	Billboard *billboard = new Billboard(camera, billboardNode, true);
 	billboardNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, -3.0f)));
+	billboardNode->addComponent(billboard);
 	MeshPlane *emote = new MeshPlane(0.25f, 0.25f, "res/textures/face.png");
 	emote->setUseLight(false);
 	emote->setOpaque(false);
 	GraphNode *emoteNode = new GraphNode(emote, billboardNode);
+	lightIgnoredObjects.push_back(emoteNode);
 	emoteNode->localTransform.setMatrix(rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 	updatableShaders.push_back(assetManager->getShader(STModel));
@@ -193,10 +202,10 @@ void TestScene::render() {
 void TestScene::renderUi() {
 	Scene::renderUi();
 
-	static float time = sunNode->getTime();
+	static float time = sun->getTime();
 	ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
-	if (time != sunNode->getTime()) {
-		sunNode->setTime(time);
+	if (time != sun->getTime()) {
+		sun->setTime(time);
 	}
 
 	if (modelNode != nullptr) {
@@ -208,8 +217,8 @@ void TestScene::renderUi() {
 
 	//dirLightNode->getParent()->drawGui();
 	//dirLightNode->drawGui();
-	spotLightNode->drawGui();
-	pointLightNode->drawGui();
+	spotLightComps[0]->drawGui();
+	pointLightComps[0]->drawGui();
 
 	ImGui::SliderFloat("Dir near plane", &lightManager->dirNear, 0.01f, 100.0f);
 	ImGui::SliderFloat("Dir far plane", &lightManager->dirFar, 0.01f, 100.0f);

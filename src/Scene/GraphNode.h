@@ -11,15 +11,15 @@
 class Mesh;
 class Shader;
 
-class GraphNode : public GuiConfigurable, public Renderable, public Serializable {
+class GraphNode final : public GuiConfigurable, public Renderable, public Serializable {
 public:
-	Transform worldTransform; //Transform has addres to dirty flag and can change it.
+	Transform worldTransform; //Transform has address to the dirty flag and can change it.
 	Transform localTransform;
 	GraphNode(Mesh* mesh = nullptr, GraphNode* parent = nullptr);
 	void updateDrawData() override;
 	void drawSelf(Shader *shader) override;
 	ShaderType getShaderType() override;
-	virtual void update(double timeDiff);
+	void update(double timeDiff);
 	GraphNode *getParent() const;
 	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
 	void addChild(GraphNode* child);
@@ -36,10 +36,10 @@ public:
 	float getOpacity();
 	void setOpacity(float opacity);
 	Mesh* getMesh();
-	virtual ~GraphNode();
+	~GraphNode();
 	bool isOpaque() override;
 	bool isActive() override;
-	virtual void setActive(bool active);
+	void setActive(bool active);
 	std::string getName() const;
 	void setName(std::string name);
 	std::vector<GraphNode*> getChildren() const;
@@ -48,7 +48,7 @@ public:
 	void deserialize(Json::Value& root, Serializer *serializer) override;
 	SerializableType getSerializableType() override;
 protected:
-	virtual void updateWorld();
+	void updateWorld();
 	std::string name;
 	void renderGui() override;
 	bool active = true;

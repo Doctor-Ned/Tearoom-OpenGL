@@ -2,19 +2,19 @@
 #include "Scene.h"
 #include "Render/Camera.h"
 #include "GLFW/glfw3.h"
-#include <map>
 #include "Ubo/UboLights.h"
 #include "Ubo/UboViewProjection.h"
 #include "Ubo/UboTextureColor.h"
-#include "Scene/DirLightNode.h"
-#include "Scene/PointLightNode.h"
-#include "Scene/SpotLightNode.h"
 #include "Render/GeometryShader.h"
 #include "Render/Skybox.h"
 #include "Render/LightManager.h"
-#include "Scene/SunNode.h"
+#include "Scene/Components/LightComponents/Sun.h"
 
+class DirLightComp;
+class SpotLightComp;
+class PointLightComp;
 class MeshColorSphere;
+
 const int
 KEY_FORWARD = GLFW_KEY_W,
 KEY_BACKWARD = GLFW_KEY_S,
@@ -53,15 +53,13 @@ protected:
 	UboLights *uboLights;
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
-	std::vector<DirLightNode*> dirLightNodes;
-	std::vector<SpotLightNode*> spotLightNodes;
-	std::vector<PointLightNode*> pointLightNodes;
+	std::vector<DirLightComp*> dirLightComps;
+	std::vector<SpotLightComp*> spotLightComps;
+	std::vector<PointLightComp*> pointLightComps;
 	GraphNode *modelNode = nullptr;
 	MeshColorSphere *pointLightSphere;
-	DirLightNode *dirLightNode;
-	SpotLightNode *spotLightNode;
-	PointLightNode *pointLightNode;
-	SunNode *sunNode;
+	GraphNode *sunNode;
+	Sun *sun;
 	Camera *camera;
 	const float BASE_MOVEMENT_SPEED = 1.0f;
 	float movementSpeed = BASE_MOVEMENT_SPEED;

@@ -1,19 +1,18 @@
-#include "LightNode.h"
+#include "LightComp.h"
+#include "Scene/GraphNode.h"
 
-void LightNode::setActive(bool active) {
-	GraphNode::setActive(active);
+LightComp::LightComp(GraphNode* gameObject) : Component(gameObject) {}
+void LightComp::updateWorld() {
+	setModel(gameObject->worldTransform.getMatrix());
+}
+
+void LightComp::setComponentActive(bool active) {
+	Component::setComponentActive(active);
 	setEnabled(active);
 }
 
-void LightNode::updateWorld() {
-	GraphNode::updateWorld();
-	//if (dirty) {
-	setModel(worldTransform.getMatrix());
-//}
-}
-
-void LightNode::renderGui() {
-	GraphNode::renderGui();
+void LightComp::renderGui() {
+	Component::renderGui();
 	if (active) {
 		glm::vec4 ambient = getAmbient(), diffuse = getDiffuse(), specular = getSpecular();
 		ImGui::ColorEdit4("Ambient", &ambient[0]);

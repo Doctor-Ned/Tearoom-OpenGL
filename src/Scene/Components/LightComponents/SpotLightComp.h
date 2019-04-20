@@ -1,17 +1,21 @@
 #pragma once
 
-#include "QuadraticLightNode.h"
+#include "QuadraticLightComp.h"
 
-class PointLightNode : public QuadraticLightNode {
+class SpotLightComp : public QuadraticLightComp {
 public:
-	PointLightNode(PointLight *light, Mesh *mesh, GraphNode *parent);
+	SpotLightComp(SpotLight *light, GraphNode *gameObject);
 	float getConstant() override;
 	float getLinear() override;
 	float getQuadratic() override;
+	float getCutoff();
+	float getOuterCutoff();
 	void setConstant(float constant) override;
 	void setLinear(float linear) override;
 	void setQuadratic(float quadratic) override;
-	PointLight *getLight() const;
+	void setCutoff(float cutoff);
+	void setOuterCutoff(float outerCutoff);
+	SpotLight *getLight() const;
 protected:
 	bool getEnabled() override;
 	void setEnabled(bool enabled) override;
@@ -22,6 +26,7 @@ protected:
 	void setDiffuse(glm::vec4 diffuse) override;
 	void setSpecular(glm::vec4 specular) override;
 	void setModel(glm::mat4 model) override;
+	void renderGui() override;
 private:
-	PointLight *light;
+	SpotLight *light;
 };

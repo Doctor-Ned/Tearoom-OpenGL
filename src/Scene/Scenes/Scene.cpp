@@ -225,6 +225,18 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					if (!node->isActive()) {
 						continue;
 					}
+					if(ignoreLight) {
+						bool ignore = false;
+						for(auto &ignored : lightIgnoredObjects) {
+							if(node == ignored) {
+								ignore = true;
+								break;
+							}
+						}
+						if(ignore) {
+							continue;
+						}
+					}
 #ifdef ENABLE_FRUSTUM_CULLING
 					if (!ignoreLight) {
 						GraphNode* gn = dynamic_cast<GraphNode*>(node);
@@ -263,6 +275,18 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 				for (auto &node : *(*map)[type]) {
 					if (!node->isActive()) {
 						continue;
+					}
+					if (ignoreLight) {
+						bool ignore = false;
+						for (auto &ignored : lightIgnoredObjects) {
+							if (node == ignored) {
+								ignore = true;
+								break;
+							}
+						}
+						if (ignore) {
+							continue;
+						}
 					}
 #ifdef ENABLE_FRUSTUM_CULLING
 					if (!ignoreLight) {

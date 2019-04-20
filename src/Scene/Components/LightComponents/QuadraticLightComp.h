@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LightNode.h"
+#include "LightComp.h"
 
-class QuadraticLightNode : public LightNode {
+class QuadraticLightComp : public LightComp {
 public:
-	QuadraticLightNode(Mesh *mesh, GraphNode *parent) : LightNode(mesh,parent){}
+	QuadraticLightComp( GraphNode *gameObject) : LightComp(gameObject){}
 	virtual float getConstant() = 0;
 	virtual float getLinear() = 0;
 	virtual float getQuadratic() = 0;
