@@ -8,7 +8,7 @@
 
 class MeshTorus : public MeshTexture {
 public:
-	MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
+	MeshTorus(float radiusIn, float radiusOut, int sideAmount, std::string texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void updateValues(float radiusIn, float radiusOut, int sideAmount);
 	void updateValues(float radiusIn, float radiusOut, int sideAmount, glm::vec3 baseCenter);
 	SerializableType getSerializableType() override;

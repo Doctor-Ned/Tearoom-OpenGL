@@ -9,7 +9,7 @@
 
 class MeshSphere : public MeshTexture {
 public:
-	MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
+	MeshSphere(float radius, int precision, std::string texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void updateValues(float radius, int precision);
 	void updateValues(float radius, int precision, glm::vec3 baseCenter);
 	float getRadius() const;

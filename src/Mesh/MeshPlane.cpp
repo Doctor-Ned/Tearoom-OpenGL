@@ -1,7 +1,7 @@
 #include "MeshPlane.h"
 #include "Serialization/DataSerializer.h"
 
-MeshPlane::MeshPlane(float width, float length, char* texturePath, glm::vec3 baseCenter)
+MeshPlane::MeshPlane(float width, float length, std::string texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), width(width), length(length) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);
 	setupMesh();

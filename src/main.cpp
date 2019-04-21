@@ -18,6 +18,7 @@
 #include "Ui/UiText.h"
 #include "Ui/UiColorPlane.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Node.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -260,6 +261,8 @@ int main(int argc, char** argv) {
 	root->localTransform.translate(glm::vec3(5.0f, 2.0f, -3.0f));
 	root->addChild(new GraphNode());
 	root->getChild(0)->localTransform.rotate(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	root->addChild(Node::createBox(glm::vec3(1.0f, 2.0f, 3.0f), glm::vec4(1.0f, 0.0f, 0.5f, 1.0f)));
+	root->addChild(Node::createSphere(1.0f, 20, "res/textures/face.png"));
 	serializer->saveScene(root, "test");
 
 	GraphNode *loaded = serializer->loadScene("test");

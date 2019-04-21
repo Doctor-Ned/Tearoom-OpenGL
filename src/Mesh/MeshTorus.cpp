@@ -1,7 +1,7 @@
 #include "MeshTorus.h"
 #include "Serialization/DataSerializer.h"
 
-MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath,
+MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, std::string texturePath,
                      glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);

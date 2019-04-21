@@ -6,8 +6,8 @@
 
 class MeshBox : public MeshTexture {
 public:
-	MeshBox(glm::vec3 dimensions, char* texturePath);
-	MeshBox(glm::vec3 min, glm::vec3 max, char* texturePath);
+	MeshBox(glm::vec3 dimensions, std::string texturePath);
+	MeshBox(glm::vec3 min, glm::vec3 max, std::string texturePath);
 	void updateValues(glm::vec3 min, glm::vec3 max);
 	void updateValues(glm::vec3 dimensions);
 	glm::vec3 getMin() const;

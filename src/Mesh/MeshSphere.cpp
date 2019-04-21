@@ -1,7 +1,7 @@
 #include "MeshSphere.h"
 #include "Serialization/DataSerializer.h"
 
-MeshSphere::MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter)
+MeshSphere::MeshSphere(float radius, int precision, std::string texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radius(radius), precision(precision) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);
 	setupMesh();

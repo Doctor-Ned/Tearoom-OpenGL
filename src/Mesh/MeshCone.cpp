@@ -1,7 +1,7 @@
 #include "MeshCone.h"
 #include "Serialization/DataSerializer.h"
 
-MeshCone::MeshCone(float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
+MeshCone::MeshCone(float radius, float height, int sideAmount, std::string texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);
 	setupMesh();
