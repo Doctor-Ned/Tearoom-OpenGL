@@ -11,7 +11,6 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
 	UiSlider::setPosition(position, center);
 	//setup();
@@ -21,8 +20,8 @@ UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, flo
 	glm::vec4 lineColor, bool center) :
 	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, center) {}
 
-void UiSlider::render() {
-	UiTexturedElement::render();
+void UiSlider::render(Shader *shader) {
+	UiTexturedElement::render(shader);
 	shader->setColor(lineColor);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
@@ -31,7 +30,10 @@ void UiSlider::render() {
 	
 	button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x,
 		actualPosition.y + size.y / 2.0f));
-	button->render();
+	Shader *shad = AssetManager::getInstance()->getShader(button->getShaderType());
+	shad->use();
+	button->render(shad);
+	shader->use();
 }
 
 void UiSlider::setCallback(std::function<void(float)> callback) {
@@ -98,8 +100,6 @@ void UiSlider::setup() {
 	data.push_back(vertices[0]);
 	data.push_back(vertices[3]);
 	data.push_back(vertices[2]);
-
-	shader->use();
 
 	if (vbo != 0) {
 		glDeleteBuffers(1, &vbo);

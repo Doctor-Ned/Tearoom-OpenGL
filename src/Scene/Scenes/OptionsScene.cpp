@@ -101,6 +101,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Enable VSync"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*windowWidth), "Enable FXAA"));
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 0.5f * heightSeg), glm::vec2(windowWidth, 1.5f * heightSeg), "OPTIONS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	reinitializeRenderMap();
 }
 
 OptionsScene::~OptionsScene() {

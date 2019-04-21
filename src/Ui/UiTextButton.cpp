@@ -15,9 +15,12 @@ UiTextButton::UiTextButton(glm::vec2 position, glm::vec2 size, const char* text,
 	bool center, TextRenderer* textRenderer) : UiTextButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED,
 		position, size, text, BASE_TEXT_HEIGHT_SCALE, textColor, center, textRenderer) {}
 
-void UiTextButton::render() {
-	UiButton::render();
-	text->render();
+void UiTextButton::render(Shader *shader) {
+	UiButton::render(shader);
+	Shader *shad2 = AssetManager::getInstance()->getShader(text->getShaderType());
+	shad2->use();
+	text->render(shad2);
+	shader->use();
 }
 
 void UiTextButton::setText(char* text) {

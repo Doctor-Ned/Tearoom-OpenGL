@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "Serializable.h"
 
+class Scene;
 class GraphNode;
 
 struct SerializablePointer {
@@ -21,8 +22,8 @@ public:
 	void setup();
 	Serializer(Serializer const&) = delete;
 	void operator=(Serializer const&) = delete;
-	void saveScene(GraphNode *scene, const std::string& name);
-	GraphNode *loadScene(const std::string& name);
+	void saveScene(Scene *scene, const std::string& name);
+	Scene *loadScene(const std::string& name);
 	Serializable *getPointer(int id);
 	int getId(Serializable *pointer);
 	Json::Value serialize(Serializable *ser);
@@ -32,7 +33,7 @@ private:
 	void deserializeAndIdentify(SerializablePointer &pointer, Json::Value &data, Serializable *serializable);
 	int idCounter;
 	std::map<Serializable*, int> ids;
-	GraphNode *deserializeScene(Json::Value &root);
+	Scene *deserializeScene(Json::Value &root);
 	void loadScenes();
 	Serializer() = default;
 	const std::string SCENES_DIR = "Scenes";

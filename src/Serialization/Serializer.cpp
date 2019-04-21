@@ -17,6 +17,8 @@
 #include "Mesh/MeshCylinder.h"
 #include "Mesh/MeshCone.h"
 #include "Mesh/Model.h"
+#include "Scene/Scenes/Scene.h"
+#include "Render/Camera.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -35,11 +37,10 @@ void Serializer::setup() {
 	loadScenes();
 }
 
-void Serializer::saveScene(GraphNode* scene, const std::string& name) {
+void Serializer::saveScene(Scene* scene, const std::string& name) {
 	idCounter = 0;
 	ids.clear();
-	SerializablePointer pointer(SGraphNode, scene);
-	Json::Value root = serialize(pointer);
+	Json::Value root = serialize(scene);
 	std::string file = SCENES_DIR + "/" + name + FORMAT;
 	if (fs::exists(file)) {
 		std::string oldFile = SCENES_DIR + "/" + name + OLD_FORMAT;
@@ -52,7 +53,7 @@ void Serializer::saveScene(GraphNode* scene, const std::string& name) {
 	loadScenes();
 }
 
-GraphNode* Serializer::loadScene(const std::string& name) {
+Scene* Serializer::loadScene(const std::string& name) {
 	std::string location;
 	for (auto &pair : scenes) {
 		if (name == pair.first) {
@@ -121,12 +122,12 @@ Json::Value Serializer::serialize(SerializablePointer ser) {
 	return root;
 }
 
-GraphNode* Serializer::deserializeScene(Json::Value& root) {
+Scene* Serializer::deserializeScene(Json::Value& root) {
 	SerializablePointer pointer = deserialize(root);
 	if (pointer.object == nullptr) {
 		return nullptr;
 	}
-	return dynamic_cast<GraphNode*>(pointer.object);
+	return dynamic_cast<Scene*>(pointer.object);
 }
 
 SerializablePointer Serializer::deserialize(Json::Value& root) {
@@ -198,6 +199,12 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SMeshTorus:
 			deserializeAndIdentify(pointer, data, new MeshTorus());
+			break;
+		case SScene:
+			deserializeAndIdentify(pointer, data, new Scene());
+			break;
+		case SCamera:
+			deserializeAndIdentify(pointer, data, new Camera());
 			break;
 	}
 	return pointer;

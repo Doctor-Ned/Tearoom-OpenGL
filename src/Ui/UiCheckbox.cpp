@@ -12,7 +12,6 @@ UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const 
 	this->textureTickHover = AssetManager::getInstance()->getTexture(textureTickHover);
 	this->textureTickClicked = AssetManager::getInstance()->getTexture(textureTickClicked);
 	this->checked = checked;
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
@@ -21,8 +20,8 @@ UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) : UiCheckb
 UiCheckbox::UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, bool center) :
 	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, size, checked, center) {}
 
-void UiCheckbox::render() {
-	UiTexturedElement::render();
+void UiCheckbox::render(Shader *shader) {
+	UiTexturedElement::render(shader);
 	Texture* txt;
 	switch (state) {
 		default:
@@ -102,8 +101,6 @@ void UiCheckbox::setup() {
 	data.push_back(vertices[0]);
 	data.push_back(vertices[3]);
 	data.push_back(vertices[2]);
-
-	shader->use();
 
 	if (vbo != 0) {
 		glDeleteBuffers(1, &vbo);

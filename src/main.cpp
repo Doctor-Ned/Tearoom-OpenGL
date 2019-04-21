@@ -257,16 +257,17 @@ int main(int argc, char** argv) {
 	serializer->setup();
 
 	// just testing things!
-	GraphNode *root = new GraphNode();
+	Scene* scene = new Scene();
+	GraphNode *root = scene->getRootNode();
 	root->localTransform.translate(glm::vec3(5.0f, 2.0f, -3.0f));
 	root->addChild(new GraphNode());
 	root->getChild(0)->localTransform.rotate(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	root->addChild(Node::createBox(glm::vec3(1.0f, 2.0f, 3.0f), glm::vec4(1.0f, 0.0f, 0.5f, 1.0f)));
 	root->addChild(Node::createSphere(1.0f, 20, "res/textures/face.png"));
 	root->addChild(new GraphNode(root->getChild(1)->getMesh()));
-	serializer->saveScene(root, "test");
+	serializer->saveScene(scene, "test");
 
-	GraphNode *loaded = serializer->loadScene("test");
+	Scene *loaded = serializer->loadScene("test");
 	gameManager->setup();
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
@@ -286,6 +287,8 @@ int main(int argc, char** argv) {
 	planeCenter.x += fpsPlane->getSize().x / 2.0f;
 	planeCenter.y += fpsPlane->getSize().y / 2.0f;
 	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), None);
+
+	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -349,8 +352,10 @@ int main(int argc, char** argv) {
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gameManager->renderUi();
-		fpsPlane->render();
-		fpsText->render();
+		fpsPlaneShader->use();
+		fpsPlane->render(fpsPlaneShader);
+		fpsTextShader->use();
+		fpsText->render(fpsTextShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// Render to the default framebuffer (screen) with post-processing

@@ -1,18 +1,17 @@
 #include "UiElement.h"
 #include "Scene/GameManager.h"
 #include "Scene/AssetManager.h"
+#include "Serialization/DataSerializer.h"
 
 UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
-	GameManager *manager = GameManager::getInstance();
 	this->size = size;
-	this->center = center;
 	glGenVertexArrays(1, &vao);
+	GameManager *manager = GameManager::getInstance();
 	updateProjection(manager->getWindowWidth(), manager->getWindowHeight(), manager->getScreenWidth(), manager->getScreenHeight());
 	UiElement::setPosition(position, center);
 }
 
-void UiElement::render() {
-	shader->use();
+void UiElement::render(Shader *shader) {
 	shader->setProjection(projection);
 	shader->setOpacity(opacity);
 }

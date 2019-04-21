@@ -7,6 +7,7 @@
 #include "Scene/Components/Collider.h"
 #include <algorithm>
 #include "Scene/Components/AnimationController.h"
+#include "Serialization/DataSerializer.h"
 
 Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, float speed, float rotSpeed)
 	: speed(speed), rotSpeed(rotSpeed), cameraPos(cameraPos), cameraFront(cameraFront), cameraUp(cameraUp) {
@@ -89,7 +90,7 @@ void Camera::rotateY(float timeDelta) {
 
 void Camera::moveForward(float timeDelta, int steps) {
 	if (timeDelta != 0.0f) {
-		cameraPos += cameraFront * timeDelta * speed * (float)steps;
+		cameraPos += cameraFront * timeDelta * speed * static_cast<float>(steps);
 		dirty = true;
 	}
 }
@@ -100,7 +101,7 @@ void Camera::moveBackward(float timeDelta, int steps) {
 
 void Camera::moveRight(float timeDelta, int steps) {
 	if (timeDelta != 0.0f) {
-		cameraPos += getRight() * timeDelta * speed * (float)steps;
+		cameraPos += getRight() * timeDelta * speed * static_cast<float>(steps);
 		dirty = true;
 	}
 }
@@ -111,7 +112,7 @@ void Camera::moveLeft(float timeDelta, int steps) {
 
 void Camera::moveUp(float timeDelta, int steps) {
 	if (timeDelta != 0.0f) {
-		cameraPos += getActualUp() * timeDelta * speed * (float)steps;
+		cameraPos += getActualUp() * timeDelta * speed * static_cast<float>(steps);
 		dirty = true;
 	}
 }
@@ -177,6 +178,35 @@ void Camera::RecalculateFrustum()
 	frustum.planes[NEARP] = { frustum.nearTopLeft, frustum.nearTopRight, frustum.nearBottomRight };
 	frustum.planes[FARP] = { frustum.farTopRight, frustum.farTopLeft, frustum.farBottomLeft };
 
+}
+
+SerializableType Camera::getSerializableType() {
+	return SCamera;
+}
+
+Json::Value Camera::serialize(Serializer* serializer) {
+	Json::Value root;
+	root["speed"] = speed;
+	root["rotSpeed"] = rotSpeed;
+	root["yaw"] = yaw;
+	root["pitch"] = pitch;
+	root["view"] = DataSerializer::serializeMat4(view);
+	root["cameraPos"] = DataSerializer::serializeVec3(cameraPos);
+	root["cameraFront"] = DataSerializer::serializeVec3(cameraFront);
+	root["cameraUp"] = DataSerializer::serializeVec3(cameraUp);
+	return root;
+}
+
+void Camera::deserialize(Json::Value& root, Serializer* serializer) {
+	speed = root["speed"].asFloat();
+	rotSpeed = root["rotSpeed"].asFloat();
+	yaw = root["yaw"].asFloat();
+	pitch = root["pitch"].asFloat();
+	view = DataSerializer::deserializeMat4(root["view"]);
+	cameraPos = DataSerializer::deserializeVec3(root["cameraPos"]);
+	cameraFront = DataSerializer::deserializeVec3(root["cameraFront"]);
+	cameraUp = DataSerializer::deserializeVec3(root["cameraUp"]);
+	dirty = true;
 }
 
 void Camera::recalculateFront() {

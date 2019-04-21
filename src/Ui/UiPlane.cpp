@@ -2,12 +2,11 @@
 #include "Scene/AssetManager.h"
 
 UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(texture, position, size, center) {
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
-void UiPlane::render() {
-	UiTexturedElement::render();
+void UiPlane::render(Shader *shader) {
+	UiTexturedElement::render(shader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(vao);
@@ -41,8 +40,6 @@ void UiPlane::setup() {
 	data.push_back(vertices[3]);
 	data.push_back(vertices[2]);
 
-	shader->use();
-
 	if(vbo != 0) {
 		glDeleteBuffers(1, &vbo);
 	}
@@ -53,7 +50,7 @@ void UiPlane::setup() {
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiTextureVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),

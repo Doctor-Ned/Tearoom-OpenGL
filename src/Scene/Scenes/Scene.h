@@ -13,7 +13,7 @@ struct GameFramebuffers;
 class AssetManager;
 class GameManager;
 
-class Scene {
+class Scene : public Serializable {
 public:
 	virtual void render();
 	virtual void renderUi();
@@ -22,11 +22,14 @@ public:
 	void removeNode(GraphNode* node, bool recurse = true);
 	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
 	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
+	void renderUiUsingRenderMap(Shader *shader = nullptr);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
+	void addToRenderMap(UiElement *uiElement);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);
 	void removeFromRenderMap(GraphNode *node, bool recurse = true);
+	void removeFromRenderMap(UiElement *uiElement);
 	void reinitializeRenderMap();
 	virtual void keyEvent(int key, bool pressed);
 	virtual void mouseEvent(int key, bool pressed);
@@ -36,15 +39,21 @@ public:
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	Scene();
-	virtual ~Scene(); 
+	virtual ~Scene();
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
+	GraphNode* getRootNode() const;
 protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
+	void addToRenderMap(UiElement *uiElement, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
+	std::map<ShaderType, std::vector<UiElement*>*> uiRenderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
 	std::vector<Renderable*> lightIgnoredObjects;
 	GameFramebuffers gameFramebuffers;

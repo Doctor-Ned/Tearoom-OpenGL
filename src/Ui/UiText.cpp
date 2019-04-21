@@ -33,8 +33,8 @@ UiText::UiText(glm::vec2 position, std::string text, glm::vec2 textScale, glm::v
 	UiText::setPosition(position, center);
 }
 
-void UiText::render() {
-	textRenderer->renderText(text, actualPosition, scale, center, color);
+void UiText::render(Shader *shader) {
+	textRenderer->renderText(shader, text, actualPosition, scale, center, color);
 }
 
 void UiText::setText(const char * text) {
@@ -56,5 +56,5 @@ void UiText::setPosition(glm::vec2 position, bool center) {
 }
 
 ShaderType UiText::getShaderType() {
-	return STNone;
+	return STText;
 }

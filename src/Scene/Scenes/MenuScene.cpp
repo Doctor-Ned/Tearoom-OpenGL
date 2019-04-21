@@ -20,6 +20,7 @@ MenuScene::MenuScene() {
 	uiElements.emplace_back(options);
 	uiElements.emplace_back(quit);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	reinitializeRenderMap();
 }
 
 void MenuScene::render() {

@@ -3,6 +3,7 @@
 
 #include "Global.h"
 #include "Render/Shader.h"
+#include "Serialization/Serializable.h"
 
 enum ShaderType;
 
@@ -38,7 +39,7 @@ struct UiTextureVertex {
 class UiElement {
 public:
 	UiElement(glm::vec2 position, glm::vec2 size, bool center = true);
-	virtual void render();
+	virtual void render(Shader *shader);
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 	virtual void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
 	virtual void setPosition(glm::vec2 position, bool center = true);
@@ -60,10 +61,8 @@ protected:
 	float opacity = 1.0f;
 	glm::mat4 projection;
 	virtual void setup() = 0;
-	Shader* shader;
 	glm::vec2 actualPosition{};
 	glm::vec2 size{};
-	bool center;
 	GLuint vao, vbo = 0;
 };
 

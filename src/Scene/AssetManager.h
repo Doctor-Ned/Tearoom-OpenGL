@@ -26,7 +26,8 @@ enum ShaderType {
 	STUiColor,
 	STPostProcessing,
 	STLight,
-	STBlur
+	STBlur,
+	STText
 };
 
 
@@ -47,7 +48,8 @@ static const ShaderType ShaderTypes[] = {
 	STUiColor,
 	STPostProcessing,
 	STLight,
-	STBlur 
+	STBlur,
+	STText
 };
 
 

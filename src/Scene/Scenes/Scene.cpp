@@ -3,6 +3,7 @@
 #include "Scene/AssetManager.h"
 #include "Render/LightManager.h"
 #include "Mesh/Mesh.h"
+#include "Serialization/Serializer.h"
 
 void Scene::render() {
 	rootNode->updateDrawData();
@@ -10,9 +11,7 @@ void Scene::render() {
 }
 
 void Scene::renderUi() {
-	for (auto &elem : uiElements) {
-		elem->render();
-	}
+	renderUiUsingRenderMap();
 }
 
 Camera *Scene::getCamera() {
@@ -48,6 +47,27 @@ void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLigh
 	renderFromMap(false, shader, ignoreLight);
 }
 
+void Scene::renderUiUsingRenderMap(Shader* shader) {
+	if (shader == nullptr) {
+		for (auto &type : ShaderTypes) {
+			shader = shaders[type];
+			if (shader != nullptr) {
+				shader->use();
+			}
+			for (auto &uiElement : *uiRenderMap[type]) {
+				uiElement->render(shader);
+			}
+		}
+	} else {
+		shader->use();
+		for (auto &type : ShaderTypes) {
+			for (auto &uiElement : *uiRenderMap[type]) {
+				uiElement->render(shader);
+			}
+		}
+	}
+}
+
 void Scene::addComponent(GraphNode* node, Component* component) {
 	node->addComponent(component);
 	Renderable *r = dynamic_cast<Renderable*>(component);
@@ -58,6 +78,10 @@ void Scene::addComponent(GraphNode* node, Component* component) {
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse) {
 	addToRenderMap(node, recurse, true);
+}
+
+void Scene::addToRenderMap(UiElement* uiElement) {
+	addToRenderMap(uiElement, true);
 }
 
 void Scene::removeComponent(GraphNode* node, Component* component) {
@@ -78,18 +102,32 @@ void Scene::removeFromRenderMap(GraphNode* node, bool recurse) {
 	}
 }
 
+void Scene::removeFromRenderMap(UiElement* uiElement) {
+	std::vector<UiElement*>* vec = uiRenderMap[uiElement->getShaderType()];
+	for (auto i = vec->begin(); i != vec->end();) {
+		if (*i == uiElement) {
+			vec->erase(i);
+			break;
+		}
+		++i;
+	}
+}
+
 void Scene::reinitializeRenderMap() {
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			delete renderMap[type];
 			renderMap.erase(type);
 			renderMap.emplace(type, new std::vector<Renderable*>());
-			//delete transparentRenderMap[type];
-			//transparentRenderMap.erase(type);
-			//transparentRenderMap.emplace(type, new std::vector<Renderable*>());
 		}
+		delete uiRenderMap[type];
+		uiRenderMap.erase(type);
+		uiRenderMap.emplace(type, new std::vector<UiElement*>());
 	}
 	addToRenderMap(rootNode, true, false);
+	for (auto &uiElement : uiElements) {
+		addToRenderMap(uiElement, false);
+	}
 }
 
 void Scene::update(double deltaTime) {
@@ -105,7 +143,7 @@ void Scene::updateWindowSize(float windowWidth, float windowHeight, float screen
 	windowCenterY = windowHeight / 2.0f;
 }
 
-void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) { }
+void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
 
 void Scene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	for (auto &elem : uiElements) {
@@ -136,6 +174,7 @@ Scene::Scene() {
 			renderMap.emplace(type, new std::vector<Renderable*>());
 			transparentRenderMap.emplace(type, new std::vector<Renderable*>());
 		}
+		uiRenderMap.emplace(type, new std::vector<UiElement*>());
 	}
 }
 
@@ -146,10 +185,39 @@ Scene::~Scene() {
 	OctreeNode::toInsert2.clear();
 	uiElements.clear();
 	for (auto &type : ShaderTypes) {
-		delete renderMap[type];
+		if (type != STNone) {
+			delete renderMap[type];
+		}
+		delete uiRenderMap[type];
 	}
 	renderMap.clear();
+	uiRenderMap.clear();
 	delete rootNode;
+}
+
+SerializableType Scene::getSerializableType() {
+	return SScene;
+}
+
+Json::Value Scene::serialize(Serializer* serializer) {
+	Json::Value root;
+	root["rootNode"] = serializer->serialize(rootNode);
+	for (int i = 0; i < lightIgnoredObjects.size(); i++) {
+		root["lightIgnoredObjects"][i] = serializer->serialize(dynamic_cast<Serializable*>(lightIgnoredObjects[i]));
+	}
+	return root;
+}
+
+void Scene::deserialize(Json::Value& root, Serializer* serializer) {
+	rootNode = dynamic_cast<GraphNode*>(serializer->deserialize(root["rootNode"]).object);
+	for (int i = 0; i < root["lightIgnoredObjects"].size(); i++) {
+		lightIgnoredObjects.push_back(dynamic_cast<Renderable*>(serializer->deserialize(root["lightIgnoredObjects"][i]).object));
+	}
+	reinitializeRenderMap();
+}
+
+GraphNode* Scene::getRootNode() const {
+	return rootNode;
 }
 
 bool Scene::getKeyState(const int key) const {
@@ -210,6 +278,22 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 	}
 }
 
+void Scene::addToRenderMap(UiElement* uiElement, bool checkIfExists) {
+	bool exists = false;
+	std::vector<UiElement*>* vec = uiRenderMap[uiElement->getShaderType()];
+	if (checkIfExists) {
+		for (auto &r : *vec) {
+			if (r == uiElement) {
+				exists = true;
+				break;
+			}
+		}
+	}
+	if (!exists) {
+		vec->push_back(uiElement);
+	}
+}
+
 void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
 	auto octree = OctreeNode::getInstance();
@@ -225,15 +309,15 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 					if (!node->isActive()) {
 						continue;
 					}
-					if(ignoreLight) {
+					if (ignoreLight) {
 						bool ignore = false;
-						for(auto &ignored : lightIgnoredObjects) {
-							if(node == ignored) {
+						for (auto &ignored : lightIgnoredObjects) {
+							if (node == ignored) {
 								ignore = true;
 								break;
 							}
 						}
-						if(ignore) {
+						if (ignore) {
 							continue;
 						}
 					}
@@ -325,6 +409,7 @@ void Scene::removeFromRenderMap(Renderable* renderable) {
 		for (auto i = vec->begin(); i != vec->end();) {
 			if (*i == renderable) {
 				vec->erase(i);
+				break;
 			}
 			++i;
 		}

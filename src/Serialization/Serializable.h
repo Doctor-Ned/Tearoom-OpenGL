@@ -24,7 +24,9 @@ enum SerializableType {
 	SMeshTexture,
 	SModel,
 	SModelInstanced,
-	SMeshTorus
+	SMeshTorus,
+	SScene,
+	SCamera
 };
 
 class Serializable {

@@ -4,12 +4,11 @@
 UiColorPlane::
 UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(position, size, center) {
 	this->color = color;
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
-void UiColorPlane::render() {
-	UiElement::render();
+void UiColorPlane::render(Shader *shader) {
+	UiElement::render(shader);
 	shader->setColor(color);
 	glBindVertexArray(vao);
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
@@ -40,8 +39,6 @@ void UiColorPlane::setup() {
 	data.push_back(vertices[0]);
 	data.push_back(vertices[3]);
 	data.push_back(vertices[2]);
-
-	shader->use();
 
 	if(vbo != 0) {
 		glDeleteBuffers(1, &vbo);

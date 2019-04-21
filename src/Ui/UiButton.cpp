@@ -7,7 +7,6 @@ UiButton::UiButton(const char* textureIdle, const char* textureHover, const char
 	glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(textureIdle, position, size, center) {
 	this->textureHover = AssetManager::getInstance()->getTexture(textureHover);
 	this->textureClicked = AssetManager::getInstance()->getTexture(textureClicked);
-	this->shader = AssetManager::getInstance()->getShader(getShaderType());
 	setup();
 }
 
@@ -15,8 +14,8 @@ UiButton::UiButton(glm::vec2 position, bool center) : UiButton(position, createS
 
 UiButton::UiButton(glm::vec2 position, glm::vec2 size, bool center) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position,size, center) {}
 
-void UiButton::render() {
-	UiElement::render();
+void UiButton::render(Shader *shader) {
+	UiElement::render(shader);
 	Texture* txt;
 	switch (state) {
 		default:
@@ -96,8 +95,6 @@ void UiButton::setup() {
 	data.push_back(vertices[3]);
 	data.push_back(vertices[2]);
 
-	shader->use();
-
 	if (vbo != 0) {
 		glDeleteBuffers(1, &vbo);
 	}
@@ -109,7 +106,7 @@ void UiButton::setup() {
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiTextureVertex), &data[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),

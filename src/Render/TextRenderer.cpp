@@ -2,15 +2,16 @@
 #include "Render/TextRenderer.h"
 #include "freetype/ftparams.h"
 #include "Scene/GameManager.h"
+#include "Scene/AssetManager.h"
 
 
 TextRenderer::TextRenderer(GLfloat defaultScale) {
 	// Load and configure shader
 	this->defaultScale = defaultScale;
-	textShader = new Shader("textVS.glsl", "textFS.glsl");
+	Shader *textShader = AssetManager::getInstance()->getShader(STText);
 	textShader->use();
 	textShader->setInt("text", 0);
-	updateProjection();
+	updateProjection(textShader);
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays(1, &this->vao);
 	glGenBuffers(1, &this->vbo);
@@ -83,28 +84,27 @@ void TextRenderer::load(std::string font, GLuint fontSize) {
 	FT_Done_FreeType(ft);
 }
 
-void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, bool center, glm::vec3 color) {
-	renderText(text, x, y, scale, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, bool center, glm::vec3 color) {
+	renderText(shader, text, x, y, scale, scale, center, color);
 }
 
-void TextRenderer::renderText(std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
-	renderText(text, position.x, position.y, scaleX, scaleY, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scaleX, scaleY, center, color);
 }
 
-void TextRenderer::renderText(std::string text, glm::vec2 position, glm::vec2 scale, bool center, glm::vec3 color) {
-	renderText(text, position.x, position.y, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, glm::vec2 scale, bool center, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scale, center, color);
 }
 
-void TextRenderer::renderText(std::string text, glm::vec2 position, GLfloat scale, bool center, glm::vec3 color) {
-	renderText(text, position.x, position.y, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scale, bool center, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scale, center, color);
 }
 
-void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, glm::vec2 scale, bool center, glm::vec3 color) {
-	renderText(text, x, y, scale.x, scale.y, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, glm::vec2 scale, bool center, glm::vec3 color) {
+	renderText(shader, text, x, y, scale.x, scale.y, center, color);
 }
 
-void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
-	textShader->use();
+void TextRenderer::renderText(Shader* textShader, std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
 	textShader->setColor(glm::vec4(color, 1.0f));
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
@@ -153,8 +153,8 @@ void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void TextRenderer::updateProjection() {
-	textShader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(GameManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(GameManager::getInstance()->getWindowHeight()),
+void TextRenderer::updateProjection(Shader* shader) {
+	shader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(GameManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(GameManager::getInstance()->getWindowHeight()),
 		0.0f));
 }
 

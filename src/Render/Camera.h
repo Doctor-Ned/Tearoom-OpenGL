@@ -7,7 +7,7 @@
 
 
 class GraphNode;
-class Camera {
+class Camera : public Serializable {
 public:
 	Camera(glm::vec3 cameraPos = glm::vec3(0.0f, 0.5f, 3.0f), glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f),
 	       glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f)
@@ -35,6 +35,9 @@ public:
 	void setRotSpeed(float rotSpeed);
 	GraphNode* castRayFromCamera(glm::vec3 direction, float distance);
 	void RecalculateFrustum();
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	void recalculateFront();
 	bool dirty = false;

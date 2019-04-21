@@ -119,6 +119,7 @@ bool AssetManager::endsWith(std::string const &fullString, std::string const &en
 }
 
 void AssetManager::setup() {
+	shaders.emplace(STText, new Shader("textVS.glsl", "textFS.glsl"));
 	textRenderer = new TextRenderer(0.5f);
 	textRenderer->load("res/fonts/Merriweather-Regular.ttf", 60);
 	shaders.emplace(STUiTexture, new Shader("Ui/uiTextureVS.glsl", "Ui/uiTextureFS.glsl"));

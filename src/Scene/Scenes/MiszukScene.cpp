@@ -128,7 +128,7 @@ void MiszukScene::render() {
 
 void MiszukScene::renderUi() {
 	Scene::renderUi();
-	assetManager->getTextRenderer()->renderText("+", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
+	assetManager->getTextRenderer()->renderText(assetManager->getShader(STText), "+", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 
 Camera* MiszukScene::getCamera() {
