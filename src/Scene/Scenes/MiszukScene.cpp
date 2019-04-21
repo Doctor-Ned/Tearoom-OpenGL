@@ -14,6 +14,7 @@
 #include "Scene/Components/PhysicalObject.h"
 #include "Scene/Components/PlayerMovement.h"
 #include "Scene/Components/CollectableObject.h"
+#include "Scene/Components/Picking.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -46,9 +47,10 @@ MiszukScene::MiszukScene() {
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
-	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, this));
+	tinyItemNode->addComponent(new CollectableObject(tinyItemNode));
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
 	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -0.5f, 2.0f));
 	//-----------------
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -73,6 +75,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new PhysicalObject(player));
+	player->addComponent(new Picking(player, "picking", camera));
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new BoxCollider(fallingBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
@@ -183,7 +186,7 @@ void MiszukScene::update(double deltaTime) {
 	{
 		//std::cout << "ray casted" << std::endl;
 	}
-	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();

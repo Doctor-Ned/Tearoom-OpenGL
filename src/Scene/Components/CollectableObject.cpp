@@ -4,16 +4,17 @@
 
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
-#include "Mesh/MeshColorBox.h"
+#include "Render/Camera.h"
 #include "CollectableObject.h"
-#include "Collider.h"
+#include "Scene/CollisionSystem.h"
 #include <iostream>
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Scene* _scene):Component(_gameObject), scene(_scene) {
+CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObject) {
 }
 
 void CollectableObject::takeObject()
 {
+	gameObject->setActive(false);
     isTaken = true;
    // std::cout<<"HAAALOOOO"<<std::endl;
     gameObject->getMesh()->setOpaque(false);
@@ -26,17 +27,18 @@ void CollectableObject::leaveObject()
 
 void CollectableObject::update(float msec)
 {
-    GameManager* gameManager = GameManager::getInstance();
+	//GameManager* gameManager = GameManager::getInstance();
 
-    fKeyState = gameManager->getKeyState(GLFW_KEY_F);
+	/*fKeyState = gameManager->getKeyState(GLFW_KEY_F);
 
-    if(gameObject->getHitByRay() && fKeyState)
-    {
-        if(!isTaken)
-        {
-            takeObject();
-        }
-    }
+	if (gameObject->getHitByRay() && fKeyState)
+	{
+		if (!isTaken)
+		{
+			takeObject();
+		}
+	}*/
 }
+
 
 CollectableObject::~CollectableObject() {}
