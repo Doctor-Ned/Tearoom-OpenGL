@@ -98,7 +98,7 @@ Texture AssetManager::getTexture(std::string path) {
 }
 
 Model * AssetManager::getModel(std::string path) {
-	return new Model(getModelData(path));
+	return new Model(path);
 }
 
 std::vector<ModelData*> AssetManager::getModelData(std::string path) {

@@ -17,6 +17,7 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	MeshSphere() {}
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createSphereSegment(std::vector<TextureVertex>* vertices, float angle, float radStep);
 	void createRectangle(std::vector<TextureVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,
@@ -28,6 +29,7 @@ protected:
 	float radius;
 	int precision;
 	unsigned int vertexAmount;
+	friend class Serializer;
 };
 
 #endif

@@ -29,6 +29,7 @@ public:
 	Json::Value serialize(SerializablePointer ser);
 	SerializablePointer deserialize(Json::Value &root);
 private:
+	void deserializeAndIdentify(SerializablePointer &pointer, Json::Value &data, Serializable *serializable);
 	int idCounter;
 	std::map<Serializable*, int> ids;
 	GraphNode *deserializeScene(Json::Value &root);

@@ -1,6 +1,22 @@
 #include "Serializer.h"
 #include <filesystem>
 #include "Scene/GraphNode.h"
+#include "Mesh/MeshBox.h"
+#include "Mesh/MeshColorBox.h"
+#include "Mesh/MeshColorCone.h"
+#include "Mesh/MeshColorCylinder.h"
+#include "Mesh/MeshColorPlane.h"
+#include "Mesh/MeshColorSphere.h"
+#include "Mesh/MeshColorTorus.h"
+#include "Mesh/MeshTorus.h"
+#include "Mesh/ModelInstanced.h"
+#include "Mesh/MeshSphere.h"
+#include "Mesh/MeshRefSphere.h"
+#include "Mesh/MeshRefBox.h"
+#include "Mesh/MeshPlane.h"
+#include "Mesh/MeshCylinder.h"
+#include "Mesh/MeshCone.h"
+#include "Mesh/Model.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -132,13 +148,64 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			throw std::exception("Unsupported SerializableType encountered!");
 		// remember to always emplace the pointer in the 'ids' map before calling serialize (which can recursively go down the tree)!
 		case SGraphNode:
-			GraphNode *node = new GraphNode();
-			pointer.object = node;
-			ids.emplace(node, pointer.id);
-			node->deserialize(data, this);
+			deserializeAndIdentify(pointer, data, new GraphNode());
+			break;
+		case SMeshBox:
+			deserializeAndIdentify(pointer, data, new MeshBox());
+			break;
+		case SMeshColorBox:
+			deserializeAndIdentify(pointer, data, new MeshColorBox());
+			break;
+		case SMeshColorCone:
+			deserializeAndIdentify(pointer, data, new MeshColorCone());
+			break;
+		case SMeshColorCylinder:
+			deserializeAndIdentify(pointer, data, new MeshColorCylinder());
+			break;
+		case SMeshColorPlane:
+			deserializeAndIdentify(pointer, data, new MeshColorPlane());
+			break;
+		case SMeshColorSphere:
+			deserializeAndIdentify(pointer, data, new MeshColorSphere());
+			break;
+		case SMeshColorTorus:
+			deserializeAndIdentify(pointer, data, new MeshColorTorus());
+			break;
+		case SMeshCone:
+			deserializeAndIdentify(pointer, data, new MeshCone());
+			break;
+		case SMeshCylinder:
+			deserializeAndIdentify(pointer, data, new MeshCylinder());
+			break;
+		case SMeshPlane:
+			deserializeAndIdentify(pointer, data, new MeshPlane());
+			break;
+		case SMeshRefBox:
+			deserializeAndIdentify(pointer, data, new MeshRefBox());
+			break;
+		case SMeshRefSphere:
+			deserializeAndIdentify(pointer, data, new MeshRefSphere());
+			break;
+		case SMeshSphere:
+			deserializeAndIdentify(pointer, data, new MeshSphere());
+			break;
+		case SModel:
+			deserializeAndIdentify(pointer, data, new Model());
+			break;
+		case SModelInstanced:
+			deserializeAndIdentify(pointer, data, new ModelInstanced());
+			break;
+		case SMeshTorus:
+			deserializeAndIdentify(pointer, data, new MeshTorus());
 			break;
 	}
 	return pointer;
+}
+
+void Serializer::deserializeAndIdentify(SerializablePointer& pointer, Json::Value &data, Serializable* serializable) {
+	pointer.object = serializable;
+	ids.emplace(serializable, pointer.id);
+	serializable->deserialize(data, this);
 }
 
 void Serializer::loadScenes() {
