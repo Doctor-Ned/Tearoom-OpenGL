@@ -100,13 +100,14 @@ Json::Value Serializer::serialize(SerializablePointer ser) {
 	if (ser.object == nullptr) {
 		// if object is nullptr (this happens if we encounter a real nullptr in the tree
 		// OR if the object has already been serialized and we just want to save the reference ID)
-		root["id"] = -1;
-		root["type"] = static_cast<int>(SNone);
+		root["id"] = ser.id;
+		root["type"] = ser.id == -1 ? static_cast<int>(SNone) : getPointer(ser.id)->getSerializableType();
 		return root;
 	}
 	int id = getId(ser.object);
 	if (id != -1) {
 		// if the object has already been serialized, set the pointer to nullptr and just serialize the reference ID
+		ser.id = id;
 		ser.object = nullptr;
 		return serialize(ser);
 	}
