@@ -13,6 +13,8 @@
 #include "Scene/Components/SphereCollider.h"
 #include "Scene/Components/PhysicalObject.h"
 #include "Scene/Components/PlayerMovement.h"
+#include "Scene/Components/CollectableObject.h"
+#include "Scene/Components/Picking.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -42,6 +44,15 @@ MiszukScene::MiszukScene() {
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
 	//-------------
 
+	// COLLECTABLE ITEM
+	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
+	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
+	tinyItemNode->addComponent(new CollectableObject(tinyItemNode));
+	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
+	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -0.5f, 2.0f));
+	//-----------------
+
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -64,6 +75,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new PhysicalObject(player));
+	player->addComponent(new Picking(player, "picking", camera));
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new BoxCollider(fallingBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
@@ -75,15 +87,15 @@ MiszukScene::MiszukScene() {
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
 	floor->localTransform.setPosition(0.0f, -3.0f, 0.0f);
-	wallNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -5.0f));
-	wallNode2->localTransform.translate(glm::vec3(0.0f, 8.0f, -15.0f));
-	slidingDoorNode->localTransform.translate(glm::vec3(0.0f, 8.0f, -6.0f));
-	animatedBoxNode->localTransform.translate(glm::vec3(0.0f, 9.0f, 0.0f));
-	fallingBoxNode->localTransform.setPosition(0.0f, -2.0f, -3.0f);
+	fallingBoxNode->localTransform.setPosition(0.0f, 0.0f, -3.0f);
 
+	wallNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -5.0f));
+	wallNode2->localTransform.translate(glm::vec3(8.0f, -2.0f, -15.0f));
+	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
+	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -2.0f, 0.0f));
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, &f_keyPressed));
-	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 	boxNode2->addComponent(new SphereCollider(boxNode2, DYNAMIC, true, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, DYNAMIC, true, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
@@ -174,7 +186,8 @@ void MiszukScene::update(double deltaTime) {
 	{
 		//std::cout << "ray casted" << std::endl;
 	}
-	std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
