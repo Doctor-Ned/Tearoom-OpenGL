@@ -229,6 +229,7 @@ Json::Value GraphNode::serialize(Serializer* serializer) {
 		root["children"][i] = serializer->serialize(children[i]);
 	}
 	root["parent"] = serializer->serialize(parent);
+	root["mesh"] = serializer->serialize(mesh);
 	return root;
 }
 
@@ -242,6 +243,7 @@ void GraphNode::deserialize(Json::Value& root, Serializer* serializer) {
 	for (int i = 0; i < size; i++) {
 		addChild(dynamic_cast<GraphNode*>(serializer->deserialize(children[i]).object));
 	}
+	mesh = dynamic_cast<Mesh*>(serializer->deserialize(root["mesh"]).object);
 	setParent(dynamic_cast<GraphNode*>(serializer->deserialize(root["parent"]).object));
 }
 
