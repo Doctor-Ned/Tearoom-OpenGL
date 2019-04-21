@@ -1,4 +1,5 @@
 #include "MeshBox.h"
+#include "Serialization/DataSerializer.h"
 
 MeshBox::MeshBox(glm::vec3 dimensions, char* texturePath) :
 MeshBox(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f), texturePath) {}
@@ -180,12 +181,42 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	data.clear();
 }
 
-glm::vec3 MeshBox::getMin() {
+void MeshBox::updateValues(glm::vec3 dimensions) {
+	updateValues(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f));
+}
+
+glm::vec3 MeshBox::getMin() const {
 	return min;
 }
 
-glm::vec3 MeshBox::getMax() {
+glm::vec3 MeshBox::getMax() const {
 	return max;
+}
+
+glm::vec3 MeshBox::getDimensions() const {
+	glm::vec3 result;
+	result.x = abs(max.x - min.x);
+	result.y = abs(max.y - min.y);
+	result.z = abs(max.z - min.z);
+	return result;
+}
+
+SerializableType MeshBox::getSerializableType() {
+	return SMeshBox;
+}
+
+Json::Value MeshBox::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["min"] = DataSerializer::serializeVec3(min);
+	root["max"] = DataSerializer::serializeVec3(max);
+	return root;
+}
+
+void MeshBox::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	min = DataSerializer::deserializeVec3(root["min"]);
+	max = DataSerializer::deserializeVec3(root["max"]);
+	setupMesh();
 }
 
 void MeshBox::setupMesh() {

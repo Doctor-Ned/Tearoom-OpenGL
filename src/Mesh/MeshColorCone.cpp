@@ -1,4 +1,5 @@
 #include "MeshColorCone.h"
+#include "Serialization/DataSerializer.h"
 
 MeshColorCone::MeshColorCone(float radius, float height, int sideAmount, glm::vec4 color,
                              glm::vec3 baseCenter)
@@ -15,6 +16,11 @@ void MeshColorCone::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshColorCone::updateValues(float radius, float height, int sideAmount) {
+	updateValues(radius, height, sideAmount, baseCenter);
+}
+
+void MeshColorCone::updateValues(float radius, float height, int sideAmount, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -43,6 +49,28 @@ void MeshColorCone::updateValues(float radius, float height, int sideAmount) {
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
+}
+
+SerializableType MeshColorCone::getSerializableType() {
+	return SMeshColorCone;
+}
+
+Json::Value MeshColorCone::serialize(Serializer* serializer) {
+	Json::Value root = MeshSimple::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["height"] = height;
+	root["sideAmount"] = sideAmount;
+	return root;
+}
+
+void MeshColorCone::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshSimple::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	height = root["height"].asFloat();
+	sideAmount = root["sideAmount"].asInt();
+	setupMesh();
 }
 
 void MeshColorCone::createBottomTriangle(std::vector<SimpleVertex>* vertices, float angle1, float angle2) const {
@@ -115,5 +143,5 @@ void MeshColorCone::bufferData(std::vector<SimpleVertex>* vertices) {
 
 void MeshColorCone::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, height, sideAmount);
+	updateValues(radius, height, sideAmount, baseCenter);
 }

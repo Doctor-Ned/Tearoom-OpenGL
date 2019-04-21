@@ -1,4 +1,5 @@
 #include "MeshPlane.h"
+#include "Serialization/DataSerializer.h"
 
 MeshPlane::MeshPlane(float width, float length, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), width(width), length(length) {
@@ -18,6 +19,11 @@ void MeshPlane::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshPlane::updateValues(float width, float length) {
+	updateValues(width, length, baseCenter);
+}
+
+void MeshPlane::updateValues(float width, float length, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	this->width = width;
 	this->length = length;
 
@@ -88,7 +94,27 @@ void MeshPlane::updateValues(float width, float length) {
 	data.clear();
 }
 
+SerializableType MeshPlane::getSerializableType() {
+	return SMeshPlane;
+}
+
+Json::Value MeshPlane::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["width"] = width;
+	root["length"] = length;
+	return root;
+}
+
+void MeshPlane::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	width = root["width"].asFloat();
+	length = root["length"].asFloat();
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	setupMesh();
+}
+
 void MeshPlane::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(width, length);
+	updateValues(width, length, baseCenter);
 }

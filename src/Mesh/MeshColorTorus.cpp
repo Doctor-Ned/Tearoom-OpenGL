@@ -1,4 +1,6 @@
 #include "MeshColorTorus.h"
+#include "MeshTexture.h"
+#include "Serialization/DataSerializer.h"
 
 MeshColorTorus::MeshColorTorus(float radiusIn, float radiusOut, int sideAmount, glm::vec4 color,
                                glm::vec3 baseCenter)
@@ -17,6 +19,11 @@ void MeshColorTorus::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshColorTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
+	updateValues(radiusIn, radiusOut, sideAmount, baseCenter);
+}
+
+void MeshColorTorus::updateValues(float radiusIn, float radiusOut, int sideAmount, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radiusIn <= 0) {
 		radiusIn = 0.01f;
 	}
@@ -43,6 +50,28 @@ void MeshColorTorus::updateValues(float radiusIn, float radiusOut, int sideAmoun
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
+}
+
+SerializableType MeshColorTorus::getSerializableType() {
+	return SMeshTorus;
+}
+
+Json::Value MeshColorTorus::serialize(Serializer* serializer) {
+	Json::Value root = MeshSimple::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radiusIn"] = radiusIn;
+	root["radiusOut"] = radiusOut;
+	root["sideAmount"] = sideAmount;
+	return root;
+}
+
+void MeshColorTorus::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshSimple::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radiusIn = root["radiusIn"].asFloat();
+	radiusOut = root["radiusOut"].asFloat();
+	sideAmount = root["sideAmount"].asInt();
+	setupMesh();
 }
 
 void MeshColorTorus::createTorusSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) const {
@@ -141,5 +170,5 @@ void MeshColorTorus::bufferData(std::vector<SimpleVertex>* vertices) {
 
 void MeshColorTorus::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radiusOut, radiusIn, sideAmount);
+	updateValues(radiusOut, radiusIn, sideAmount, baseCenter);
 }

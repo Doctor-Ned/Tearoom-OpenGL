@@ -1,4 +1,5 @@
 #include "MeshColorPlane.h"
+#include "Serialization/DataSerializer.h"
 
 MeshColorPlane::MeshColorPlane(float width, float length, glm::vec4 color, glm::vec3 baseCenter)
 	: MeshSimple(color), baseCenter(baseCenter), width(width), length(length) {
@@ -15,6 +16,11 @@ void MeshColorPlane::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshColorPlane::updateValues(float width, float length) {
+	updateValues(width, length, baseCenter);
+}
+
+void MeshColorPlane::updateValues(float width, float length, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	this->width = width;
 	this->length = length;
 
@@ -77,7 +83,27 @@ void MeshColorPlane::updateValues(float width, float length) {
 	data.clear();
 }
 
+SerializableType MeshColorPlane::getSerializableType() {
+	return SMeshColorPlane;
+}
+
+Json::Value MeshColorPlane::serialize(Serializer* serializer) {
+	Json::Value root = MeshSimple::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["width"] = width;
+	root["length"] = length;
+	return root;
+}
+
+void MeshColorPlane::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshSimple::deserialize(root, serializer);
+	width = root["width"].asFloat();
+	length = root["length"].asFloat();
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	setupMesh();
+}
+
 void MeshColorPlane::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(width, length);
+	updateValues(width, length, baseCenter);
 }

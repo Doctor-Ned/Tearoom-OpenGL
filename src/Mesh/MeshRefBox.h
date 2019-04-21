@@ -9,8 +9,10 @@ public:
 	MeshRefBox(bool reflective, glm::vec3 dimensions);
 	MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max);
 	void updateValues(glm::vec3 min, glm::vec3 max);
+	void updateValues(glm::vec3 dimensions);
 	glm::vec3 getMin() const;
 	glm::vec3 getMax() const;
+	glm::vec3 getDimensions() const;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;

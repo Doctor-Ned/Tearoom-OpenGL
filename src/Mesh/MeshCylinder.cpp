@@ -1,4 +1,5 @@
 #include "MeshCylinder.h"
+#include "Serialization/DataSerializer.h"
 
 MeshCylinder::MeshCylinder(float radius, float height, int sideAmount, char* texturePath,
                            glm::vec3 baseCenter)
@@ -19,6 +20,11 @@ void MeshCylinder::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshCylinder::updateValues(float radius, float height, int sideAmount) {
+	updateValues(radius, height, sideAmount, baseCenter);
+}
+
+void MeshCylinder::updateValues(float radius, float height, int sideAmount, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -49,6 +55,28 @@ void MeshCylinder::updateValues(float radius, float height, int sideAmount) {
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
+}
+
+SerializableType MeshCylinder::getSerializableType() {
+	return SMeshCylinder;
+}
+
+Json::Value MeshCylinder::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["height"] = height;
+	root["sideAmount"] = sideAmount;
+	return root;
+}
+
+void MeshCylinder::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	height = root["height"].asFloat();
+	sideAmount = root["sideAmount"].asInt();
+	setupMesh();
 }
 
 void MeshCylinder::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const {
@@ -190,5 +218,5 @@ void MeshCylinder::bufferData(std::vector<TextureVertex>* vertices) {
 
 void MeshCylinder::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, height, sideAmount);
+	updateValues(radius, height, sideAmount, baseCenter);
 }

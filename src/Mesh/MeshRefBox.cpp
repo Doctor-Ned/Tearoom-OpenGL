@@ -146,12 +146,24 @@ void MeshRefBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	data.clear();
 }
 
+void MeshRefBox::updateValues(glm::vec3 dimensions) {
+	updateValues(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f));
+}
+
 glm::vec3 MeshRefBox::getMin() const {
 	return min;
 }
 
 glm::vec3 MeshRefBox::getMax() const {
 	return max;
+}
+
+glm::vec3 MeshRefBox::getDimensions() const {
+	glm::vec3 result;
+	result.x = abs(max.x - min.x);
+	result.y = abs(max.y - min.y);
+	result.z = abs(max.z - min.z);
+	return result;
 }
 
 SerializableType MeshRefBox::getSerializableType() {

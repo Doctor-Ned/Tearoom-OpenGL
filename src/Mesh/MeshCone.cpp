@@ -1,4 +1,5 @@
 #include "MeshCone.h"
+#include "Serialization/DataSerializer.h"
 
 MeshCone::MeshCone(float radius, float height, int sideAmount, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), height(height), radius(radius), sideAmount(sideAmount) {
@@ -18,6 +19,11 @@ void MeshCone::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshCone::updateValues(float radius, float height, int sideAmount) {
+	updateValues(radius, height, sideAmount, baseCenter);
+}
+
+void MeshCone::updateValues(float radius, float height, int sideAmount, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -47,6 +53,28 @@ void MeshCone::updateValues(float radius, float height, int sideAmount) {
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
+}
+
+SerializableType MeshCone::getSerializableType() {
+	return SMeshCone;
+}
+
+Json::Value MeshCone::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["height"] = height;
+	root["sideAmount"] = sideAmount;
+	return root;
+}
+
+void MeshCone::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	height = root["height"].asFloat();
+	sideAmount = root["sideAmount"].asInt();
+	setupMesh();
 }
 
 void MeshCone::createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const {
@@ -134,5 +162,5 @@ void MeshCone::bufferData(std::vector<TextureVertex>* vertices) {
 
 void MeshCone::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, height, sideAmount);
+	updateValues(radius, height, sideAmount, baseCenter);
 }

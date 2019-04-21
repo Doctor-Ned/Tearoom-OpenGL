@@ -1,4 +1,5 @@
 #include "MeshColorSphere.h"
+#include "Serialization/DataSerializer.h"
 
 MeshColorSphere::MeshColorSphere(float radius, int precision, glm::vec4 color, glm::vec3 baseCenter)
 	: MeshSimple(color), baseCenter(baseCenter), radius(radius), precision(precision) {
@@ -15,6 +16,11 @@ void MeshColorSphere::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshColorSphere::updateValues(float radius, int precision) {
+	updateValues(radius, precision, baseCenter);
+}
+
+void MeshColorSphere::updateValues(float radius, int precision, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -41,6 +47,26 @@ void MeshColorSphere::updateValues(float radius, int precision) {
 
 float MeshColorSphere::getRadius() const {
 	return radius;
+}
+
+Json::Value MeshColorSphere::serialize(Serializer * serializer) {
+	Json::Value root = MeshSimple::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["precision"] = precision;
+	return root;
+}
+
+void MeshColorSphere::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshSimple::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	precision = root["precision"].asInt();
+	setupMesh();
+}
+
+SerializableType MeshColorSphere::getSerializableType() {
+	return SMeshColorSphere;
 }
 
 void MeshColorSphere::createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep) {
@@ -159,5 +185,5 @@ void MeshColorSphere::bufferData(std::vector<SimpleVertex>* vertices) {
 
 void MeshColorSphere::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, precision);
+	updateValues(radius, precision, baseCenter);
 }
