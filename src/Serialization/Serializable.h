@@ -4,7 +4,27 @@ class Serializer;
 
 enum SerializableType {
 	SNone,
-	SGraphNode
+	SGraphNode,
+	SMesh,
+	SMeshBox,
+	SMeshColorBox,
+	SMeshColorCone,
+	SMeshColorCylinder,
+	SMeshColorPlane,
+	SMeshColorSphere,
+	SMeshColorTorus,
+	SMeshCone,
+	SMeshCylinder,
+	SMeshPlane,
+	SMeshRef,
+	SMeshRefBox,
+	SMeshRefSphere,
+	SMeshSimple,
+	SMeshSphere,
+	SMeshTexture,
+	SModel,
+	SModelInstanced,
+	SMeshTorus
 };
 
 class Serializable {

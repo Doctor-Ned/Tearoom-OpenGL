@@ -1,4 +1,5 @@
 #include "MeshSphere.h"
+#include "Serialization/DataSerializer.h"
 
 MeshSphere::MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radius(radius), precision(precision) {
@@ -18,6 +19,11 @@ void MeshSphere::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshSphere::updateValues(float radius, int precision) {
+	updateValues(radius, precision, baseCenter);
+}
+
+void MeshSphere::updateValues(float radius, int precision, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -44,6 +50,26 @@ void MeshSphere::updateValues(float radius, int precision) {
 
 float MeshSphere::getRadius() const {
 	return radius;
+}
+
+SerializableType MeshSphere::getSerializableType() {
+	return SMeshSphere;
+}
+
+Json::Value MeshSphere::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["precision"] = precision;
+	return root;
+}
+
+void MeshSphere::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	precision = root["precision"].asInt();
+	setupMesh();
 }
 
 void MeshSphere::createSphereSegment(std::vector<TextureVertex>* vertices, float angle, float radStep) {
@@ -181,5 +207,5 @@ void MeshSphere::bufferData(std::vector<TextureVertex>* vertices) {
 
 void MeshSphere::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, precision);
+	updateValues(radius, precision, baseCenter);
 }

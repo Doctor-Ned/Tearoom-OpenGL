@@ -9,14 +9,22 @@
 
 class ModelInstanced : public Mesh {
 public:
-	ModelInstanced(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
+	ModelInstanced(std::string path, glm::vec3 *offsets, int offsetSize);
 	void setOpacity(float opacity) override;
 	void setCulled(bool culled) override;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 private:
+	ModelInstanced() {}
+	void initialize(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
+	std::string path;
+	ModelInstanced(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
 	void draw(Shader *shader, glm::mat4 world) override;
 	glm::vec3* offsets;
 	int offsetSize;
 	std::vector<MeshModelInstanced*> meshes;
+	friend class Serializer;
 };
 
 #endif

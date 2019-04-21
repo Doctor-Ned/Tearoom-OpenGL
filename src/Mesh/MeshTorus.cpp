@@ -1,10 +1,15 @@
 #include "MeshTorus.h"
+#include "Serialization/DataSerializer.h"
 
 MeshTorus::MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath,
                      glm::vec3 baseCenter)
 	: MeshTexture(), baseCenter(baseCenter), radiusIn(radiusIn), radiusOut(radiusOut), sideAmount(sideAmount) {
 	texture = AssetManager::getInstance()->getTexture(texturePath);
 	setupMesh();
+}
+
+void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
+	updateValues(radiusIn, radiusOut, sideAmount, baseCenter);
 }
 
 void MeshTorus::draw(Shader *shader, glm::mat4 world) {
@@ -18,7 +23,8 @@ void MeshTorus::draw(Shader *shader, glm::mat4 world) {
 	
 }
 
-void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
+void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radiusIn <= 0) {
 		radiusIn = 0.01f;
 	}
@@ -45,6 +51,28 @@ void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
 	vertexAmount = vertices.size();
 	bufferData(&vertices);
 	vertices.clear();
+}
+
+SerializableType MeshTorus::getSerializableType() {
+	return SMeshTorus;
+}
+
+Json::Value MeshTorus::serialize(Serializer* serializer) {
+	Json::Value root = MeshTexture::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radiusIn"] = radiusIn;
+	root["radiusOut"] = radiusOut;
+	root["sideAmount"] = sideAmount;
+	return root;
+}
+
+void MeshTorus::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshTexture::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radiusIn = root["radiusIn"].asFloat();
+	radiusOut = root["radiusOut"].asFloat();
+	sideAmount = root["sideAmount"].asInt();
+	setupMesh();
 }
 
 void MeshTorus::createTorusSegment(std::vector<TextureVertex>* vertices, float angle, float radStep) {
@@ -155,5 +183,5 @@ void MeshTorus::bufferData(std::vector<TextureVertex>* vertices) {
 
 void MeshTorus::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radiusOut, radiusIn, sideAmount);
+	updateValues(radiusOut, radiusIn, sideAmount, baseCenter);
 }

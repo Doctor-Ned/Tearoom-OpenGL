@@ -1,9 +1,18 @@
 #include "MeshTexture.h"
 
-MeshTexture::MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
-                         char* textureFile)
-	: Mesh(STTexture), indices(indices), vertices(vertices) {
-	texture = AssetManager::getInstance()->getTexture(textureFile);
+SerializableType MeshTexture::getSerializableType() {
+	return SMeshTexture;
+}
+
+Json::Value MeshTexture::serialize(Serializer* serializer) {
+	Json::Value root = Mesh::serialize(serializer);
+	root["texture"] = texture.path;
+	return root;
+}
+
+void MeshTexture::deserialize(Json::Value& root, Serializer* serializer) {
+	Mesh::deserialize(root, serializer);
+	texture = AssetManager::getInstance()->getTexture(root.get("texture", "").asString());
 }
 
 void MeshTexture::draw(Shader *shader, glm::mat4 world) {

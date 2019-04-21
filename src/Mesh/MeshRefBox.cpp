@@ -1,6 +1,7 @@
 #include "MeshRefBox.h"
 #include "MeshSimple.h"
 #include "Scene/AssetManager.h"
+#include "Serialization/DataSerializer.h"
 
 MeshRefBox::MeshRefBox(bool reflective, glm::vec3 dimensions) :
 MeshRefBox(reflective, glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f)) { }
@@ -151,6 +152,24 @@ glm::vec3 MeshRefBox::getMin() const {
 
 glm::vec3 MeshRefBox::getMax() const {
 	return max;
+}
+
+SerializableType MeshRefBox::getSerializableType() {
+	return SMeshRefBox;
+}
+
+Json::Value MeshRefBox::serialize(Serializer* serializer) {
+	Json::Value root = MeshRef::serialize(serializer);
+	root["min"] = DataSerializer::serializeVec3(min);
+	root["max"] = DataSerializer::serializeVec3(max);
+	return root;
+}
+
+void MeshRefBox::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshRef::deserialize(root, serializer);
+	min = DataSerializer::deserializeVec3(root["min"]);
+	max = DataSerializer::deserializeVec3(root["max"]);
+	setupMesh();
 }
 
 glm::vec3 MeshRefBox::getUnmodeledCenter() {

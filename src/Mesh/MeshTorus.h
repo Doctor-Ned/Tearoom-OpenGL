@@ -8,11 +8,14 @@
 
 class MeshTorus : public MeshTexture {
 public:
-	MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath,
-	          glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
+	MeshTorus(float radiusIn, float radiusOut, int sideAmount, char* texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void updateValues(float radiusIn, float radiusOut, int sideAmount);
-	glm::vec3 baseCenter;
+	void updateValues(float radiusIn, float radiusOut, int sideAmount, glm::vec3 baseCenter);
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	MeshTorus() {}
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createTorusSegment(std::vector<TextureVertex>* vertices, float angle, float radStep);
 	void createRectangle(std::vector<TextureVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,
@@ -23,6 +26,8 @@ protected:
 	float radiusOut;
 	int sideAmount;
 	unsigned int vertexAmount;
+	glm::vec3 baseCenter;
+	friend class Serializer;
 };
 
 #endif

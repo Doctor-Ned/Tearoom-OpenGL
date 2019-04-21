@@ -1,12 +1,12 @@
 #include "Model.h"
 #include <stb_image.h>
 
-Model::Model(std::string path) : Model(AssetManager::getInstance()->getModelData(path)) { }
+Model::Model(std::string path) : Model(AssetManager::getInstance()->getModelData(path)) {
+	this->path = path;
+}
 
 Model::Model(std::vector<ModelData*> data) : Mesh(STModel) {
-	for(auto &modelData : data) {
-		meshes.push_back(new MeshModel(modelData->vertices, modelData->indices, modelData->textures));
-	}
+	initialize(data);
 }
 
 void Model::draw(Shader *shader, glm::mat4 world) {
@@ -40,6 +40,28 @@ void Model::setCulled(bool culled) {
 	Mesh::setCulled(culled);
 	for(auto &mesh : meshes) {
 		mesh->setCulled(culled);
+	}
+}
+
+SerializableType Model::getSerializableType() {
+	return SModel;
+}
+
+Json::Value Model::serialize(Serializer* serializer) {
+	Json::Value root = Mesh::serialize(serializer);
+	root["model"] = path;
+	return root;
+}
+
+void Model::deserialize(Json::Value& root, Serializer* serializer) {
+	Mesh::deserialize(root, serializer);
+	this->path = root.get("model", "").asString();
+	initialize(AssetManager::getInstance()->getModelData(path));
+}
+
+void Model::initialize(std::vector<ModelData*> data) {
+	for (auto &modelData : data) {
+		meshes.push_back(new MeshModel(modelData->vertices, modelData->indices, modelData->textures));
 	}
 }
 

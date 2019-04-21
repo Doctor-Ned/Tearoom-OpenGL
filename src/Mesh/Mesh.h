@@ -4,8 +4,9 @@
 #include "Global.h"
 #include "Render/Shader.h"
 #include "Scene/AssetManager.h"
+#include "Serialization/Serializable.h"
 
-class Mesh {
+class Mesh abstract: public Serializable {
 public:
 	void setShaderType(ShaderType shaderType);
 	void setShininess(float shininess);
@@ -22,7 +23,10 @@ public:
 	ShaderType getShaderType();
 	GLuint getRenderMode();
 	void setRenderMode(GLuint renderMode);
-	~Mesh();
+	virtual ~Mesh();
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	Mesh(ShaderType shaderType, GLuint renderMode = GL_TRIANGLES);
 	virtual void draw(Shader *shader, glm::mat4 world);
@@ -35,6 +39,8 @@ protected:
 	bool useLight;
 	bool castShadows;
 	float opacity = 1.0f;
+	Mesh() : Mesh(STNone) {}
+	friend class Serializer;
 };
 
 #endif

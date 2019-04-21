@@ -3,10 +3,11 @@
 
 #include "Mesh.h"
 
-class MeshRef : public Mesh {
+class MeshRef abstract: public Mesh {
 public:
 	void regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
 	GLuint getEnvironmentMap() const;
+	SerializableType getSerializableType() override;
 protected:
 	void draw(Shader *shader, glm::mat4 model) override;
 	virtual glm::vec3 getUnmodeledCenter() = 0;

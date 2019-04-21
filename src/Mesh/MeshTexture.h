@@ -10,16 +10,15 @@ struct TextureVertex {
 	glm::vec2 TexCoords;
 };
 
-class MeshTexture : public Mesh {
+class MeshTexture abstract: public Mesh {
 public:
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer *serializer) override;
+	void deserialize(Json::Value &root, Serializer *serializer) override;
 protected:
 	void draw(Shader *shader, glm::mat4 world) override;
-	MeshTexture(std::vector<TextureVertex> vertices, std::vector<unsigned int> indices,
-	            char* textureFile);
 	MeshTexture();
 	Texture texture;
-	std::vector<unsigned int> indices;
-	std::vector<TextureVertex> vertices;
 };
 
 #endif

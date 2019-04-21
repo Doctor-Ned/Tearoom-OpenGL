@@ -1,5 +1,6 @@
 #include "MeshRefSphere.h"
 #include "MeshTexture.h"
+#include "Serialization/DataSerializer.h"
 
 MeshRefSphere::MeshRefSphere(bool reflective, float radius, int precision, glm::vec3 baseCenter)
 	: MeshRef(reflective), baseCenter(baseCenter), radius(radius), precision(precision) {
@@ -16,6 +17,11 @@ void MeshRefSphere::draw(Shader *shader, glm::mat4 world) {
 }
 
 void MeshRefSphere::updateValues(float radius, int precision) {
+	updateValues(radius, precision, baseCenter);
+}
+
+void MeshRefSphere::updateValues(float radius, int precision, glm::vec3 baseCenter) {
+	this->baseCenter = baseCenter;
 	if (radius <= 0) {
 		radius = 0.01f;
 	}
@@ -42,6 +48,26 @@ void MeshRefSphere::updateValues(float radius, int precision) {
 
 float MeshRefSphere::getRadius() const {
 	return radius;
+}
+
+SerializableType MeshRefSphere::getSerializableType() {
+	return SMeshRefSphere;
+}
+
+Json::Value MeshRefSphere::serialize(Serializer* serializer) {
+	Json::Value root = MeshRef::serialize(serializer);
+	root["baseCenter"] = DataSerializer::serializeVec3(baseCenter);
+	root["radius"] = radius;
+	root["precision"] = precision;
+	return root;
+}
+
+void MeshRefSphere::deserialize(Json::Value& root, Serializer* serializer) {
+	MeshRef::deserialize(root, serializer);
+	baseCenter = DataSerializer::deserializeVec3(root.get("baseCenter", DataSerializer::serializeVec3(glm::vec3(0.0f, 0.0f, 0.0f))));
+	radius = root["radius"].asFloat();
+	precision = root["precision"].asInt();
+	setupMesh();
 }
 
 glm::vec3 MeshRefSphere::getUnmodeledCenter() {
@@ -154,15 +180,15 @@ void MeshRefSphere::bufferData(std::vector<SimpleVertex>* vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(SimpleVertex), &(*vertices)[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)nullptr);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (void*)offsetof(SimpleVertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), reinterpret_cast<void*>(offsetof(SimpleVertex, Normal)));
 
 	glBindVertexArray(0);
 }
 
 void MeshRefSphere::setupMesh() {
 	glGenVertexArrays(1, &VAO);
-	updateValues(radius, precision);
+	updateValues(radius, precision, baseCenter);
 }

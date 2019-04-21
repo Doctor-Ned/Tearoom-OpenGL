@@ -9,11 +9,13 @@
 
 class MeshSphere : public MeshTexture {
 public:
-	MeshSphere(float radius, int precision, char* texturePath,
-	           glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
+	MeshSphere(float radius, int precision, char* texturePath, glm::vec3 baseCenter = glm::vec3(0.0f, 0.0f, 0.0f));
 	void updateValues(float radius, int precision);
+	void updateValues(float radius, int precision, glm::vec3 baseCenter);
 	float getRadius() const;
-	glm::vec3 baseCenter;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createSphereSegment(std::vector<TextureVertex>* vertices, float angle, float radStep);
@@ -22,6 +24,7 @@ protected:
 	void createTriangle(std::vector<TextureVertex>* vertices, glm::vec3* up, glm::vec3* right, glm::vec3* left);
 	void bufferData(std::vector<TextureVertex>* vertices);
 	void setupMesh();
+	glm::vec3 baseCenter;
 	float radius;
 	int precision;
 	unsigned int vertexAmount;

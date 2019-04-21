@@ -88,6 +88,32 @@ Mesh::~Mesh() {
 	}
 }
 
+SerializableType Mesh::getSerializableType() {
+	return SMesh;
+}
+
+Json::Value Mesh::serialize(Serializer* serializer) {
+	Json::Value root;
+	root["shaderType"] = static_cast<int>(shaderType);
+	root["shininess"] = shininess;
+	root["culled"] = culled;
+	root["useLight"] = useLight;
+	root["opaque"] = opaque;
+	root["opacity"] = opacity;
+	root["renderMode"] = static_cast<int>(renderMode);
+	return root;
+}
+
+void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
+	setShaderType(static_cast<ShaderType>(root.get("shaderType", static_cast<int>(shaderType)).asInt()));
+	setShininess(root.get("shininess", shininess).asFloat());
+	setCulled(root.get("culled", culled).asBool());
+	setUseLight(root.get("useLight", useLight).asBool());
+	setOpaque(root.get("opaque", opaque).asBool());
+	setOpacity(root.get("opacity", opacity).asFloat());
+	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
+}
+
 Mesh::Mesh(ShaderType shaderType, GLuint renderMode) {
 	this->renderMode = renderMode;
 	this->shaderType = shaderType;
