@@ -85,8 +85,8 @@ Json::Value SpotLightComp::serialize(Serializer* serializer) {
 }
 
 void SpotLightComp::deserialize(Json::Value& root, Serializer* serializer) {
-	LightComp::deserialize(root, serializer);
 	light = dynamic_cast<SpotLight*>(serializer->deserialize(root["light"]).object);
+	LightComp::deserialize(root, serializer);
 }
 
 bool SpotLightComp::getEnabled() {

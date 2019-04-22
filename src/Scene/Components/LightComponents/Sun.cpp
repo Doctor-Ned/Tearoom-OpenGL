@@ -130,6 +130,10 @@ Json::Value Sun::serialize(Serializer* serializer) {
 }
 
 void Sun::deserialize(Json::Value& root, Serializer* serializer) {
+	light1 = dynamic_cast<DirLight*>(serializer->deserialize(root["light1"]).object);
+	light2 = dynamic_cast<DirLight*>(serializer->deserialize(root["light2"]).object);
+	light1Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light1Comp"]).object);
+	light2Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light2Comp"]).object);
 	Component::deserialize(root, serializer);
 	ambientFactor = root["ambientFactor"].asFloat();
 	specularFactor = root["specularFactor"].asFloat();
@@ -139,10 +143,6 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 	dayColor = DataSerializer::deserializeVec4(root["dayColor"]);
 	duskColor = DataSerializer::deserializeVec4(root["duskColor"]);
 	nightColor = DataSerializer::deserializeVec4(root["nightColor"]);
-	light1 = dynamic_cast<DirLight*>(serializer->deserialize(root["light1"]).object);
-	light2 = dynamic_cast<DirLight*>(serializer->deserialize(root["light2"]).object);
-	light1Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light1Comp"]).object);
-	light2Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light2Comp"]).object);
 	sunDistance = root["sunDistance"].asFloat();
 	dirty = true;
 }

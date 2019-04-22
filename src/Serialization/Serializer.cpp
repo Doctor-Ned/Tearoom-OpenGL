@@ -281,6 +281,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 void Serializer::deserializeAndIdentify(SerializablePointer& pointer, Json::Value &data, Serializable* serializable) {
 	pointer.object = serializable;
 	ids.emplace(serializable, pointer.id);
+	if(pointer.id == 36) {
+		printf("");
+	}
 	serializable->deserialize(data, this);
 }
 

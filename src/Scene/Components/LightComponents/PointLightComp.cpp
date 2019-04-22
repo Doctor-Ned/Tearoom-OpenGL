@@ -69,8 +69,8 @@ Json::Value PointLightComp::serialize(Serializer* serializer) {
 }
 
 void PointLightComp::deserialize(Json::Value& root, Serializer* serializer) {
-	LightComp::deserialize(root, serializer);
 	light = dynamic_cast<PointLight*>(serializer->deserialize(root["light"]).object);
+	LightComp::deserialize(root, serializer);
 }
 
 bool PointLightComp::getEnabled() {

@@ -45,8 +45,8 @@ Json::Value DirLightComp::serialize(Serializer* serializer) {
 }
 
 void DirLightComp::deserialize(Json::Value& root, Serializer* serializer) {
-	LightComp::deserialize(root, serializer);
 	light = dynamic_cast<DirLight*>(serializer->deserialize(root["light"]).object);
+	LightComp::deserialize(root, serializer);
 }
 
 bool DirLightComp::getEnabled() {
