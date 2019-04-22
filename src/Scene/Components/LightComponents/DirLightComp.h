@@ -2,10 +2,15 @@
 
 #include "LightComp.h"
 
+struct DirLight;
+
 class DirLightComp : public LightComp {
 public:
 	DirLightComp(DirLight *light, GraphNode *parent);
 	DirLight *getLight() const;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	bool getEnabled() override;
 	void setEnabled(bool enabled) override;
@@ -18,4 +23,6 @@ protected:
 	void setModel(glm::mat4 model) override;
 private:
 	DirLight *light;
+	DirLightComp(){}
+	friend class Serializer;
 };

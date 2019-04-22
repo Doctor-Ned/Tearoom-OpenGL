@@ -11,6 +11,9 @@ public:
 	virtual void setConstant(float constant) = 0;
 	virtual void setLinear(float linear) = 0;
 	virtual void setQuadratic(float quadratic) = 0;
+	SerializableType getSerializableType() override;
 protected:
 	void renderGui() override;
+	QuadraticLightComp(){}
+	friend class Serializer;
 };

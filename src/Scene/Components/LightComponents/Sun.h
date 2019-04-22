@@ -19,6 +19,9 @@ public:
 	void setAmbientFactor(float ambientFactor);
 	float getSpecularFactor();
 	void setSpecularFactor(float specularFactor);
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	float ambientFactor = 0.01f;
 	float specularFactor = 0.3f;
@@ -30,4 +33,6 @@ protected:
 	DirLight *light1, *light2;
 	DirLightComp *light1Comp, *light2Comp;
 	float sunDistance;
+	Sun(){}
+	friend class Serializer;
 };

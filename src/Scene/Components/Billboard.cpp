@@ -1,5 +1,6 @@
 #include "Billboard.h"
 #include "Render/Camera.h"
+#include "Serialization/Serializer.h"
 
 Billboard::Billboard(Camera* camera, GraphNode* gameObject, bool rescale) : Component(gameObject, "Billboard") {
 	this->camera = camera;
@@ -27,6 +28,23 @@ void Billboard::setRescaling(bool rescale) {
 
 bool Billboard::getRescaling() {
 	return rescale;
+}
+
+SerializableType Billboard::getSerializableType() {
+	return SBillboard;
+}
+
+Json::Value Billboard::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["camera"] = serializer->serialize(camera);
+	root["rescale"] = rescale;
+	return root;
+}
+
+void Billboard::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
+	rescale = root["rescale"].asBool();
 }
 
 void Billboard::recalculateMatrix() {

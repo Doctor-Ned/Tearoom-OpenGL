@@ -14,8 +14,13 @@ public:
 	Camera *getCamera();
 	void setRescaling(bool rescale);
 	bool getRescaling();
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	void recalculateMatrix();
 	Camera *camera;
 	bool rescale;
+	Billboard(){}
+	friend class Serializer;
 };

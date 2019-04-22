@@ -190,6 +190,36 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	return getLights();
 }
 
+Lights LightManager::createUnmanagedLights(int dirs, int spots, int points) {
+	Lights lights;
+	for(int i=0;i<dirs;i++) {
+		lights.dirLights.push_back(new DirLight());
+	}
+	for(int i=0;i<spots;i++) {
+		lights.spotLights.push_back(new SpotLight());
+	}
+	for(int i=0;i<points;i++) {
+		lights.pointLights.push_back(new PointLight());
+	}
+	return lights;
+}
+
+void LightManager::replaceLights(Lights lights) {
+	disposeLights();
+	if(std::max(lights.pointLights.size(), std::max(lights.spotLights.size(), lights.dirLights.size())) > MAX_LIGHTS_OF_TYPE) {
+		throw "Attempted to add too many lights!";
+	}
+	for(auto dir : lights.dirLights) {
+		addDirLight(dir);
+	}
+	for(auto spot : lights.spotLights) {
+		addSpotLight(spot);
+	}
+	for(auto point : lights.pointLights) {
+		addPointLight(point);
+	}
+}
+
 SpotLight* LightManager::addSpotLight() {
 	if (spotLightAmount == MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to add too many spot lights!";
@@ -215,6 +245,48 @@ PointLight* LightManager::addPointLight() {
 	pointLights[pointLightAmount].light = new PointLight();
 	pointLights[pointLightAmount].data = createPointShadowData();
 	return pointLights[pointLightAmount++].light;
+}
+
+void LightManager::addSpotLight(SpotLight* light) {
+	for(int i=0;i<spotLightAmount;i++) {
+		if(spotLights[i].light == light) {
+			return;
+		}
+	}
+	if(spotLightAmount == MAX_LIGHTS_OF_TYPE) {
+		throw "Attempted to add too many spot lights!";
+	}
+	spotLights[spotLightAmount].light = light;
+	spotLights[spotLightAmount].data = createSpotShadowData();
+	spotLightAmount++;
+}
+
+void LightManager::addDirLight(DirLight* light) {
+	for (int i = 0; i < dirLightAmount; i++) {
+		if (dirLights[i].light == light) {
+			return;
+		}
+	}
+	if (dirLightAmount == MAX_LIGHTS_OF_TYPE) {
+		throw "Attempted to add too many dir lights!";
+	}
+	dirLights[dirLightAmount].light = light;
+	dirLights[dirLightAmount].data = createDirShadowData();
+	dirLightAmount++;
+}
+
+void LightManager::addPointLight(PointLight* light) {
+	for (int i = 0; i < pointLightAmount; i++) {
+		if (pointLights[i].light == light) {
+			return;
+		}
+	}
+	if (pointLightAmount == MAX_LIGHTS_OF_TYPE) {
+		throw "Attempted to add too many point lights!";
+	}
+	pointLights[pointLightAmount].light = light;
+	pointLights[pointLightAmount].data = createPointShadowData();
+	pointLightAmount++;
 }
 
 void LightManager::remove(DirLight * light) {

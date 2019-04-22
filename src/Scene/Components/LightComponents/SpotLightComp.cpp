@@ -1,4 +1,6 @@
 #include "SpotLightComp.h"
+#include "Render/LightManager.h"
+#include "Serialization/Serializer.h"
 
 SpotLightComp::SpotLightComp(SpotLight * light, GraphNode *gameObject) : QuadraticLightComp(gameObject) {
 	this->light = light;
@@ -70,6 +72,21 @@ void SpotLightComp::setOuterCutoff(float outerCutoff) {
 
 SpotLight* SpotLightComp::getLight() const {
 	return light;
+}
+
+SerializableType SpotLightComp::getSerializableType() {
+	return SSpotLightComp;
+}
+
+Json::Value SpotLightComp::serialize(Serializer* serializer) {
+	Json::Value root = LightComp::serialize(serializer);
+	root["light"] = serializer->serialize(light);
+	return root;
+}
+
+void SpotLightComp::deserialize(Json::Value& root, Serializer* serializer) {
+	LightComp::deserialize(root, serializer);
+	light = dynamic_cast<SpotLight*>(serializer->deserialize(root["light"]).object);
 }
 
 bool SpotLightComp::getEnabled() {

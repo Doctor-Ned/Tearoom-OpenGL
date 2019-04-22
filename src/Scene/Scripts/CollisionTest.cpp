@@ -4,12 +4,31 @@
 
 CollisionTest::CollisionTest(GraphNode* _gameObject) : Component(_gameObject)
 {
-	auto f = [this](Collider* collider)
-	{
+	applyCallback();
+}
+
+void CollisionTest::applyCallback() {
+	auto f = [this](Collider* collider) {
 		this->OnCollision(collider);
 		return 1;
 	};
 	gameObject->getComponent<Collider>()->setCollisionCallback(f);
+}
+
+SerializableType CollisionTest::getSerializableType() {
+	return SCollisionTest;
+}
+
+Json::Value CollisionTest::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["direction"] = direction;
+	return root;
+}
+
+void CollisionTest::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	direction = root["direction"].asInt();
+	applyCallback();
 }
 
 void CollisionTest::update(float msec)

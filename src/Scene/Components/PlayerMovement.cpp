@@ -6,17 +6,32 @@
 #include "Scene/Scenes/TestScene.h"
 #include "Scene/Scenes/Scene.h"
 #include "glm/glm.hpp"
+#include "Serialization/Serializer.h"
 
-PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _scene) : Component(_gameObject, "Player movement"), camera(_camera), scene(_scene)
-{
+SerializableType PlayerMovement::getSerializableType() {
+	return SPlayerMovement;
+}
+
+Json::Value PlayerMovement::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["camera"] = serializer->serialize(camera);
+	root["scene"] = serializer->serialize(scene);
+	return root;
+}
+
+void PlayerMovement::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
+	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+}
+
+PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _scene) : Component(_gameObject, "Player movement"), camera(_camera), scene(_scene) {
 
 }
 
-void PlayerMovement::update(float msec)
-{
-	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, -0.6f, 0.0f), glm::vec3(0,-1,0), 0.2f);
-	if(floor == nullptr)
-	{
+void PlayerMovement::update(float msec) {
+	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, -0.6f, 0.0f), glm::vec3(0, -1, 0), 0.2f);
+	if (floor == nullptr) {
 		gameObject->localTransform.translate(glm::vec3(0.0f, -5.0f * msec, 0.0f));
 	}
 
@@ -26,15 +41,12 @@ void PlayerMovement::update(float msec)
 	glm::vec3 camRight = camera->getRight();
 
 	glm::vec2 right = glm::normalize(glm::vec2(camRight.x, camRight.z));
-	
+
 	static float speed = 2.0f;
 	GameManager* gameManager = GameManager::getInstance();
-	if(gameManager->getKeyState(KEY_FAST))
-	{
+	if (gameManager->getKeyState(KEY_FAST)) {
 		speed = 4.0f;
-	}
-	else
-	{
+	} else {
 		speed = 2.0f;
 	}
 
@@ -51,7 +63,7 @@ void PlayerMovement::update(float msec)
 	if (gameManager->getKeyState(KEY_RIGHT)) {
 		direction += glm::vec3(right.x, 0, right.y);
 	}
-	if(direction != glm::vec3(0))
+	if (direction != glm::vec3(0))
 		direction = glm::normalize(direction);
 	gameObject->localTransform.translate(direction * msec * speed);
 

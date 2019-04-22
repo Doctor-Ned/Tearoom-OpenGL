@@ -41,15 +41,16 @@ public:
 	void update(double deltaTime) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	TestScene(bool serialized);
 	void keyEvent(int key, bool pressed) override;
 	bool lockMouse = false;
-	int renderDepthMap = 0;
-	float spotNear = 1.0f, spotFar = 50.0f, dirNear = 4.0f, dirFar = 70.0f, dirProjSize = 10.0f;
 	Skybox *skybox;
 	std::vector<Shader*> updatableShaders;
 	glm::mat4 projection;
-	Lights lights;
 	UboLights *uboLights;
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
@@ -66,5 +67,6 @@ protected:
 	float mouseX, mouseY;
 	float mouseMovementX, mouseMovementY;
 	bool initMouse = true;
+	friend class Serializer;
 };
 

@@ -195,6 +195,10 @@ Scene::~Scene() {
 	delete rootNode;
 }
 
+Lights Scene::getLights() {
+	return lights;
+}
+
 SerializableType Scene::getSerializableType() {
 	return SScene;
 }
@@ -205,6 +209,15 @@ Json::Value Scene::serialize(Serializer* serializer) {
 	for (int i = 0; i < lightIgnoredObjects.size(); i++) {
 		root["lightIgnoredObjects"][i] = serializer->serialize(dynamic_cast<Serializable*>(lightIgnoredObjects[i]));
 	}
+	for (int i = 0; i < lights.dirLights.size(); i++) {
+		root["lights"]["dirLights"] = serializer->serialize(lights.dirLights[i]);
+	}
+	for (int i = 0; i < lights.spotLights.size(); i++) {
+		root["lights"]["spotLights"] = serializer->serialize(lights.spotLights[i]);
+	}
+	for (int i = 0; i < lights.pointLights.size(); i++) {
+		root["lights"]["pointLights"] = serializer->serialize(lights.pointLights[i]);
+	}
 	return root;
 }
 
@@ -212,6 +225,15 @@ void Scene::deserialize(Json::Value& root, Serializer* serializer) {
 	rootNode = dynamic_cast<GraphNode*>(serializer->deserialize(root["rootNode"]).object);
 	for (int i = 0; i < root["lightIgnoredObjects"].size(); i++) {
 		lightIgnoredObjects.push_back(dynamic_cast<Renderable*>(serializer->deserialize(root["lightIgnoredObjects"][i]).object));
+	}
+	for (int i = 0; i < root["lights"]["dirLights"].size(); i++) {
+		lights.dirLights.push_back(dynamic_cast<DirLight*>(serializer->deserialize(root["lights"]["dirLights"][i]).object));
+	}
+	for (int i = 0; i < root["lights"]["spotLights"].size(); i++) {
+		lights.spotLights.push_back(dynamic_cast<SpotLight*>(serializer->deserialize(root["lights"]["spotLights"][i]).object));
+	}
+	for (int i = 0; i < root["lights"]["pointLights"].size(); i++) {
+		lights.pointLights.push_back(dynamic_cast<PointLight*>(serializer->deserialize(root["lights"]["pointLights"][i]).object));
 	}
 	reinitializeRenderMap();
 }

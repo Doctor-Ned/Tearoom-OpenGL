@@ -21,12 +21,17 @@ class AnimationController: public Component
 {
 
 protected:
+	friend class Serializer;
+	AnimationController(){}
     bool *F_keyState;
 	bool animating = false;
     AnimationType type;
     glm::float32 elapsed = 0.0f;
 
 public:
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
     virtual ~AnimationController();
     AnimationController(AnimationType _type, GraphNode* _gameObject, bool* f_keyPressed);
     void update(float msec) override;

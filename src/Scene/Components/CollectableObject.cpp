@@ -40,5 +40,24 @@ void CollectableObject::update(float msec)
 	}*/
 }
 
+SerializableType CollectableObject::getSerializableType() {
+	return SCollectableObject;
+}
+
+Json::Value CollectableObject::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["isTaken"] = isTaken;
+	root["isHitByRay"] = isHitByRay;
+	root["fKeyState"] = fKeyState;
+	return root;
+}
+
+void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	isTaken = root["isTaken"].asBool();
+	isHitByRay = root["isHitByRay"].asBool();
+	fKeyState = root["fKeyState"].asBool();
+}
+
 
 CollectableObject::~CollectableObject() {}

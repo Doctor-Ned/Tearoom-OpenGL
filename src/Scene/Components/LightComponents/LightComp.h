@@ -14,9 +14,11 @@ public:
 	virtual void setAmbient(glm::vec4 ambient) = 0;
 	virtual void setDiffuse(glm::vec4 diffuse) = 0;
 	virtual void setSpecular(glm::vec4 specular) = 0;
+	SerializableType getSerializableType() override;
 protected:
 	virtual bool getEnabled() = 0;
 	virtual void setEnabled(bool enabled) = 0;
 	virtual void setModel(glm::mat4 model) = 0;
 	void renderGui() override;
+	LightComp(){}
 };

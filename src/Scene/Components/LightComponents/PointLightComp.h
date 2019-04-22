@@ -2,6 +2,8 @@
 
 #include "QuadraticLightComp.h"
 
+struct PointLight;
+
 class PointLightComp : public QuadraticLightComp {
 public:
 	PointLightComp(PointLight *light, GraphNode *gameObject);
@@ -12,6 +14,9 @@ public:
 	void setLinear(float linear) override;
 	void setQuadratic(float quadratic) override;
 	PointLight *getLight() const;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	bool getEnabled() override;
 	void setEnabled(bool enabled) override;
@@ -24,4 +29,6 @@ protected:
 	void setModel(glm::mat4 model) override;
 private:
 	PointLight *light;
+	PointLightComp(){}
+	friend class Serializer;
 };

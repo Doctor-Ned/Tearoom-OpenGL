@@ -1,4 +1,8 @@
 #include "QuadraticLightComp.h"
+SerializableType QuadraticLightComp::getSerializableType() {
+	return SQuadraticLightComp;
+}
+
 void QuadraticLightComp::renderGui() {
 	LightComp::renderGui();
 	if(active) {

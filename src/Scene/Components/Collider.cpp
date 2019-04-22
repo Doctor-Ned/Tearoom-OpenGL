@@ -2,6 +2,8 @@
 #include "Mesh/MeshColorSphere.h"
 #include "Mesh/MeshColorBox.h"
 #include "Scene/GraphNode.h"
+#include "Serialization/Serializer.h"
+#include "Serialization/DataSerializer.h"
 
 using vec3 = glm::vec3;
 void Collider::update(float m_sec) {
@@ -21,6 +23,36 @@ ShaderType Collider::getShaderType() {
 
 void Collider::setCollisionCallback(std::function<int(Collider*)> f) {
 	callbackFunctions.push_back(f);
+}
+
+SerializableType Collider::getSerializableType() {
+	return SCollider;
+}
+
+Json::Value Collider::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["mesh"] = serializer->serialize(mesh_ptr.get());
+	root["matrix"] = DataSerializer::serializeMat4(matrix);
+	root["collisionType"] = static_cast<int>(collisionType);
+	root["type"] = static_cast<int>(type);
+	root["isTrigger"] = isTrigger;
+	root["positionOffset"] = DataSerializer::serializeVec3(positionOffset);
+	return root;
+}
+
+void Collider::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	Mesh *mesh = dynamic_cast<Mesh*>(serializer->deserialize(root["mesh"]).object);
+	if(mesh == nullptr) {
+		mesh_ptr = nullptr;
+	} else {
+		mesh_ptr = std::shared_ptr<Mesh>(mesh);
+	}
+	matrix = DataSerializer::deserializeMat4(root["matrix"]);
+	collisionType = static_cast<Collision>(root["collisionType"].asInt());
+	type = static_cast<ColliderType>(root["type"].asInt());
+	isTrigger = root["isTrigger"].asBool();
+	positionOffset = DataSerializer::deserializeVec3(root["positionOffset"]);
 }
 
 bool Collider::isActive() {

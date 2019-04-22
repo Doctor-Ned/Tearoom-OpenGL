@@ -4,7 +4,14 @@
 class Collider;
 class CollisionTest : public Component
 {
+protected:
+	friend class Serializer;
+	CollisionTest(){}
+	void applyCallback();
 public:
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer *serializer) override;
+	void deserialize(Json::Value &root, Serializer *serializer) override;
 	int direction = 1;
 	void update(float msec) override;
 	~CollisionTest() override;

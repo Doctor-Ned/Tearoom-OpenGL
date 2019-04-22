@@ -2,6 +2,7 @@
 #include "MiszukScene.h"
 #include "TestScene.h"
 #include "Ui/UiTextButton.h"
+#include "Serialization/Serializer.h"
 
 class UiTextButton;
 
@@ -9,14 +10,21 @@ MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(windowCenterX, 3 * windowHeight / 9.0f), "Miszuk scene");
 	miszukScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new MiszukScene()); });
-	UiTextButton *testScene = new UiTextButton(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), "Test scene");
-	testScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new TestScene()); });
-	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), "Options");
+	UiTextButton *newTestScene = new UiTextButton(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), "New test scene");
+	newTestScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new TestScene()); });
+	UiTextButton *loadTestScene = new UiTextButton(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), "Load test scene");
+	loadTestScene->setButtonCallback([this]() {
+		Scene *scene = Serializer::getInstance()->loadScene("test");
+		if(scene != nullptr) {
+			gameManager->setCurrentScene(scene);
+		}
+	});
+	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Options");
 	options->setButtonCallback([this]() {showOptions(); });
-	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Quit");
+	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), "Quit");
 	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
 	uiElements.emplace_back(miszukScene);
-	uiElements.emplace_back(testScene);
+	uiElements.emplace_back(newTestScene);
 	uiElements.emplace_back(options);
 	uiElements.emplace_back(quit);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));

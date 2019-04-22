@@ -1,5 +1,6 @@
 #include "LightComp.h"
 #include "Scene/GraphNode.h"
+#include "Serialization/DataSerializer.h"
 
 LightComp::LightComp(GraphNode* gameObject) : Component(gameObject) {}
 void LightComp::updateWorld() {
@@ -9,6 +10,10 @@ void LightComp::updateWorld() {
 void LightComp::setComponentActive(bool active) {
 	Component::setComponentActive(active);
 	setEnabled(active);
+}
+
+SerializableType LightComp::getSerializableType() {
+	return SLightComp;
 }
 
 void LightComp::renderGui() {

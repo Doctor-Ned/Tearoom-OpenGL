@@ -15,3 +15,18 @@ void RotatingObject::setRotationSpeed(float speed) {
 float RotatingObject::getRotationSpeed() {
 	return rotationSpeed;
 }
+
+SerializableType RotatingObject::getSerializableType() {
+	return SRotatingObject;
+}
+
+Json::Value RotatingObject::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["rotationSpeed"] = rotationSpeed;
+	return root;
+}
+
+void RotatingObject::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	rotationSpeed = root["rotationSpeed"].asFloat();
+}

@@ -1,4 +1,6 @@
 #include "PointLightComp.h"
+#include "Render/LightManager.h"
+#include "Serialization/Serializer.h"
 
 PointLightComp::PointLightComp(PointLight * light, GraphNode *gameObject) : QuadraticLightComp(gameObject) {
 	this->light = light;
@@ -54,6 +56,21 @@ void PointLightComp::setQuadratic(float quadratic) {
 
 PointLight* PointLightComp::getLight() const {
 	return light;
+}
+
+SerializableType PointLightComp::getSerializableType() {
+	return SPointLightComp;
+}
+
+Json::Value PointLightComp::serialize(Serializer* serializer) {
+	Json::Value root = LightComp::serialize(serializer);
+	root["light"] = serializer->serialize(light);
+	return root;
+}
+
+void PointLightComp::deserialize(Json::Value& root, Serializer* serializer) {
+	LightComp::deserialize(root, serializer);
+	light = dynamic_cast<PointLight*>(serializer->deserialize(root["light"]).object);
 }
 
 bool PointLightComp::getEnabled() {

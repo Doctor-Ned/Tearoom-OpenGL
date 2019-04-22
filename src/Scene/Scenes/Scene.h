@@ -5,6 +5,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
 #include "Scene/OctreeNode.h"
+#include "Render/LightManager.h"
 
 #define ENABLE_FRUSTUM_CULLING
 
@@ -40,6 +41,7 @@ public:
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
 	Scene();
 	virtual ~Scene();
+	Lights getLights();
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
@@ -56,6 +58,7 @@ protected:
 	std::map<ShaderType, std::vector<UiElement*>*> uiRenderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
 	std::vector<Renderable*> lightIgnoredObjects;
+	Lights lights;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;

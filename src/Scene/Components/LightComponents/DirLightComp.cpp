@@ -1,4 +1,6 @@
 #include "DirLightComp.h"
+#include "Render/LightManager.h"
+#include "Serialization/Serializer.h"
 
 DirLightComp::DirLightComp(DirLight * light, GraphNode *gameObject) : LightComp(gameObject) {
 	this->light = light;
@@ -30,6 +32,21 @@ void DirLightComp::setSpecular(glm::vec4 specular) {
 
 DirLight* DirLightComp::getLight() const {
 	return light;
+}
+
+SerializableType DirLightComp::getSerializableType() {
+	return SDirLightComp;
+}
+
+Json::Value DirLightComp::serialize(Serializer* serializer) {
+	Json::Value root = LightComp::serialize(serializer);
+	root["light"] = serializer->serialize(light);
+	return root;
+}
+
+void DirLightComp::deserialize(Json::Value& root, Serializer* serializer) {
+	LightComp::deserialize(root, serializer);
+	light = dynamic_cast<DirLight*>(serializer->deserialize(root["light"]).object);
 }
 
 bool DirLightComp::getEnabled() {

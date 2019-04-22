@@ -57,6 +57,26 @@ void AnimationController::update(float msec)
 
 }
 
+SerializableType AnimationController::getSerializableType() {
+	return SAnimationController;
+}
+
+Json::Value AnimationController::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	//TODO: right now the "F_keyState" field is not serialized. It needs to be changed to something different
+	root["animating"] = animating;
+	root["type"] = static_cast<int>(type);
+	root["elapsed"] = elapsed;
+	return root;
+}
+
+void AnimationController::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	animating = root["animating"].asBool();
+	type = static_cast<AnimationType>(root["type"].asInt());
+	elapsed = root["elapsed"].asFloat();
+}
+
 AnimationController::~AnimationController()
 {
 

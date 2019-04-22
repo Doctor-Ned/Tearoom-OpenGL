@@ -8,19 +8,23 @@
 #include "Render/Renderable.h"
 #include "Mesh/Mesh.h"
 
-class CollectableObject: public Component {
+class CollectableObject : public Component {
 
 public:
-    virtual ~CollectableObject();
-    CollectableObject(GraphNode* _gameObject);
-    void takeObject();
-    void leaveObject();
-    void update(float msec) override;
-
+	virtual ~CollectableObject();
+	CollectableObject(GraphNode* _gameObject);
+	void takeObject();
+	void leaveObject();
+	void update(float msec) override;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
-    bool isTaken = false;
-    bool isHitByRay = false;
-    bool fKeyState = false;
+	bool isTaken = false;
+	bool isHitByRay = false;
+	bool fKeyState = false;
+	CollectableObject(){}
+	friend class Serializer;
 };
 
 

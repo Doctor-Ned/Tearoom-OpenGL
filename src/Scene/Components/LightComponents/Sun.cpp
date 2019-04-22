@@ -2,6 +2,7 @@
 #include "Render/LightManager.h"
 #include "Mesh/MeshColorSphere.h"
 #include "Scene/GraphNode.h"
+#include "Serialization/Serializer.h"
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
 	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
@@ -103,6 +104,46 @@ float Sun::getSpecularFactor() {
 
 void Sun::setSpecularFactor(float specularFactor) {
 	this->specularFactor = specularFactor;
+	dirty = true;
+}
+
+SerializableType Sun::getSerializableType() {
+	return SSun;
+}
+
+Json::Value Sun::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["ambientFactor"] = ambientFactor;
+	root["specularFactor"] = specularFactor;
+	root["time"] = time;
+	root["rotationAngle"] = rotationAngle;
+	root["dawnColor"] = DataSerializer::serializeVec4(dawnColor);
+	root["dayColor"] = DataSerializer::serializeVec4(dayColor);
+	root["duskColor"] = DataSerializer::serializeVec4(duskColor);
+	root["nightColor"] = DataSerializer::serializeVec4(nightColor);
+	root["light1"] = serializer->serialize(light1);
+	root["light2"] = serializer->serialize(light2);
+	root["light1Comp"] = serializer->serialize(light1Comp);
+	root["light2Comp"] = serializer->serialize(light2Comp);
+	root["sunDistance"] = sunDistance;
+	return root;
+}
+
+void Sun::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	ambientFactor = root["ambientFactor"].asFloat();
+	specularFactor = root["specularFactor"].asFloat();
+	time = root["time"].asFloat();
+	rotationAngle = root["rotationAngle"].asFloat();
+	dawnColor = DataSerializer::deserializeVec4(root["dawnColor"]);
+	dayColor = DataSerializer::deserializeVec4(root["dayColor"]);
+	duskColor = DataSerializer::deserializeVec4(root["duskColor"]);
+	nightColor = DataSerializer::deserializeVec4(root["nightColor"]);
+	light1 = dynamic_cast<DirLight*>(serializer->deserialize(root["light1"]).object);
+	light2 = dynamic_cast<DirLight*>(serializer->deserialize(root["light2"]).object);
+	light1Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light1Comp"]).object);
+	light2Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light2Comp"]).object);
+	sunDistance = root["sunDistance"].asFloat();
 	dirty = true;
 }
 

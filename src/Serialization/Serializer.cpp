@@ -19,6 +19,20 @@
 #include "Mesh/Model.h"
 #include "Scene/Scenes/Scene.h"
 #include "Render/Camera.h"
+#include "Scene/Components/AnimationController.h"
+#include "Scene/Components/Billboard.h"
+#include "Scene/Components/CollectableObject.h"
+#include "Scene/Components/PhysicalObject.h"
+#include "Scene/Components/Picking.h"
+#include "Scene/Components/PlayerMovement.h"
+#include "Scene/Components/RotatingObject.h"
+#include "Scene/Components/LightComponents/DirLightComp.h"
+#include "Scene/Components/LightComponents/QuadraticLightComp.h"
+#include "Scene/Components/LightComponents/PointLightComp.h"
+#include "Scene/Components/LightComponents/SpotLightComp.h"
+#include "Scene/Components/LightComponents/Sun.h"
+#include "Scene/Scripts/CollisionTest.h"
+#include "Scene/Scenes/TestScene.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -205,6 +219,60 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SCamera:
 			deserializeAndIdentify(pointer, data, new Camera());
+			break;
+		case SAnimationController:
+			deserializeAndIdentify(pointer, data, new AnimationController());
+			break;
+		case SBillboard:
+			deserializeAndIdentify(pointer, data, new Billboard());
+			break;
+		case SBoxCollider:
+			deserializeAndIdentify(pointer, data, new BoxCollider());
+			break;
+		case SSphereCollider:
+			deserializeAndIdentify(pointer, data, new SphereCollider());
+			break;
+		case SCollectableObject:
+			deserializeAndIdentify(pointer, data, new CollectableObject());
+			break;
+		case SPhysicalObject:
+			deserializeAndIdentify(pointer, data, new PhysicalObject());
+			break;
+		case SPicking:
+			deserializeAndIdentify(pointer, data, new Picking());
+			break;
+		case SPlayerMovement:
+			deserializeAndIdentify(pointer, data, new PlayerMovement());
+			break;
+		case SRotatingObject:
+			deserializeAndIdentify(pointer, data, new RotatingObject());
+			break;
+		case SDirLightComp:
+			deserializeAndIdentify(pointer, data, new DirLightComp());
+			break;
+		case SPointLightComp:
+			deserializeAndIdentify(pointer, data, new PointLightComp());
+			break;
+		case SSpotLightComp:
+			deserializeAndIdentify(pointer, data, new SpotLightComp());
+			break;
+		case SSun:
+			deserializeAndIdentify(pointer, data, new Sun());
+			break;
+		case SCollisionTest:
+			deserializeAndIdentify(pointer, data, new CollisionTest());
+			break;
+		case SDirLight:
+			deserializeAndIdentify(pointer, data, new DirLight());
+			break;
+		case SSpotLight:
+			deserializeAndIdentify(pointer, data, new SpotLight());
+			break;
+		case SPointLight:
+			deserializeAndIdentify(pointer, data, new PointLight());
+			break;
+		case STestScene:
+			deserializeAndIdentify(pointer, data, new TestScene(true));
 			break;
 	}
 	return pointer;

@@ -4,28 +4,30 @@
 #include <string>
 #include "Scene/GuiConfigurable.h"
 #include <imgui.h>
+#include "Serialization/Serializable.h"
+#include "Global.h"
 
 class GraphNode;
-class Component abstract : public GuiConfigurable
+class Component abstract : public GuiConfigurable, public Serializable
 {
 protected:
+	friend class Serializer;
+	Component() {}
 	GraphNode* gameObject;
-	Component(GraphNode* _gameObject, std::string name = "Component") : gameObject(_gameObject), name(name) {}
+	Component(GraphNode* _gameObject, std::string name = "Component");
 	bool active = true;
 	std::string name;
 public:
-	void setName(std::string name) { this->name = name; }
-	virtual void updateWorld() {}
-	virtual bool isComponentActive() { return active; }
-	virtual void setComponentActive(bool active) { this->active = active; }
-	virtual void update(float msec) {}
-	GraphNode* getGameObject() const { return gameObject; }
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
+	void setName(std::string name);
+	virtual void updateWorld();
+	virtual bool isComponentActive();
+	virtual void setComponentActive(bool active);
+	virtual void update(float msec);
+	GraphNode* getGameObject() const;
 	virtual ~Component() = default;
-	void renderGui() override {
-		bool active = this->active;
-		ImGui::Checkbox(name.c_str(), &active);
-		if (active != this->active)setComponentActive(active);
-		ImGui::NewLine();
-	}
+	void renderGui() override;
 };
 #endif

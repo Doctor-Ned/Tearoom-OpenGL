@@ -2,6 +2,21 @@
 #include "Mesh/MeshColorSphere.h"
 #include "Scene/GraphNode.h"
 
+SerializableType SphereCollider::getSerializableType() {
+	return SSphereCollider;
+}
+
+Json::Value SphereCollider::serialize(Serializer* serializer) {
+	Json::Value root = Collider::serialize(serializer);
+	root["radius"] = radius;
+	return root;
+}
+
+void SphereCollider::deserialize(Json::Value& root, Serializer* serializer) {
+	Collider::deserialize(root, serializer);
+	radius = root["radius"].asFloat();
+}
+
 SphereCollider::SphereCollider(GraphNode* _gameObject,  Collision classification, bool isTrigger, glm::vec3 position, float _radius) : Collider(SphereCol, _gameObject, classification, isTrigger,  position), radius(_radius)
 {
 	name = "Sphere collider";

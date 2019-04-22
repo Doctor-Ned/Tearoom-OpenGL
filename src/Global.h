@@ -47,58 +47,6 @@ static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED 
 
 static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE_BTN_SIZE = 0.1f;
 
-struct DirLight {
-	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
-	glm::mat4 lightSpace;
-	glm::vec4 ambient;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
-	glm::mat4 model;
-	glm::vec3 padding;
-	int enabled;
-};
-
-struct PointLight {
-	PointLight() : constant(100.0f), linear(100.0f), quadratic(100.0f), near_plane(0.01f), far_plane(10.0f),
-	ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
-	float constant;
-	float linear;
-	float quadratic;
-	float near_plane;
-	glm::vec2 padding;
-	float far_plane;
-	int enabled;
-	glm::vec4 ambient;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
-	glm::mat4 model;
-};
-
-struct SpotLight {
-	SpotLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), constant(100.0f), linear(100.0f), quadratic(100.0f),
-	cutOff(M_PI/12.0f), outerCutOff(M_PI/4.0f), enabled(1) {}
-	glm::mat4 lightSpace;
-	glm::vec4 ambient;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
-	glm::mat4 model;
-	float constant;
-	float linear;
-	float quadratic;
-	float cutOff;
-	glm::vec2 padding;
-	float outerCutOff;
-	int enabled;
-};
-
-struct LightShadowData {
-	GLuint fbo = 0;
-	GLuint rbo = 0;
-	GLuint texture = 0;
-	GLsizei width = 0;
-	GLsizei height = 0;
-};
-
 class Global {
 public:
 	static bool endsWith(std::string text, std::string end);

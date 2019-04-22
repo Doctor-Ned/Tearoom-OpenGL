@@ -1,4 +1,5 @@
 #pragma once
+#include "json/json.h"
 
 class Serializer;
 
@@ -26,7 +27,29 @@ enum SerializableType {
 	SModelInstanced,
 	SMeshTorus,
 	SScene,
-	SCamera
+	SCamera,
+	SComponent,
+	SAnimationController,
+	SBillboard,
+	SBoxCollider,
+	SSphereCollider,
+	SCollider,
+	SCollectableObject,
+	SPhysicalObject,
+	SPicking,
+	SPlayerMovement,
+	SRotatingObject,
+	SDirLightComp,
+	SLightComp,
+	SQuadraticLightComp,
+	SPointLightComp,
+	SSpotLightComp,
+	SSun,
+	SCollisionTest,
+	SDirLight,
+	SSpotLight,
+	SPointLight,
+	STestScene
 };
 
 class Serializable {

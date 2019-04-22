@@ -7,6 +7,8 @@
 #include "Scene/CollisionSystem.h"
 #include <iostream>
 #include "BoxCollider.h"
+#include "Serialization/DataSerializer.h"
+#include "Serialization/Serializer.h"
 
 bool PhysicalObject::isActive() {
 	return gameObject->isActive();
@@ -62,6 +64,43 @@ bool PhysicalObject::castRayDown() {
 void PhysicalObject::pushTranslation(glm::vec3 translation)
 {
 	translations.push(translation);
+}
+
+SerializableType PhysicalObject::getSerializableType() {
+	return SPhysicalObject;
+}
+
+Json::Value PhysicalObject::serialize(Serializer* serializer) {
+	Json::Value root = Component::serialize(serializer);
+	root["direction"] = DataSerializer::serializeVec3(direction);
+	root["distance"] = distance;
+	int counter = 0;
+	for(auto i=lastKnownPosition.begin();i!=lastKnownPosition.end();++i) {
+		root["lastKnownPosition"][counter++] = DataSerializer::serializeVec3(*i);
+	}
+	counter = 0;
+	for(auto i=translations.begin();i!=translations.end();++i) {
+		root["translations"][counter++] = DataSerializer::serializeVec3(*i);
+	}
+	root["isFalling"] = isFalling;
+	root["mesh"] = serializer->serialize(mesh);
+	root["gravity"] = gravity;
+	return root;
+}
+
+void PhysicalObject::deserialize(Json::Value& root, Serializer* serializer) {
+	Component::deserialize(root, serializer);
+	direction = DataSerializer::deserializeVec3(root["direction"]);
+	distance = root["distance"].asFloat();
+	for(int i=0;i<root["lastKnownPosition"].size();i++) {
+		lastKnownPosition.push(DataSerializer::deserializeVec3(root["lastKnownPosition"][i]));
+	}
+	for(int i=0;i<root["translations"].size();i++) {
+		translations.push(DataSerializer::deserializeVec3(root["translations"][i]));
+	}
+	isFalling = root["isFalling"].asBool();
+	mesh = dynamic_cast<Mesh*>(serializer->deserialize(root["mesh"]).object);
+	gravity = root["gravity"].asBool();
 }
 
 PhysicalObject::~PhysicalObject() {

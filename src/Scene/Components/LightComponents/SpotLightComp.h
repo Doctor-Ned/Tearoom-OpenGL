@@ -2,6 +2,8 @@
 
 #include "QuadraticLightComp.h"
 
+struct SpotLight;
+
 class SpotLightComp : public QuadraticLightComp {
 public:
 	SpotLightComp(SpotLight *light, GraphNode *gameObject);
@@ -16,6 +18,9 @@ public:
 	void setCutoff(float cutoff);
 	void setOuterCutoff(float outerCutoff);
 	SpotLight *getLight() const;
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	bool getEnabled() override;
 	void setEnabled(bool enabled) override;
@@ -29,4 +34,6 @@ protected:
 	void renderGui() override;
 private:
 	SpotLight *light;
+	SpotLightComp(){}
+	friend class Serializer;
 };

@@ -17,15 +17,14 @@ void GameManager::setCurrentScene(Scene * scene) {
 	currentScene = scene;
 	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+		LightManager::getInstance()->replaceLights(currentScene->getLights());
 	}
 }
 
 void GameManager::setCurrentSceneAndDeletePrevious(Scene* scene) {
 	Scene* old = currentScene;
-	currentScene = scene;
-
+	setCurrentScene(scene);
 	delete old;
-
 }
 
 float GameManager::getWindowWidth() {
@@ -113,7 +112,7 @@ void GameManager::setup() {
 }
 
 Camera* GameManager::getCamera() const {
-	if(currentScene != nullptr) {
+	if (currentScene != nullptr) {
 		return currentScene->getCamera();
 	}
 	return nullptr;
@@ -131,10 +130,10 @@ void GameManager::setVsync(bool enabled) {
 }
 
 void GameManager::addKeyCallback(int key, bool pressed, const std::function<void()>& callback) {
-	for(auto &pair : keyCallbacks) {
-		if(pair.first == key) {
-			for(auto &pair2 : pair.second) {
-				if(pair2.first == pressed) {
+	for (auto &pair : keyCallbacks) {
+		if (pair.first == key) {
+			for (auto &pair2 : pair.second) {
+				if (pair2.first == pressed) {
 					pair2.second.push_back(callback);
 					return;
 				}
@@ -327,12 +326,12 @@ void GameManager::setKeyState(int key, bool pressed) {
 }
 
 void GameManager::keyEvent(const int key, const bool pressed) const {
-	for(auto &pair : keyCallbacks) {
+	for (auto &pair : keyCallbacks) {
 		bool found = false;
-		if(pair.first == key) {
-			for(auto &pair2 : pair.second) {
-				if(pair2.first == pressed) {
-					for(auto &callback : pair2.second) {
+		if (pair.first == key) {
+			for (auto &pair2 : pair.second) {
+				if (pair2.first == pressed) {
+					for (auto &callback : pair2.second) {
 						callback();
 					}
 					found = true;
@@ -340,11 +339,11 @@ void GameManager::keyEvent(const int key, const bool pressed) const {
 				}
 			}
 		}
-		if(found) {
+		if (found) {
 			break;
 		}
 	}
-	if(currentScene != nullptr) {
+	if (currentScene != nullptr) {
 		currentScene->keyEvent(key, pressed);
 	}
 }

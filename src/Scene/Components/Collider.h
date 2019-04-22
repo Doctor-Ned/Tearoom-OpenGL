@@ -20,6 +20,8 @@ enum Collision
 class Collider abstract: public Component, public Renderable
 {
 protected:
+	friend class Serializer;
+	Collider() {}
 	std::vector < std::function<int(Collider*)>> callbackFunctions;
 	ColliderType type;
 	Collision collisionType;
@@ -28,6 +30,9 @@ protected:
 	std::shared_ptr<Mesh> mesh_ptr = nullptr;
 	glm::vec3 positionOffset;
 public:
+	SerializableType getSerializableType() override;
+	Json::Value serialize(Serializer* serializer) override;
+	void deserialize(Json::Value& root, Serializer* serializer) override;
 	bool isActive() override;
 	Collider(ColliderType _type, GraphNode* _gameObject, Collision classification = STATIC, bool isTrigger = false, glm::vec3 positionOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 	bool isOpaque() override;
