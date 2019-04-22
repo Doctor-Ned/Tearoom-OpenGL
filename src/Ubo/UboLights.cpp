@@ -23,19 +23,19 @@ void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLi
 	offset += 3 * sizeof(int);
 	int amount = glm::min(dirLights, MAX_LIGHTS_OF_TYPE);
 	for(int i=0;i< amount;i++) {
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(DirLight) - sizeof(void*), &dirLight[i]);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(DirLight) - sizeof(void*), reinterpret_cast<char*>(&dirLight[i]) + sizeof(void*));
 		offset += sizeof(DirLight) - sizeof(void*);
 	}
 	offset += (sizeof(DirLight) - sizeof(void*)) * (MAX_LIGHTS_OF_TYPE - amount);
 	amount = glm::min(spotLights, MAX_LIGHTS_OF_TYPE);
 	for (int i = 0; i < amount; i++) {
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(SpotLight) - sizeof(void*), &spotLight[i]);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(SpotLight) - sizeof(void*), reinterpret_cast<char*>(&spotLight[i]) + sizeof(void*));
 		offset += sizeof(SpotLight) - sizeof(void*);
 	}
 	offset += (sizeof(SpotLight) - sizeof(void*)) * (MAX_LIGHTS_OF_TYPE - amount);
 	amount = glm::min(pointLights, MAX_LIGHTS_OF_TYPE);
 	for (int i = 0; i < amount; i++) {
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(PointLight) - sizeof(void*), &pointLight[i]);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(PointLight) - sizeof(void*), reinterpret_cast<char*>(&pointLight[i]) + sizeof(void*));
 		offset += sizeof(PointLight) - sizeof(void*);
 	}
 }
