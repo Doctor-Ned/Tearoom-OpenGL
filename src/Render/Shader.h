@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "Ubo/Ubo.h"
 #include <map>
+#include "LightManager.h"
 
 class Shader {
 public:

@@ -3,12 +3,12 @@
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
 
 #include "Global.h"
-#include "Shader.h"
 #include "Serialization/Serializable.h"
 #include "Serialization/DataSerializer.h"
 
 class GeometryShader;
 class UboLights;
+class Shader;
 
 struct DirLight : Serializable {
 	DirLight() : ambient(glm::vec4(0.0f)), diffuse(glm::vec4(0.0f)), specular(glm::vec4(0.0f)), model(glm::mat4(1.0f)), enabled(1) {}
