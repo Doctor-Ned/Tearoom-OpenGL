@@ -118,8 +118,8 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	for (int i = 0; i < pointLightAmount; i++) {
 		points[i] = *pointLights[i].light;
 	}
-
-	uboLights->inject(initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, spotDirShadowTexelResolution, pointShadowSamples, dirs, spots, points);
+	bool noLights = dirLightAmount == 0 && spotLightAmount == 0 && pointLightAmount == 0;
+	uboLights->inject(noLights ? 1.0f : initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, spotDirShadowTexelResolution, pointShadowSamples, dirs, spots, points);
 
 	delete[] dirs;
 	delete[] spots;
