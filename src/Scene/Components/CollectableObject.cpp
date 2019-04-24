@@ -15,30 +15,37 @@ CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObje
 void CollectableObject::takeObject()
 {
 	gameObject->setActive(false);
-    isTaken = true;
-   // std::cout<<"HAAALOOOO"<<std::endl;
     gameObject->getMesh()->setOpaque(false);
+    isTaken = true;
 }
 
 void CollectableObject::leaveObject()
 {
+
+    //place for transforming object in the front of player
+
     isTaken = false;
+    gameObject->setActive(true);
+    gameObject->getMesh()->setOpaque(true);
 }
 
 void CollectableObject::update(float msec)
 {
-	//GameManager* gameManager = GameManager::getInstance();
+	/*
+    GameManager* gameManager = GameManager::getInstance();
 
-	/*fKeyState = gameManager->getKeyState(GLFW_KEY_F);
+	if(gameManager->getKeyState(GLFW_KEY_G)) { //temporary statement
+        leaveObject();
+	}
 
-	if (gameObject->getHitByRay() && fKeyState)
-	{
-		if (!isTaken)
-		{
-			takeObject();
-		}
-	}*/
+    std::cout<<"HALOOO"<<std::endl;
+*/
 }
+
+bool CollectableObject::getIsTaken() const {
+    return isTaken;
+}
+
 
 SerializableType CollectableObject::getSerializableType() {
 	return SCollectableObject;
@@ -61,3 +68,4 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 
 
 CollectableObject::~CollectableObject() {}
+

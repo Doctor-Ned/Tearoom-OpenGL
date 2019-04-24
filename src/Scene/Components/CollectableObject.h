@@ -19,9 +19,13 @@ public:
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
+    bool getIsTaken() const;
+
 protected:
 	bool isTaken = false;
-	bool isHitByRay = false;
+
+protected:
+    bool isHitByRay = false;
 	bool fKeyState = false;
 	CollectableObject(){}
 	friend class Serializer;
