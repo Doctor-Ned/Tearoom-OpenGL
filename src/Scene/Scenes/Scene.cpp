@@ -4,10 +4,27 @@
 #include "Render/LightManager.h"
 #include "Mesh/Mesh.h"
 #include "Serialization/Serializer.h"
+#include "Render/Camera.h"
 
 void Scene::render() {
-	rootNode->updateDrawData();
-	renderNodesUsingRenderMap();
+	Camera *camera = getCamera();
+	if (camera != nullptr) {
+		rootNode->updateDrawData();
+		lightManager->renderAndUpdate([this](Shader *shader) {
+			renderNodesUsingRenderMap(shader, true);
+			renderNodesUsingTransparentRenderMap(shader, true);
+		}, updatableShaders);
+		glViewport(0, 0, windowWidth, windowHeight);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		for (auto &shader : updatableShaders) {
+			shader->use();
+			shader->setViewPosition(getCamera()->getPos());
+		}
+		uboViewProjection->inject(getCamera()->getView(), projection);
+		renderNodesUsingRenderMap();
+		renderNodesUsingTransparentRenderMap();
+	}
 }
 
 void Scene::renderUi() {
@@ -131,6 +148,17 @@ void Scene::reinitializeRenderMap() {
 }
 
 void Scene::update(double deltaTime) {
+	Camera *camera = getCamera();
+	if (getCursorLocked() && camera) {
+		if (abs(mouseMovementX) < 1000.0f) {
+			camera->rotateX(mouseMovementX * 0.06f);
+		}
+		if (abs(mouseMovementY) < 1000.0f) {
+			camera->rotateY(-mouseMovementY * 0.06f);
+		}
+	}
+	mouseMovementX = 0.0f;
+	mouseMovementY = 0.0f;
 	rootNode->update(deltaTime);
 }
 
@@ -141,11 +169,22 @@ void Scene::updateWindowSize(float windowWidth, float windowHeight, float screen
 	this->screenHeight = screenHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
+	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 }
 
 void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
 
 void Scene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (initMouse) {
+		mouseX = xpos;
+		mouseY = ypos;
+		initMouse = false;
+	} else {
+		mouseMovementX += xpos - mouseX;
+		mouseMovementY += ypos - mouseY;
+		mouseX = xpos;
+		mouseY = ypos;
+	}
 	for (auto &elem : uiElements) {
 		elem->mouse_callback(window, xpos, ypos);
 	}
@@ -162,6 +201,15 @@ Scene::Scene() {
 	assetManager = AssetManager::getInstance();
 	lightManager = LightManager::getInstance();
 	shaders = assetManager->getShaders();
+	updatableShaders.push_back(assetManager->getShader(STModel));
+	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
+	updatableShaders.push_back(assetManager->getShader(STTexture));
+	updatableShaders.push_back(assetManager->getShader(STColor));
+	updatableShaders.push_back(assetManager->getShader(STReflect));
+	updatableShaders.push_back(assetManager->getShader(STRefract));
+	uboLights = assetManager->getUboLights();
+	uboTextureColor = assetManager->getUboTextureColor();
+	uboViewProjection = assetManager->getUboViewProjection();
 	gameFramebuffers = gameManager->getFramebuffers();
 	windowWidth = gameManager->getWindowWidth();
 	windowHeight = gameManager->getWindowHeight();
@@ -245,6 +293,14 @@ GraphNode* Scene::getRootNode() const {
 	return rootNode;
 }
 
+bool Scene::getCursorLocked() const {
+	return gameManager->getCursorLocked();
+}
+
+void Scene::setCursorLocked(bool locked) const {
+	gameManager->setCursorLocked(locked);
+}
+
 bool Scene::getKeyState(const int key) const {
 	return gameManager->getKeyState(key);
 }
@@ -316,6 +372,7 @@ void Scene::addToRenderMap(UiElement* uiElement, bool checkIfExists) {
 	}
 	if (!exists) {
 		vec->push_back(uiElement);
+		//uiElements.push_back(uiElement);
 	}
 }
 

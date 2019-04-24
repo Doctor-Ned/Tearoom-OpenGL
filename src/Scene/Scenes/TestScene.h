@@ -39,21 +39,13 @@ public:
 	void renderUi() override;
 	Camera *getCamera() override;
 	void update(double deltaTime) override;
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
-	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	TestScene(bool serialized);
 	void keyEvent(int key, bool pressed) override;
-	bool lockMouse = false;
 	Skybox *skybox;
-	std::vector<Shader*> updatableShaders;
-	glm::mat4 projection;
-	UboLights *uboLights;
-	UboTextureColor *uboTextureColor;
-	UboViewProjection *uboViewProjection;
 	std::vector<DirLightComp*> dirLightComps;
 	std::vector<SpotLightComp*> spotLightComps;
 	std::vector<PointLightComp*> pointLightComps;
@@ -62,11 +54,6 @@ protected:
 	GraphNode *sunNode;
 	Sun *sun;
 	Camera *camera;
-	const float BASE_MOVEMENT_SPEED = 1.0f;
-	float movementSpeed = BASE_MOVEMENT_SPEED;
-	float mouseX, mouseY;
-	float mouseMovementX, mouseMovementY;
-	bool initMouse = true;
 	friend class Serializer;
 };
 

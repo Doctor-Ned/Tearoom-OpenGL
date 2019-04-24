@@ -60,6 +60,7 @@ public:
 	GameFramebuffers getFramebuffers();
 	void setWindow(GLFWwindow *window);
 	void setCursorLocked(bool locked);
+	bool getCursorLocked();
 	void goToMenu(bool destroyPreviousScene = true);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	void setup();
@@ -85,6 +86,7 @@ protected:
 	std::map<int, std::map<bool, std::vector<std::function<void()>>>> keyCallbacks;
 	void setMouseState(int key, bool pressed);
 	void mouseEvent(int key, bool pressed);
+	bool cursorLocked = false;
 	std::map<int, bool> mouseStates;
 	std::map<int, std::map<bool, std::vector<std::function<void()>>>> mouseCallbacks;
 	bool enableVsync = true;

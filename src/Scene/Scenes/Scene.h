@@ -47,6 +47,8 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 	GraphNode* getRootNode() const;
 protected:
+	bool getCursorLocked() const;
+	void setCursorLocked(bool locked) const;
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
@@ -58,7 +60,11 @@ protected:
 	std::map<ShaderType, std::vector<UiElement*>*> uiRenderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
 	std::vector<Renderable*> lightIgnoredObjects;
+	UboLights *uboLights;
+	UboTextureColor *uboTextureColor;
+	UboViewProjection *uboViewProjection;
 	Lights lights;
+	std::vector<Shader*> updatableShaders;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;
@@ -66,4 +72,11 @@ protected:
 	std::vector<UiElement*> uiElements;
 	GraphNode *rootNode = new GraphNode();
 	LightManager *lightManager;
+	glm::mat4 projection;
+	const float BASE_MOVEMENT_SPEED = 1.0f;
+	float movementSpeed = BASE_MOVEMENT_SPEED;
+	float mouseX, mouseY;
+private:
+	float mouseMovementX, mouseMovementY;
+	bool initMouse = true;
 };

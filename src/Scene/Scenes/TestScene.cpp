@@ -37,7 +37,6 @@ void TestScene::render() {
 
 	renderNodesUsingRenderMap();
 
-	//OctreeNode::getInstance()->draw();
 	skybox->draw(camera->getUntranslatedView(), projection);
 
 	renderNodesUsingTransparentRenderMap();
@@ -76,6 +75,7 @@ Camera* TestScene::getCamera() {
 }
 
 void TestScene::update(double deltaTime) {
+	Scene::update(deltaTime);
 
 	if (getKeyState(KEY_FORWARD)) {
 		camera->moveForward(deltaTime * movementSpeed);
@@ -108,19 +108,8 @@ void TestScene::update(double deltaTime) {
 		camera->rotateY(-movementSpeed * deltaTime * 5.0f);
 	}
 
-	if (lockMouse) {
-		if (abs(mouseMovementX) < 1000.0f) {
-			camera->rotateX(mouseMovementX * 0.06f);
-		}
-		if (abs(mouseMovementY) < 1000.0f) {
-			camera->rotateY(-mouseMovementY * 0.06f);
-		}
-	}
-	mouseMovementX = 0.0f;
-	mouseMovementY = 0.0f;
-
 	//sunNode->addTime(deltaTime);
-	rootNode->update(deltaTime);
+	//rootNode->update(deltaTime);
 	
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
@@ -130,25 +119,6 @@ void TestScene::update(double deltaTime) {
 	Frustum frustum = camera->getFrustum();
 	OctreeNode::getInstance()->frustumCulling(frustum);
 	//OctreeNode::getInstance()->CollisionTests();
-}
-
-void TestScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
-	Scene::mouse_callback(window, xpos, ypos);
-	if (initMouse) {
-		mouseX = xpos;
-		mouseY = ypos;
-		initMouse = false;
-	} else {
-		mouseMovementX += xpos - mouseX;
-		mouseMovementY += ypos - mouseY;
-		mouseX = xpos;
-		mouseY = ypos;
-	}
-}
-
-void TestScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
-	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 }
 
 SerializableType TestScene::getSerializableType() {
@@ -202,17 +172,6 @@ TestScene::TestScene(bool serialized) {
 	faces.emplace_back("res/skybox/test/back.jpg");
 
 	skybox = new Skybox(assetManager->getShader(STSkybox), faces);
-
-	uboLights = assetManager->getUboLights();
-	uboTextureColor = assetManager->getUboTextureColor();
-	uboViewProjection = assetManager->getUboViewProjection();
-
-	updatableShaders.push_back(assetManager->getShader(STModel));
-	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
-	updatableShaders.push_back(assetManager->getShader(STTexture));
-	updatableShaders.push_back(assetManager->getShader(STColor));
-	updatableShaders.push_back(assetManager->getShader(STReflect));
-	updatableShaders.push_back(assetManager->getShader(STRefract));
 
 	if(!serialized) {
 		camera = new Camera();
@@ -365,9 +324,7 @@ void TestScene::keyEvent(int key, bool pressed) {
 			break;
 		case KEY_TOGGLE_MOUSE_LOCK:
 			if (pressed) {
-				lockMouse = !lockMouse;
-				gameManager->setCursorLocked(lockMouse);
-				initMouse = true;
+				setCursorLocked(!getCursorLocked());
 			}
 			break;
 		case KEY_QUIT:

@@ -70,6 +70,11 @@ void GameManager::setWindow(GLFWwindow* window) {
 
 void GameManager::setCursorLocked(bool locked) {
 	glfwSetInputMode(window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	cursorLocked = locked;
+}
+
+bool GameManager::getCursorLocked() {
+	return cursorLocked;
 }
 
 void GameManager::goToMenu(bool destroyPreviousScene) {

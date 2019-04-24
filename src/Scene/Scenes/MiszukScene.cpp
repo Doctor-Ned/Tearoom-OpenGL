@@ -18,19 +18,9 @@
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
-	uboLights = assetManager->getUboLights();
-	uboTextureColor = assetManager->getUboTextureColor();
-	uboViewProjection = assetManager->getUboViewProjection();
 
 	lightManager->recreateLights(0, 0, 0);
-	uboLights->inject(1.0f, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr);
 	camera = new Camera();
-	updatableShaders.push_back(assetManager->getShader(STModel));
-	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
-	updatableShaders.push_back(assetManager->getShader(STTexture));
-	updatableShaders.push_back(assetManager->getShader(STColor));
-	updatableShaders.push_back(assetManager->getShader(STReflect));
-	updatableShaders.push_back(assetManager->getShader(STRefract));
 
 	// for basic animation testing
 	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -123,14 +113,7 @@ MiszukScene::~MiszukScene() {
 }
 
 void MiszukScene::render() {
-	for (auto &shader : updatableShaders) {
-		shader->use();
-		shader->setViewPosition(camera->getPos());
-	}
-	uboViewProjection->inject(camera->getView(), projection);
-	rootNode->updateDrawData();
-	renderNodesUsingRenderMap();
-	//OctreeNode::getInstance()->draw();
+	Scene::render();
 }
 
 void MiszukScene::renderUi() {
@@ -143,6 +126,7 @@ Camera* MiszukScene::getCamera() {
 }
 
 void MiszukScene::update(double deltaTime) {
+	Scene::update(deltaTime);
 
 	/*if (getKeyState(KEY_FORWARD)) {
 		camera->moveForward(deltaTime * movementSpeed);
@@ -175,14 +159,6 @@ void MiszukScene::update(double deltaTime) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
 
-	if (abs(mouseMovementX) < 1000.0f) {
-		camera->rotateX(mouseMovementX * 0.06f);
-	}
-	if (abs(mouseMovementY) < 1000.0f) {
-		camera->rotateY(-mouseMovementY * 0.06f);
-	}
-	mouseMovementX = 0.0f;
-	mouseMovementY = 0.0f;
 	rootNode->update(deltaTime);
 	GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
 	if(node != nullptr)
@@ -201,25 +177,6 @@ void MiszukScene::update(double deltaTime) {
 	camera->RecalculateFrustum();
 	Frustum frustum = camera->getFrustum();
 	OctreeNode::getInstance()->frustumCulling(frustum);
-}
-
-void MiszukScene::mouse_callback(GLFWwindow * window, double xpos, double ypos) {
-	Scene::mouse_callback(window, xpos, ypos);
-	if (initMouse) {
-		mouseX = xpos;
-		mouseY = ypos;
-		initMouse = false;
-	} else {
-		mouseMovementX += xpos - mouseX;
-		mouseMovementY += ypos - mouseY;
-		mouseX = xpos;
-		mouseY = ypos;
-	}
-}
-
-void MiszukScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
-	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {
@@ -244,6 +201,11 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 				movementSpeed *= 2.0f;
 			} else {
 				movementSpeed /= 2.0f;
+			}
+			break;
+		case KEY_TOGGLE_MOUSE_LOCK:
+			if (pressed) {
+				setCursorLocked(!getCursorLocked());
 			}
 			break;
 		case KEY_QUIT:
