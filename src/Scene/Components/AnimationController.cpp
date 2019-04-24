@@ -7,9 +7,8 @@
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
 
-AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, bool* f_keyPressed)
+AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject)
 :Component(_gameObject, "Animation controller"), type(_type) {
-    F_keyState = f_keyPressed;
 }
 
 void AnimationController::startAnimation() {
@@ -18,7 +17,8 @@ void AnimationController::startAnimation() {
 
 void AnimationController::update(float msec)
 {
-    if(*F_keyState && gameObject->getHitByRay()) {startAnimation();}
+    GameManager* gameManager = GameManager::getInstance();
+    if(gameManager->getKeyState(GLFW_KEY_F) && gameObject->getHitByRay()) {startAnimation();}
 
     if(animating) {
         switch (type) {
@@ -63,7 +63,6 @@ SerializableType AnimationController::getSerializableType() {
 
 Json::Value AnimationController::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
-	//TODO: right now the "F_keyState" field is not serialized. It needs to be changed to something different
 	root["animating"] = animating;
 	root["type"] = static_cast<int>(type);
 	root["elapsed"] = elapsed;

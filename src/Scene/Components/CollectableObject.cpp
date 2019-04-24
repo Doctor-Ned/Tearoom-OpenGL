@@ -21,7 +21,10 @@ void CollectableObject::takeObject()
 
 void CollectableObject::leaveObject()
 {
-    //gameObject->localTransform.translate(camera->getPos());
+    float distance = 2.0f;
+    glm::vec2 cameraFront  =  glm::normalize(glm::vec2(camera->getFront().x, camera->getFront().z));
+    glm::vec3 itemNewPosition = glm::vec3(camera->getPos().x + cameraFront.x * distance, camera->getPos().y, camera->getPos().z + cameraFront.y * distance);
+    gameObject->localTransform.setPosition(itemNewPosition);
     isTaken = false;
     gameObject->setActive(true);
     gameObject->getMesh()->setOpaque(true);

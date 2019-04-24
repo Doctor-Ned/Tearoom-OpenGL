@@ -30,8 +30,9 @@ void Picking::update(float msec) {
 	{
 		CollectableObject* collectable = obj->getComponent<CollectableObject>();
 
-		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken())
+		if (gameManager->getKeyState(GLFW_KEY_G))
 		{
+			inventory.empty();
 			collectable->leaveObject();
 		}
 	}
