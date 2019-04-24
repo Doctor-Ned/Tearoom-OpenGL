@@ -242,7 +242,7 @@ TestScene::TestScene(bool serialized) {
 			normalize(glm::vec4(254, 107, 0, 255)),
 			normalize(glm::vec4(173, 161, 70, 255)),
 			normalize(glm::vec4(0, 2, 15, 255)),
-			normalize(glm::vec4(2, 5, 18, 255)), 10.0f, 12.0f, sunNode);
+			normalize(glm::vec4(2, 5, 18, 255)), 10.0f, 12.0f, glm::radians(75.0f), sunNode);
 		sunNode->addComponent(sun);
 
 		//DirLight *dirLight = lights.dirLights[0];

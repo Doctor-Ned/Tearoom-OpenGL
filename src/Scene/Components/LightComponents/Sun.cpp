@@ -5,14 +5,14 @@
 #include "Serialization/Serializer.h"
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
-	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), light1Comp(dirLightComp1), light2Comp(dirLightComp2) {
+	glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
+	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), light1Comp(dirLightComp1), light2Comp(dirLightComp2), rotationAngle(rotationAngle) {
 	setTime(initialTime);
 }
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, GraphNode *gameObject) : Component(gameObject, "Sun"), light1(light1), light2(light2),
-	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance) {
+	glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject) : Component(gameObject, "Sun"), light1(light1), light2(light2),
+	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), rotationAngle(rotationAngle) {
 	setTime(initialTime);
 	GraphNode *light1Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), gameObject);
 	light1Node->getMesh()->setShaderType(STLight);
@@ -37,7 +37,7 @@ void Sun::addTime(float time) {
 	dirty = true;
 }
 
-void Sun::setVerticalRotation(float angle) {
+void Sun::setRotationAngle(float angle) {
 	this->rotationAngle = angle;
 	dirty = true;
 }
@@ -58,7 +58,12 @@ void Sun::update(float msec) {
 		dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
 		dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 		glm::vec4 position = gameObject->localTransform.getMatrix()[3];
-		gameObject->localTransform.setMatrix(rotate(rotate(translate(glm::mat4(1.0f), glm::vec3(position)), rotationAngle, glm::vec3(1.0f,0.0f,0.0f)), glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+		gameObject->localTransform.setMatrix(
+			rotate(
+				rotate(
+					translate(glm::mat4(1.0f), glm::vec3(position)),
+					rotationAngle, glm::vec3(1.0f,0.0f,0.0f)),
+			glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f) - static_cast<float>(M_PI)/2.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
 	}
 }
 
