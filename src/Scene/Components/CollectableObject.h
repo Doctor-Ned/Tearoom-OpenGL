@@ -12,16 +12,19 @@ class CollectableObject : public Component {
 
 public:
 	virtual ~CollectableObject();
-	CollectableObject(GraphNode* _gameObject);
+	CollectableObject(GraphNode* _gameObject, Camera* camera);
 	void takeObject();
 	void leaveObject();
 	void update(float msec) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
+    bool getIsTaken() const;
+
 protected:
 	bool isTaken = false;
-	bool isHitByRay = false;
+    Camera* camera;
+    bool isHitByRay = false;
 	bool fKeyState = false;
 	CollectableObject(){}
 	friend class Serializer;

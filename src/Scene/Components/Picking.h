@@ -13,6 +13,7 @@ public:
 	 void deserialize(Json::Value &root, Serializer* serializer) override;
 private:
 	Camera* camera;
+	std::vector<GraphNode*> inventory;
 	Picking(){}
 	friend class Serializer;
 };
