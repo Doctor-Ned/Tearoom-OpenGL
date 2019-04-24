@@ -6,6 +6,7 @@
 #include "Scene/OctreeNode.h"
 #include <iostream>
 #include "Components/PhysicalObject.h"
+#include "Components/Picking.h"
 
 CollisionSystem::CollisionSystem()
 {
@@ -69,25 +70,26 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 	{
 		if (collider1->getCollisionType() == DYNAMIC)
 		{
-			PhysicalObject* physObj = collider1->getGameObject()->getComponent<PhysicalObject>();
-			if (physObj != nullptr)
-			{
-				//collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
-				/*glm::vec3 lastPos = collider1->getGameObject()->localTransform.getLastMatrix()[3];
-				glm::vec3 actualPos = collider1->getGameObject()->localTransform.getPosition();
-				float distance = glm::distance(lastPos, actualPos);
-				glm::vec3 direction;
-				if (distance == 0)
-				{
-					direction = glm::vec3(0);
-				}
-				else
-				{
-					direction = glm::normalize(actualPos - lastPos);
-				}*/
-				//collider1->getGameObject()->localTransform.translate(-direction * distance);
-				physObj->pushTranslation(-physObj->direction * physObj->distance);
-			}
+			//PhysicalObject* physObj = collider1->getGameObject()->getComponent<PhysicalObject>();
+			//if (physObj != nullptr)
+			//{
+			//	//collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
+			//	/*glm::vec3 lastPos = collider1->getGameObject()->localTransform.getLastMatrix()[3];
+			//	glm::vec3 actualPos = collider1->getGameObject()->localTransform.getPosition();
+			//	float distance = glm::distance(lastPos, actualPos);
+			//	glm::vec3 direction;
+			//	if (distance == 0)
+			//	{
+			//		direction = glm::vec3(0);
+			//	}
+			//	else
+			//	{
+			//		direction = glm::normalize(actualPos - lastPos);
+			//	}*/
+			//	//collider1->getGameObject()->localTransform.translate(-direction * distance);
+			//	physObj->pushTranslation(-physObj->direction * physObj->distance);
+			//	//vektor kontaktu, g³êbokoœæ
+			//}
 		}
 	}
 
@@ -105,25 +107,25 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 	{
 		if (collider2->getCollisionType() == DYNAMIC)
 		{
-			PhysicalObject* physObj = collider2->getGameObject()->getComponent<PhysicalObject>();
-			if(physObj != nullptr)
-			{
-				//collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
-				/*glm::vec3 lastPos = collider2->getGameObject()->localTransform.getLastMatrix()[3];
-				glm::vec3 actualPos = collider2->getGameObject()->localTransform.getPosition();
-				float distance = glm::distance(lastPos, actualPos);
-				glm::vec3 direction;
-				if (distance == 0)
-				{
-					direction = glm::vec3(0);
-				}
-				else
-				{
-					direction = glm::normalize(actualPos - lastPos);
-				}*/
-				//collider2->getGameObject()->localTransform.translate(-direction * distance);
-				physObj->pushTranslation(-physObj->direction * physObj->distance);
-			}
+			//PhysicalObject* physObj = collider2->getGameObject()->getComponent<PhysicalObject>();
+			//if(physObj != nullptr)
+			//{
+			//	//collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
+			//	/*glm::vec3 lastPos = collider2->getGameObject()->localTransform.getLastMatrix()[3];
+			//	glm::vec3 actualPos = collider2->getGameObject()->localTransform.getPosition();
+			//	float distance = glm::distance(lastPos, actualPos);
+			//	glm::vec3 direction;
+			//	if (distance == 0)
+			//	{
+			//		direction = glm::vec3(0);
+			//	}
+			//	else
+			//	{
+			//		direction = glm::normalize(actualPos - lastPos);
+			//	}*/
+			//	//collider2->getGameObject()->localTransform.translate(-direction * distance);
+			//	physObj->pushTranslation(-physObj->direction * physObj->distance);
+			//}
 		}
 	}
 	
@@ -212,7 +214,15 @@ bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)
 		pow(sphere2->getPosition().y - sphere1->getPosition().y, 2) +
 		pow(sphere2->getPosition().z - sphere1->getPosition().z, 2);
 	float radiusSumSquared = pow(sphere1->getRadius() + sphere2->getRadius(), 2);
-	return distanceSquared <= radiusSumSquared;
+	
+	bool collision = distanceSquared <= radiusSumSquared;
+	
+	if(collision)
+	{
+		resolveSphereToSphereCollision(sphere1, sphere2);
+	}
+	return collision;
+
 }
 
 bool CollisionSystem::AABBtoAABB(Collider* collider1, Collider* collider2)
@@ -255,6 +265,74 @@ bool CollisionSystem::AABBtoSphere(Collider* _box, Collider* _sphere)
 
 	//float distance = glm::distance(glm::vec3(_sphere->getPosition()), closestPoint);
 	float sqRadius = sphere->getRadius() * sphere->getRadius();
-	return sqDist <= sqRadius;
-	//return distance <= _sphere->getData().w;
+	bool collision = sqDist <= sqRadius;
+
+	if(collision)
+	{
+		resolveAABBtoSphereCollision(box, sphere, closestPoint);
+	}
+	return collision;
+}
+
+void CollisionSystem::resolveSphereToSphereCollision(SphereCollider* sphere1, SphereCollider* sphere2)
+{
+	if(sphere1->getIsTrigger() == true || sphere2->getIsTrigger() == true)
+	{
+		return;
+	}
+
+	glm::vec3 dir = glm::normalize(sphere1->getPosition() - sphere2->getPosition());
+	glm::vec3 r1 = sphere1->getPosition() + (-dir) * sphere1->getRadius();
+	glm::vec3 r2 = sphere2->getPosition() + dir * sphere2->getRadius();
+	float distance = glm::distance(r1, r2);
+	/*if (picking)
+	{
+		std::cout << "player" << std::endl;
+		sphere2->getGameObject()->localTransform.translate(-dir * distance);
+	}
+	picking = sphere1->getGameObject()->getComponent<Picking>();
+	if (picking)
+	{
+		std::cout << "player" << std::endl;
+		sphere1->getGameObject()->localTransform.translate(dir * distance);
+	}*/
+
+	if (sphere1->getCollisionType() == DYNAMIC && sphere2->getCollisionType() == DYNAMIC)
+	{
+		sphere1->getGameObject()->localTransform.translate(dir * distance / 2.0f);
+		sphere2->getGameObject()->localTransform.translate(-dir * distance / 2.0f);
+	}
+	else if (sphere1->getCollisionType() == DYNAMIC)
+	{
+		sphere1->getGameObject()->localTransform.translate(dir * distance);
+	}
+	else if (sphere2->getCollisionType() == DYNAMIC)
+	{
+		sphere2->getGameObject()->localTransform.translate(-dir * distance);
+	}
+}
+
+void CollisionSystem::resolveAABBtoSphereCollision(BoxCollider* box, SphereCollider* sphere, glm::vec3& closestPoint)
+{
+	if (box->getIsTrigger() == true || sphere->getIsTrigger() == true)
+	{
+		return;
+	}
+	glm::vec3 dir = glm::normalize(closestPoint - sphere->getPosition());
+	glm::vec3 r1 = sphere->getPosition() + dir * sphere->getRadius();
+	float distance = glm::distance(closestPoint, r1);
+
+	if(box->getCollisionType() == DYNAMIC && sphere->getCollisionType() == DYNAMIC)
+	{
+		sphere->getGameObject()->localTransform.translate(-dir * distance / 2.0f);
+		box->getGameObject()->localTransform.translate(dir * distance / 2.0f);
+	}
+	else if(box->getCollisionType() == DYNAMIC)
+	{
+		box->getGameObject()->localTransform.translate(dir * distance);
+	}
+	else if (sphere->getCollisionType() == DYNAMIC)
+	{
+		sphere->getGameObject()->localTransform.translate(-dir * distance);
+	}
 }
