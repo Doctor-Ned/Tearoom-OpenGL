@@ -28,7 +28,7 @@ protected:
 	bool dirty = false;
 	float rescaleTime(float time);
 	glm::vec4 timeToColor(float time, bool light1);
-	float time, rotationAngle;
+	float time, rotationAngle = 0.0f;
 	glm::vec4 dawnColor, dayColor, duskColor, nightColor;
 	DirLight *light1, *light2;
 	DirLightComp *light1Comp, *light2Comp;

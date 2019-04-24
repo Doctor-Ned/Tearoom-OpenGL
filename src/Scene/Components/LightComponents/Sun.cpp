@@ -58,7 +58,7 @@ void Sun::update(float msec) {
 		dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
 		dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 		glm::vec4 position = gameObject->localTransform.getMatrix()[3];
-		gameObject->localTransform.setMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(position)), glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+		gameObject->localTransform.setMatrix(rotate(rotate(translate(glm::mat4(1.0f), glm::vec3(position)), rotationAngle, glm::vec3(1.0f,0.0f,0.0f)), glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	}
 }
 
@@ -66,6 +66,8 @@ void Sun::renderGui() {
 	Component::renderGui();
 	if(active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
+		ImGui::NewLine();
+		ImGui::SliderAngle("Rotation angle", &rotationAngle);
 		ImGui::NewLine();
 		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f ,1.0f);
 		ImGui::NewLine();
