@@ -12,7 +12,7 @@ class CollectableObject : public Component {
 
 public:
 	virtual ~CollectableObject();
-	CollectableObject(GraphNode* _gameObject);
+	CollectableObject(GraphNode* _gameObject, Camera* camera);
 	void takeObject();
 	void leaveObject();
 	void update(float msec) override;
@@ -23,8 +23,7 @@ public:
 
 protected:
 	bool isTaken = false;
-
-protected:
+    Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;
 	CollectableObject(){}

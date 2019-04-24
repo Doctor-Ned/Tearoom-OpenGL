@@ -9,7 +9,7 @@
 #include "Scene/CollisionSystem.h"
 #include <iostream>
 
-CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObject) {
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
 void CollectableObject::takeObject()
@@ -21,9 +21,7 @@ void CollectableObject::takeObject()
 
 void CollectableObject::leaveObject()
 {
-
-    //place for transforming object in the front of player
-
+    //gameObject->localTransform.translate(camera->getPos());
     isTaken = false;
     gameObject->setActive(true);
     gameObject->getMesh()->setOpaque(true);

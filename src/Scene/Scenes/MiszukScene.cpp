@@ -42,18 +42,20 @@ MiszukScene::MiszukScene() {
 	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
 	GraphNode* wallNode = new GraphNode(wall, rootNode);
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
+	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode, &f_keyPressed));
+	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	//-------------
 
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
-	tinyItemNode->addComponent(new CollectableObject(tinyItemNode));
+	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera));
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
 	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -0.5f, 2.0f));
     MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
     GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
-    tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2));
+    tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2,camera));
     tinyItemNode2->addComponent(new PhysicalObject(tinyItemNode2));
     tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
     tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
