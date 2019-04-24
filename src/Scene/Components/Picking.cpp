@@ -13,7 +13,7 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam)
 
 void Picking::update(float msec) {
 	GameManager* gameManager = GameManager::getInstance();
-	GraphNode* object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f, camera->getFront(), 3.0f);
+	GraphNode* object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f, camera->getFront(), 1.0f);
 	if (object) {
 		CollectableObject* collectable = object->getComponent<CollectableObject>();
 		if (collectable) {

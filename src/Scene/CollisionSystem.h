@@ -4,6 +4,8 @@
 
 class Collider;
 class GraphNode;
+class SphereCollider;
+class BoxCollider;
 class CollisionSystem
 {
 private:
@@ -11,6 +13,8 @@ private:
 	inline bool SphereToSphere(Collider* _sphere1, Collider* _sphere2);
 	inline bool AABBtoAABB(Collider* _box1, Collider* _box2);
 	inline bool AABBtoSphere(Collider* _box, Collider* _sphere);
+	inline void resolveSphereToSphereCollision(SphereCollider* _sphere1, SphereCollider* _sphere2);
+	inline void resolveAABBtoSphereCollision(BoxCollider* _box, SphereCollider* _sphere, glm::vec3& closestPoint);
 public:
 	static CollisionSystem* getInstance();
 	~CollisionSystem();

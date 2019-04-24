@@ -49,8 +49,8 @@ MiszukScene::MiszukScene() {
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
 	tinyItemNode->addComponent(new CollectableObject(tinyItemNode));
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
-	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -0.5f, 2.0f));
+	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
+	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
 	//-----------------
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -71,13 +71,14 @@ MiszukScene::MiszukScene() {
 
 	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
 	GraphNode* player = new GraphNode(playerMesh, rootNode);
-	player->addComponent(new BoxCollider(player, DYNAMIC, false, glm::vec3(0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	player->addComponent(new SphereCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new PhysicalObject(player));
 	player->addComponent(new Picking(player, "picking", camera));
+
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
-	fallingBoxNode->addComponent(new BoxCollider(fallingBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+	fallingBoxNode->addComponent(new SphereCollider(fallingBoxNode, STATIC));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
 	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
 	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -87,7 +88,7 @@ MiszukScene::MiszukScene() {
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
 	floor->localTransform.setPosition(0.0f, -3.0f, 0.0f);
-	fallingBoxNode->localTransform.setPosition(0.0f, 0.0f, -3.0f);
+	fallingBoxNode->localTransform.setPosition(0.0f, -1.5f, -3.0f);
 
 	wallNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(8.0f, -2.0f, -15.0f));
@@ -176,6 +177,7 @@ void MiszukScene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
+
 	rootNode->update(deltaTime);
 	GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
 	if(node != nullptr)
