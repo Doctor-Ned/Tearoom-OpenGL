@@ -13,9 +13,6 @@ public:
 	MiszukScene();
 	~MiszukScene();
 protected:
-	//--------------ANIMACJA---------------------
-	bool f_keyPressed = false;
-	//-----------------------------------------
 	void keyEvent(int key, bool pressed) override;
 };
 

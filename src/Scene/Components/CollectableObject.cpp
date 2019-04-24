@@ -14,9 +14,9 @@ CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Com
 
 void CollectableObject::takeObject()
 {
+    isTaken = true;
 	gameObject->setActive(false);
     gameObject->getMesh()->setOpaque(false);
-    isTaken = true;
 }
 
 void CollectableObject::leaveObject()
@@ -32,15 +32,7 @@ void CollectableObject::leaveObject()
 
 void CollectableObject::update(float msec)
 {
-	/*
-    GameManager* gameManager = GameManager::getInstance();
 
-	if(gameManager->getKeyState(GLFW_KEY_G)) { //temporary statement
-        leaveObject();
-	}
-
-    std::cout<<"HALOOO"<<std::endl;
-*/
 }
 
 bool CollectableObject::getIsTaken() const {

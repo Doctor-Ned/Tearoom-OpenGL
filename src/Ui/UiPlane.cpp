@@ -1,5 +1,5 @@
-#include "UiPlane.h"
 #include "Scene/AssetManager.h"
+#include "UiPlane.h"
 
 UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(texture, position, size, center) {
 	setup();

@@ -73,7 +73,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	//player->addComponent(new PhysicalObject(player));
-	player->addComponent(new Picking(player, "picking", camera));
+	player->addComponent(new Picking(player, "picking", camera, this));
 
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new SphereCollider(fallingBoxNode, STATIC));
@@ -179,14 +179,6 @@ void MiszukScene::update(double deltaTime) {
 
 void MiszukScene::keyEvent(int key, bool pressed) {
 	switch (key) {
-		case KEY_INTERACT:
-			if(pressed) {
-				f_keyPressed = true;
-			}
-			else {
-				f_keyPressed = false;
-			}
-			break;
 		case KEY_FAST:
 			if (pressed) {
 				movementSpeed *= 2.0f;

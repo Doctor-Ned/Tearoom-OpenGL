@@ -7,36 +7,50 @@
 #include "Scene/GraphNode.h"
 #include "CollectableObject.h"
 #include "Serialization/Serializer.h"
+#include "Ui/UiPlane.h"
 
-Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam)
-	: Component(_gameObject, name), camera(cam) {}
+Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
+	: Component(_gameObject, name), camera(cam), scene(scene) {
+
+	hud = new UiPlane("res/textures/inventory.png", glm::vec2(0.0f,5.0f),glm::vec2(0.5f,0.5f),true);
+}
 
 void Picking::update(float msec) {
-	GameManager* gameManager = GameManager::getInstance();
-	GraphNode* object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f, camera->getFront(), 1.0f);
+	GameManager *gameManager = GameManager::getInstance();
+	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f,
+																 camera->getFront(), 1.0f);
 	if (object) {
-		CollectableObject* collectable = object->getComponent<CollectableObject>();
+		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
-			std::cout << "I hit the collectable object." << std::endl;
 
-			if (gameManager->getKeyState(GLFW_KEY_F)) {
-				collectable->takeObject();
+			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
 				inventory.push_back(object);
+				collectable->takeObject();
 			}
 		}
 	}
 
-	for(GraphNode* obj : inventory) //TEMPORARY STATEMENT
-	{
-		CollectableObject* collectable = obj->getComponent<CollectableObject>();
+	if (gameManager->getKeyState(GLFW_KEY_I && inventoryUI == false)) {
+		inventoryUI = true;
+		scene->addToRenderMap(hud);
 
-		if (gameManager->getKeyState(GLFW_KEY_G))
-		{
-			inventory.empty();
-			collectable->leaveObject();
-		}
 	}
 
+	if (gameManager->getKeyState(GLFW_KEY_I && inventoryUI == true)) {
+		inventoryUI = false;
+		scene->removeFromRenderMap(hud);
+	}
+
+	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
+	{
+		CollectableObject *collectable = inventory[i]->getComponent<CollectableObject>();
+
+		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken() == true) {
+			inventory.erase(inventory.begin() + i);
+			collectable->leaveObject();
+		}
+
+	}
 }
 
 Picking::~Picking() {}
