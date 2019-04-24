@@ -9,36 +9,44 @@
 #include "Scene/CollisionSystem.h"
 #include <iostream>
 
-CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObject) {
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
 void CollectableObject::takeObject()
 {
 	gameObject->setActive(false);
-    isTaken = true;
-   // std::cout<<"HAAALOOOO"<<std::endl;
     gameObject->getMesh()->setOpaque(false);
+    isTaken = true;
 }
 
 void CollectableObject::leaveObject()
 {
+    float distance = 2.0f;
+    glm::vec2 cameraFront  =  glm::normalize(glm::vec2(camera->getFront().x, camera->getFront().z));
+    glm::vec3 itemNewPosition = glm::vec3(camera->getPos().x + cameraFront.x * distance, camera->getPos().y, camera->getPos().z + cameraFront.y * distance);
+    gameObject->localTransform.setPosition(itemNewPosition);
     isTaken = false;
+    gameObject->setActive(true);
+    gameObject->getMesh()->setOpaque(true);
 }
 
 void CollectableObject::update(float msec)
 {
-	//GameManager* gameManager = GameManager::getInstance();
+	/*
+    GameManager* gameManager = GameManager::getInstance();
 
-	/*fKeyState = gameManager->getKeyState(GLFW_KEY_F);
+	if(gameManager->getKeyState(GLFW_KEY_G)) { //temporary statement
+        leaveObject();
+	}
 
-	if (gameObject->getHitByRay() && fKeyState)
-	{
-		if (!isTaken)
-		{
-			takeObject();
-		}
-	}*/
+    std::cout<<"HALOOO"<<std::endl;
+*/
 }
+
+bool CollectableObject::getIsTaken() const {
+    return isTaken;
+}
+
 
 SerializableType CollectableObject::getSerializableType() {
 	return SCollectableObject;
@@ -61,3 +69,4 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 
 
 CollectableObject::~CollectableObject() {}
+

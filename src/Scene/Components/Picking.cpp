@@ -21,9 +21,22 @@ void Picking::update(float msec) {
 
 			if (gameManager->getKeyState(GLFW_KEY_F)) {
 				collectable->takeObject();
+				inventory.push_back(object);
 			}
 		}
 	}
+
+	for(GraphNode* obj : inventory) //TEMPORARY STATEMENT
+	{
+		CollectableObject* collectable = obj->getComponent<CollectableObject>();
+
+		if (gameManager->getKeyState(GLFW_KEY_G))
+		{
+			inventory.empty();
+			collectable->leaveObject();
+		}
+	}
+
 }
 
 Picking::~Picking() {}
