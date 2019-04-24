@@ -9,4 +9,5 @@ public:
 	static GraphNode *createSphere(float radius, int precision, glm::vec4 color, GraphNode *parent = nullptr);
 	static GraphNode *createSphere(float radius, int precision, std::string texture, GraphNode *parent = nullptr);
 	static GraphNode *createSphere(float radius, int precision, bool reflective, GraphNode *parent = nullptr);
+	static glm::vec4 getRandomColor(float alpha = 1.0f);
 };

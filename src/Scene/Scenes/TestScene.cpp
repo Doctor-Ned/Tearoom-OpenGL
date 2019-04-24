@@ -70,10 +70,6 @@ void TestScene::renderUi() {
 	}
 }
 
-Camera* TestScene::getCamera() {
-	return camera;
-}
-
 void TestScene::update(double deltaTime) {
 	Scene::update(deltaTime);
 
@@ -140,7 +136,6 @@ Json::Value TestScene::serialize(Serializer* serializer) {
 	root["pointLightSphere"] = serializer->serialize(pointLightSphere);
 	root["sunNode"] = serializer->serialize(sunNode);
 	root["sun"] = serializer->serialize(sun);
-	root["camera"] = serializer->serialize(camera);
 	return root;
 }
 
@@ -159,7 +154,6 @@ void TestScene::deserialize(Json::Value& root, Serializer* serializer) {
 	pointLightSphere = dynamic_cast<MeshColorSphere*>(serializer->deserialize(root["pointLightSphere"]).object);
 	sunNode = dynamic_cast<GraphNode*>(serializer->deserialize(root["sunNode"]).object);
 	sun = dynamic_cast<Sun*>(serializer->deserialize(root["sun"]).object);
-	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 }
 
 TestScene::TestScene(bool serialized) {

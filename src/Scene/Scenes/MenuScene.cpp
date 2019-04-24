@@ -3,6 +3,7 @@
 #include "TestScene.h"
 #include "Ui/UiTextButton.h"
 #include "Serialization/Serializer.h"
+#include "EditorScene.h"
 
 class UiTextButton;
 
@@ -19,13 +20,16 @@ MenuScene::MenuScene() {
 			gameManager->setCurrentScene(scene);
 		}
 	});
-	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Options");
+	UiTextButton *editorScene = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Editor scene");
+	editorScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new EditorScene()); });
+	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), "Options");
 	options->setButtonCallback([this]() {showOptions(); });
-	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), "Quit");
+	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 8 * windowHeight / 9.0f), "Quit");
 	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
 	uiElements.emplace_back(miszukScene);
 	uiElements.emplace_back(newTestScene);
 	uiElements.emplace_back(loadTestScene);
+	uiElements.emplace_back(editorScene);
 	uiElements.emplace_back(options);
 	uiElements.emplace_back(quit);
 	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));

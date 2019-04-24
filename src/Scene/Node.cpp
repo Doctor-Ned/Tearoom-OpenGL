@@ -29,3 +29,7 @@ GraphNode * Node::createSphere(float radius, int precision, std::string texture,
 GraphNode* Node::createSphere(float radius, int precision, bool reflective, GraphNode* parent) {
 	return new GraphNode(new MeshRefSphere(reflective, radius, precision), parent);
 }
+
+glm::vec4 Node::getRandomColor(float alpha) {
+	return glm::vec4(rand() % 100 / 100.0f, rand() % 100 / 100.0f, rand() % 100 / 100.0f, alpha);
+}

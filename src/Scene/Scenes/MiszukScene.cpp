@@ -121,10 +121,6 @@ void MiszukScene::renderUi() {
 	assetManager->getTextRenderer()->renderText(assetManager->getShader(STText), "+", gameManager->getScreenWidth() / 2, gameManager->getScreenHeight() / 2, 1.0f);
 }
 
-Camera* MiszukScene::getCamera() {
-	return camera;
-}
-
 void MiszukScene::update(double deltaTime) {
 	Scene::update(deltaTime);
 

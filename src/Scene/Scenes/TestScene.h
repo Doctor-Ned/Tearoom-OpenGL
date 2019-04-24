@@ -37,7 +37,6 @@ public:
 	TestScene();
 	void render() override;
 	void renderUi() override;
-	Camera *getCamera() override;
 	void update(double deltaTime) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
@@ -53,7 +52,6 @@ protected:
 	MeshColorSphere *pointLightSphere;
 	GraphNode *sunNode;
 	Sun *sun;
-	Camera *camera;
 	friend class Serializer;
 };
 

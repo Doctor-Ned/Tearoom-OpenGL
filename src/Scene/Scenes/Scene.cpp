@@ -32,7 +32,7 @@ void Scene::renderUi() {
 }
 
 Camera *Scene::getCamera() {
-	return nullptr;
+	return camera;
 }
 
 void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
@@ -201,6 +201,8 @@ Scene::Scene() {
 	assetManager = AssetManager::getInstance();
 	lightManager = LightManager::getInstance();
 	shaders = assetManager->getShaders();
+	rootNode = new GraphNode();
+	rootNode->setName("Root");
 	updatableShaders.push_back(assetManager->getShader(STModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
 	updatableShaders.push_back(assetManager->getShader(STTexture));
@@ -266,6 +268,7 @@ Json::Value Scene::serialize(Serializer* serializer) {
 	for (int i = 0; i < lights.pointLights.size(); i++) {
 		root["lights"]["pointLights"][i] = serializer->serialize(lights.pointLights[i]);
 	}
+	root["camera"] = serializer->serialize(camera);
 	return root;
 }
 
@@ -286,6 +289,7 @@ void Scene::deserialize(Json::Value& root, Serializer* serializer) {
 	for (int i = 0; i < jlights.size(); i++) {
 		lights.pointLights.push_back(dynamic_cast<PointLight*>(serializer->deserialize(jlights[i]).object));
 	}
+	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	reinitializeRenderMap();
 }
 

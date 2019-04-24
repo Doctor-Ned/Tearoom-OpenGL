@@ -2,6 +2,7 @@
 #include "Ui/UiText.h"
 #include "Render/Camera.h"
 #include "TestScene.h"
+#include "Scene/Node.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -16,6 +17,16 @@ void EditorScene::render() {
 
 void EditorScene::renderUi() {
 	Scene::renderUi();
+	ImGui::Begin("Object builder");
+	if(ImGui::Button("Add box")) {
+		appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
+	}
+	ImGui::End();
+	ImGui::Begin("Scene graph");
+	ImGui::TreePush();
+	showNodeAsTree(rootNode);
+	ImGui::TreePop();
+	ImGui::End();
 }
 
 Camera* EditorScene::getCamera() {
@@ -64,9 +75,38 @@ void EditorScene::update(double deltaTime) {
 	OctreeNode::getInstance()->frustumCulling(frustum);
 }
 
+void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
+	if(parent == nullptr) {
+		parent = rootNode;
+	}
+	if(node->getParent() == nullptr) {
+		node->setParent(parent);
+	}
+	if(node->getName() == "Node") {
+		node->setName("Node #" + std::to_string(nodeCounter++));
+	}
+	addRenderedNode(node, node->getParent());
+}
+
+void EditorScene::showNodeAsTree(GraphNode* node) const {
+	if(ImGui::TreeNode(node->getName().c_str())) {
+		ImGui::SameLine();
+		if(ImGui::Button("Open")) {
+			//todo
+		}
+		for(auto child : node->getChildren()) {
+			showNodeAsTree(child);
+		}
+ 		ImGui::TreePop();
+	}
+}
+
 void EditorScene::keyEvent(int key, bool pressed) {
 	if (pressed) {
 		switch (key) {
+			case EDITOR_KEY_TOGGLE_CAMERA:
+				setEditorCamera(!useEditorCamera);
+			break;
 			case KEY_TOGGLE_MOUSE_LOCK:
 				setCursorLocked(!getCursorLocked());
 				break;

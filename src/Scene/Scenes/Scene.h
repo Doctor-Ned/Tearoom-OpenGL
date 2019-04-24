@@ -64,13 +64,14 @@ protected:
 	UboTextureColor *uboTextureColor;
 	UboViewProjection *uboViewProjection;
 	Lights lights;
+	Camera *camera = nullptr;
 	std::vector<Shader*> updatableShaders;
 	GameFramebuffers gameFramebuffers;
 	GameManager *gameManager;
 	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	std::vector<UiElement*> uiElements;
-	GraphNode *rootNode = new GraphNode();
+	GraphNode *rootNode;
 	LightManager *lightManager;
 	glm::mat4 projection;
 	const float BASE_MOVEMENT_SPEED = 1.0f;
