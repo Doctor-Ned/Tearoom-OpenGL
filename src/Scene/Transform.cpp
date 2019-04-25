@@ -45,6 +45,7 @@ void Transform::setPosition(const float& x, const float& y, const float& z) {
 void Transform::setPosition(glm::vec3 pos)
 {
 	transform[3] = glm::vec4(pos, 1.0f);
+	*dirty = true;
 }
 
 glm::vec3 Transform::getPosition()
