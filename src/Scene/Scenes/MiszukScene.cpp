@@ -33,7 +33,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* wallNode = new GraphNode(wall, rootNode);
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
 	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
-	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
 	//-------------
 
 	// COLLECTABLE ITEM
@@ -69,7 +69,7 @@ MiszukScene::MiszukScene() {
 
 	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
 	GraphNode* player = new GraphNode(playerMesh, rootNode);
-	player->addComponent(new SphereCollider(player, DYNAMIC));
+	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	//player->addComponent(new PhysicalObject(player));
@@ -91,7 +91,7 @@ MiszukScene::MiszukScene() {
 	wallNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(8.0f, -2.0f, -15.0f));
 	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
-	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -2.0f, 0.0f));
+	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));

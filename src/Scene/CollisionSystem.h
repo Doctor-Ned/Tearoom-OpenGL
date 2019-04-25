@@ -15,6 +15,7 @@ private:
 	inline bool AABBtoSphere(Collider* _box, Collider* _sphere);
 	inline void resolveSphereToSphereCollision(SphereCollider* _sphere1, SphereCollider* _sphere2);
 	inline void resolveAABBtoSphereCollision(BoxCollider* _box, SphereCollider* _sphere, glm::vec3& closestPoint);
+	inline void resolveAABBtoAABBCollision(BoxCollider* _box, BoxCollider* _box2, glm::vec3& depthBox);
 public:
 	static CollisionSystem* getInstance();
 	~CollisionSystem();

@@ -229,10 +229,17 @@ bool CollisionSystem::AABBtoAABB(Collider* collider1, Collider* collider2)
 {
 	BoxCollider* box1 = dynamic_cast<BoxCollider*>(collider1);
 	BoxCollider* box2 = dynamic_cast<BoxCollider*>(collider2);
-	//box with center point and half-width
-	if (abs(box1->getPosition().x - box2->getPosition().x) > (box1->getHalfDimensions().x + box2->getHalfDimensions().x)) return false;
-	if (abs(box1->getPosition().y - box2->getPosition().y) > (box1->getHalfDimensions().y + box2->getHalfDimensions().y)) return false;
-	if (abs(box1->getPosition().z - box2->getPosition().z) > (box1->getHalfDimensions().z + box2->getHalfDimensions().z)) return false;
+	glm::vec3 intersectionDepth(0);
+	for(int i = 0; i < 3; i++)
+	{
+		float distance = glm::distance(box1->getPosition()[i], box2->getPosition()[i]);
+		float gapBetweenBoxes = distance - box1->getHalfDimensions()[i] - box2->getHalfDimensions()[i];
+		if (gapBetweenBoxes > 0)
+			return false;
+
+		intersectionDepth[i] = gapBetweenBoxes;
+	}
+	resolveAABBtoAABBCollision(box1, box2, intersectionDepth);
 	return true;
 }
 
@@ -285,17 +292,6 @@ void CollisionSystem::resolveSphereToSphereCollision(SphereCollider* sphere1, Sp
 	glm::vec3 r1 = sphere1->getPosition() + (-dir) * sphere1->getRadius();
 	glm::vec3 r2 = sphere2->getPosition() + dir * sphere2->getRadius();
 	float distance = glm::distance(r1, r2);
-	/*if (picking)
-	{
-		std::cout << "player" << std::endl;
-		sphere2->getGameObject()->localTransform.translate(-dir * distance);
-	}
-	picking = sphere1->getGameObject()->getComponent<Picking>();
-	if (picking)
-	{
-		std::cout << "player" << std::endl;
-		sphere1->getGameObject()->localTransform.translate(dir * distance);
-	}*/
 
 	if (sphere1->getCollisionType() == DYNAMIC && sphere2->getCollisionType() == DYNAMIC)
 	{
@@ -335,4 +331,48 @@ void CollisionSystem::resolveAABBtoSphereCollision(BoxCollider* box, SphereColli
 	{
 		sphere->getGameObject()->localTransform.translate(-dir * distance);
 	}
+}
+
+void CollisionSystem::resolveAABBtoAABBCollision(BoxCollider* box1, BoxCollider* box2, glm::vec3& depthBox)
+{
+	int axis = 0;
+	float smallestDepth = depthBox.x;
+	for(int i = 1; i < 3; i++)
+	{
+		if(depthBox[i] > smallestDepth)
+		{
+			smallestDepth = depthBox[i];
+			axis = i;
+		}
+	}
+	glm::vec3 translation(0);
+
+	translation[axis] = smallestDepth;
+
+	float distance = glm::distance(box1->getPosition(), box2->getPosition());
+	float distAfterTranslation = glm::distance(box1->getPosition() + translation, box2->getPosition());
+	float direction = 0.0f;
+	if(distance > distAfterTranslation)
+	{
+		direction = -1.0f;
+	}
+	else
+	{
+		direction = 1.0f;
+	}
+
+	if(box1->getCollisionType() == DYNAMIC && box2->getCollisionType() == DYNAMIC)
+	{
+		box1->getGameObject()->localTransform.translate(direction * translation / 2.0f);
+		box2->getGameObject()->localTransform.translate(direction * -translation / 2.0f);
+	}
+	else if(box1->getCollisionType() == DYNAMIC)
+	{
+		box1->getGameObject()->localTransform.translate(direction * translation);
+	}
+	else if (box2->getCollisionType() == DYNAMIC)
+	{
+		box2->getGameObject()->localTransform.translate(direction * -translation);
+	}
+	
 }
