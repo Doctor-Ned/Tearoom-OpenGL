@@ -279,39 +279,7 @@ void GraphNode::renderGui() {
 	if (active != this->active)setActive(active);
 	ImGui::NewLine();
 	if (active) {
-		glm::vec3 position = localTransform.getMatrix()[3];
-
-		ImGui::InputFloat3("Position (fixed)", reinterpret_cast<float*>(&position));
-		ImGui::NewLine();
-		ImGui::SliderFloat3("Position (slider)", reinterpret_cast<float*>(&position), -10.0f, 10.0f);
-		ImGui::NewLine();
-
-		glm::mat4 local = localTransform.getMatrix();
-		local[3].x = position.x;
-		local[3].y = position.y;
-		local[3].z = position.z;
-		localTransform.setMatrix(local);
-
-		if (ImGui::Button("RotX-")) {
-			localTransform.rotate(-15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-		if (ImGui::Button("RotY-")) {
-			localTransform.rotate(-15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		}
-		if (ImGui::Button("RotZ-")) {
-			localTransform.rotate(-15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-		}
-		ImGui::NewLine();
-		if (ImGui::Button("RotX+")) {
-			localTransform.rotate(15.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-		if (ImGui::Button("RotY+")) {
-			localTransform.rotate(15.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		}
-		if (ImGui::Button("RotZ+")) {
-			localTransform.rotate(15.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-		}
-		ImGui::NewLine();
+		localTransform.drawGui();
 		for (auto &comp : components) {
 			comp->renderGui();
 			ImGui::NewLine();

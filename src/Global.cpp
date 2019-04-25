@@ -1,8 +1,76 @@
 #include "Global.h"
 #include <fstream>
 
+
+// Reference: https://github.com/bulletphysics/bullet3/blob/master/src/LinearMath/btQuaternion.h#L161
+glm::vec3 Global::getEulerZYX(glm::quat quaternion) {
+	glm::vec3 result;
+	const float sqx = quaternion.x * quaternion.x;
+	const float sqy = quaternion.y * quaternion.y;
+	const float sqz = quaternion.z * quaternion.z;
+	const float squ = quaternion.w * quaternion.w;
+	const float sarg = -2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
+	if (sarg <= -0.999999f) {
+		result.y = -0.5f * M_PI;
+		result.z = 0.0f;
+		result.x = 2.0f * std::atan2(quaternion.x, -quaternion.y);
+	} else if (sarg >= 0.999999f) {
+		result.y = 0.5f * M_PI;
+		result.z = 0.0f;
+		result.x = 2.0f* std::atan2(-quaternion.x, quaternion.y);
+	} else {
+		result.y = std::sin(sarg);
+		result.z = std::atan2(2.0f * (quaternion.y*quaternion.z + quaternion.w*quaternion.x), squ - sqx - sqy + sqz);
+		result.x = std::atan2(2.0f * (quaternion.x*quaternion.y + quaternion.w*quaternion.z), squ + sqx - sqy - sqz);
+	}
+	return result;
+}
+
+glm::vec3 Global::getEulerXYZ(glm::quat quaternion) {
+	glm::vec3 result = getEulerZYX(quaternion);
+	float a = result.x;
+	result.x = result.z;
+	result.z = a;
+	return result;
+}
+
+glm::quat Global::getQuatByEulerZYX(glm::vec3 euler) {
+	float halfYaw = euler.x*0.5f;
+	float halfPitch = euler.y*0.5f;
+	float halfRoll = euler.z * 0.5f;
+	float cosYaw = std::cos(halfYaw);
+	float sinYaw = std::sin(halfYaw);
+	float cosPitch = std::cos(halfPitch);
+	float sinPitch = std::sin(halfPitch);
+	float cosRoll = std::cos(halfRoll);
+	float sinRoll = std::sin(halfRoll);
+	glm::quat result;
+	result.x = sinRoll * cosPitch*cosYaw - cosRoll * sinPitch*sinYaw;
+	result.y = cosRoll * sinPitch*cosYaw + sinRoll * cosPitch*sinYaw;
+	result.z = cosRoll * cosPitch*sinYaw - sinRoll * sinPitch*cosYaw;
+	result.w = cosRoll * cosPitch*cosYaw + sinRoll * sinPitch*sinYaw;
+	return result;
+}
+
+glm::quat Global::getQuatByEulerXYZ(glm::vec3 euler) {
+	float a = euler.x;
+	euler.x = euler.z;
+	euler.z = a;
+	return getQuatByEulerZYX(euler);
+}
+
+glm::vec3 Global::getScale(glm::mat4 matrix) {
+	glm::vec3 result;
+	glm::mat4 transpose = glm::transpose(matrix);
+	glm::mat4 s = transpose * matrix;
+	result.x = sqrt(s[0][0]);
+	result.y = sqrt(s[1][1]);
+	result.z = sqrt(s[2][2]);
+	return result;
+}
+
 bool Global::endsWith(std::string text, std::string end) {
-	if(text.length() < end.length()) {
+	if (text.length() < end.length()) {
 		return false;
 	}
 	return std::equal(end.rbegin(), end.rend(), text.rbegin());
@@ -28,14 +96,14 @@ std::string Global::readFullFile(std::string path) {
 
 Json::Value Global::readJsonFile(std::string path) {
 	std::string text = readFullFile(path);
-	if(text.length() == 0) {
+	if (text.length() == 0) {
 		return Json::Value();
 	}
 	static Json::CharReaderBuilder builder;
 	Json::CharReader *reader = builder.newCharReader();
 	Json::Value root;
 	std::string errors;
-	if(reader->parse(text.c_str(), text.c_str() + text.size(), &root, &errors)) {
+	if (reader->parse(text.c_str(), text.c_str() + text.size(), &root, &errors)) {
 		delete reader;
 		return root;
 	}
@@ -70,7 +138,7 @@ glm::vec4 Global::planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3
 }
 
 float Global::distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2) {
-	return fabs((plane2.z*(-plane1.w/plane1.z) + plane2.w)) / (sqrt(plane2.x * plane2.x + plane2.y * plane2.y + plane2.z*plane2.z));
+	return fabs((plane2.z*(-plane1.w / plane1.z) + plane2.w)) / (sqrt(plane2.x * plane2.x + plane2.y * plane2.y + plane2.z*plane2.z));
 }
 
 glm::vec3* Global::createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,

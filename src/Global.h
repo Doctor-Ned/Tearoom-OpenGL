@@ -49,6 +49,11 @@ static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE
 
 class Global {
 public:
+	static glm::vec3 getEulerZYX(glm::quat quaternion);
+	static glm::vec3 getEulerXYZ(glm::quat quaternion);
+	static glm::quat getQuatByEulerZYX(glm::vec3 euler);
+	static glm::quat getQuatByEulerXYZ(glm::vec3 euler);
+	static glm::vec3 getScale(glm::mat4 matrix);
 	static bool endsWith(std::string text, std::string end);
 	static std::string jsonValueToString(Json::Value value);
 	static std::string readFullFile(std::string path);
