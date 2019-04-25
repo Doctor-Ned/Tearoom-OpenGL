@@ -70,11 +70,10 @@ void Transform::renderGui() {
 		scale.z = sc;
 	} else {
 		ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scale), 0.001f, 1.0f);
-		ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale), 0.0001f);
+		ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
 	}
-	//ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
-	ImGui::SliderAngle("Rotation X", &euler.x);
-	ImGui::SliderAngle("Rotation Y", &euler.y);
+	ImGui::SliderAngle("Rotation X", &euler.y);
+	ImGui::SliderAngle("Rotation Y", &euler.x);
 	ImGui::SliderAngle("Rotation Z", &euler.z);
 	if (scale != oldScale) {
 		if (scale.x <= 0.0f || scale.y <= 0.0f || scale.z <= 0.0f) {
@@ -103,9 +102,6 @@ void Transform::renderGui() {
 		matrix[3].x = 0.0f;
 		matrix[3].y = 0.0f;
 		matrix[3].z = 0.0f;
-		//matrix = glm::rotate(matrix, euler.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		//matrix = glm::rotate(matrix, euler.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		//matrix = glm::rotate(matrix, euler.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		matrix = rotation * matrix;
 		matrix[3].x = pos.x;
 		matrix[3].y = pos.y;
@@ -117,13 +113,7 @@ void Transform::renderGui() {
 	if (translation != oldTranslation) {
 		setPosition(translation);
 	}
-	/*glm::mat4 rot = glm::eulerAngleXYZ(euler.x,euler.y, euler.z);
-	matrix = glm::mat4(1.0f);
-	matrix = glm::translate(matrix, translation);
-	matrix = rot * matrix;
-	setMatrix(matrix);*/
-	//printf("przed: %f|%f|%f|%f, po: %f|%f|%f|%f\n", rotation.x, rotation.y, rotation.z, rotation.w, back.x, back.y, back.z, back.w);
-	//printf("euler: %f|%f|%f\n", euler.x, euler.y, euler.z);
+
 	ImGui::NewLine();
 }
 
