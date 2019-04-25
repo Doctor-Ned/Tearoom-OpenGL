@@ -5,8 +5,6 @@
 #include "Scene/GraphNode.h"
 #include "Scene/OctreeNode.h"
 #include <iostream>
-#include "Components/PhysicalObject.h"
-#include "Components/Picking.h"
 
 CollisionSystem::CollisionSystem()
 {
@@ -66,33 +64,7 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 			}
 		}
 	}
-	else
-	{
-		if (collider1->getCollisionType() == DYNAMIC)
-		{
-			//PhysicalObject* physObj = collider1->getGameObject()->getComponent<PhysicalObject>();
-			//if (physObj != nullptr)
-			//{
-			//	//collider1->getGameObject()->localTransform.setMatrix(collider1->getGameObject()->localTransform.getLastMatrix());
-			//	/*glm::vec3 lastPos = collider1->getGameObject()->localTransform.getLastMatrix()[3];
-			//	glm::vec3 actualPos = collider1->getGameObject()->localTransform.getPosition();
-			//	float distance = glm::distance(lastPos, actualPos);
-			//	glm::vec3 direction;
-			//	if (distance == 0)
-			//	{
-			//		direction = glm::vec3(0);
-			//	}
-			//	else
-			//	{
-			//		direction = glm::normalize(actualPos - lastPos);
-			//	}*/
-			//	//collider1->getGameObject()->localTransform.translate(-direction * distance);
-			//	physObj->pushTranslation(-physObj->direction * physObj->distance);
-			//	//vektor kontaktu, g³êbokoœæ
-			//}
-		}
-	}
-
+	
 	if (collider2->getIsTrigger())
 	{
 		if (!collider2->getCallbackFunctions().empty())
@@ -101,31 +73,6 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 			{
 				f(collider1);
 			}
-		}
-	}
-	else
-	{
-		if (collider2->getCollisionType() == DYNAMIC)
-		{
-			//PhysicalObject* physObj = collider2->getGameObject()->getComponent<PhysicalObject>();
-			//if(physObj != nullptr)
-			//{
-			//	//collider2->getGameObject()->localTransform.setMatrix(collider2->getGameObject()->localTransform.getLastMatrix());
-			//	/*glm::vec3 lastPos = collider2->getGameObject()->localTransform.getLastMatrix()[3];
-			//	glm::vec3 actualPos = collider2->getGameObject()->localTransform.getPosition();
-			//	float distance = glm::distance(lastPos, actualPos);
-			//	glm::vec3 direction;
-			//	if (distance == 0)
-			//	{
-			//		direction = glm::vec3(0);
-			//	}
-			//	else
-			//	{
-			//		direction = glm::normalize(actualPos - lastPos);
-			//	}*/
-			//	//collider2->getGameObject()->localTransform.translate(-direction * distance);
-			//	physObj->pushTranslation(-physObj->direction * physObj->distance);
-			//}
 		}
 	}
 	
@@ -335,6 +282,11 @@ void CollisionSystem::resolveAABBtoSphereCollision(BoxCollider* box, SphereColli
 
 void CollisionSystem::resolveAABBtoAABBCollision(BoxCollider* box1, BoxCollider* box2, glm::vec3& depthBox)
 {
+	if (box1->getIsTrigger() == true || box2->getIsTrigger() == true)
+	{
+		return;
+	}
+
 	int axis = 0;
 	float smallestDepth = depthBox.x;
 	for(int i = 1; i < 3; i++)

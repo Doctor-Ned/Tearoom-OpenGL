@@ -38,6 +38,7 @@ enum SerializableType {
 	SPhysicalObject,
 	SPicking,
 	SPlayerMovement,
+	SAnimation,
 	SRotatingObject,
 	SDirLightComp,
 	SLightComp,
