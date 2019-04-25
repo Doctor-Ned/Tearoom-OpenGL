@@ -10,7 +10,6 @@ CollisionTest::CollisionTest(GraphNode* _gameObject) : Component(_gameObject)
 void CollisionTest::applyCallback() {
 	auto f = [this](Collider* collider) {
 		this->OnCollision(collider);
-		return 1;
 	};
 	gameObject->getComponent<Collider>()->setCollisionCallback(f);
 }
@@ -43,7 +42,7 @@ CollisionTest::~CollisionTest()
 void CollisionTest::OnCollision(Collider* collider)
 {
 	direction *= -1;
-	gameObject->localTransform.rotate(5.0f * direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	gameObject->localTransform.rotate(2.0f * direction, glm::vec3(0.0f, 1.0f, 0.0f));
 	/*Collider* collider2 = gameObject->getComponent<Collider>();
 	if (direction > 0)
 		collider2->setSize(1.5f);

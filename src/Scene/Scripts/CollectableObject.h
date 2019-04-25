@@ -4,7 +4,7 @@
 
 #ifndef TEAROOM_COLLECTABLEOBJECT_H
 #define TEAROOM_COLLECTABLEOBJECT_H
-#include "Component.h"
+#include "Scene/Components/Component.h"
 #include "Render/Renderable.h"
 #include "Mesh/Mesh.h"
 

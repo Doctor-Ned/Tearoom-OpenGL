@@ -1,4 +1,4 @@
-#include "Scene/Components/Picking.h"
+#include "Scene/Scripts/Picking.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
 #include "Scene/CollisionSystem.h"

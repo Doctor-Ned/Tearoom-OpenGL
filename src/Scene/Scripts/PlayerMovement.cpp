@@ -1,4 +1,4 @@
-#include "Scene/Components/PlayerMovement.h"
+#include "Scene/Scripts/PlayerMovement.h"
 #include "Scene/GraphNode.h"
 #include "Scene/CollisionSystem.h"
 #include "Render/Camera.h"

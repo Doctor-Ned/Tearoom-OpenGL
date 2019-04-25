@@ -2,7 +2,7 @@
 #define PICKING_H
 
 #include <Ui/UiPlane.h>
-#include "Component.h"
+#include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 #include "Ui/UiPlane.h"
 

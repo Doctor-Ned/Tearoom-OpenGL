@@ -21,7 +21,7 @@ ShaderType Collider::getShaderType() {
 	return mesh_ptr->getShaderType();
 }
 
-void Collider::setCollisionCallback(std::function<int(Collider*)> f) {
+void Collider::setCollisionCallback(std::function<void(Collider*)> f) {
 	callbackFunctions.push_back(f);
 }
 
@@ -98,7 +98,7 @@ void Collider::setIsTrigger(bool _isTrigger)
 	isTrigger = _isTrigger;
 }
 
-std::vector<std::function<int(Collider*)>> Collider::getCallbackFunctions() {
+std::vector<std::function<void(Collider*)>> Collider::getCallbackFunctions() {
 	return callbackFunctions;
 }
 

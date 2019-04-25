@@ -22,7 +22,7 @@ class Collider abstract: public Component, public Renderable
 protected:
 	friend class Serializer;
 	Collider() {}
-	std::vector < std::function<int(Collider*)>> callbackFunctions;
+	std::vector < std::function<void(Collider*)>> callbackFunctions;
 	ColliderType type;
 	Collision collisionType;
 	bool isTrigger = false;
@@ -47,8 +47,8 @@ public:
 	bool getIsTrigger();
 	void setMatrix(glm::mat4 mat);
 	void setIsTrigger(bool _isTrigger);
-	std::vector < std::function<int(Collider*)>> getCallbackFunctions();
+	std::vector < std::function<void(Collider*)>> getCallbackFunctions();
 	void setPositionOffset(glm::vec3 positionOffset);
-	void setCollisionCallback(std::function<int(Collider*)> f);
+	void setCollisionCallback(std::function<void(Collider*)> f);
 };
 #endif
