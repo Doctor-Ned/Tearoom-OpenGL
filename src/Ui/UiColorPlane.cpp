@@ -17,10 +17,6 @@ void UiColorPlane::render(Shader *shader) {
 	
 }
 
-void UiColorPlane::mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
-
-void UiColorPlane::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
-
 void UiColorPlane::setup() {
 	const float minX = actualPosition.x;
 	const float minY = actualPosition.y;

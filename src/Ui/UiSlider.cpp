@@ -11,7 +11,9 @@ UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, Center);
+	button = new UiButton(textureIdle, textureHover, textureClicked, glm::vec2(0.0f, 0.0f), buttonSize, Center);
+	button->localTransform.setPosition(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x, actualPosition.y + size.y / 2.0f, 0.0f);
+	addChild(button);
 	UiSlider::setPosition(position, anchor);
 	//setup();
 }
@@ -27,13 +29,10 @@ void UiSlider::render(Shader *shader) {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	
-	button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x,
-		actualPosition.y + size.y / 2.0f));
-	Shader *shad = AssetManager::getInstance()->getShader(button->getShaderType());
-	shad->use();
-	button->render(shad);
-	shader->use();
+	//Shader *shad = AssetManager::getInstance()->getShader(button->getShaderType());
+	//shad->use();
+	//button->render(shad);
+	//shader->use();
 }
 
 void UiSlider::setCallback(std::function<void(float)> callback) {
@@ -41,10 +40,10 @@ void UiSlider::setCallback(std::function<void(float)> callback) {
 }
 
 void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	button->mouse_callback(window, xpos, ypos);
+	UiElement::mouse_callback(window, xpos, ypos);
 	if (button->getState() == Clicked) {
 		if (moving) {
-			glm::vec2 resPosition = getRescaledPosition(), resSize = getRescaledSize();
+			glm::vec2 resPosition = getRescaledModeledPosition(), resSize = getRescaledModeledSize();
 			if (xpos < resPosition.x) {
 				if (value != min) {
 					value = min;
@@ -56,8 +55,8 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 					callback(value);
 				}
 			} else {
-				const double currentX = Global::remap(value, min, max, 0.0, size.x);
-				value = Global::remap(currentX + xpos - moveX, 0.0, size.x, min, max);
+				const double currentX = Global::remap(value, min, max, 0.0, resSize.x);
+				value = Global::remap(currentX + xpos - moveX, 0.0, resSize.x, min, max);
 				moveX = xpos;
 				callback(value);
 			}
@@ -65,18 +64,15 @@ void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 			moving = true;
 			moveX = xpos;
 		}
+		//button->setPosition(glm::vec2(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x, actualPosition.y + size.y / 2.0f));
+		button->localTransform.setPosition(Global::remap(value, min, max, 0.0, size.x) + actualPosition.x, actualPosition.y + size.y / 2.0f, 0.0f);
 	} else {
 		moving = false;
 	}
 }
 
-void UiSlider::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	this->button->mouse_button_callback(window, button, action, mods);
-}
-
 void UiSlider::setPosition(glm::vec2 position, UiAnchor anchor) {
 	UiElement::setPosition(position, anchor);
-	this->button->setPosition(position);
 	setup();
 }
 

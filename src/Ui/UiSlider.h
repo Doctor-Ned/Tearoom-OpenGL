@@ -14,7 +14,6 @@ public:
 	void render(Shader *shader) override;
 	void setCallback(std::function<void(float)> callback);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
-	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	using UiElement::setPosition;
 	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	void setup() override;

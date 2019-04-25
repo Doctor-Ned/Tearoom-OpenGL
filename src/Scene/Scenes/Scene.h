@@ -26,11 +26,11 @@ public:
 	void renderUiUsingRenderMap(Shader *shader = nullptr);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
-	void addToRenderMap(UiElement *uiElement);
+	void addToRenderMap(UiElement *uiElement, bool recurse = true);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);
 	void removeFromRenderMap(GraphNode *node, bool recurse = true);
-	void removeFromRenderMap(UiElement *uiElement);
+	void removeFromRenderMap(UiElement *uiElement, bool recurse = true);
 	void reinitializeRenderMap();
 	virtual void keyEvent(int key, bool pressed);
 	virtual void mouseEvent(int key, bool pressed);
@@ -53,7 +53,7 @@ protected:
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
-	void addToRenderMap(UiElement *uiElement, bool checkIfExists);
+	void addToRenderMap(UiElement *uiElement, bool recurse, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
@@ -70,7 +70,7 @@ protected:
 	GameManager *gameManager;
 	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
-	std::vector<UiElement*> uiElements;
+	UiElement *rootUiElement;
 	GraphNode *rootNode;
 	LightManager *lightManager;
 	glm::mat4 projection;

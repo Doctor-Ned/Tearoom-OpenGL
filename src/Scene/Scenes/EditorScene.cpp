@@ -8,6 +8,7 @@ EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
 	playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
 	cameraText = new UiText(glm::vec2(0.0f, windowHeight - 20.0f), glm::vec2(20.0f, 300.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), Fit, TopLeft);
+	rootUiElement->addChild(cameraText);
 	setEditorCamera(useEditorCamera);
 }
 

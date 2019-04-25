@@ -26,13 +26,13 @@ MenuScene::MenuScene() {
 	options->setButtonCallback([this]() {showOptions(); });
 	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 8 * windowHeight / 9.0f), "Quit");
 	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
-	uiElements.emplace_back(miszukScene);
-	uiElements.emplace_back(newTestScene);
-	uiElements.emplace_back(loadTestScene);
-	uiElements.emplace_back(editorScene);
-	uiElements.emplace_back(options);
-	uiElements.emplace_back(quit);
-	uiElements.emplace_back(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	rootUiElement->addChild(miszukScene);
+	rootUiElement->addChild(newTestScene);
+	rootUiElement->addChild(loadTestScene);
+	rootUiElement->addChild(editorScene);
+	rootUiElement->addChild(options);
+	rootUiElement->addChild(quit);
+	rootUiElement->addChild(new UiText(glm::vec2(windowCenterX, 1.0f * windowHeight / 9.0f), glm::vec2(windowWidth, 2.0f * windowHeight / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 	reinitializeRenderMap();
 }
 
