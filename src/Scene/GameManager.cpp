@@ -89,13 +89,16 @@ void GameManager::goToMenu(bool destroyPreviousScene) {
 	}
 }
 
-void GameManager::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
+void GameManager::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection) {
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
+	if (updateUiProjection) {
+		UiElement::updateProjection(windowWidth, windowHeight, screenWidth, screenHeight);
+	}
 }
 
 void GameManager::setup() {

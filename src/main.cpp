@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
 		windowHeight = screenHeight;
 	}
 
-	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, false);
 
 	// Create window with graphics context
 	GLFWwindow* window;
@@ -256,6 +256,8 @@ int main(int argc, char** argv) {
 
 	serializer->setup();
 	gameManager->setup();
+
+	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
 	postProcessingShader->use();

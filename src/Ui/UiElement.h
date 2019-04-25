@@ -1,9 +1,7 @@
-#ifndef UIELEMENT_H
-#define UIELEMENT_H
+#pragma once
 
 #include "Global.h"
 #include "Render/Shader.h"
-#include "Serialization/Serializable.h"
 
 enum ShaderType;
 
@@ -45,25 +43,27 @@ public:
 	virtual void setPosition(glm::vec2 position, bool center = true);
 	float getOpacity() const;
 	void setOpacity(float opacity);
-	glm::vec2 getPosition();
-	glm::vec2 getCenter();
-	glm::vec2 getSize();
-	void updateProjection(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
+	glm::vec2 getPosition() const;
+	glm::vec2 getCenter() const;
+	glm::vec2 getSize() const;
+	static void updateProjection(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
 	virtual ~UiElement();
 	virtual ShaderType getShaderType() = 0;
+	static glm::mat4 getProjection();
 protected:
+	static float windowWidth;
+	static float windowHeight;
+	static float screenWidth;
+	static float screenHeight;
+	static glm::mat4 projection;
 	static glm::vec2 createScaledSize(float width, float height);
 	glm::vec2 createSizeScaledByWidth(float size);
 	glm::vec2 createSizeScaledByHeight(float size);
 	glm::vec2 getRescaledPosition();
 	glm::vec2 getRescaledSize();
-	float windowWidth, windowHeight, screenWidth, screenHeight;
 	float opacity = 1.0f;
-	glm::mat4 projection;
 	virtual void setup() = 0;
 	glm::vec2 actualPosition{};
 	glm::vec2 size{};
 	GLuint vao, vbo = 0;
 };
-
-#endif

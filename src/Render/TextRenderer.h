@@ -25,7 +25,6 @@ public:
 	void renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color);
 	void renderText(Shader* shader, std::string text, glm::vec2 position, glm::vec2 scale, bool center, glm::vec3 color);
 	void renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scale = 1.0f, bool center = true, glm::vec3 color = glm::vec3(1.0f));
-	void updateProjection(Shader* shader);
 	GLuint getFontSize();
 	glm::vec2 getScaleToFitSize(std::string text, glm::vec2 size, UiRescaleMode rescaleMode);
 	glm::vec2 getTextSize(std::string text, GLfloat scale = 1.0f);

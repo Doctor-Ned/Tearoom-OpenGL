@@ -11,7 +11,6 @@ TextRenderer::TextRenderer(GLfloat defaultScale) {
 	Shader *textShader = AssetManager::getInstance()->getShader(STText);
 	textShader->use();
 	textShader->setInt("text", 0);
-	updateProjection(textShader);
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays(1, &this->vao);
 	glGenBuffers(1, &this->vbo);
@@ -151,11 +150,6 @@ void TextRenderer::renderText(Shader* textShader, std::string text, GLfloat x, G
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void TextRenderer::updateProjection(Shader* shader) {
-	shader->setProjection(glm::ortho(0.0f, static_cast<GLfloat>(GameManager::getInstance()->getWindowWidth()), static_cast<GLfloat>(GameManager::getInstance()->getWindowHeight()),
-		0.0f));
 }
 
 GLuint TextRenderer::getFontSize() {

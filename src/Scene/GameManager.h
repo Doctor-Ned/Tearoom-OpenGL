@@ -62,7 +62,7 @@ public:
 	void setCursorLocked(bool locked);
 	bool getCursorLocked();
 	void goToMenu(bool destroyPreviousScene = true);
-	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
+	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection = true);
 	void setup();
 	Camera *getCamera() const;
 	bool useLight = true;
