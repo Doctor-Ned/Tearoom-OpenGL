@@ -9,10 +9,9 @@ float UiElement::screenWidth = 0.0f;
 float UiElement::screenHeight = 0.0f;
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
 
-UiElement::UiElement(glm::vec2 position, glm::vec2 size, bool center) {
-	this->size = size;
+UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
 	glGenVertexArrays(1, &vao);
-	UiElement::setPosition(position, center);
+	UiElement::setPosition(position, anchor);
 }
 
 void UiElement::render(Shader *shader) {
@@ -20,12 +19,48 @@ void UiElement::render(Shader *shader) {
 	shader->setOpacity(opacity);
 }
 
-void UiElement::setPosition(glm::vec2 position, bool center) {
-	if (center) {
-		actualPosition = glm::vec2(position.x - size.x / 2.0f, position.y - size.y / 2.0f);
-	} else {
-		actualPosition = position;
+void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
+	this->anchor = anchor;
+	actualPosition = position;
+	switch (anchor) {
+		default:
+			throw std::exception("Unsupported UiAnchor provided!");
+		case TopLeft:
+		//already set	
+		break;
+		case Top:
+			actualPosition.x -= size.x / 2.0f;
+			break;
+		case TopRight:
+			actualPosition.x -= size.x;
+			break;
+		case Left:
+			actualPosition.y -= size.y / 2.0f;
+			break;
+		case BottomLeft:
+			actualPosition.y -= size.y;
+			break;
+		case Bottom:
+			actualPosition.x -= size.x / 2.0f;
+			actualPosition.y -= size.y;
+			break;
+		case BottomRight:
+			actualPosition.x -= size.x;
+			actualPosition.y -= size.y;
+			break;
+		case Right:
+			actualPosition.x -= size.x;
+			actualPosition.y -= size.y / 2.0f;
+			break;
+		case Center:
+			actualPosition.x -= size.x / 2.0f;
+			actualPosition.y -= size.y / 2.0f;
+			break;
 	}
+}
+
+void UiElement::setPosition(glm::vec2 position) {
+	setPosition(position, anchor);
 }
 
 float UiElement::getOpacity() const {
@@ -53,10 +88,10 @@ void UiElement::updateProjection(float windowWidth, float windowHeight, float sc
 	UiElement::windowHeight = windowHeight;
 	UiElement::screenWidth = screenWidth;
 	UiElement::screenHeight = screenHeight;
-	
+
 	projection = glm::ortho(0.0f, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight), 0.0f);
-	for(auto &pair : AssetManager::getInstance()->getShaders()) {
-		switch(pair.first) {
+	for (auto &pair : AssetManager::getInstance()->getShaders()) {
+		switch (pair.first) {
 			case STUiTexture:
 			case STUiColor:
 			case STText:

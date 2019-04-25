@@ -83,38 +83,68 @@ void TextRenderer::load(std::string font, GLuint fontSize) {
 	FT_Done_FreeType(ft);
 }
 
-void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, bool center, glm::vec3 color) {
-	renderText(shader, text, x, y, scale, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, UiAnchor anchor, glm::vec3 color) {
+	renderText(shader, text, x, y, scale, scale, anchor, color);
 }
 
-void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
-	renderText(shader, text, position.x, position.y, scaleX, scaleY, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scaleX, GLfloat scaleY, UiAnchor anchor, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scaleX, scaleY, anchor, color);
 }
 
-void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, glm::vec2 scale, bool center, glm::vec3 color) {
-	renderText(shader, text, position.x, position.y, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, glm::vec2 scale, UiAnchor anchor, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scale, anchor, color);
 }
 
-void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scale, bool center, glm::vec3 color) {
-	renderText(shader, text, position.x, position.y, scale, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, glm::vec2 position, GLfloat scale, UiAnchor anchor, glm::vec3 color) {
+	renderText(shader, text, position.x, position.y, scale, anchor, color);
 }
 
-void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, glm::vec2 scale, bool center, glm::vec3 color) {
-	renderText(shader, text, x, y, scale.x, scale.y, center, color);
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, glm::vec2 scale, UiAnchor anchor, glm::vec3 color) {
+	renderText(shader, text, x, y, scale.x, scale.y, anchor, color);
 }
 
-void TextRenderer::renderText(Shader* textShader, std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, bool center, glm::vec3 color) {
-	textShader->setColor(glm::vec4(color, 1.0f));
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, UiAnchor anchor, glm::vec3 color) {
+	shader->setColor(glm::vec4(color, 1.0f));
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
 	scaleX *= defaultScale;
 	scaleY *= defaultScale;
 	std::string::const_iterator c;
 
-	if (center) {
-		glm::vec2 size = getTextSize(text, scaleX, scaleY);
-		x -= size.x / 2.0f;
-		y -= size.y / 2.0f;
+	glm::vec2 size = getTextSize(text, scaleX, scaleY);
+	switch (anchor) {
+		default:
+			throw std::exception("Unsupported UiAnchor value provided!");
+		case TopLeft:
+			//nothing to change
+			break;
+		case Top:
+			x -= size.x / 2.0f;
+			break;
+		case TopRight:
+			x -= size.x;
+			break;
+		case Left:
+			y -= size.y / 2.0f;
+			break;
+		case BottomLeft:
+			y -= size.y;
+			break;
+		case Bottom:
+			x -= size.x / 2.0f;
+			y -= size.y;
+			break;
+		case BottomRight:
+			x -= size.x;
+			y -= size.y;
+			break;
+		case Right:
+			x -= size.x;
+			y -= size.y / 2.0f;
+			break;
+		case Center:
+			x -= size.x / 2.0f;
+			y -= size.y / 2.0f;
 	}
 
 	for (c = text.begin(); c != text.end(); ++c) {

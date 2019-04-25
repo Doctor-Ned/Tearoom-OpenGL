@@ -1,7 +1,7 @@
 #include "Scene/AssetManager.h"
 #include "UiPlane.h"
 
-UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(texture, position, size, center) {
+UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiTexturedElement(texture, position, size, anchor) {
 	setup();
 }
 
@@ -53,8 +53,7 @@ void UiPlane::setup() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-		(void*)offsetof(UiTextureVertex, TexCoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 	data.clear();

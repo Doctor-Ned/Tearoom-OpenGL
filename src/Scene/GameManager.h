@@ -65,8 +65,6 @@ public:
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection = true);
 	void setup();
 	Camera *getCamera() const;
-	bool useLight = true;
-	bool castShadows = true;
 	bool isVsyncEnabled() const;
 	void setVsync(bool enabled);
 	void addKeyCallback(int key, bool pressed, const std::function<void()>& callback);

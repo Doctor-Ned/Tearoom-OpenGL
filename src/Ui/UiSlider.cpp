@@ -4,21 +4,21 @@
 
 UiSlider::UiSlider(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, float value,
-	float min, float max, glm::vec4 lineColor, bool center) : UiTexturedElement(nullptr, position, size, center) {
+	float min, float max, glm::vec4 lineColor, UiAnchor anchor) : UiTexturedElement(nullptr, position, size, anchor) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
-	UiSlider::setPosition(position, center);
+	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, Center);
+	UiSlider::setPosition(position, anchor);
 	//setup();
 }
 
 UiSlider::UiSlider(glm::vec2 position, glm::vec2 size, double lineThickness, float value, float min, float max,
-	glm::vec4 lineColor, bool center) :
-	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, center) {}
+	glm::vec4 lineColor, UiAnchor anchor) :
+	UiSlider(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, anchor) {}
 
 void UiSlider::render(Shader *shader) {
 	UiTexturedElement::render(shader);
@@ -74,9 +74,9 @@ void UiSlider::mouse_button_callback(GLFWwindow* window, int button, int action,
 	this->button->mouse_button_callback(window, button, action, mods);
 }
 
-void UiSlider::setPosition(glm::vec2 position, bool center) {
-	UiElement::setPosition(position, center);
-	this->button->setPosition(position, center);
+void UiSlider::setPosition(glm::vec2 position, UiAnchor anchor) {
+	UiElement::setPosition(position, anchor);
+	this->button->setPosition(position);
 	setup();
 }
 

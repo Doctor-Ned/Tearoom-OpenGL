@@ -29,7 +29,7 @@ void main() {
 	vec4 texColor = texture(texture_diffuse1, fs_in.texCoords);
 	if(!disableTexture) diffuse = diffuse * texColor.rgb;
     vec3 ambient = initialAmbient * diffuse;
-	if(useLight == 0) {
+	if(useLight == 0 || !enableLights) {
 		FragColor = vec4(diffuse, texColor.a * opacity);
 	} else {
 		vec3 specular = vec3(0.5f);

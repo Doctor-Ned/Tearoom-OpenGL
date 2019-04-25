@@ -31,7 +31,7 @@ void main() {
 	if(!disableTexture) diffuse *= texture(texture_diffuse1, fs_in.texCoords);
     vec4 ambient = initialAmbient * diffuse;
 	ambient.w = diffuse.w;
-	if(useLight == 0) {
+	if(useLight == 0 || !enableLights) {
 		FragColor = vec4(diffuse.rgb, diffuse.w * opacity);
 	} else {
 		vec3 specular = useSpecularMap > 0 ? texture(texture_specular1, fs_in.texCoords).rgb : vec3(0.5f);

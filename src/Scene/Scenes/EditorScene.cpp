@@ -7,7 +7,7 @@
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
 	playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
-	cameraText = new UiText(glm::vec2(0.0f, windowHeight - 20.0f), glm::vec2(20.0f, 300.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), Fit, false);
+	cameraText = new UiText(glm::vec2(0.0f, windowHeight - 20.0f), glm::vec2(20.0f, 300.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), Fit, TopLeft);
 	setEditorCamera(useEditorCamera);
 }
 
@@ -18,7 +18,7 @@ void EditorScene::render() {
 void EditorScene::renderUi() {
 	Scene::renderUi();
 	ImGui::Begin("Object builder");
-	if(ImGui::Button("Add box")) {
+	if (ImGui::Button("Add box")) {
 		appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
 	}
 	ImGui::End();
@@ -76,28 +76,28 @@ void EditorScene::update(double deltaTime) {
 }
 
 void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
-	if(parent == nullptr) {
+	if (parent == nullptr) {
 		parent = rootNode;
 	}
-	if(node->getParent() == nullptr) {
+	if (node->getParent() == nullptr) {
 		node->setParent(parent);
 	}
-	if(node->getName() == "Node") {
+	if (node->getName() == "Node") {
 		node->setName("Node #" + std::to_string(nodeCounter++));
 	}
 	addRenderedNode(node, node->getParent());
 }
 
 void EditorScene::showNodeAsTree(GraphNode* node) const {
-	if(ImGui::TreeNode(node->getName().c_str())) {
+	if (ImGui::TreeNode(node->getName().c_str())) {
 		ImGui::SameLine();
-		if(ImGui::Button("Open")) {
+		if (ImGui::Button("Open")) {
 			//todo
 		}
-		for(auto child : node->getChildren()) {
+		for (auto child : node->getChildren()) {
 			showNodeAsTree(child);
 		}
- 		ImGui::TreePop();
+		ImGui::TreePop();
 	}
 }
 
@@ -106,7 +106,7 @@ void EditorScene::keyEvent(int key, bool pressed) {
 		switch (key) {
 			case EDITOR_KEY_TOGGLE_CAMERA:
 				setEditorCamera(!useEditorCamera);
-			break;
+				break;
 			case KEY_TOGGLE_MOUSE_LOCK:
 				setCursorLocked(!getCursorLocked());
 				break;

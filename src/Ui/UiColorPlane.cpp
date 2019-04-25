@@ -2,7 +2,7 @@
 #include "Scene/AssetManager.h"
 
 UiColorPlane::
-UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, bool center) : UiElement(position, size, center) {
+UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiElement(position, size, anchor) {
 	this->color = color;
 	setup();
 }

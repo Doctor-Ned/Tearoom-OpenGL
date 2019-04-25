@@ -12,13 +12,13 @@
 Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
 
-	hud = new UiPlane("res/textures/inventory.png", glm::vec2(0.0f,5.0f),glm::vec2(0.5f,0.5f),true);
+	hud = new UiPlane("res/textures/inventory.png", glm::vec2(0.0f, 5.0f), glm::vec2(0.5f, 0.5f), Center);
 }
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f,
-																 camera->getFront(), 1.0f);
+		camera->getFront(), 1.0f);
 	if (object) {
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {

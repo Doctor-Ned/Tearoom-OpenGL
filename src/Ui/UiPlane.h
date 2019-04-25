@@ -4,7 +4,7 @@
 
 class UiPlane : public UiTexturedElement {
 public:
-	UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, bool center = true);
+	UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, UiAnchor anchor);
 	void render(Shader *shader) override;
 	void setup() override;
 	ShaderType getShaderType() override;

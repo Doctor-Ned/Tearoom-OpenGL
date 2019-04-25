@@ -271,7 +271,7 @@ int main(int argc, char** argv) {
 	GameFramebuffers framebuffers = gameManager->getFramebuffers();
 
 
-	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(120.0f, 30.0f), false);
+	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(120.0f, 30.0f), TopLeft);
 	glm::vec2 planeCenter = fpsPlane->getPosition();
 	planeCenter.x += fpsPlane->getSize().x / 2.0f;
 	planeCenter.y += fpsPlane->getSize().y / 2.0f;

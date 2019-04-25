@@ -12,7 +12,7 @@ uniform samplerCube point_shadows[MAX_LIGHTS_OF_TYPE];
 
 vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 specular, vec3 viewDir) {
     float shadow = 0.0;
-	if(castShadows > 0) {
+	if(castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
 		projCoords = projCoords * 0.5 + 0.5;
 		float closestDepth = texture(tex, projCoords.xy).r; 
@@ -54,7 +54,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 specular, vec3 viewDir) {
 	float shadow = 0.0;
-	if(castShadows > 0) {
+	if(castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
 		projCoords = projCoords * 0.5 + 0.5;
 		float closestDepth = texture(tex, projCoords.xy).r; 
@@ -124,7 +124,7 @@ vec3 gridSamplingDisk[20] = vec3[]
 
 vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specular, vec3 viewDir) {
 	float shadow = 0.0;
-	if(castShadows > 0) {
+	if(castShadows > 0 && enableShadowCasting) {
 		vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
 		float currentDepth = length(fragToLight);
 		float bias = 0.15;

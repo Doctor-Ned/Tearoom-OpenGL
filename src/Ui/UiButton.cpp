@@ -4,15 +4,15 @@
 #include "Scene/AssetManager.h"
 
 UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
-	glm::vec2 position, glm::vec2 size, bool center) : UiTexturedElement(textureIdle, position, size, center) {
+	glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiTexturedElement(textureIdle, position, size, anchor) {
 	this->textureHover = AssetManager::getInstance()->getTexture(textureHover);
 	this->textureClicked = AssetManager::getInstance()->getTexture(textureClicked);
 	setup();
 }
 
-UiButton::UiButton(glm::vec2 position, bool center) : UiButton(position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), center) {}
+UiButton::UiButton(glm::vec2 position, UiAnchor anchor) : UiButton(position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), anchor) {}
 
-UiButton::UiButton(glm::vec2 position, glm::vec2 size, bool center) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position,size, center) {}
+UiButton::UiButton(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position,size, anchor) {}
 
 void UiButton::render(Shader *shader) {
 	UiElement::render(shader);
@@ -109,8 +109,7 @@ void UiButton::setup() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-		(void*)offsetof(UiTextureVertex, TexCoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 	data.clear();
@@ -124,8 +123,8 @@ void UiButton::setButtonCallback(std::function<void()> callback) {
 	this->callback = callback;
 }
 
-void UiButton::setPosition(glm::vec2 position, bool center) {
-	UiTexturedElement::setPosition(position, center);
+void UiButton::setPosition(glm::vec2 position, UiAnchor anchor) {
+	UiTexturedElement::setPosition(position, anchor);
 	setup();
 }
 

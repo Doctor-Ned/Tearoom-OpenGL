@@ -1,12 +1,12 @@
 #include "UboLights.h"
 #include "Render/LightManager.h"
 
-UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight * dirLight, SpotLight * spotLight, PointLight * pointLight) :
+UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight * dirLight, SpotLight * spotLight, PointLight * pointLight) :
 	Ubo(sizeof(float) + 7 * sizeof(int) + MAX_LIGHTS_OF_TYPE * (sizeof(DirLight)-sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(SpotLight) - sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(PointLight) - sizeof(void*)), "Lights", 5) {
-	inject(ambient, dirLights, spotLights, pointLights, spotDirShadowTexelResolution, pointShadowSamples, dirLight, spotLight, pointLight);
+	inject(ambient, dirLights, spotLights, pointLights, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirLight, spotLight, pointLight);
 }
 
-void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight* dirLight, SpotLight* spotLight, PointLight* pointLight) {
+void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight* dirLight, SpotLight* spotLight, PointLight* pointLight) {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	size_t offset = 0;
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &ambient);
@@ -20,7 +20,13 @@ void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLi
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &spotDirShadowTexelResolution);
 	offset += sizeof(int);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &pointShadowSamples);
-	offset += 3 * sizeof(int);
+	offset += sizeof(int);
+	int enable = enableLights ? 1 : 0;
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &enable);
+	offset += sizeof(int);
+	enable = enableShadowCasting ? 1 : 0;
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &enable);
+	offset += sizeof(int);
 	int amount = glm::min(dirLights, MAX_LIGHTS_OF_TYPE);
 	for(int i=0;i< amount;i++) {
 		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(DirLight) - sizeof(void*), reinterpret_cast<char*>(&dirLight[i]) + sizeof(void*));

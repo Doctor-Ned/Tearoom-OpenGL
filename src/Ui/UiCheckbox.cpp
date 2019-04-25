@@ -5,7 +5,7 @@
 
 UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	const char* textureTickIdle, const char* textureTickHover, const char* textureTickClicked, glm::vec2 position,
-	glm::vec2 size, bool checked, bool center) : UiTexturedElement(textureIdle, position, size, center) {
+	glm::vec2 size, bool checked, UiAnchor anchor) : UiTexturedElement(textureIdle, position, size, anchor) {
 	this->textureHover = AssetManager::getInstance()->getTexture(textureHover);
 	this->textureClicked = AssetManager::getInstance()->getTexture(textureClicked);
 	this->textureTick = AssetManager::getInstance()->getTexture(textureTickIdle);
@@ -15,10 +15,10 @@ UiCheckbox::UiCheckbox(const char* textureIdle, const char* textureHover, const 
 	setup();
 }
 
-UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, bool center) : UiCheckbox(position, createSizeScaledByHeight(BASE_BTN_SIZE), checked, center) {}
+UiCheckbox::UiCheckbox(glm::vec2 position, bool checked, UiAnchor anchor) : UiCheckbox(position, createSizeScaledByHeight(BASE_BTN_SIZE), checked, anchor) {}
 
-UiCheckbox::UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, bool center) :
-	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, size, checked, center) {}
+UiCheckbox::UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, UiAnchor anchor) :
+	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, size, checked, anchor) {}
 
 void UiCheckbox::render(Shader *shader) {
 	UiTexturedElement::render(shader);
@@ -117,8 +117,7 @@ void UiCheckbox::setup() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-		(void*)offsetof(UiTextureVertex, TexCoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
 	glBindVertexArray(0);
 	data.clear();

@@ -4,7 +4,7 @@
 
 UiSliderInt::UiSliderInt(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, int value,
-	int min, int max, glm::vec4 lineColor, bool center) : UiTexturedElement(nullptr, position, size, center) {
+	int min, int max, glm::vec4 lineColor, UiAnchor anchor) : UiTexturedElement(nullptr, position, size, anchor) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
@@ -12,14 +12,14 @@ UiSliderInt::UiSliderInt(const char* textureIdle, const char* textureHover, cons
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
-	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, true);
-	UiSliderInt::setPosition(position, center);
+	button = new UiButton(textureIdle, textureHover, textureClicked, position, buttonSize, Center);
+	UiSliderInt::setPosition(position, anchor);
 	//setup();
 }
 
 UiSliderInt::UiSliderInt(glm::vec2 position, glm::vec2 size, double lineThickness, int value, int min, int max,
-	glm::vec4 lineColor, bool center) :
-	UiSliderInt(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, center) {}
+	glm::vec4 lineColor, UiAnchor anchor) :
+	UiSliderInt(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, anchor) {}
 
 void UiSliderInt::render(Shader *shader) {
 	UiTexturedElement::render(shader);
@@ -91,9 +91,9 @@ void UiSliderInt::mouse_button_callback(GLFWwindow* window, int button, int acti
 	this->button->mouse_button_callback(window, button, action, mods);
 }
 
-void UiSliderInt::setPosition(glm::vec2 position, bool center) {
-	UiElement::setPosition(position, center);
-	this->button->setPosition(position, center);
+void UiSliderInt::setPosition(glm::vec2 position, UiAnchor anchor) {
+	UiElement::setPosition(position, anchor);
+	this->button->setPosition(position, anchor);
 	setup();
 }
 

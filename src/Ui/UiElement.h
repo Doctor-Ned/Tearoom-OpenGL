@@ -2,6 +2,7 @@
 
 #include "Global.h"
 #include "Render/Shader.h"
+#include "Scene/Transform.h"
 
 enum ShaderType;
 
@@ -36,11 +37,12 @@ struct UiTextureVertex {
 
 class UiElement {
 public:
-	UiElement(glm::vec2 position, glm::vec2 size, bool center = true);
+	UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor = Center);
 	virtual void render(Shader *shader);
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 	virtual void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {}
-	virtual void setPosition(glm::vec2 position, bool center = true);
+	virtual void setPosition(glm::vec2 position, UiAnchor anchor);
+	void setPosition(glm::vec2 position);
 	float getOpacity() const;
 	void setOpacity(float opacity);
 	glm::vec2 getPosition() const;
@@ -50,6 +52,7 @@ public:
 	virtual ~UiElement();
 	virtual ShaderType getShaderType() = 0;
 	static glm::mat4 getProjection();
+	Transform localTransform, worldTransform;
 protected:
 	static float windowWidth;
 	static float windowHeight;
@@ -63,7 +66,9 @@ protected:
 	glm::vec2 getRescaledSize();
 	float opacity = 1.0f;
 	virtual void setup() = 0;
+	bool dirty = true;
 	glm::vec2 actualPosition{};
 	glm::vec2 size{};
 	GLuint vao, vbo = 0;
+	UiAnchor anchor;
 };

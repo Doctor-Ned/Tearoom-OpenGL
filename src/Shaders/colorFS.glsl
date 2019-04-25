@@ -26,7 +26,7 @@ uniform float opacity;
 void main() {
 	vec4 diffuse = tcolor * color;
     vec3 ambient = initialAmbient * diffuse.rgb;
-	if(useLight == 0) {
+	if(useLight == 0 || !enableLights) {
 		FragColor = vec4(color.rgb, opacity);
 	} else {
 		vec3 specular = vec3(0.5f);

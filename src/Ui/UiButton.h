@@ -14,14 +14,15 @@ enum UiButtonState {
 class UiButton : public UiTexturedElement {
 public:
 	UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
-	         glm::vec2 position, glm::vec2 size, bool center = true);
-	UiButton(glm::vec2 position, bool center = true);
-	UiButton(glm::vec2 position, glm::vec2 size, bool center = true);
+	         glm::vec2 position, glm::vec2 size, UiAnchor anchor = Center);
+	UiButton(glm::vec2 position, UiAnchor anchor = Center);
+	UiButton(glm::vec2 position, glm::vec2 size, UiAnchor anchor = Center);
 	void render(Shader *shader) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	void setButtonCallback(std::function<void()> callback);
-	void setPosition(glm::vec2 position, bool center = true) override;
+	using UiElement::setPosition;
+	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	UiButtonState getState();
 	void setup() override;
 	ShaderType getShaderType() override;

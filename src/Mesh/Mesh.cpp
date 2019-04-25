@@ -117,6 +117,6 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 Mesh::Mesh(ShaderType shaderType, GLuint renderMode) {
 	this->renderMode = renderMode;
 	this->shaderType = shaderType;
-	useLight = GameManager::getInstance()->useLight;
-	castShadows = GameManager::getInstance()->castShadows;
+	useLight = true;
+	castShadows = true;
 }

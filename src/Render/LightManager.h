@@ -6,6 +6,7 @@
 #include "Serialization/Serializable.h"
 #include "Serialization/DataSerializer.h"
 
+class GameManager;
 class GeometryShader;
 class UboLights;
 class Shader;
@@ -172,6 +173,7 @@ public:
 	void operator=(LightManager const&) = delete;
 	void renderAndUpdate(std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders);
 	float spotNear = 0.4f, spotFar = 25.0f, dirNear = 5.0f, dirFar = 25.0f, dirProjSize = 10.0f;
+	bool enableLights = true, enableShadowCasting = true;
 	Lights getLights();
 	Lights recreateLights(int dirs, int spots, int points);
 	Lights createUnmanagedLights(int dirs, int spots, int points);
@@ -200,6 +202,7 @@ private:
 	LightShadowData createPointShadowData();
 	Shader *depthShader;
 	GeometryShader *depthPointShader;
+	GameManager *gameManager;
 	UboLights *uboLights;
 	DirLightData dirLights[MAX_LIGHTS_OF_TYPE];
 	SpotLightData spotLights[MAX_LIGHTS_OF_TYPE];
