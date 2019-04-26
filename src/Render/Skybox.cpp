@@ -45,6 +45,11 @@ void Skybox::draw(Shader *shader, glm::mat4 untranslatedView, glm::mat4 projecti
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+Skybox::~Skybox() {
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+}
+
 void Skybox::setup() {
 	textureId = AssetManager::getInstance()->createCubemap(faces);
 

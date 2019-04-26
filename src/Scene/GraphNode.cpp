@@ -218,7 +218,7 @@ Json::Value GraphNode::serialize(Serializer* serializer) {
 	for (int i = 0; i < children.size(); i++) {
 		root["children"][i] = serializer->serialize(children[i]);
 	}
-	for(int i=0;i<components.size();i++) {
+	for (int i = 0; i < components.size(); i++) {
 		root["components"][i] = serializer->serialize(components[i]);
 	}
 	root["parent"] = serializer->serialize(parent);
@@ -236,7 +236,7 @@ void GraphNode::deserialize(Json::Value& root, Serializer* serializer) {
 	for (int i = 0; i < size; i++) {
 		addChild(dynamic_cast<GraphNode*>(serializer->deserialize(children[i]).object));
 	}
-	for(int i=0;i<root["components"].size();i++) {
+	for (int i = 0; i < root["components"].size(); i++) {
 		addComponent(dynamic_cast<Component*>(serializer->deserialize(root["components"][i]).object));
 	}
 	mesh = dynamic_cast<Mesh*>(serializer->deserialize(root["mesh"]).object);
@@ -269,6 +269,19 @@ void GraphNode::renderGui() {
 	if (active != this->active)setActive(active);
 	ImGui::NewLine();
 	if (active) {
+		static const int BUFF_SIZE = 50;
+		static char buff[BUFF_SIZE] = "";
+		if (buff[0] == '\0') {
+			for (int i = 0; i < std::min(BUFF_SIZE, static_cast<int>(name.length())); i++) {
+				buff[i] = name[i];
+			}
+		}
+		ImGui::InputText("Name", buff, IM_ARRAYSIZE(buff));
+		std::string newName(Global::trim(buff));
+		if (newName.length() > 0 && newName != name && ImGui::Button("Apply name")) {
+			setName(newName);
+			buff[0] = '\0';
+		}
 		localTransform.drawGui();
 		for (auto &comp : components) {
 			comp->renderGui();

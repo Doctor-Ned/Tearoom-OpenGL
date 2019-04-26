@@ -1,6 +1,22 @@
 #include "Global.h"
 #include <fstream>
 
+const std::string Global::WHITESPACE = " \n\r\t\f\v";
+
+std::string Global::ltrim(const std::string& s) {
+	size_t start = s.find_first_not_of(WHITESPACE);
+	return start == std::string::npos ? "" : s.substr(start);
+}
+
+std::string Global::rtrim(const std::string& s) {
+	size_t end = s.find_last_not_of(WHITESPACE);
+	return end == std::string::npos ? "" : s.substr(0, end + 1);
+}
+
+std::string Global::trim(const std::string& s) {
+	return rtrim(ltrim(s));
+}
+
 glm::vec3 Global::degreesToRadians(glm::vec3 rotation) {
 	return glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
 }

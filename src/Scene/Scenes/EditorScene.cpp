@@ -26,7 +26,10 @@ void EditorScene::renderUi() {
 	}
 	Scene::renderUi();
 	idCounter = 0;
-	ImGui::Begin("Scene manager", nullptr, 64);
+	ImGui::Begin("Editor manager", nullptr, 64);
+	if (nodeSelectionCallback != nullptr && ImGui::Button("Stop selecting graph node")) {
+		nodeSelectionCallback = nullptr;
+	}
 	if (ImGui::Button("New scene") && !showConfirmationDialog) {
 		showConfirmationDialog = true;
 		confirmationDialogCallback = [this]() {
@@ -51,7 +54,37 @@ void EditorScene::renderUi() {
 			showConfirmationDialog = true;
 		}
 	}
+	if (ImGui::Button("Reload resources") && !showConfirmationDialog) {
+		confirmationDialogCallback = [this]() {
+			assetManager->reloadResources();
+			loadTexturesModels();
+		};
+		showConfirmationDialog = true;
+	}
 	ImGui::End();
+
+	if (typeToCreate != SNone) {
+		std::string title = "Create a ";
+		switch (ttc) {
+			case TTCComponent:
+				title += "component";
+				break;
+			case TTCGraphNode:
+				title += "graph node";
+				break;
+			case TTCMesh:
+				title += "mesh";
+				break;
+			case TTCSkybox:
+				title += "skybox";
+				break;
+		}
+		ImGui::Begin(title.c_str());
+		switch (typeToCreate) {
+			//todo
+		}
+		ImGui::End();
+	}
 
 	if (showLoadDialog) {
 		// flag reference: https://pyimgui.readthedocs.io/en/latest/reference/imgui.html
@@ -124,8 +157,20 @@ void EditorScene::renderUi() {
 		}
 	}
 	if (editedScene != nullptr) {
-		ImGui::Begin("Scene graph", nullptr, 64);
+		ImGui::Begin("Scene objects", nullptr, 64);
 		ImGui::TreePush();
+		if (editedScene->getSkybox() == nullptr) {
+			if (ImGui::Button("Create a skybox")) {
+				setCreationTarget(SSkybox, nullptr);
+			}
+		} else {
+			if (ImGui::Button("Delete the skybox")) {
+				Skybox *skybox = editedScene->getSkybox();
+				editedScene->setSkybox(nullptr);
+				delete skybox;
+			}
+		}
+		ImGui::NewLine();
 		showNodeAsTree(editedScene->rootNode);
 		ImGui::TreePop();
 		ImGui::End();
@@ -164,44 +209,98 @@ void EditorScene::update(double deltaTime) {
 		editedScene->update(deltaTime);
 	}
 	Scene::update(deltaTime);
-	if (getKeyState(KEY_FORWARD)) {
-		getCamera()->moveForward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_BACKWARD)) {
-		getCamera()->moveBackward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_LEFT)) {
-		getCamera()->moveLeft(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_RIGHT)) {
-		getCamera()->moveRight(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_UP)) {
-		getCamera()->moveUp(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_DOWN)) {
-		getCamera()->moveDown(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_MOUSE_LEFT)) {
-		getCamera()->rotateX(-movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_RIGHT)) {
-		getCamera()->rotateX(movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_UP)) {
-		getCamera()->rotateY(movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_DOWN)) {
-		getCamera()->rotateY(-movementSpeed * deltaTime * 5.0f);
+	if (getCursorLocked()) {
+		if (getKeyState(KEY_FORWARD)) {
+			getCamera()->moveForward(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_BACKWARD)) {
+			getCamera()->moveBackward(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_LEFT)) {
+			getCamera()->moveLeft(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_RIGHT)) {
+			getCamera()->moveRight(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_UP)) {
+			getCamera()->moveUp(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_DOWN)) {
+			getCamera()->moveDown(deltaTime * movementSpeed);
+		}
+		if (getKeyState(KEY_MOUSE_LEFT)) {
+			getCamera()->rotateX(-movementSpeed * deltaTime * 5.0f);
+		}
+		if (getKeyState(KEY_MOUSE_RIGHT)) {
+			getCamera()->rotateX(movementSpeed * deltaTime * 5.0f);
+		}
+		if (getKeyState(KEY_MOUSE_UP)) {
+			getCamera()->rotateY(movementSpeed * deltaTime * 5.0f);
+		}
+		if (getKeyState(KEY_MOUSE_DOWN)) {
+			getCamera()->rotateY(-movementSpeed * deltaTime * 5.0f);
+		}
 	}
 }
 
+bool EditorScene::doesAnyChildContain(GraphNode* node, GraphNode* target) {
+	for (auto &child : target->getChildren()) {
+		if (doesAnyChildContain(node, child)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void EditorScene::setCreationTarget(SerializableType type, std::function<void(void*)> creationCallback) {
+	if (type == SNone) {
+		typeToCreate = SNone;
+		ttc = TTCNone;
+		this->creationCallback = nullptr;
+		return;
+	}
+	ttc = TTCNone;
+	if (type == SGraphNode) {
+		ttc = TTCGraphNode;
+	} else if (type == SSkybox) {
+		ttc = TTCSkybox;
+	}
+	for (int i = 0; i < sizeof(creatableComponents) / sizeof(*creatableComponents); i++) {
+		if (creatableComponents[i] == type) {
+			ttc = TTCComponent;
+			break;
+		}
+	}
+	for (int i = 0; i < sizeof(creatableMeshes) / sizeof(*creatableMeshes); i++) {
+		if (creatableMeshes[i] == type) {
+			ttc = TTCMesh;
+		}
+	}
+	if (ttc != TTCNone) {
+		typeToCreate = type;
+		this->creationCallback = creationCallback;
+	}
+}
+
+void EditorScene::loadTexturesModels() {
+	textures = assetManager->getTextures();
+	models = assetManager->getModels();
+}
+
 void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
-	if(scene == editedScene) {
+	if (scene == editedScene) {
 		return;
 	}
 	Scene *previous = editedScene;
+
 	editedNodes.clear();
+	showConfirmationDialog = false;
+	showSaveDialog = false;
+	showLoadDialog = false;
+	confirmationDialogCallback = nullptr;
+	nodeSelectionCallback = nullptr;
+	setCreationTarget(SNone);
+
 	if (scene != nullptr) {
 		delete editorCamera;
 		editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -248,11 +347,30 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 		}
 		++i;
 	}
+	if (nodeSelectionCallback != nullptr) {
+		if (ImGui::Button("CHOOSE")) {
+			nodeSelectionCallback(node);
+			nodeSelectionCallback = nullptr;
+		}
+		ImGui::SameLine();
+	}
 	if (!opened && ImGui::Button("Open...")) {
 		editedNodes.push_back(node);
 	}
+	ImGui::SameLine();
+	if (node != editedScene->getRootNode() && nodeSelectionCallback == nullptr) {
+		if (ImGui::Button("Set parent...")) {
+			nodeSelectionCallback = [this, node](GraphNode *parent) {
+				if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
+					node->setParent(parent);
+				}
+			};
+		}
+		ImGui::SameLine();
+	}
 	if (!node->getChildren().empty()) {
 		if (ImGui::TreeNode("Children")) {
+			ImGui::NewLine();
 			for (auto child : node->getChildren()) {
 				showNodeAsTree(child);
 			}
@@ -266,11 +384,8 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 }
 
 void EditorScene::keyEvent(int key, bool pressed) {
-	if (pressed && !showSaveDialog) {
+	if (pressed) {
 		switch (key) {
-			case EDITOR_KEY_TOGGLE_CAMERA:
-				setEditorCamera(!useEditorCamera);
-				break;
 			case KEY_TOGGLE_MOUSE_LOCK:
 				setCursorLocked(!getCursorLocked());
 				break;
@@ -283,6 +398,13 @@ void EditorScene::keyEvent(int key, bool pressed) {
 					};
 				}
 				break;
+		}
+		if (!getCursorLocked()) {
+			switch (key) {
+				case EDITOR_KEY_TOGGLE_CAMERA:
+					setEditorCamera(!useEditorCamera);
+					break;
+			}
 		}
 	}
 }

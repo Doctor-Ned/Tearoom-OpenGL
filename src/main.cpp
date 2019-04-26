@@ -385,7 +385,7 @@ int main(int argc, char** argv) {
 		glfwSwapBuffers(window);
 
 		if (!assetManager->isLoaded()) {
-			assetManager->loadResources();
+			assetManager->reloadResources();
 			gameManager->goToMenu();
 		}
 	}

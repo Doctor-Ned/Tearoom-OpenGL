@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-class Skybox : public Serializable {
+class Skybox final : public Serializable {
 public:
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
@@ -14,6 +14,7 @@ public:
 	Skybox(std::vector<std::string> faces);
 	void draw(Shader *shader, glm::mat4 untranslatedView, glm::mat4 projection);
 	void draw(Shader *shader, glm::mat4 untranslatedView, glm::mat4 projection, GLuint cubemap);
+	~Skybox();
 protected:
 	Skybox() {}
 	friend class Serializer;

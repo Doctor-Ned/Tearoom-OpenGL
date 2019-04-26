@@ -70,9 +70,11 @@ public:
 	AssetManager(AssetManager const&) = delete;
 	void operator=(AssetManager const&) = delete;
 	void setup();
-	void loadResources();
 	~AssetManager();
 	bool isLoaded();
+	std::vector<std::string> getTextures();
+	std::vector<std::string> getModels();
+	void reloadResources();
 private:
 	bool loaded = false;
 	GameManager *gameManager;

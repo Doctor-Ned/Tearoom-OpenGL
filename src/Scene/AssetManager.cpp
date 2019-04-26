@@ -163,30 +163,6 @@ void AssetManager::setup() {
 
 }
 
-void AssetManager::loadResources() {
-	//std::thread t([this] {
-	gameManager = GameManager::getInstance();
-	//LoadingScene *loadingScene = new LoadingScene();
-	//gameManager->setCurrentScene(loadingScene);
-	for (const auto & entry : fs::recursive_directory_iterator("res")) {
-		std::string path = entry.path().u8string();
-		for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
-			if (*i == '\\') {
-				*i = '/';
-			}
-		}
-		if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
-			//loadingScene->setLoadingText("Loading '" + path + "'...");
-			textures.emplace_back(createTexture(path.c_str()));
-		} else if (endsWith(path, ".obj")) {
-			models.emplace(path, Model::createModelData(path));
-		}
-	}
-	loaded = true;
-	//gameManager->goToMenu();
-//});
-}
-
 AssetManager::~AssetManager() {
 	for (auto &ubo : ubos) {
 		delete ubo;
@@ -204,6 +180,62 @@ AssetManager::~AssetManager() {
 
 bool AssetManager::isLoaded() {
 	return loaded;
+}
+
+std::vector<std::string> AssetManager::getTextures() {
+	std::vector<std::string> result;
+	for (auto &texture : textures) {
+		result.push_back(texture.path);
+	}
+	return result;
+}
+
+std::vector<std::string> AssetManager::getModels() {
+	std::vector<std::string> result;
+	for (auto &pair : models) {
+		result.push_back(pair.first);
+	}
+	return result;
+}
+
+void AssetManager::reloadResources() {
+	gameManager = GameManager::getInstance();
+	bool verify = loaded;
+	for (const auto & entry : fs::recursive_directory_iterator("res")) {
+		std::string path = entry.path().u8string();
+		for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
+			if (*i == '\\') {
+				*i = '/';
+			}
+		}
+		bool add = true;
+		if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
+			if (verify) {
+				for (auto &texture : textures) {
+					if (texture.path == path) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				textures.emplace_back(createTexture(path.c_str()));
+			}
+		} else if (endsWith(path, ".obj")) {
+			if (verify) {
+				for (auto &pair : models) {
+					if (pair.first == path) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				models.emplace(path, Model::createModelData(path));
+			}
+		}
+	}
+	loaded = true;
 }
 
 TextRenderer* AssetManager::getTextRenderer() {

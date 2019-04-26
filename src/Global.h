@@ -49,6 +49,9 @@ static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE
 
 class Global {
 public:
+	static std::string ltrim(const std::string &s);
+	static std::string rtrim(const std::string &s);
+	static std::string trim(const std::string &s);
 	static glm::vec3 degreesToRadians(glm::vec3 rotation);
 	static glm::vec3 radiansToDegrees(glm::vec3 rotation);
 	static glm::vec3 getScale(glm::mat4 matrix);
@@ -65,6 +68,8 @@ public:
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static float remap(const float value, const float sourceMin, const float sourceMax, float targetMin, float targetMax, const bool revertTarget, const bool snapIfInvalid);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
+private:
+	static const std::string WHITESPACE;
 };
 
 #endif
