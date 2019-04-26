@@ -98,7 +98,7 @@ void Animation::update(float msec)
 		for(auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
 		{
 			translationInterpolation(currentTime, it->first, it->second.translation);
-			//rotationInterpolation(currentTime, it->first, it->second.rotation);
+			rotationInterpolation(currentTime, it->first, it->second.rotation);
 			scaleInterpolation(currentTime, it->first, it->second.scale);
 		}
 		
@@ -169,15 +169,9 @@ void Animation::scaleInterpolation(float currentTime, GraphNode* animatedObject,
 		time = it2->first - it->first;
 	}
 	currentTime = currentTime - it->first;
+	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
 	
-	static glm::vec3 mix(0);
-	//if(mix != glm::vec3(0))
-	//{
-	//	gameObject->localTransform.scale(glm::vec3(1) / mix);
-	//}
-	//mix = glm::mix(it->second, it2->second, currentTime / time);
-	//
-	//gameObject->localTransform.scale(mix);
+	gameObject->localTransform.setScale(mix);
 }
 
 void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& rotation)
@@ -208,17 +202,10 @@ void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObje
 	}
 	currentTime = currentTime - it->first;
 
-	//if (rotVec != glm::vec3(0))
-	//{
-	//	gameObject->localTransform.rotate(-rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	//	gameObject->localTransform.rotate(-rotVec.y, glm::vec3(0.0f,1.0f, 0.0f));
-	//	gameObject->localTransform.rotate(-rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	//}
-	//rotVec = glm::mix(it->second, it2->second, currentTime / time);
-
-	//gameObject->localTransform.rotate(rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	//gameObject->localTransform.rotate(rotVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	//gameObject->localTransform.rotate(rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
+	animatedObject->localTransform.setRotationXDegrees(mix.x);
+	animatedObject->localTransform.setRotationYDegrees(mix.y);
+	animatedObject->localTransform.setRotationZDegrees(mix.z);
 }
 
 Animation::~Animation()
