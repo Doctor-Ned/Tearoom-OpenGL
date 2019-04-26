@@ -23,7 +23,7 @@ protected:
 	void keyEvent(int key, bool pressed) override;
 	bool useEditorCamera = true;
 	void setEditorCamera(bool enabled);
-	Camera *editorCamera, *playerCamera;
+	Camera *editorCamera, *playerCamera = nullptr;
 	UiText *cameraText;
 	bool showConfirmationDialog = false, showSaveDialog = false, showLoadDialog = false;
 	std::function<void()> confirmationDialogCallback;

@@ -37,7 +37,8 @@ void TestScene::render() {
 
 	renderNodesUsingRenderMap();
 
-	skybox->draw(camera->getUntranslatedView(), projection);
+	static Shader *skyboxShader = assetManager->getShader(STSkybox);
+	skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 
 	renderNodesUsingTransparentRenderMap();
 }
@@ -65,7 +66,7 @@ void TestScene::renderUi() {
 	ImGui::SliderFloat("Spot near plane", &lightManager->spotNear, 0.01f, 100.0f);
 	ImGui::SliderFloat("Spot far plane", &lightManager->spotFar, 0.01f, 100.0f);
 	ImGui::NewLine();
-	if(ImGui::Button("SAVE TO FILE")) {
+	if (ImGui::Button("SAVE TO FILE")) {
 		Serializer::getInstance()->saveScene(this, "test");
 	}
 }
@@ -106,7 +107,7 @@ void TestScene::update(double deltaTime) {
 
 	//sunNode->addTime(deltaTime);
 	//rootNode->update(deltaTime);
-	
+
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 	OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
@@ -123,7 +124,7 @@ SerializableType TestScene::getSerializableType() {
 
 Json::Value TestScene::serialize(Serializer* serializer) {
 	Json::Value root = Scene::serialize(serializer);
-	for(int i=0;i<dirLightComps.size();i++) {
+	for (int i = 0; i < dirLightComps.size(); i++) {
 		root["dirLightComps"][i] = serializer->serialize(dirLightComps[i]);
 	}
 	for (int i = 0; i < spotLightComps.size(); i++) {
@@ -165,11 +166,11 @@ TestScene::TestScene(bool serialized) {
 	faces.emplace_back("res/skybox/test/front.jpg");
 	faces.emplace_back("res/skybox/test/back.jpg");
 
-	skybox = new Skybox(assetManager->getShader(STSkybox), faces);
 
-	if(!serialized) {
+	if (!serialized) {
 		camera = new Camera();
 
+		skybox = new Skybox(faces);
 		Model *model = new Model("res/models/muro/muro.obj");
 		modelNode = new GraphNode(model, rootNode);
 		modelNode->localTransform.initialize(-5.0f, 0.0f, 0.0f, 0.01f);

@@ -25,7 +25,8 @@ void Scene::render() {
 		uboViewProjection->inject(camera->getView(), projection);
 		renderNodesUsingRenderMap();
 		if (skybox != nullptr) {
-			skybox->draw(camera->getUntranslatedView(), projection);
+			static Shader *skyboxShader = assetManager->getShader(STSkybox);
+			skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 		}
 		renderNodesUsingTransparentRenderMap();
 	}
@@ -284,6 +285,7 @@ Json::Value Scene::serialize(Serializer* serializer) {
 		root["lights"]["pointLights"][i] = serializer->serialize(lights.pointLights[i]);
 	}
 	root["camera"] = serializer->serialize(camera);
+	root["skybox"] = serializer->serialize(skybox);
 	return root;
 }
 
@@ -305,6 +307,7 @@ void Scene::deserialize(Json::Value& root, Serializer* serializer) {
 		lights.pointLights.push_back(dynamic_cast<PointLight*>(serializer->deserialize(jlights[i]).object));
 	}
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
+	skybox = dynamic_cast<Skybox*>(serializer->deserialize(root["skybox"]).object);
 	reinitializeRenderMap();
 }
 

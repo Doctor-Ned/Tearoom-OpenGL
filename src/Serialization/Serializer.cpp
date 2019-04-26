@@ -282,6 +282,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 		case STestScene:
 			deserializeAndIdentify(pointer, data, new TestScene(true));
 			break;
+		case SSkybox:
+			deserializeAndIdentify(pointer, data, new Skybox());
+			break;
 	}
 	return pointer;
 }

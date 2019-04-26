@@ -6,8 +6,7 @@
 #include "Serialization/Serializer.h"
 
 EditorScene::EditorScene() {
-	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
-	playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
+	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
 	serializer = Serializer::getInstance();
 	cameraText = new UiText(glm::vec2(0.0f, windowHeight), glm::vec2(windowWidth, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
@@ -32,14 +31,6 @@ void EditorScene::renderUi() {
 		showConfirmationDialog = true;
 		confirmationDialogCallback = [this]() {
 			setEditedScene(new Scene());
-			std::vector<std::string> faces;
-			faces.emplace_back("res/skybox/test/right.jpg");
-			faces.emplace_back("res/skybox/test/left.jpg");
-			faces.emplace_back("res/skybox/test/top.jpg");
-			faces.emplace_back("res/skybox/test/bottom.jpg");
-			faces.emplace_back("res/skybox/test/front.jpg");
-			faces.emplace_back("res/skybox/test/back.jpg");
-			editedScene->setSkybox(new Skybox(assetManager->getShader(STSkybox), faces));
 		};
 	}
 	if (!showLoadDialog) {
@@ -91,15 +82,18 @@ void EditorScene::renderUi() {
 	if (showSaveDialog && editedScene != nullptr) {
 		ImGui::Begin("Enter scene name to save it", nullptr, 64);
 		static const auto BUFFER_SIZE = 50;
-		static char nameBuffer[BUFFER_SIZE];
-		for (auto& i : nameBuffer) {
-			i = '\0';
-		}
-		ImGui::InputText("Scene name: ", nameBuffer, sizeof(nameBuffer));
+		static char nameBuffer[BUFFER_SIZE] = "";
+		ImGui::InputText("Scene name", nameBuffer, sizeof(nameBuffer));
 		if (ImGui::Button("SAVE")) {
 			std::string targetName(nameBuffer);
 			if (targetName.length() > 0) {
+				if (useEditorCamera) {
+					editedScene->setCamera(playerCamera);
+				}
 				serializer->saveScene(editedScene, targetName);
+				if (useEditorCamera) {
+					editedScene->setCamera(editorCamera);
+				}
 				showSaveDialog = false;
 			}
 		}
@@ -203,9 +197,21 @@ void EditorScene::update(double deltaTime) {
 }
 
 void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
+	if(scene == editedScene) {
+		return;
+	}
 	Scene *previous = editedScene;
 	editedNodes.clear();
 	if (scene != nullptr) {
+		delete editorCamera;
+		editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
+		Camera *camera = scene->getCamera();
+		if (camera != nullptr) {
+			delete playerCamera;
+			playerCamera = camera;
+		} else {
+			playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
+		}
 		scene->setCamera(useEditorCamera ? editorCamera : playerCamera);
 		lightManager->replaceLights(scene->getLights());
 	} else {
