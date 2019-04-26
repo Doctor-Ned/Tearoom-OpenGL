@@ -1,13 +1,25 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
+
 #include "Scene/Components/Component.h"
 #include <map>
+
+enum AnimType
+{
+	TRANSLATION,
+	SCALE,
+	ROTATION,
+};
+
 struct ObjectAnimation
 {
 	std::map<float, glm::vec3> translation;
 	std::map<float, glm::vec3> scale;
 	std::map<float, glm::vec3> rotation;
 };
+
+
+
 class Animation : public Component
 {
 private:
@@ -33,11 +45,15 @@ public:
 	void update(float msec) override;
 	~Animation() override;
 	void renderGui() override;
+	
+	
 	void play();
-	bool addKeyFrame(float time, glm::vec3 position);
+	bool addKeyFrame(GraphNode* animatedNode, AnimType type, float time, glm::vec3 values);
+	bool deleteKeyFrame(GraphNode* animatedNode, AnimType type, float time);
 	void setCurrentTime(float);
 	void setEndTime(float);
 	void setIsPlaying(bool playing);
 	void setSpeed(float _speed);
+	void setName(std::string&& _name);
 };
 #endif
