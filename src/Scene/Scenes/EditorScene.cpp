@@ -90,12 +90,12 @@ void EditorScene::renderUi() {
 
 	if (showSaveDialog && editedScene != nullptr) {
 		ImGui::Begin("Enter scene name to save it", nullptr, 64);
-		static const int BUFFER_SIZE = 50;
+		static const auto BUFFER_SIZE = 50;
 		static char nameBuffer[BUFFER_SIZE];
-		for (int i = 0; i < BUFFER_SIZE; i++) {
-			nameBuffer[i] = '\0';
+		for (auto& i : nameBuffer) {
+			i = '\0';
 		}
-		ImGui::InputText("Scene name: ", nameBuffer, IM_ARRAYSIZE(nameBuffer));
+		ImGui::InputText("Scene name: ", nameBuffer, sizeof(nameBuffer));
 		if (ImGui::Button("SAVE")) {
 			std::string targetName(nameBuffer);
 			if (targetName.length() > 0) {
@@ -272,7 +272,8 @@ void EditorScene::keyEvent(int key, bool pressed) {
 				if (gameManager->getKeyState(GLFW_KEY_LEFT_SHIFT) && !showConfirmationDialog) {
 					showConfirmationDialog = true;
 					confirmationDialogCallback = [this]() {
-						gameManager->goToMenu();
+						setEditedScene(nullptr);
+						gameManager->goToMenu(false);
 					};
 				}
 				break;
