@@ -23,9 +23,10 @@ private:
 
 	std::map<GraphNode*, ObjectAnimation> objectAnimations;
 	void setEndTime();
+	friend class Serializer;
+	Animation(){}
 public:
 	Animation(GraphNode* gameObject, std::string&& name);
-	Animation(){}
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
