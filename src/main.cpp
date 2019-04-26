@@ -35,14 +35,24 @@ static Serializer* serializer;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	gameManager->keyboard_callback(window, key, scancode, action, mods);
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+}
+
+void char_callback(GLFWwindow *window, unsigned int c) {
+	ImGui_ImplGlfw_CharCallback(window, c);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	gameManager->mouse_callback(window, xpos, ypos);
 }
 
+void mouse_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+	ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+}
+
 void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 	gameManager->mouse_button_callback(window, butt, action, mods);
+	ImGui_ImplGlfw_MouseButtonCallback(window, butt, action, mods);
 }
 
 int main(int argc, char** argv) {
@@ -194,7 +204,7 @@ int main(int argc, char** argv) {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(window, false);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	ImGui::StyleColorsDark();
@@ -214,6 +224,8 @@ int main(int argc, char** argv) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, keyboard_callback);
+	glfwSetScrollCallback(window, mouse_scroll_callback);
+	glfwSetCharCallback(window, char_callback);
 
 	GLuint vao, vbo;
 

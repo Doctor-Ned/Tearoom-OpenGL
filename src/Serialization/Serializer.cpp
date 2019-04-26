@@ -33,6 +33,7 @@
 #include "Scene/Components/LightComponents/Sun.h"
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/Scenes/TestScene.h"
+#include "Scene/Components/Animation.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -281,6 +282,12 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case STestScene:
 			deserializeAndIdentify(pointer, data, new TestScene(true));
+			break;
+		case SAnimation:
+			deserializeAndIdentify(pointer, data, new Animation());
+			break;
+		case SSkybox:
+			deserializeAndIdentify(pointer, data, new Skybox());
 			break;
 	}
 	return pointer;

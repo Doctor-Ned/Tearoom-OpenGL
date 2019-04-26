@@ -50,7 +50,8 @@ enum SerializableType {
 	SDirLight,
 	SSpotLight,
 	SPointLight,
-	STestScene
+	STestScene,
+	SSkybox
 };
 
 class Serializable {
