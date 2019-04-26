@@ -126,11 +126,11 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 }
 
 void Mesh::renderGui() {
-	static bool useLight = this->useLight,
+	bool useLight = this->useLight,
 		opaque = this->opaque,
 		culled = this->culled,
 		castShadows = this->castShadows;
-	static float opacity = this->opacity;
+	float opacity = this->opacity;
 
 	ImGui::Checkbox("Use light", &useLight);
 	ImGui::Checkbox("Cast shadows", &castShadows);
