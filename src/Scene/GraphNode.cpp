@@ -265,7 +265,7 @@ void GraphNode::updateWorld() {
 
 void GraphNode::renderGui() {
 	bool active = this->active;
-	ImGui::Checkbox(name.c_str(), &active);
+	ImGui::Checkbox((name + " - active").c_str(), &active);
 	if (active != this->active)setActive(active);
 	ImGui::NewLine();
 	if (active) {

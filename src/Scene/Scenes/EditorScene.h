@@ -17,6 +17,7 @@ protected:
 	void setEditedScene(Scene *scene, bool deletePrevious = true);
 	std::vector<GraphNode*> editedNodes;
 	int nodeCounter = 1;
+	int idCounter = 1;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
 	void showNodeAsTree(GraphNode *node);
 	void keyEvent(int key, bool pressed) override;

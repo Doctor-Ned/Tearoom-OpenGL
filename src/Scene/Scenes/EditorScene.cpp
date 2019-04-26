@@ -26,6 +26,7 @@ void EditorScene::renderUi() {
 		editedScene->renderUi();
 	}
 	Scene::renderUi();
+	idCounter = 0;
 	ImGui::Begin("Scene manager", nullptr, 64);
 	if (ImGui::Button("New scene") && !showConfirmationDialog) {
 		showConfirmationDialog = true;
@@ -49,6 +50,14 @@ void EditorScene::renderUi() {
 	if (editedScene != nullptr && !showSaveDialog) {
 		if (ImGui::Button("Save scene...")) {
 			showSaveDialog = true;
+		}
+	}
+	if (editedScene != nullptr && !showConfirmationDialog) {
+		if (ImGui::Button("Close scene")) {
+			confirmationDialogCallback = [this]() {
+				setEditedScene(nullptr);
+			};
+			showConfirmationDialog = true;
 		}
 	}
 	ImGui::End();
@@ -121,6 +130,12 @@ void EditorScene::renderUi() {
 		}
 	}
 	if (editedScene != nullptr) {
+		ImGui::Begin("Scene graph", nullptr, 64);
+		ImGui::TreePush();
+		showNodeAsTree(editedScene->rootNode);
+		ImGui::TreePop();
+		ImGui::End();
+
 		ImGui::Begin("Object builder", nullptr, 64);
 		if (ImGui::Button("Add box")) {
 			appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
@@ -128,7 +143,7 @@ void EditorScene::renderUi() {
 		ImGui::End();
 		static std::vector<GraphNode*> toDelete;
 		for (auto &node : editedNodes) {
-			ImGui::PushID(node);
+			ImGui::PushID(idCounter++);
 			ImGui::Begin(("Node '" + node->getName() + "'").c_str());
 			if (ImGui::Button("Close")) {
 				toDelete.push_back(node);
@@ -138,32 +153,11 @@ void EditorScene::renderUi() {
 			ImGui::PopID();
 		}
 		if (!toDelete.empty()) {
-			for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-				bool removed = false;
-				bool escape = editedNodes.size() == 1;
-				for (auto j = toDelete.begin(); j != toDelete.end();) {
-					if (*j == *i) {
-						editedNodes.erase(i);
-						toDelete.erase(j);
-						removed = true;
-						break;
-					}
-					++j;
-				}
-				if (removed) {
-					if (escape) {
-						break;
-					}
-					continue;
-				}
-				++i;
-			}
+			editedNodes.erase(std::remove_if(editedNodes.begin(), editedNodes.end(), [](const auto&x) {
+				return std::find(toDelete.begin(), toDelete.end(), x) != toDelete.end();
+			}), editedNodes.end());
+			toDelete.clear();
 		}
-		ImGui::Begin("Scene graph", nullptr, 64);
-		ImGui::TreePush();
-		showNodeAsTree(editedScene->rootNode);
-		ImGui::TreePop();
-		ImGui::End();
 	}
 }
 
@@ -210,8 +204,12 @@ void EditorScene::update(double deltaTime) {
 
 void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	Scene *previous = editedScene;
+	editedNodes.clear();
 	if (scene != nullptr) {
 		scene->setCamera(useEditorCamera ? editorCamera : playerCamera);
+		lightManager->replaceLights(scene->getLights());
+	} else {
+		lightManager->clearLights();
 	}
 	editedScene = scene;
 	if (deletePrevious && previous != nullptr) {
@@ -233,20 +231,19 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 }
 
 void EditorScene::showNodeAsTree(GraphNode* node) {
+	ImGui::PushID(idCounter++);
 	ImGui::Text(node->getName().c_str());
 	ImGui::SameLine();
-	if (ImGui::Button("Open...")) {
-		bool opened = false;
-		for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-			if (*i == node) {
-				opened = true;
-				break;
-			}
-			++i;
+	bool opened = false;
+	for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+		if (*i == node) {
+			opened = true;
+			break;
 		}
-		if (!opened) {
-			editedNodes.push_back(node);
-		}
+		++i;
+	}
+	if (!opened && ImGui::Button("Open...")) {
+		editedNodes.push_back(node);
 	}
 	if (!node->getChildren().empty()) {
 		if (ImGui::TreeNode("Children")) {
@@ -256,9 +253,10 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			ImGui::TreePop();
 		}
 	} else {
-		ImGui::Text("No children");
+		//ImGui::Text("No children");
 	}
 	ImGui::NewLine();
+	ImGui::PopID();
 }
 
 void EditorScene::keyEvent(int key, bool pressed) {

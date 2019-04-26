@@ -152,6 +152,10 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	}
 }
 
+void LightManager::clearLights() {
+	recreateLights(0, 0, 0);
+}
+
 Lights LightManager::getLights() {
 	Lights result;
 	std::vector<DirLight*> dirs;
