@@ -32,7 +32,7 @@ void CollisionTest::deserialize(Json::Value& root, Serializer* serializer) {
 
 void CollisionTest::update(float msec)
 {
-	gameObject->localTransform.rotate(40.0f * msec * direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	gameObject->localTransform.rotateYDegrees(40.0f*msec*direction);
 }
 
 CollisionTest::~CollisionTest()
@@ -42,7 +42,7 @@ CollisionTest::~CollisionTest()
 void CollisionTest::OnCollision(Collider* collider)
 {
 	direction *= -1;
-	gameObject->localTransform.rotate(2.0f * direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	gameObject->localTransform.rotateYDegrees(2.0f*direction);
 	/*Collider* collider2 = gameObject->getComponent<Collider>();
 	if (direction > 0)
 		collider2->setSize(1.5f);

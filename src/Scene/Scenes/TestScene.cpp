@@ -172,22 +172,18 @@ TestScene::TestScene(bool serialized) {
 
 		Model *model = new Model("res/models/muro/muro.obj");
 		modelNode = new GraphNode(model, rootNode);
-		modelNode->localTransform.setMatrix(scale(translate(glm::mat4(1.0f), glm::vec3(-5.0f, 0.0f, 0.0f)), glm::vec3(0.01, 0.01, 0.01f)));
+		modelNode->localTransform.initialize(-5.0f, 0.0f, 0.0f, 0.01f);
 
 		MeshColorBox *floor = new MeshColorBox(glm::vec3(10.0f, 1.0f, 10.0f), glm::vec4(0.1f, 1.0f, 0.1f, 1.0f));
 
-		//MeshColorPlane *plane = new MeshColorPlane(10.0f, 10.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		//plane->setCulled(false);
 		MeshColorSphere *sphere = new MeshColorSphere(0.125f, 30, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		GraphNode* floorNode = new GraphNode(floor, rootNode);
 		floorNode->localTransform.translate(glm::vec3(0.0f, -0.5f, 0.0f));
 		GraphNode* sphereNode = new GraphNode(sphere, rootNode);
-		sphereNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+		sphereNode->localTransform.translate(0.0f, 1.0f, 0.0f);
 
 		MeshColorSphere *lightSphere = new MeshColorSphere(0.05f, 30, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 		lightSphere->setUseLight(false);
-
-		//GraphNode *rotatingNode = new RotatingNode(0.01f, nullptr, rootNode);
 
 		lights = lightManager->createUnmanagedLights(2, 1, 1);
 		sunNode = new GraphNode(nullptr, rootNode);
@@ -197,19 +193,6 @@ TestScene::TestScene(bool serialized) {
 			normalize(glm::vec4(0, 2, 15, 255)),
 			normalize(glm::vec4(2, 5, 18, 255)), 10.0f, 12.0f, glm::radians(75.0f), sunNode);
 		sunNode->addComponent(sun);
-
-		//DirLight *dirLight = lights.dirLights[0];
-		//dirLight->specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-		//dirLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		//dirLight->diffuse = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
-		//dirLight->model = glm::mat4(1.0f);
-		//dirLight->model = translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 10.0f));
-		//GraphNode *dirNode = new GraphNode(nullptr, rotatingNode);
-		//dirNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
-		//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-		//dirLightNode = new DirLightNode(dirLight, lightSphere, dirNode);
-		//dirLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
-		//dirLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 10.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 		MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 		MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
@@ -228,7 +211,7 @@ TestScene::TestScene(bool serialized) {
 		GraphNode* floor1 = new GraphNode(floorMesh, rootNode);
 
 		boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
-		boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		boxNode->localTransform.rotateYDegrees(130.0f);
 		boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 		sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 		simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
@@ -260,10 +243,7 @@ TestScene::TestScene(bool serialized) {
 		spotLight->quadratic = 0.1f;
 		GraphNode *spotLightNode = new GraphNode(lightSphere, rotatingNode2);
 		spotLightNode->addComponent(new SpotLightComp(spotLight, spotLightNode));
-		//GraphNode *spotNode = new GraphNode(nullptr, rotatingNode);
-		//spotNode->localTransform.SetMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 3.0f, 0.0f)));
-		spotLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)));
-		//spotLightNode->localTransform.SetMatrix(rotate(translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 3.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+		spotLightNode->localTransform.translate(0.0f, 1.0f, 3.0f);
 
 		GraphNode *rotatingNode3 = new GraphNode(nullptr, rootNode);
 		rotatingNode3->addComponent(new RotatingObject(0.15f, rotatingNode3));
@@ -278,23 +258,22 @@ TestScene::TestScene(bool serialized) {
 		pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->diffuse);
 		pointLightSphere->setShaderType(STLight);
 		GraphNode *pointLightNode = new GraphNode(pointLightSphere, rotatingNode3);
-		pointLightNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+		pointLightNode->localTransform.translate(0.5f, 0.5f, 0.0f);
 		pointLightNode->addComponent(new PointLightComp(pointLight, pointLightNode));
 
-		//dirLightComps.push_back(dirLightNode->getComponent<DirLightComp>());
 		spotLightComps.push_back(spotLightNode->getComponent<SpotLightComp>());
 		pointLightComps.push_back(pointLightNode->getComponent<PointLightComp>());
 
 		GraphNode *billboardNode = new GraphNode(nullptr, rootNode);
 		Billboard *billboard = new Billboard(camera, billboardNode, true);
-		billboardNode->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, -3.0f)));
+		billboardNode->localTransform.translate(3.0f, 1.0f, -3.0f);
 		billboardNode->addComponent(billboard);
 		MeshPlane *emote = new MeshPlane(0.25f, 0.25f, "res/textures/face.png");
 		emote->setUseLight(false);
 		emote->setOpaque(false);
 		GraphNode *emoteNode = new GraphNode(emote, billboardNode);
 		lightIgnoredObjects.push_back(emoteNode);
-		emoteNode->localTransform.setMatrix(rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+		emoteNode->localTransform.rotateXDegrees(90.0f);
 
 		reinitializeRenderMap();
 	}

@@ -128,13 +128,13 @@ void Animation::scaleInterpolation(float currentTime)
 	currentTime = currentTime - it->first;
 	
 	static glm::vec3 mix(0);
-	if(mix != glm::vec3(0))
-	{
-		gameObject->localTransform.scale(glm::vec3(1) / mix);
-	}
-	mix = glm::mix(it->second, it2->second, currentTime / time);
-	
-	gameObject->localTransform.scale(mix);
+	//if(mix != glm::vec3(0))
+	//{
+	//	gameObject->localTransform.scale(glm::vec3(1) / mix);
+	//}
+	//mix = glm::mix(it->second, it2->second, currentTime / time);
+	//
+	//gameObject->localTransform.scale(mix);
 }
 
 void Animation::rotationInterpolation(float currentTime)
@@ -165,17 +165,17 @@ void Animation::rotationInterpolation(float currentTime)
 	}
 	currentTime = currentTime - it->first;
 
-	if (rotVec != glm::vec3(0))
-	{
-		gameObject->localTransform.rotate(-rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		gameObject->localTransform.rotate(-rotVec.y, glm::vec3(0.0f,1.0f, 0.0f));
-		gameObject->localTransform.rotate(-rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	}
-	rotVec = glm::mix(it->second, it2->second, currentTime / time);
+	//if (rotVec != glm::vec3(0))
+	//{
+	//	gameObject->localTransform.rotate(-rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	//	gameObject->localTransform.rotate(-rotVec.y, glm::vec3(0.0f,1.0f, 0.0f));
+	//	gameObject->localTransform.rotate(-rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	//}
+	//rotVec = glm::mix(it->second, it2->second, currentTime / time);
 
-	gameObject->localTransform.rotate(rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	gameObject->localTransform.rotate(rotVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	gameObject->localTransform.rotate(rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	//gameObject->localTransform.rotate(rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	//gameObject->localTransform.rotate(rotVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	//gameObject->localTransform.rotate(rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 Animation::~Animation()

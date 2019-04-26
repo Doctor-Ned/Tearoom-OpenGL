@@ -9,7 +9,7 @@ float UiElement::screenWidth = 0.0f;
 float UiElement::screenHeight = 0.0f;
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
 
-UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
+UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	glGenVertexArrays(1, &vao);
 	UiElement::setPosition(position, anchor);
 }

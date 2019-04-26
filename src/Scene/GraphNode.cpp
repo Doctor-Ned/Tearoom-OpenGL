@@ -8,7 +8,7 @@
 #include "Serialization/DataSerializer.h"
 #include "Serialization/Serializer.h"
 
-GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(Transform(dirty)), worldTransform(Transform(dirty)) {
+GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
 	if (parent != nullptr) {
 		parent->addChild(this);
@@ -86,17 +86,7 @@ GraphNode* GraphNode::getParent() const {
 	return parent;
 }
 
-void GraphNode::setParent(GraphNode* parent, bool preserveWorldPosition) {
-	if (preserveWorldPosition && parent != nullptr) {
-		//local = (this->parent->getWorld() / parent->getWorld()) * local;
-		if (this->parent == nullptr) {
-			localTransform.setMatrix(glm::mat4(1.0f) / parent->worldTransform.getMatrix() * localTransform.getMatrix());
-		} else {
-			localTransform.setMatrix(
-				(this->parent->worldTransform.getMatrix() / parent->worldTransform.getMatrix()
-					* localTransform.getMatrix()));
-		}
-	}
+void GraphNode::setParent(GraphNode* parent) {
 	if (this->parent != nullptr) {
 		this->parent->removeChild(this);
 	}
@@ -223,8 +213,8 @@ Json::Value GraphNode::serialize(Serializer* serializer) {
 	Json::Value root;
 	root["name"] = name;
 	root["active"] = active;
-	root["local"] = DataSerializer::serializeMat4(localTransform.getMatrix());
-	root["lastLocal"] = DataSerializer::serializeMat4(localTransform.getLastMatrix());
+	root["localTransformData"] = DataSerializer::serializeTransformData(localTransform.getData());
+	root["localLastTransformData"] = DataSerializer::serializeTransformData(localTransform.getLastData());
 	for (int i = 0; i < children.size(); i++) {
 		root["children"][i] = serializer->serialize(children[i]);
 	}
@@ -239,8 +229,8 @@ Json::Value GraphNode::serialize(Serializer* serializer) {
 void GraphNode::deserialize(Json::Value& root, Serializer* serializer) {
 	name = root.get("name", name).asString();
 	active = root.get("active", active).asBool();
-	localTransform.setMatrix(DataSerializer::deserializeMat4(root.get("local", DataSerializer::serializeMat4(localTransform.getMatrix()))));
-	localTransform.setLastMatrix(DataSerializer::deserializeMat4(root.get("lastLocal", DataSerializer::serializeMat4(localTransform.getLastMatrix()))));
+	localTransform.setData(DataSerializer::deserializeTransformData(root["localTransformData"]));
+	localTransform.setLastData(DataSerializer::deserializeTransformData(root["localLastTransformData"]));
 	Json::Value children = root["children"];
 	int size = children.size();
 	for (int i = 0; i < size; i++) {
@@ -259,7 +249,7 @@ SerializableType GraphNode::getSerializableType() {
 
 void GraphNode::updateWorld() {
 	if (dirty) {
-		localTransform.setLastMatrix(localTransform.getMatrix());
+		localTransform.updateLast();
 		if (parent != nullptr) {
 			worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
 		} else {

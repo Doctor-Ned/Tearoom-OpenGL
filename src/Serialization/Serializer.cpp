@@ -93,6 +93,14 @@ Serializable* Serializer::getPointer(const int id) {
 	return nullptr;
 }
 
+std::vector<std::string> Serializer::getSceneNames() {
+	std::vector<std::string> result;
+	for(auto &pair : scenes) {
+		result.push_back(pair.first);
+	}
+	return result;
+}
+
 int Serializer::getId(Serializable* pointer) {
 	if (pointer == nullptr) {
 		return -1;

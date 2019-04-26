@@ -1,4 +1,5 @@
 #include "DataSerializer.h"
+#include "Scene/ComposedTransform.h"
 
 Json::Value DataSerializer::serializeVec2(glm::vec2 vec) {
 	Json::Value root;
@@ -93,5 +94,21 @@ glm::mat4 DataSerializer::deserializeMat4(const Json::Value & root) {
 	result[1] = deserializeVec4(root[1]);
 	result[2] = deserializeVec4(root[2]);
 	result[3] = deserializeVec4(root[3]);
+	return result;
+}
+
+Json::Value DataSerializer::serializeTransformData(TransformData data) {
+	Json::Value root;
+	root["translation"] = serializeVec3(data.translation);
+	root["scale"] = serializeVec3(data.scale);
+	root["eulerRotation"] = serializeVec3(data.eulerRotation);
+	return root;
+}
+
+TransformData DataSerializer::deserializeTransformData(const Json::Value& root) {
+	TransformData result;
+	result.translation = deserializeVec3(root.get("translation", serializeVec3(result.translation)));
+	result.scale = deserializeVec3(root.get("scale", serializeVec3(result.scale)));
+	result.eulerRotation = deserializeVec3(root.get("eulerRotation", serializeVec3(result.eulerRotation)));
 	return result;
 }

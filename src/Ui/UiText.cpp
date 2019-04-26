@@ -34,6 +34,7 @@ UiText::UiText(glm::vec2 position, std::string text, glm::vec2 textScale, glm::v
 }
 
 void UiText::render(Shader *shader) {
+	shader->setModel(worldTransform.getMatrix());
 	textRenderer->renderText(shader, text, actualPosition, scale, anchor, color);
 }
 

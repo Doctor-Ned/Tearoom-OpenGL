@@ -6,8 +6,9 @@
 #include "Scene/GameManager.h"
 #include "Scene/OctreeNode.h"
 #include "Render/LightManager.h"
+#include "Render/Skybox.h"
 
-#define ENABLE_FRUSTUM_CULLING
+//#define ENABLE_FRUSTUM_CULLING
 
 class LightManager;
 struct GameFramebuffers;
@@ -19,6 +20,7 @@ public:
 	virtual void render();
 	virtual void renderUi();
 	virtual Camera *getCamera();
+	void setCamera(Camera *camera);
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
 	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
@@ -46,6 +48,8 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 	GraphNode* getRootNode() const;
+	virtual Skybox *getSkybox();
+	void setSkybox(Skybox *skybox);
 protected:
 	bool getCursorLocked() const;
 	void setCursorLocked(bool locked) const;
@@ -77,7 +81,9 @@ protected:
 	const float BASE_MOVEMENT_SPEED = 1.0f;
 	float movementSpeed = BASE_MOVEMENT_SPEED;
 	float mouseX, mouseY;
+	Skybox *skybox = nullptr;
 private:
 	float mouseMovementX, mouseMovementY;
 	bool initMouse = true;
+	friend class EditorScene;
 };

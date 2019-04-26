@@ -49,6 +49,8 @@ static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE
 
 class Global {
 public:
+	static glm::vec3 degreesToRadians(glm::vec3 rotation);
+	static glm::vec3 radiansToDegrees(glm::vec3 rotation);
 	static glm::vec3 getScale(glm::mat4 matrix);
 	static bool endsWith(std::string text, std::string end);
 	static std::string jsonValueToString(Json::Value value);

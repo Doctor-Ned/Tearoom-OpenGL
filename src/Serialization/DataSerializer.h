@@ -2,6 +2,8 @@
 
 #include "Global.h"
 
+struct TransformData;
+
 class DataSerializer {
 public:
 	static Json::Value serializeVec2(glm::vec2 vec);
@@ -16,4 +18,6 @@ public:
 	static glm::mat3 deserializeMat3(const Json::Value &root);
 	static Json::Value serializeMat4(glm::mat4 mat);
 	static glm::mat4 deserializeMat4(const Json::Value &root);
+	static Json::Value serializeTransformData(TransformData data);
+	static TransformData deserializeTransformData(const Json::Value &root);
 };

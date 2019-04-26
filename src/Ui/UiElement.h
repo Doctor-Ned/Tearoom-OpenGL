@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "Render/Shader.h"
 #include "Scene/Transform.h"
+#include "Scene/ComposedTransform.h"
 
 enum ShaderType;
 
@@ -58,7 +59,8 @@ public:
 	virtual ~UiElement();
 	virtual ShaderType getShaderType() = 0;
 	static glm::mat4 getProjection();
-	Transform localTransform, worldTransform;
+	Transform worldTransform;
+	ComposedTransform localTransform;
 	void setActive(bool active);
 	bool isActive();
 protected:

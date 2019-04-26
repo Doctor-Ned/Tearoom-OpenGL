@@ -14,14 +14,20 @@ public:
 	Camera *getCamera() override;
 	void update(double deltaTime) override;
 protected:
+	void setEditedScene(Scene *scene, bool deletePrevious = true);
+	std::vector<GraphNode*> editedNodes;
 	int nodeCounter = 1;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
-	void showNodeAsTree(GraphNode *node) const;
+	void showNodeAsTree(GraphNode *node);
 	void keyEvent(int key, bool pressed) override;
 	bool useEditorCamera = true;
 	void setEditorCamera(bool enabled);
 	Camera *editorCamera, *playerCamera;
 	UiText *cameraText;
+	bool showConfirmationDialog = false, showSaveDialog = false, showLoadDialog = false;
+	std::function<void()> confirmationDialogCallback;
+	Scene *editedScene = nullptr;
+	Serializer *serializer;
 	friend class Serializer;
 };
 

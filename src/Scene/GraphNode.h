@@ -8,20 +8,21 @@
 #include "Render/Renderable.h"
 #include <queue>
 #include "Serialization/Serializable.h"
+#include "ComposedTransform.h"
 class Mesh;
 class Shader;
 
 class GraphNode final : public GuiConfigurable, public Renderable, public Serializable {
 public:
 	Transform worldTransform; //Transform has address to the dirty flag and can change it.
-	Transform localTransform;
+	ComposedTransform localTransform;
 	GraphNode(Mesh* mesh = nullptr, GraphNode* parent = nullptr);
 	void updateDrawData() override;
 	void drawSelf(Shader *shader) override;
 	ShaderType getShaderType() override;
 	void update(double timeDiff);
 	GraphNode *getParent() const;
-	void setParent(GraphNode *parent, bool preserveWorldPosition = false);
+	void setParent(GraphNode *parent);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component* component);
