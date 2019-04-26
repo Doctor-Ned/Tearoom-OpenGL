@@ -11,6 +11,7 @@ EditorScene::EditorScene() {
 	cameraText = new UiText(glm::vec2(0.0f, windowHeight), glm::vec2(windowWidth, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
 	setEditorCamera(useEditorCamera);
+	loadTexturesModels();
 	reinitializeRenderMap();
 }
 
@@ -29,6 +30,12 @@ void EditorScene::renderUi() {
 	ImGui::Begin("Editor manager", nullptr, 64);
 	if (nodeSelectionCallback != nullptr && ImGui::Button("Stop selecting graph node")) {
 		nodeSelectionCallback = nullptr;
+	}
+	if (textureSelectionCallback != nullptr && ImGui::Button("Stop selecting texture")) {
+		textureSelectionCallback = nullptr;
+	}
+	if (modelSelectionCallback != nullptr && ImGui::Button("Stop selecting model")) {
+		modelSelectionCallback = nullptr;
 	}
 	if (ImGui::Button("New scene") && !showConfirmationDialog) {
 		showConfirmationDialog = true;
@@ -79,9 +86,93 @@ void EditorScene::renderUi() {
 				title += "skybox";
 				break;
 		}
-		ImGui::Begin(title.c_str());
+		ImGui::Begin(title.c_str(), nullptr, 64);
 		switch (typeToCreate) {
-			//todo
+			case SSkybox:
+				static std::string faces[6];
+				if (typeCreationStarted) {
+					for (int i = 0; i < 6; i++) {
+						faces[i] = "";
+					}
+				}
+				static bool correct;
+				correct = true;
+				for (int i = 0; i < 6; i++) {
+					if (faces[i].length() == 0) {
+						correct = false;
+					}
+					ImGui::PushID(i);
+					std::string title;
+					switch (i) {
+						case 0:
+							title = "Right: ";
+							break;
+						case 1:
+							title = "Left: ";
+							break;
+						case 2:
+							title = "Top: ";
+							break;
+						case 3:
+							title = "Bottom: ";
+							break;
+						case 4:
+							title = "Front: ";
+							break;
+						case 5:
+							title = "Back: ";
+							break;
+					}
+					title += faces[i].length() == 0 ? "-" : faces[i];
+					ImGui::Text((title).c_str());
+					if (textureSelectionCallback == nullptr) {
+						ImGui::SameLine();
+						if (ImGui::Button("Change...")) {
+							textureSelectionCallback = [&, i](Texture t) {
+								faces[i] = t.path;
+							};
+						}
+					}
+					ImGui::PopID();
+				}
+				if (correct && ImGui::Button("Create")) {
+					std::vector<std::string> fcs;
+					for (int i = 0; i < 6; i++) {
+						fcs.push_back(faces[i]);
+					}
+					creationCallback(new Skybox(fcs));
+					setCreationTarget(SNone);
+				}
+				break;
+		}
+		typeCreationStarted = false;
+		ImGui::End();
+	}
+
+	if (textureSelectionCallback != nullptr) {
+		//ImGui::SetNextWindowSize(ImVec2(250.0f, 600.0f));
+		ImGui::Begin("SELECT TEXTURE", nullptr, 64);
+		for (auto &texture : textures) {
+			ImGui::PushID(&texture);
+			if (ImGui::Button(texture.c_str())) {
+				textureSelectionCallback(assetManager->getTexture(texture));
+				textureSelectionCallback = nullptr;
+			}
+			ImGui::PopID();
+		}
+		ImGui::End();
+	}
+
+	if (modelSelectionCallback != nullptr) {
+		//ImGui::SetNextWindowSize(ImVec2(250.0f, 600.0f));
+		ImGui::Begin("SELECT MODEL", nullptr, 64);
+		for (auto &model : models) {
+			ImGui::PushID(&model);
+			if (ImGui::Button(model.c_str())) {
+				modelSelectionCallback(assetManager->getModelData(model));
+				modelSelectionCallback = nullptr;
+			}
+			ImGui::PopID();
 		}
 		ImGui::End();
 	}
@@ -161,7 +252,9 @@ void EditorScene::renderUi() {
 		ImGui::TreePush();
 		if (editedScene->getSkybox() == nullptr) {
 			if (ImGui::Button("Create a skybox")) {
-				setCreationTarget(SSkybox, nullptr);
+				setCreationTarget(SSkybox, [editedScene = editedScene](void *skybox) {
+					editedScene->setSkybox(reinterpret_cast<Skybox*>(skybox));
+				});
 			}
 		} else {
 			if (ImGui::Button("Delete the skybox")) {
@@ -257,6 +350,7 @@ void EditorScene::setCreationTarget(SerializableType type, std::function<void(vo
 		typeToCreate = SNone;
 		ttc = TTCNone;
 		this->creationCallback = nullptr;
+		typeCreationStarted = false;
 		return;
 	}
 	ttc = TTCNone;
@@ -277,6 +371,7 @@ void EditorScene::setCreationTarget(SerializableType type, std::function<void(vo
 		}
 	}
 	if (ttc != TTCNone) {
+		typeCreationStarted = true;
 		typeToCreate = type;
 		this->creationCallback = creationCallback;
 	}
@@ -390,7 +485,7 @@ void EditorScene::keyEvent(int key, bool pressed) {
 				setCursorLocked(!getCursorLocked());
 				break;
 			case KEY_QUIT:
-				if (gameManager->getKeyState(GLFW_KEY_LEFT_SHIFT) && !showConfirmationDialog) {
+				if (!showConfirmationDialog) {
 					showConfirmationDialog = true;
 					confirmationDialogCallback = [this]() {
 						setEditedScene(nullptr);

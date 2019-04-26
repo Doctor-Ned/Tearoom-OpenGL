@@ -43,10 +43,13 @@ protected:
 	SMeshSphere, SMeshTorus};
 	SerializableType typeToCreate = SNone;
 	TypeToCreate ttc = TTCNone;
+	bool typeCreationStarted = false;
 	bool showConfirmationDialog = false, showSaveDialog = false, showLoadDialog = false;
 	std::function<void(void*)> creationCallback = nullptr;
 	std::function<void()> confirmationDialogCallback = nullptr;
 	std::function<void(GraphNode*)> nodeSelectionCallback = nullptr;
+	std::function<void(Texture)> textureSelectionCallback = nullptr;
+	std::function<void(std::vector<ModelData*>)> modelSelectionCallback = nullptr;
 	Scene *editedScene = nullptr;
 	Serializer *serializer;
 	friend class Serializer;
