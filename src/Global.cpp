@@ -1,6 +1,14 @@
 #include "Global.h"
 #include <fstream>
 
+glm::vec3 Global::degreesToRadians(glm::vec3 rotation) {
+	return glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
+}
+
+glm::vec3 Global::radiansToDegrees(glm::vec3 rotation) {
+	return glm::vec3(glm::degrees(rotation.x), glm::degrees(rotation.y), glm::degrees(rotation.z));
+}
+
 glm::vec3 Global::getScale(glm::mat4 matrix) {
 	glm::vec3 result;
 	glm::mat4 transpose = glm::transpose(matrix);

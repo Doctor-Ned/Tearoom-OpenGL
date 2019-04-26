@@ -3,31 +3,168 @@
 #include "Render/Camera.h"
 #include "TestScene.h"
 #include "Scene/Node.h"
+#include "Serialization/Serializer.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
 	playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f));
-	cameraText = new UiText(glm::vec2(0.0f, windowHeight - 20.0f), glm::vec2(20.0f, 300.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), Fit, TopLeft);
+	serializer = Serializer::getInstance();
+	cameraText = new UiText(glm::vec2(0.0f, windowHeight), glm::vec2(windowWidth, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
 	setEditorCamera(useEditorCamera);
+	reinitializeRenderMap();
 }
 
 void EditorScene::render() {
-	Scene::render();
+	if (editedScene != nullptr) {
+		editedScene->render();
+	}
 }
 
 void EditorScene::renderUi() {
+	if (editedScene != nullptr) {
+		editedScene->renderUi();
+	}
 	Scene::renderUi();
-	ImGui::Begin("Object builder");
-	if (ImGui::Button("Add box")) {
-		appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
+	ImGui::Begin("Scene manager", nullptr, 64);
+	if (ImGui::Button("New scene") && !showConfirmationDialog) {
+		showConfirmationDialog = true;
+		confirmationDialogCallback = [this]() {
+			setEditedScene(new Scene());
+			std::vector<std::string> faces;
+			faces.emplace_back("res/skybox/test/right.jpg");
+			faces.emplace_back("res/skybox/test/left.jpg");
+			faces.emplace_back("res/skybox/test/top.jpg");
+			faces.emplace_back("res/skybox/test/bottom.jpg");
+			faces.emplace_back("res/skybox/test/front.jpg");
+			faces.emplace_back("res/skybox/test/back.jpg");
+			editedScene->setSkybox(new Skybox(assetManager->getShader(STSkybox), faces));
+		};
+	}
+	if (!showLoadDialog) {
+		if (ImGui::Button("Load scene...")) {
+			showLoadDialog = true;
+		}
+	}
+	if (editedScene != nullptr && !showSaveDialog) {
+		if (ImGui::Button("Save scene...")) {
+			showSaveDialog = true;
+		}
 	}
 	ImGui::End();
-	ImGui::Begin("Scene graph");
-	ImGui::TreePush();
-	showNodeAsTree(rootNode);
-	ImGui::TreePop();
-	ImGui::End();
+
+	if (showLoadDialog) {
+		// flag reference: https://pyimgui.readthedocs.io/en/latest/reference/imgui.html
+		ImGui::Begin("Load a scene from file", nullptr, 64);
+		std::vector<std::string> scenes = serializer->getSceneNames();
+		if (scenes.empty()) {
+			ImGui::Text("No saved scene files detected.");
+		} else {
+			ImGui::Text(("Found " + std::to_string(scenes.size()) + " available scenes:").c_str());
+			ImGui::Indent();
+			for (auto &name : scenes) {
+				if (ImGui::Button(name.c_str()) && !showConfirmationDialog) {
+					showConfirmationDialog = true;
+					confirmationDialogCallback = [this, name]() {
+						setEditedScene(serializer->loadScene(name));
+					};
+					showLoadDialog = false;
+				}
+			}
+			ImGui::Unindent();
+		}
+		if (ImGui::Button("CLOSE")) {
+			showLoadDialog = false;
+		}
+		ImGui::End();
+	}
+
+	if (showSaveDialog && editedScene != nullptr) {
+		ImGui::Begin("Enter scene name to save it", nullptr, 64);
+		static const int BUFFER_SIZE = 50;
+		static char nameBuffer[BUFFER_SIZE];
+		for (int i = 0; i < BUFFER_SIZE; i++) {
+			nameBuffer[i] = '\0';
+		}
+		ImGui::InputText("Scene name: ", nameBuffer, IM_ARRAYSIZE(nameBuffer));
+		if (ImGui::Button("SAVE")) {
+			std::string targetName(nameBuffer);
+			if (targetName.length() > 0) {
+				serializer->saveScene(editedScene, targetName);
+				showSaveDialog = false;
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("CANCEL")) {
+			showSaveDialog = false;
+		}
+		ImGui::End();
+	}
+	if (showConfirmationDialog) {
+		if (confirmationDialogCallback == nullptr) {
+			showConfirmationDialog = false;
+		} else {
+			ImGui::Begin("Confirmation dialog", nullptr, 64);
+			ImGui::Text("Are you sure?");
+			if (ImGui::Button("Yes")) {
+				if (confirmationDialogCallback != nullptr) {
+					confirmationDialogCallback();
+					confirmationDialogCallback = nullptr;
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("No")) {
+				confirmationDialogCallback = nullptr;
+				showConfirmationDialog = false;
+			}
+			ImGui::End();
+		}
+	}
+	if (editedScene != nullptr) {
+		ImGui::Begin("Object builder", nullptr, 64);
+		if (ImGui::Button("Add box")) {
+			appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
+		}
+		ImGui::End();
+		static std::vector<GraphNode*> toDelete;
+		for (auto &node : editedNodes) {
+			ImGui::PushID(node);
+			ImGui::Begin(("Node '" + node->getName() + "'").c_str());
+			if (ImGui::Button("Close")) {
+				toDelete.push_back(node);
+			}
+			node->drawGui();
+			ImGui::End();
+			ImGui::PopID();
+		}
+		if (!toDelete.empty()) {
+			for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+				bool removed = false;
+				bool escape = editedNodes.size() == 1;
+				for (auto j = toDelete.begin(); j != toDelete.end();) {
+					if (*j == *i) {
+						editedNodes.erase(i);
+						toDelete.erase(j);
+						removed = true;
+						break;
+					}
+					++j;
+				}
+				if (removed) {
+					if (escape) {
+						break;
+					}
+					continue;
+				}
+				++i;
+			}
+		}
+		ImGui::Begin("Scene graph", nullptr, 64);
+		ImGui::TreePush();
+		showNodeAsTree(editedScene->rootNode);
+		ImGui::TreePop();
+		ImGui::End();
+	}
 }
 
 Camera* EditorScene::getCamera() {
@@ -35,6 +172,10 @@ Camera* EditorScene::getCamera() {
 }
 
 void EditorScene::update(double deltaTime) {
+	if (editedScene != nullptr) {
+		editedScene->update(deltaTime);
+	}
+	Scene::update(deltaTime);
 	if (getKeyState(KEY_FORWARD)) {
 		getCamera()->moveForward(deltaTime * movementSpeed);
 	}
@@ -65,20 +206,22 @@ void EditorScene::update(double deltaTime) {
 	if (getKeyState(KEY_MOUSE_DOWN)) {
 		getCamera()->rotateY(-movementSpeed * deltaTime * 5.0f);
 	}
+}
 
-	rootNode->update(deltaTime);
-
-	OctreeNode::getInstance()->RebuildTree(15.0f);
-	OctreeNode::getInstance()->Calculate();
-	OctreeNode::getInstance()->CollisionTests();
-	getCamera()->RecalculateFrustum();
-	Frustum frustum = getCamera()->getFrustum();
-	OctreeNode::getInstance()->frustumCulling(frustum);
+void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
+	Scene *previous = editedScene;
+	if (scene != nullptr) {
+		scene->setCamera(useEditorCamera ? editorCamera : playerCamera);
+	}
+	editedScene = scene;
+	if (deletePrevious && previous != nullptr) {
+		delete previous;
+	}
 }
 
 void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 	if (parent == nullptr) {
-		parent = rootNode;
+		parent = editedScene->getRootNode();
 	}
 	if (node->getParent() == nullptr) {
 		node->setParent(parent);
@@ -86,24 +229,40 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 	if (node->getName() == "Node") {
 		node->setName("Node #" + std::to_string(nodeCounter++));
 	}
-	addRenderedNode(node, node->getParent());
+	editedScene->addRenderedNode(node, node->getParent());
 }
 
-void EditorScene::showNodeAsTree(GraphNode* node) const {
-	if (ImGui::TreeNode(node->getName().c_str())) {
-		ImGui::SameLine();
-		if (ImGui::Button("Open")) {
-			//todo
+void EditorScene::showNodeAsTree(GraphNode* node) {
+	ImGui::Text(node->getName().c_str());
+	ImGui::SameLine();
+	if (ImGui::Button("Open...")) {
+		bool opened = false;
+		for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+			if (*i == node) {
+				opened = true;
+				break;
+			}
+			++i;
 		}
-		for (auto child : node->getChildren()) {
-			showNodeAsTree(child);
+		if (!opened) {
+			editedNodes.push_back(node);
 		}
-		ImGui::TreePop();
 	}
+	if (!node->getChildren().empty()) {
+		if (ImGui::TreeNode("Children")) {
+			for (auto child : node->getChildren()) {
+				showNodeAsTree(child);
+			}
+			ImGui::TreePop();
+		}
+	} else {
+		ImGui::Text("No children");
+	}
+	ImGui::NewLine();
 }
 
 void EditorScene::keyEvent(int key, bool pressed) {
-	if (pressed) {
+	if (pressed && !showSaveDialog) {
 		switch (key) {
 			case EDITOR_KEY_TOGGLE_CAMERA:
 				setEditorCamera(!useEditorCamera);
@@ -112,8 +271,11 @@ void EditorScene::keyEvent(int key, bool pressed) {
 				setCursorLocked(!getCursorLocked());
 				break;
 			case KEY_QUIT:
-				if (gameManager->getKeyState(GLFW_KEY_LEFT_SHIFT)) {
-					gameManager->goToMenu();
+				if (gameManager->getKeyState(GLFW_KEY_LEFT_SHIFT) && !showConfirmationDialog) {
+					showConfirmationDialog = true;
+					confirmationDialogCallback = [this]() {
+						gameManager->goToMenu();
+					};
 				}
 				break;
 		}
@@ -122,5 +284,8 @@ void EditorScene::keyEvent(int key, bool pressed) {
 
 void EditorScene::setEditorCamera(bool enabled) {
 	useEditorCamera = enabled;
+	if (editedScene != nullptr) {
+		editedScene->setCamera(useEditorCamera ? editorCamera : playerCamera);
+	}
 	cameraText->setText(enabled ? "Editor camera" : "Player camera");
 }

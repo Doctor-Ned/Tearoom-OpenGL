@@ -43,7 +43,6 @@ public:
 protected:
 	TestScene(bool serialized);
 	void keyEvent(int key, bool pressed) override;
-	Skybox *skybox;
 	std::vector<DirLightComp*> dirLightComps;
 	std::vector<SpotLightComp*> spotLightComps;
 	std::vector<PointLightComp*> pointLightComps;

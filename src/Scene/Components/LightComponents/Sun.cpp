@@ -22,9 +22,8 @@ Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayC
 	light1Node->addComponent(light1Comp);
 	light2Comp = new DirLightComp(light2, light2Node);
 	light2Node->addComponent(light2Comp);
-	light1Comp->getGameObject()->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -sunDistance)));
-	light1Comp->getGameObject()->localTransform.rotate(180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	light2Comp->getGameObject()->localTransform.setMatrix(translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, sunDistance)));
+	light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
+	light2Comp->getGameObject()->localTransform.setPosition(0.0f, 0.0f, sunDistance);
 }
 
 void Sun::setTime(float time) {
@@ -48,33 +47,22 @@ float Sun::getTime() {
 
 void Sun::update(float msec) {
 	if (dirty) {
-		glm::vec4 light1Color = timeToColor(time, true), light2Color = timeToColor(time, false);
-		light1->ambient = light1Color * ambientFactor;
-		light1->diffuse = light1Color;
-		light1->specular = light1Color * specularFactor;
-		light2->ambient = light2Color * ambientFactor;
-		light2->diffuse = light2Color;
-		light2->specular = light2Color * specularFactor;
-		dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
-		dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
-		glm::vec4 position = gameObject->localTransform.getMatrix()[3];
-		gameObject->localTransform.setMatrix(
-			rotate(
-				rotate(
-					translate(glm::mat4(1.0f), glm::vec3(position)),
-					rotationAngle, glm::vec3(1.0f,0.0f,0.0f)),
-			glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f) - static_cast<float>(M_PI)/2.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+		recalculateMatrix();
 	}
+}
+
+void Sun::updateWorld() {
+	recalculateMatrix();
 }
 
 void Sun::renderGui() {
 	Component::renderGui();
-	if(active) {
+	if (active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
 		ImGui::NewLine();
 		ImGui::SliderAngle("Rotation angle", &rotationAngle);
 		ImGui::NewLine();
-		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f ,1.0f);
+		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f, 1.0f);
 		ImGui::NewLine();
 		ImGui::SliderFloat("Specular factor", &specularFactor, 0.0f, 1.0f);
 		ImGui::NewLine();
@@ -152,6 +140,25 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 	nightColor = DataSerializer::deserializeVec4(root["nightColor"]);
 	sunDistance = root["sunDistance"].asFloat();
 	dirty = true;
+}
+
+void Sun::recalculateMatrix() {
+	glm::vec4 light1Color = timeToColor(time, true), light2Color = timeToColor(time, false);
+	light1->ambient = light1Color * ambientFactor;
+	light1->diffuse = light1Color;
+	light1->specular = light1Color * specularFactor;
+	light2->ambient = light2Color * ambientFactor;
+	light2->diffuse = light2Color;
+	light2->specular = light2Color * specularFactor;
+	dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
+	dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
+	glm::vec4 position = gameObject->worldTransform.getMatrix()[3];
+	gameObject->worldTransform.setMatrix(
+		rotate(
+			rotate(
+				translate(glm::mat4(1.0f), glm::vec3(position)),
+				rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f)),
+			glm::radians(rescaleTime(time - 6.0f) * 360.0f / 24.0f) - static_cast<float>(M_PI) / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 float Sun::rescaleTime(float time) {

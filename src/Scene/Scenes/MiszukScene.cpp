@@ -80,7 +80,8 @@ MiszukScene::MiszukScene() {
 	fallingBoxNode->addComponent(new SphereCollider(fallingBoxNode, STATIC));
 	fallingBoxNode->addComponent(new PhysicalObject(fallingBoxNode));
 	boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
-	boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	boxNode->localTransform.rotateYDegrees(130.0f);
+	//boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
 	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);

@@ -5,7 +5,7 @@ RotatingObject::RotatingObject(float rotationSpeed, GraphNode* gameObject) : Com
                                                                                  rotationSpeed(rotationSpeed) {}
 
 void RotatingObject::update(float timeDiff) {
-	gameObject->localTransform.rotateByRadians(float(rotationSpeed * timeDiff), glm::vec3(0.0f, 1.0f, 0.0f));
+	gameObject->localTransform.rotateY(rotationSpeed * timeDiff);
 }
 
 void RotatingObject::setRotationSpeed(float speed) {

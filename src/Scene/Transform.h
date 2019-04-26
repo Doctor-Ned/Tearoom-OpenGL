@@ -1,9 +1,8 @@
 #ifndef TRANSFORM
 #define	TRANSFORM
 #include <glm/glm.hpp>
-#include "GuiConfigurable.h"
 
-class Transform : public GuiConfigurable {
+class Transform {
 public:
 	Transform(bool& dirty);
 	glm::mat4 getMatrix();
@@ -21,6 +20,5 @@ protected:
 	bool* dirty;
 	glm::mat4 last;
 	glm::mat4 transform;
-	void renderGui() override;
 };
 #endif

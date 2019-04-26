@@ -25,6 +25,7 @@ public:
 	void saveScene(Scene *scene, const std::string& name);
 	Scene *loadScene(const std::string& name);
 	Serializable *getPointer(int id);
+	std::vector<std::string> getSceneNames();
 	int getId(Serializable *pointer);
 	Json::Value serialize(Serializable *ser);
 	Json::Value serialize(SerializablePointer ser);

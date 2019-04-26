@@ -171,13 +171,13 @@ void Animation::scaleInterpolation(float currentTime, GraphNode* animatedObject,
 	currentTime = currentTime - it->first;
 	
 	static glm::vec3 mix(0);
-	if(mix != glm::vec3(0))
-	{
-		gameObject->localTransform.scale(glm::vec3(1) / mix);
-	}
-	mix = glm::mix(it->second, it2->second, currentTime / time);
-	
-	animatedObject->localTransform.scale(mix);
+	//if(mix != glm::vec3(0))
+	//{
+	//	gameObject->localTransform.scale(glm::vec3(1) / mix);
+	//}
+	//mix = glm::mix(it->second, it2->second, currentTime / time);
+	//
+	//gameObject->localTransform.scale(mix);
 }
 
 void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& rotation)
@@ -207,18 +207,18 @@ void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObje
 		time = it2->first - it->first;
 	}
 	currentTime = currentTime - it->first;
-	static glm::vec3 mix(0);
-	if (mix != glm::vec3(0))
-	{
-		animatedObject->localTransform.rotate(-mix.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		animatedObject->localTransform.rotate(-mix.y, glm::vec3(0.0f,1.0f, 0.0f));
-		animatedObject->localTransform.rotate(-mix.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	}
-	mix = glm::mix(it->second, it2->second, currentTime / time);
 
-	animatedObject->localTransform.rotate(mix.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	animatedObject->localTransform.rotate(mix.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	animatedObject->localTransform.rotate(mix.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	//if (rotVec != glm::vec3(0))
+	//{
+	//	gameObject->localTransform.rotate(-rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	//	gameObject->localTransform.rotate(-rotVec.y, glm::vec3(0.0f,1.0f, 0.0f));
+	//	gameObject->localTransform.rotate(-rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	//}
+	//rotVec = glm::mix(it->second, it2->second, currentTime / time);
+
+	//gameObject->localTransform.rotate(rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	//gameObject->localTransform.rotate(rotVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	//gameObject->localTransform.rotate(rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 Animation::~Animation()

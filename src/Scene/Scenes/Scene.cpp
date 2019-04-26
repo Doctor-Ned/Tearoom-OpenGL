@@ -20,10 +20,13 @@ void Scene::render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (auto &shader : updatableShaders) {
 			shader->use();
-			shader->setViewPosition(getCamera()->getPos());
+			shader->setViewPosition(camera->getPos());
 		}
-		uboViewProjection->inject(getCamera()->getView(), projection);
+		uboViewProjection->inject(camera->getView(), projection);
 		renderNodesUsingRenderMap();
+		if (skybox != nullptr) {
+			skybox->draw(camera->getUntranslatedView(), projection);
+		}
 		renderNodesUsingTransparentRenderMap();
 	}
 }
@@ -35,6 +38,10 @@ void Scene::renderUi() {
 
 Camera *Scene::getCamera() {
 	return camera;
+}
+
+void Scene::setCamera(Camera* camera) {
+	this->camera = camera;
 }
 
 void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
@@ -169,6 +176,15 @@ void Scene::update(double deltaTime) {
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
 	rootNode->update(deltaTime);
+	OctreeNode::getInstance()->RebuildTree(15.0f);
+	OctreeNode::getInstance()->Calculate();
+	OctreeNode::getInstance()->CollisionTests();
+	if (camera != nullptr) {
+		camera->RecalculateFrustum();
+		Frustum frustum = camera->getFrustum();
+		OctreeNode::getInstance()->frustumCulling(frustum);
+	}
+	OctreeNode::getInstance()->CollisionTests();
 }
 
 void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
@@ -220,12 +236,7 @@ Scene::Scene() {
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();
 	gameFramebuffers = gameManager->getFramebuffers();
-	windowWidth = gameManager->getWindowWidth();
-	windowHeight = gameManager->getWindowHeight();
-	screenWidth = gameManager->getScreenWidth();
-	screenHeight = gameManager->getScreenHeight();
-	windowCenterX = windowWidth / 2.0f;
-	windowCenterY = windowHeight / 2.0f;
+	Scene::updateWindowSize(gameManager->getWindowWidth(), gameManager->getWindowHeight(), gameManager->getScreenWidth(), gameManager->getScreenHeight());
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			renderMap.emplace(type, new std::vector<Renderable*>());
@@ -299,6 +310,14 @@ void Scene::deserialize(Json::Value& root, Serializer* serializer) {
 
 GraphNode* Scene::getRootNode() const {
 	return rootNode;
+}
+
+Skybox* Scene::getSkybox() {
+	return skybox;
+}
+
+void Scene::setSkybox(Skybox* skybox) {
+	this->skybox = skybox;
 }
 
 bool Scene::getCursorLocked() const {
