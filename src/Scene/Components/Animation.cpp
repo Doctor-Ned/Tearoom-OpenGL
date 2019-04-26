@@ -3,14 +3,50 @@
 #include <iostream>
 #include "Scene/GameManager.h"
 
-Animation::Animation(GraphNode* gameObject) : Component(gameObject)
+void Animation::setEndTime()
 {
+	for(auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
+	{
+		if(it->second.translation.size() >=2)
+		{
+			auto it2 = std::prev(it->second.translation.end());
+			if (endTime < it2->first)
+			{
+				endTime = it2->first;
+			}
+		}
+
+		if (it->second.scale.size() >= 2)
+		{
+			auto it2 = std::prev(it->second.scale.end());
+			if (endTime < it2->first)
+			{
+				endTime = it2->first;
+			}
+		}
+
+		if (it->second.rotation.size() >= 2)
+		{
+			auto it2 = std::prev(it->second.rotation.end());
+			if (endTime < it2->first)
+			{
+				endTime = it2->first;
+			}
+		}
+	}
+}
+
+Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject), name(_name)
+{
+	std::map<float, glm::vec3> translation;
+	std::map<float, glm::vec3> scale;
+	std::map<float, glm::vec3> rotation;
 	translation.emplace(2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
 	translation.emplace(0.0f, glm::vec3(0));
 	translation.emplace(1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 	translation.emplace(3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
-	translation.emplace(4.0f, glm::vec3(1.0f, -1.0f, 1.0f));
-	endTime = 4.0f;
+	translation.emplace(4.0f, glm::vec3(0));
+
 
 	scale.emplace(0.0f, glm::vec3(1));
 	scale.emplace(1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
@@ -20,7 +56,11 @@ Animation::Animation(GraphNode* gameObject) : Component(gameObject)
 	rotation.emplace(0.0f, glm::vec3(0));
 	rotation.emplace(2.0f, glm::vec3(90.0f, 90.0f, 0.0f));
 	rotation.emplace(4.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+	ObjectAnimation anim = { translation, scale, rotation };
+	objectAnimations.emplace(gameObject, anim);
+
 	setSpeed(0.5f);
+	setEndTime();
 }
 
 SerializableType Animation::getSerializableType()
@@ -51,14 +91,17 @@ void Animation::update(float msec)
 	if(!isPlaying && GameManager::getInstance()->getKeyState(GLFW_KEY_1))
 	{
 		play();
-		rotVec = glm::vec3(0);
 	}
 
 	if(isPlaying)
 	{
-		translationInterpolation(currentTime);
-		//rotationInterpolation(currentTime);
-		scaleInterpolation(currentTime);
+		for(auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
+		{
+			translationInterpolation(currentTime, it->first, it->second.translation);
+			rotationInterpolation(currentTime, it->first, it->second.rotation);
+			scaleInterpolation(currentTime, it->first, it->second.scale);
+		}
+		
 		currentTime += msec * speed;
 	}
 	
@@ -69,7 +112,7 @@ void Animation::update(float msec)
 	}
 }
 
-void Animation::translationInterpolation(float currentTime)
+void Animation::translationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& translation)
 {
 	if (translation.size() < 2)
 		return;
@@ -96,10 +139,10 @@ void Animation::translationInterpolation(float currentTime)
 	}
 	currentTime = currentTime - it->first;
 	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
-	gameObject->localTransform.setPosition(mix);
+	animatedObject->localTransform.setPosition(mix);
 }
 
-void Animation::scaleInterpolation(float currentTime)
+void Animation::scaleInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& scale)
 {
 	if (scale.size() < 2)
 		return;
@@ -126,18 +169,12 @@ void Animation::scaleInterpolation(float currentTime)
 		time = it2->first - it->first;
 	}
 	currentTime = currentTime - it->first;
+	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
 	
-	static glm::vec3 mix(0);
-	//if(mix != glm::vec3(0))
-	//{
-	//	gameObject->localTransform.scale(glm::vec3(1) / mix);
-	//}
-	//mix = glm::mix(it->second, it2->second, currentTime / time);
-	//
-	//gameObject->localTransform.scale(mix);
+	gameObject->localTransform.setScale(mix);
 }
 
-void Animation::rotationInterpolation(float currentTime)
+void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& rotation)
 {
 	if (rotation.size() < 2)
 		return;
@@ -165,17 +202,10 @@ void Animation::rotationInterpolation(float currentTime)
 	}
 	currentTime = currentTime - it->first;
 
-	//if (rotVec != glm::vec3(0))
-	//{
-	//	gameObject->localTransform.rotate(-rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	//	gameObject->localTransform.rotate(-rotVec.y, glm::vec3(0.0f,1.0f, 0.0f));
-	//	gameObject->localTransform.rotate(-rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	//}
-	//rotVec = glm::mix(it->second, it2->second, currentTime / time);
-
-	//gameObject->localTransform.rotate(rotVec.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	//gameObject->localTransform.rotate(rotVec.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	//gameObject->localTransform.rotate(rotVec.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
+	animatedObject->localTransform.setRotationXDegrees(mix.x);
+	animatedObject->localTransform.setRotationYDegrees(mix.y);
+	animatedObject->localTransform.setRotationZDegrees(mix.z);
 }
 
 Animation::~Animation()
@@ -194,10 +224,11 @@ void Animation::play()
 
 bool Animation::addKeyFrame(float time, glm::vec3 position)
 {
-	if (time < 0)
-		return false;
-	auto result = translation.emplace(time, position);
-	return result.second; //if emplacing took place it returns true
+	//if (time < 0)
+	//	return false;
+	//auto result = translation.emplace(time, position);
+	//return result.second; //if emplacing took place it returns true
+	return false;
 }
 
 void Animation::setCurrentTime(float curr)
