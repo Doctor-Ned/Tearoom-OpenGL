@@ -6,15 +6,17 @@
 #include "Scene/AssetManager.h"
 #include "Serialization/Serializable.h"
 
-class Mesh abstract: public Serializable {
+class Mesh abstract: public Serializable, public GuiConfigurable {
 public:
 	void setShaderType(ShaderType shaderType);
 	void setShininess(float shininess);
-	void setUseLight(bool useLight);
+	virtual void setUseLight(bool useLight);
+	virtual void setCastShadows(bool castShadows);
+	bool getCastShadows();
 	bool getUseLight() const;
 	virtual bool isOpaque() const;
 	bool isCulled() const;
-	void setOpaque(bool opaque);
+	virtual void setOpaque(bool opaque);
 	virtual void setCulled(bool culled);
 	float getShininess() const;
 	virtual void setOpacity(float opacity);
@@ -22,11 +24,12 @@ public:
 	float getOpacity() const;
 	ShaderType getShaderType();
 	GLuint getRenderMode();
-	void setRenderMode(GLuint renderMode);
+	virtual void setRenderMode(GLuint renderMode);
 	virtual ~Mesh();
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
+	void renderGui() override;
 protected:
 	Mesh(ShaderType shaderType, GLuint renderMode = GL_TRIANGLES);
 	virtual void draw(Shader *shader, glm::mat4 world);

@@ -21,9 +21,10 @@ public:
 	void renderUi() override;
 	Camera *getCamera() override;
 	void update(double deltaTime) override;
-protected:
-	bool doesAnyChildContain(GraphNode *node, GraphNode *target);
 	void setCreationTarget(SerializableType type, std::function<void(void*)> creationCallback = nullptr);
+	void addEditedNode(GraphNode *node);
+//protected:
+	bool doesAnyChildContain(GraphNode *node, GraphNode *target);
 	void loadTexturesModels();
 	void setEditedScene(Scene *scene, bool deletePrevious = true);
 	std::vector<GraphNode*> editedNodes;
@@ -49,6 +50,7 @@ protected:
 	std::function<void()> confirmationDialogCallback = nullptr;
 	std::function<void(GraphNode*)> nodeSelectionCallback = nullptr;
 	std::function<void(Texture)> textureSelectionCallback = nullptr;
+	std::function<void(ShaderType)> shaderTypeSelectionCallback = nullptr;
 	std::function<void(std::vector<ModelData*>)> modelSelectionCallback = nullptr;
 	Scene *editedScene = nullptr;
 	Serializer *serializer;

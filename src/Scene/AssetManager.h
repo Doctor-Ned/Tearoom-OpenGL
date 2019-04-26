@@ -52,6 +52,27 @@ static const ShaderType ShaderTypes[] = {
 	STText
 };
 
+// haven't had enough lol
+static const std::string ShaderTypeNames[] = {
+	"STNone",
+	"STSkybox",
+	"STTexture",
+	"STColor",
+	"STModel",
+	"STModelInstanced",
+	"STReflect",
+	"STRefract",
+	"STDepth",
+	"STDepthPoint",
+	"STDepthDebug",
+	"STUiTexture",
+	"STUiColor",
+	"STPostProcessing",
+	"STLight",
+	"STBlur",
+	"STText"
+};
+
 
 class AssetManager {
 public:

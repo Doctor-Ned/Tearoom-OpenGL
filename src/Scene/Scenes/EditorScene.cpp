@@ -37,6 +37,9 @@ void EditorScene::renderUi() {
 	if (modelSelectionCallback != nullptr && ImGui::Button("Stop selecting model")) {
 		modelSelectionCallback = nullptr;
 	}
+	if(shaderTypeSelectionCallback!=nullptr && ImGui::Button("Stop selecting shader type")) {
+		shaderTypeSelectionCallback = nullptr;
+	}
 	if (ImGui::Button("New scene") && !showConfirmationDialog) {
 		showConfirmationDialog = true;
 		confirmationDialogCallback = [this]() {
@@ -171,6 +174,20 @@ void EditorScene::renderUi() {
 			if (ImGui::Button(model.c_str())) {
 				modelSelectionCallback(assetManager->getModelData(model));
 				modelSelectionCallback = nullptr;
+			}
+			ImGui::PopID();
+		}
+		ImGui::End();
+	}
+
+	if(shaderTypeSelectionCallback != nullptr) {
+		ImGui::Begin("SELECT SHADER TYPE", nullptr, 64);
+		for (int i = 0; i < sizeof(ShaderTypeNames) / sizeof(*ShaderTypeNames);i++) {
+			std::string shaderType = ShaderTypeNames[i];
+			ImGui::PushID(shaderType.c_str());
+			if(ImGui::Button(shaderType.c_str())) {
+				shaderTypeSelectionCallback(ShaderTypes[i]);
+				shaderTypeSelectionCallback = nullptr;
 			}
 			ImGui::PopID();
 		}
@@ -377,6 +394,15 @@ void EditorScene::setCreationTarget(SerializableType type, std::function<void(vo
 	}
 }
 
+void EditorScene::addEditedNode(GraphNode* node) {
+	for(auto &nod : editedNodes) {
+		if(nod == node) {
+			return;
+		}
+	}
+	editedNodes.push_back(node);
+}
+
 void EditorScene::loadTexturesModels() {
 	textures = assetManager->getTextures();
 	models = assetManager->getModels();
@@ -465,7 +491,7 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 	}
 	if (!node->getChildren().empty()) {
 		if (ImGui::TreeNode("Children")) {
-			ImGui::NewLine();
+			//ImGui::NewLine();
 			for (auto child : node->getChildren()) {
 				showNodeAsTree(child);
 			}

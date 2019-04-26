@@ -7,6 +7,7 @@
 #include "Components/Collider.h"
 #include "Serialization/DataSerializer.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Scenes/EditorScene.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
@@ -283,6 +284,20 @@ void GraphNode::renderGui() {
 			buff[0] = '\0';
 		}
 		localTransform.drawGui();
+		if (mesh != nullptr) {
+			mesh->renderGui();
+			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
+			EditorScene *editor = GameManager::getInstance()->getEditorScene();
+			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
+				ImGui::SameLine();
+				if (ImGui::Button("Change...")) {
+					editor->shaderTypeSelectionCallback = [node=this,editor=editor,mesh=mesh](ShaderType type) {
+						mesh->setShaderType(type);
+						editor->editedScene->updateRenderable(node);
+					};
+				}
+			}
+		}
 		for (auto &comp : components) {
 			comp->renderGui();
 			ImGui::NewLine();

@@ -4,6 +4,7 @@
 #include "Scene/Scenes/MenuScene.h"
 #include "Render/LightManager.h"
 #include "Scenes/LoadingScene.h"
+#include "Scenes/EditorScene.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -53,6 +54,10 @@ float GameManager::getWindowCenterY() {
 
 GLuint GameManager::getMainFramebuffer() {
 	return mainFramebuffer.fbo;
+}
+
+EditorScene* GameManager::getEditorScene() {
+	return dynamic_cast<EditorScene*>(currentScene);
 }
 
 GameFramebuffers GameManager::getFramebuffers() {
@@ -366,6 +371,10 @@ bool GameManager::getMouseState(const int key) {
 
 glm::vec2 GameManager::getMousePosition() const {
 	return mousePosition;
+}
+
+Scene* GameManager::getCurrentScene() {
+	return currentScene;
 }
 
 void GameManager::setMouseState(int key, bool pressed) {
