@@ -3,25 +3,29 @@
 #include <iostream>
 #include "Scene/GameManager.h"
 
+using anim::Animated;
+using anim::animMap;
+using anim::ObjectAnimation;
+
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject), name(_name)
 {
-	addKeyFrame(gameObject, TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
-	addKeyFrame(gameObject, TRANSLATION, 0.0f, glm::vec3(0));
-	addKeyFrame(gameObject, TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	addKeyFrame(gameObject, TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
-	addKeyFrame(gameObject, TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
-	addKeyFrame(gameObject, TRANSLATION, 4.0f, glm::vec3(0));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 0.0f, glm::vec3(0));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
+	addKeyFrame(gameObject, Animated::TRANSLATION, 4.0f, glm::vec3(0));
 
-	addKeyFrame(gameObject, SCALE, 0.0f, glm::vec3(1));
-	addKeyFrame(gameObject, SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
-	addKeyFrame(gameObject, SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
-	addKeyFrame(gameObject, SCALE, 4.0f, glm::vec3(1));
+	addKeyFrame(gameObject, Animated::SCALE, 0.0f, glm::vec3(1));
+	addKeyFrame(gameObject, Animated::SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
+	addKeyFrame(gameObject, Animated::SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
+	addKeyFrame(gameObject, Animated::SCALE, 4.0f, glm::vec3(1));
 
-	addKeyFrame(gameObject, ROTATION, 0.0f, glm::vec3(0));
-	addKeyFrame(gameObject, ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
-	addKeyFrame(gameObject, ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
+	addKeyFrame(gameObject, Animated::ROTATION, 0.0f, glm::vec3(0));
+	addKeyFrame(gameObject, Animated::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
+	addKeyFrame(gameObject, Animated::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
 
-	deleteKeyFrame(gameObject, ROTATION, 2.0f);
+	deleteKeyFrame(gameObject, Animated::ROTATION, 2.0f);
 
 	setSpeed(0.5f);
 }
@@ -54,122 +58,82 @@ void Animation::update(float msec)
 {
 	if(!isPlaying && GameManager::getInstance()->getKeyState(GLFW_KEY_1))
 	{
-		play();
+		play(true);
+	}
+
+	if(GameManager::getInstance()->getKeyState(GLFW_KEY_2))
+	{
+		stopPlaying();
 	}
 
 	if(isPlaying)
 	{
 		for(auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
-		{
-			translationInterpolation(currentTime, it->first, it->second.translation);
-			rotationInterpolation(currentTime, it->first, it->second.rotation);
-			scaleInterpolation(currentTime, it->first, it->second.scale);
+		{	//first -> animatedObject, second -> map
+			interpolateValues(currentTime, it->first, Animated::TRANSLATION, it->second.translation);
+			interpolateValues(currentTime, it->first, Animated::SCALE, it->second.scale);
+			interpolateValues(currentTime, it->first, Animated::ROTATION, it->second.rotation);
 		}
-		
 		currentTime += msec * speed;
 	}
 	
 	if(currentTime >= endTime)
 	{
-		isPlaying = false;
+		if(!looped)
+		{
+			isPlaying = false;
+		}
 		currentTime = 0.0f;
 	}
 }
 
-void Animation::translationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& translation)
+void Animation::interpolateValues(float currentTime, GraphNode* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate)
 {
-	if (translation.size() < 2)
+	if (mapToInterpolate.size() < 2)
 		return;
-	static std::map<float, glm::vec3>::iterator it;
-	static std::map<float, glm::vec3>::iterator it2;
-	static float time = 0.0f;
-	if(currentTime == 0.0f)
-	{
-		it = translation.begin();
-		it2 = std::next(it);
-		time = it2->first - it->first;
-	}
-	else if (it2 == translation.end())
-	{
+	std::map<float, glm::vec3>::iterator leftKeyFrame;
+	std::map<float, glm::vec3>::iterator rightKeyFrame;
+	getProperIterators(currentTime, leftKeyFrame, rightKeyFrame, mapToInterpolate);
+
+	if (rightKeyFrame == mapToInterpolate.end())
 		return;
-	}
-	else if(currentTime >= it2->first)
+
+	float time = rightKeyFrame->first - leftKeyFrame->first;
+	currentTime = currentTime - leftKeyFrame->first;
+	glm::vec3 mix = glm::mix(leftKeyFrame->second, rightKeyFrame->second, currentTime / time);
+
+	if (type == Animated::TRANSLATION)
 	{
-		it = it2;
-		it2 = std::next(it2);
-		if (it2 == translation.end())
-			return;
-		time = it2->first - it->first;
+		animatedObject->localTransform.setPosition(mix);
 	}
-	currentTime = currentTime - it->first;
-	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
-	animatedObject->localTransform.setPosition(mix);
+	else if (type == Animated::SCALE)
+	{
+		gameObject->localTransform.setScale(mix);
+	}
+	else if (type == Animated::ROTATION)
+	{
+		animatedObject->localTransform.setRotationDegrees(mix);
+	}
 }
 
-void Animation::scaleInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& scale)
+void Animation::getProperIterators(float currentTime, animMap::iterator& keyFrame1,
+	animMap::iterator& keyFrame2, animMap& map)
 {
-	if (scale.size() < 2)
-		return;
-	static std::map<float, glm::vec3>::iterator it;
-	static std::map<float, glm::vec3>::iterator it2;
-
-	static float time = 0.0f;
-	if (currentTime == 0.0f)
+	for(auto it = map.begin(); it != map.end(); ++it)
 	{
-		it = scale.begin();
-		it2 = std::next(it);
-		time = it2->first - it->first;
-	}
-	else if (it2 == scale.end())
-	{
-		return;
-	}
-	else if (currentTime >= it2->first)
-	{
-		it = it2;
-		it2 = std::next(it2);
-		if (it2 == scale.end())
+		auto it2 = std::next(it);
+		if(it2 == map.end())
+		{
 			return;
-		time = it2->first - it->first;
+		}
+		if(currentTime >= it->first && currentTime < it2->first)
+		{
+			keyFrame1 = it;
+			keyFrame2 = it2;
+			break;
+		}
+		
 	}
-	currentTime = currentTime - it->first;
-	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
-	
-	gameObject->localTransform.setScale(mix);
-}
-
-void Animation::rotationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& rotation)
-{
-	if (rotation.size() < 2)
-		return;
-	static std::map<float, glm::vec3>::iterator it;
-	static std::map<float, glm::vec3>::iterator it2;
-
-	static float time = 0.0f;
-	if (currentTime == 0.0f)
-	{
-		it = rotation.begin();
-		it2 = std::next(it);
-		time = it2->first - it->first;
-	}
-	else if (it2 == rotation.end())
-	{
-		return;
-	}
-	else if (currentTime >= it2->first)
-	{
-		it = it2;
-		it2 = std::next(it2);
-		if (it2 == rotation.end())
-			return;
-		time = it2->first - it->first;
-	}
-	currentTime = currentTime - it->first;
-
-	glm::vec3 mix = glm::mix(it->second, it2->second, currentTime / time);
-	animatedObject->localTransform.setRotationXDegrees(mix.x);
-	animatedObject->localTransform.setRotationYDegrees(mix.y);
-	animatedObject->localTransform.setRotationZDegrees(mix.z);
 }
 
 Animation::~Animation()
@@ -181,12 +145,20 @@ void Animation::renderGui()
 	Component::renderGui();
 }
 
-void Animation::play()
+void Animation::play(bool _looped)
 {
 	isPlaying = true;
+	looped = _looped;
 }
 
-bool Animation::addKeyFrame(GraphNode* animatedNode, AnimType type, float time, glm::vec3 values)
+void Animation::stopPlaying()
+{
+	isPlaying = false;
+	currentTime = 0.0f;
+	looped = false;
+}
+
+bool Animation::addKeyFrame(GraphNode* animatedNode, Animated type, float time, glm::vec3 values)
 {
 	if (time < 0)
 		return false;
@@ -198,15 +170,15 @@ bool Animation::addKeyFrame(GraphNode* animatedNode, AnimType type, float time, 
 	}
 	it = objectAnimations.find(animatedNode);
 	
-	if(type == TRANSLATION)
+	if(type == Animated::TRANSLATION)
 	{
 		it->second.translation[time] = values;
 	}
-	else if(type == SCALE)
+	else if(type == Animated::SCALE)
 	{
 		it->second.scale[time] = values;
 	}
-	else if(type == ROTATION)
+	else if(type == Animated::ROTATION)
 	{
 		it->second.rotation[time] = values;
 	}
@@ -216,7 +188,7 @@ bool Animation::addKeyFrame(GraphNode* animatedNode, AnimType type, float time, 
 	return true;
 }
 
-bool Animation::deleteKeyFrame(GraphNode* animatedNode, AnimType type, float time)
+bool Animation::deleteKeyFrame(GraphNode* animatedNode, Animated type, float time)
 {
 	auto it = objectAnimations.find(animatedNode);
 	if (it == objectAnimations.end())
@@ -224,7 +196,7 @@ bool Animation::deleteKeyFrame(GraphNode* animatedNode, AnimType type, float tim
 		return false;
 	}
 	std::map<float, glm::vec3>::iterator keyFrameToDelete;
-	if (type == TRANSLATION)
+	if (type == Animated::TRANSLATION)
 	{
 		keyFrameToDelete = it->second.translation.find(time);
 		if(keyFrameToDelete != it->second.translation.end())
@@ -232,7 +204,7 @@ bool Animation::deleteKeyFrame(GraphNode* animatedNode, AnimType type, float tim
 			it->second.translation.erase(keyFrameToDelete);
 		}
 	}
-	else if (type == SCALE)
+	else if (type == Animated::SCALE)
 	{
 		keyFrameToDelete = it->second.scale.find(time);
 		if (keyFrameToDelete != it->second.scale.end())
@@ -240,7 +212,7 @@ bool Animation::deleteKeyFrame(GraphNode* animatedNode, AnimType type, float tim
 			it->second.scale.erase(keyFrameToDelete);
 		}
 	}
-	else if (type == ROTATION)
+	else if (type == Animated::ROTATION)
 	{
 		keyFrameToDelete = it->second.rotation.find(time);
 		if (keyFrameToDelete != it->second.rotation.end())
@@ -281,7 +253,7 @@ void Animation::setEndTime()
 {
 	for (auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
 	{
-		if (it->second.translation.size() >= 1)
+		if (!it->second.translation.empty())
 		{
 			auto it2 = std::prev(it->second.translation.end());
 			if (endTime < it2->first)
@@ -290,7 +262,7 @@ void Animation::setEndTime()
 			}
 		}
 
-		if (it->second.scale.size() >= 1)
+		if (!it->second.translation.empty())
 		{
 			auto it2 = std::prev(it->second.scale.end());
 			if (endTime < it2->first)
@@ -299,7 +271,7 @@ void Animation::setEndTime()
 			}
 		}
 
-		if (it->second.rotation.size() >= 1)
+		if (!it->second.translation.empty())
 		{
 			auto it2 = std::prev(it->second.rotation.end());
 			if (endTime < it2->first)

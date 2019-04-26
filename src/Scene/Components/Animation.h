@@ -3,22 +3,23 @@
 
 #include "Scene/Components/Component.h"
 #include <map>
+namespace anim {
+	enum Animated
+	{
+		TRANSLATION,
+		SCALE,
+		ROTATION,
+	};
 
-enum AnimType
-{
-	TRANSLATION,
-	SCALE,
-	ROTATION,
-};
+	using animMap = std::map<float, glm::vec3>;
 
-struct ObjectAnimation
-{
-	std::map<float, glm::vec3> translation;
-	std::map<float, glm::vec3> scale;
-	std::map<float, glm::vec3> rotation;
-};
-
-
+	struct ObjectAnimation
+	{
+		animMap translation;
+		animMap scale;
+		animMap rotation;
+	};
+}
 
 class Animation : public Component
 {
@@ -28,15 +29,15 @@ private:
 	float currentTime = 0.0f;
 	float endTime = 0.0f;
 	bool isPlaying = false;
-	
-	void translationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& translation);
-	void scaleInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& scale);
-	void rotationInterpolation(float currentTime, GraphNode* animatedObject, std::map<float, glm::vec3>& rotation);
+	bool looped = false;
 
-	std::map<GraphNode*, ObjectAnimation> objectAnimations;
+	void interpolateValues(float currentTime, GraphNode* animatedObject, anim::Animated type, anim::animMap& mapToInterpolate);
+	void getProperIterators(float currentTime, anim::animMap::iterator& keyFrame1, anim::animMap::iterator& keyFrame2, anim::animMap& map);
+
+	std::map<GraphNode*, anim::ObjectAnimation> objectAnimations;
 	void setEndTime();
 	friend class Serializer;
-	Animation(){}
+	Animation() {}
 public:
 	Animation(GraphNode* gameObject, std::string&& name);
 	SerializableType getSerializableType() override;
@@ -45,15 +46,17 @@ public:
 	void update(float msec) override;
 	~Animation() override;
 	void renderGui() override;
-	
-	
-	void play();
-	bool addKeyFrame(GraphNode* animatedNode, AnimType type, float time, glm::vec3 values);
-	bool deleteKeyFrame(GraphNode* animatedNode, AnimType type, float time);
+
+
+	void play(bool _looped = false);
+	void stopPlaying();
+	bool addKeyFrame(GraphNode* animatedNode, anim::Animated type, float time, glm::vec3 values);
+	bool deleteKeyFrame(GraphNode* animatedNode, anim::Animated type, float time);
 	void setCurrentTime(float);
 	void setEndTime(float);
 	void setIsPlaying(bool playing);
 	void setSpeed(float _speed);
 	void setName(std::string&& _name);
 };
+
 #endif
