@@ -8,6 +8,8 @@
 #include "CollectableObject.h"
 #include "Serialization/Serializer.h"
 #include "Ui/UiPlane.h"
+#include "Scene/Components/Animation.h"
+#include "Scene/Components/AnimationController.h"
 
 Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
@@ -17,8 +19,9 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, S
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
-	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos() + camera->getFront() * 1.5f,
-		camera->getFront(), 1.0f);
+	Collider* coll = gameObject->getComponent<Collider>();
+
+	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos(), camera->getFront(), 2.0f, coll);
 	if (object) {
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
@@ -26,6 +29,21 @@ void Picking::update(float msec) {
 			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
 				inventory.push_back(object);
 				collectable->takeObject();
+			}
+		}
+		Animation* anim = object->getComponent<Animation>();
+		if(anim)
+		{
+			if (gameManager->getKeyState(GLFW_KEY_F)) {
+				anim->play();
+			}
+		}
+		AnimationController* animController = object->getComponent<AnimationController>();
+		if(animController)
+		{
+			if (gameManager->getKeyState(GLFW_KEY_F))
+			{
+				animController->startAnimation();
 			}
 		}
 	}

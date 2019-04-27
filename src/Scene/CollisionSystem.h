@@ -22,6 +22,6 @@ public:
 	bool checkCollision(Collider* collider1, Collider* collider2);
 	bool containTest(glm::vec3 min, glm::vec3 max, Collider* collider);
 	bool containTest(glm::vec3 point, Collider* collider);
-	GraphNode* castRay(glm::vec3 startPoint, glm::vec3 _direction, float distance);
+	GraphNode* castRay(glm::vec3 startPoint, glm::vec3 _direction, float distance, Collider* toIgnore = nullptr);
 };
 #endif
