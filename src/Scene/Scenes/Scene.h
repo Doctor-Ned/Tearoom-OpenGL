@@ -23,8 +23,8 @@ public:
 	void setCamera(Camera *camera);
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
-	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
-	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
+	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling = true, bool ignoreRefractive=false);
+	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling=true, bool ignoreRefractive=false);
 	void renderUiUsingRenderMap(Shader *shader = nullptr);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
@@ -60,7 +60,7 @@ protected:
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
 	void addToRenderMap(UiElement *uiElement, bool recurse, bool checkIfExists);
-	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight);
+	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight, bool frustumCulling = true, bool ignoreRefractive = false);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
 	std::map<ShaderType, std::vector<UiElement*>*> uiRenderMap;

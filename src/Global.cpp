@@ -124,8 +124,9 @@ glm::vec3* Global::createHorizontalTransformArray(const int width, const int len
 }
 
 void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb,
-	const std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer) {
-
+	const std::function<void(glm::mat4, glm::mat4)> renderCallback) {
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	glm::mat4 p = glm::perspective(glm::radians(90.0f), 1.0f, 0.001f, 100.0f);
@@ -162,7 +163,7 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 }
 
 double Global::remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax,

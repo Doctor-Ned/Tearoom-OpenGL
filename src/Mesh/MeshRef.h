@@ -5,7 +5,7 @@
 
 class MeshRef abstract: public Mesh {
 public:
-	void regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback, GLuint framebuffer);
+	void regenEnvironmentMap(glm::mat4 model, std::function<void(glm::mat4, glm::mat4)> renderCallback);
 	GLuint getEnvironmentMap() const;
 	SerializableType getSerializableType() override;
 protected:

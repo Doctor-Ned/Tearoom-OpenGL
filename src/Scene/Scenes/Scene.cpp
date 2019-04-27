@@ -6,6 +6,7 @@
 #include "Serialization/Serializer.h"
 #include "Render/Camera.h"
 #include "Ui/UiCanvas.h"
+#include "Mesh/MeshRef.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -15,6 +16,44 @@ void Scene::render() {
 			renderNodesUsingRenderMap(shader, true);
 			renderNodesUsingTransparentRenderMap(shader, true);
 		}, updatableShaders);
+		std::vector<GraphNode*> refNodes;
+		for (auto &rend : *renderMap[STReflect]) {
+			GraphNode *gn = dynamic_cast<GraphNode*>(rend);
+			if (gn != nullptr) {
+				MeshRef *ref = dynamic_cast<MeshRef*>(gn->getMesh());
+				if (ref != nullptr) {
+					refNodes.push_back(gn);
+				}
+			}
+		}
+		for (auto &rend : *renderMap[STRefract]) {
+			GraphNode *gn = dynamic_cast<GraphNode*>(rend);
+			if (gn != nullptr) {
+				MeshRef *ref = dynamic_cast<MeshRef*>(gn->getMesh());
+				if (ref != nullptr) {
+					refNodes.push_back(gn);
+				}
+			}
+		}
+		glViewport(0, 0, ENVMAP_SIZE.x, ENVMAP_SIZE.y);
+		for(auto &refNode : refNodes) {
+			MeshRef *ref = dynamic_cast<MeshRef*>(refNode->getMesh());
+			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [this,refNode](glm::mat4 view, glm::mat4 projection) {
+				for (auto &shader : updatableShaders) {
+					shader->use();
+					shader->setViewPosition(refNode->worldTransform.getPosition());
+				}
+				uboViewProjection->inject(view, projection);
+				renderNodesUsingRenderMap(nullptr, false, false, true);
+				if (skybox != nullptr) {
+					static Shader *skyboxShader = assetManager->getShader(STSkybox);
+					glm::mat4 v = view;
+					v[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+					skybox->draw(skyboxShader, v, projection);
+				}
+				renderNodesUsingTransparentRenderMap(nullptr, false, false, true);
+			});
+		}
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,12 +105,12 @@ void Scene::removeNode(GraphNode* node, bool recurse) {
 	removeFromRenderMap(node, recurse);
 }
 
-void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight) {
-	renderFromMap(true, shader, ignoreLight);
+void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
+	renderFromMap(true, shader, ignoreLight, frustumCulling, ignoreRefractive);
 }
 
-void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLight) {
-	renderFromMap(false, shader, ignoreLight);
+void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
+	renderFromMap(false, shader, ignoreLight, frustumCulling, ignoreRefractive);
 }
 
 void Scene::renderUiUsingRenderMap(Shader* shader) {
@@ -462,7 +501,7 @@ void Scene::addToRenderMap(UiElement* uiElement, bool recurse, bool checkIfExist
 	}
 }
 
-void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
+void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
 	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
 	auto octree = OctreeNode::getInstance();
 	if (shader == nullptr) {
@@ -495,7 +534,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 						if (gn == nullptr) {
 							Component *comp = dynamic_cast<Component*>(node);
 							gn = comp->getGameObject();
-						}
+				}
 						bool skip = true;
 						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
 							if (*i == gn) {
@@ -507,16 +546,16 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight) {
 						if (skip) {
 							continue;
 						}
-					}
+			}
 #endif
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;
 					}
 					node->drawSelf(shader);
-				}
-			}
 		}
+	}
+}
 	} else {
 		shader->use();
 		for (auto &type : ShaderTypes) {
