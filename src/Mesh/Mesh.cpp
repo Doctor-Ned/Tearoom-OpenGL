@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "Scene/GameManager.h"
+#include "Scene/Scenes/Scene.h"
 
 void Mesh::setShaderType(ShaderType shaderType) {
 	this->shaderType = shaderType;
@@ -11,6 +12,14 @@ void Mesh::setShininess(float shininess) {
 
 void Mesh::setUseLight(bool useLight) {
 	this->useLight = useLight;
+}
+
+void Mesh::setCastShadows(bool castShadows) {
+	this->castShadows = castShadows;
+}
+
+bool Mesh::getCastShadows() {
+	return castShadows;
 }
 
 bool Mesh::getUseLight() const {
@@ -100,6 +109,7 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 	root["useLight"] = useLight;
 	root["opaque"] = opaque;
 	root["opacity"] = opacity;
+	root["castShadows"] = castShadows;
 	root["renderMode"] = static_cast<int>(renderMode);
 	return root;
 }
@@ -110,8 +120,39 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setCulled(root.get("culled", culled).asBool());
 	setUseLight(root.get("useLight", useLight).asBool());
 	setOpaque(root.get("opaque", opaque).asBool());
+	setCastShadows(root.get("castShadows", castShadows).asBool());
 	setOpacity(root.get("opacity", opacity).asFloat());
 	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
+}
+
+void Mesh::renderGui() {
+	ImGui::Text(("Mesh type: " + SerializableTypeNames[getSerializableType()]).c_str());
+	bool useLight = this->useLight,
+		opaque = this->opaque,
+		culled = this->culled,
+		castShadows = this->castShadows;
+	float opacity = this->opacity;
+
+	ImGui::Checkbox("Use light", &useLight);
+	ImGui::Checkbox("Cast shadows", &castShadows);
+	ImGui::Checkbox("Opaque", &opaque);
+	ImGui::SliderFloat("Opacity", &opacity, 0.0f, 1.0f);
+	ImGui::Checkbox("Culled", &culled);
+	if (useLight != this->useLight) {
+		setUseLight(useLight);
+	}
+	if (castShadows != this->castShadows) {
+		setCastShadows(castShadows);
+	}
+	if (opaque != this->opaque) {
+		setOpaque(opaque);
+	}
+	if (opacity != this->opacity) {
+		setOpacity(opacity);
+	}
+	if (culled != this->culled) {
+		setCulled(culled);
+	}
 }
 
 Mesh::Mesh(ShaderType shaderType, GLuint renderMode) {

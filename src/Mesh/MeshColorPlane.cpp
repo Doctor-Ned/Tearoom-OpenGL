@@ -6,6 +6,24 @@ MeshColorPlane::MeshColorPlane(float width, float length, glm::vec4 color, glm::
 	setupMesh();
 }
 
+void MeshColorPlane::renderGui() {
+	MeshSimple::renderGui();
+	glm::vec3 baseCenter = this->baseCenter;
+	float width = this->width, length = this->length;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderFloat("Width", &width, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Width (fixed)", &width);
+	ImGui::SliderFloat("Length", &length, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Length (fixed)", &length);
+
+	if (baseCenter != this->baseCenter || width != this->width || length != this->length) {
+		updateValues(width, length, baseCenter);
+	}
+}
+
 void MeshColorPlane::draw(Shader *shader, glm::mat4 world) {
 	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);

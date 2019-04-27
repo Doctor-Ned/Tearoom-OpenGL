@@ -18,6 +18,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshColorSphere() {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createSphereSegment(std::vector<SimpleVertex>* vertices, float angle, float radStep);
 	void createRectangle(std::vector<SimpleVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,

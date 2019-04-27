@@ -8,6 +8,7 @@
 class MenuScene;
 class Scene;
 class Camera;
+class EditorScene;
 
 struct Framebuffer {
 	GLuint fbo = 0;
@@ -57,6 +58,7 @@ public:
 	float getWindowCenterX();
 	float getWindowCenterY();
 	GLuint getMainFramebuffer();
+	EditorScene *getEditorScene();
 	GameFramebuffers getFramebuffers();
 	void setWindow(GLFWwindow *window);
 	void setCursorLocked(bool locked);
@@ -73,6 +75,7 @@ public:
 	bool getKeyState(int key);
 	bool getMouseState(int key);
 	glm::vec2 getMousePosition() const;
+	Scene* getCurrentScene();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
 	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment);

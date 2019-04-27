@@ -7,6 +7,27 @@ MeshRefSphere::MeshRefSphere(bool reflective, float radius, int precision, glm::
 	setupMesh();
 }
 
+void MeshRefSphere::renderGui() {
+	MeshRef::renderGui();
+	float radius = this->radius;
+	int precision = this->precision;
+	glm::vec3 baseCenter = this->baseCenter;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderInt("Precision", &precision, 3, 30);
+	ImGui::SameLine();
+	ImGui::InputInt("Precision (fixed)", &precision);
+	if (precision < 3) {
+		precision = 3;
+	}
+	ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Radius (fixed)", &radius);
+	if (radius != this->radius || precision != this->precision || baseCenter != this->baseCenter) {
+		updateValues(radius, precision, baseCenter);
+	}
+}
+
 void MeshRefSphere::draw(Shader *shader, glm::mat4 world) {
 	MeshRef::draw(shader, world);
 	//glBindVertexArray(VAO);

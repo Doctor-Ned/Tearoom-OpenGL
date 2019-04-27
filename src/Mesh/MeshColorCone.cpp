@@ -7,6 +7,30 @@ MeshColorCone::MeshColorCone(float radius, float height, int sideAmount, glm::ve
 	setupMesh();
 }
 
+void MeshColorCone::renderGui() {
+	MeshSimple::renderGui();
+	float radius = this->radius, height = this->height;
+	int sideAmount = this->sideAmount;
+	glm::vec3 baseCenter = this->baseCenter;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderInt("Side amount", &sideAmount, 3, 30);
+	ImGui::SameLine();
+	ImGui::InputInt("Side amount (fixed)", &sideAmount);
+	if (sideAmount < 3) {
+		sideAmount = 3;
+	}
+	ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Radius (fixed)", &radius);
+	ImGui::SliderFloat("Height", &height, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Height (fixed)", &height);
+	if (baseCenter != this->baseCenter || sideAmount != this->sideAmount || radius != this->radius || height != this->height) {
+		updateValues(radius, height, sideAmount, baseCenter);
+	}
+}
+
 void MeshColorCone::draw(Shader *shader, glm::mat4 world) {
 	MeshSimple::draw(shader, world);
 	glBindVertexArray(VAO);

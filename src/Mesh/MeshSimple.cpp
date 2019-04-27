@@ -30,3 +30,12 @@ void MeshSimple::deserialize(Json::Value& root, Serializer* serializer) {
 	Mesh::deserialize(root, serializer);
 	color = DataSerializer::deserializeVec4(root.get("color", DataSerializer::serializeVec4(color)));
 }
+
+void MeshSimple::renderGui() {
+	Mesh::renderGui();
+	glm::vec4 color = this->color;
+	ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+	if(color != this->color) {
+		setColor(color);
+	}
+}

@@ -54,6 +54,11 @@ void ModelInstanced::deserialize(Json::Value& root, Serializer* serializer) {
 	initialize(AssetManager::getInstance()->getModelData(path), offsets, offsetSize);
 }
 
+void ModelInstanced::renderGui() {
+	Mesh::renderGui();
+	ImGui::Text(path.c_str());
+}
+
 void ModelInstanced::initialize(std::vector<ModelData*> data, glm::vec3* offsets, int offsetSize) {
 	this->offsets = offsets;
 	this->offsetSize = offsetSize;

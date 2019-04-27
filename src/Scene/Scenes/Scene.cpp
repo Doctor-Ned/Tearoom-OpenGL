@@ -115,6 +115,50 @@ void Scene::addToRenderMap(UiElement* uiElement, bool recurse) {
 	addToRenderMap(uiElement, recurse, true);
 }
 
+void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
+	bool found = false;
+	for (auto &type : ShaderTypes) {
+		if (type != STNone) {
+			auto vec = *renderMap[type];
+			for (auto i = vec.begin(); i != vec.end();) {
+				if (*i == renderable) {
+					found = true;
+					break;
+				}
+				++i;
+			}
+		}
+		if (found) {
+			break;
+		}
+	}
+	if (found || addIfNotFound && !found) {
+		addToRenderMap(renderable, false);
+	}
+}
+
+void Scene::updateElement(UiElement* uiElement, bool addIfNotFound) {
+	bool found = false;
+	for (auto &type : ShaderTypes) {
+		if (type != STNone) {
+			auto vec = *uiRenderMap[type];
+			for (auto i = vec.begin(); i != vec.end();) {
+				if (*i == uiElement) {
+					found = true;
+					break;
+				}
+				++i;
+			}
+		}
+		if (found) {
+			break;
+		}
+	}
+	if (found || addIfNotFound && !found) {
+		addToRenderMap(uiElement, false);
+	}
+}
+
 void Scene::removeComponent(GraphNode* node, Component* component) {
 	node->removeComponent(component);
 	Renderable *r = dynamic_cast<Renderable*>(component);

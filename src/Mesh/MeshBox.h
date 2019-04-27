@@ -18,6 +18,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshBox() {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();
 	glm::vec3 min, max;

@@ -7,6 +7,7 @@
 #include "Components/Collider.h"
 #include "Serialization/DataSerializer.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Scenes/EditorScene.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
@@ -273,6 +274,40 @@ void GraphNode::renderGui() {
 			buff[0] = '\0';
 		}
 		localTransform.drawGui();
+		EditorScene *editor = GameManager::getInstance()->getEditorScene();
+		if (mesh != nullptr) {
+			if(editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
+				editor->confirmationDialogCallback = [this,editor]() {
+					//delete mesh;
+					mesh = nullptr;
+					editor->editedScene->updateRenderable(this);
+				};
+			}
+			mesh->renderGui();
+			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
+			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
+				ImGui::SameLine();
+				if (ImGui::Button("Change...")) {
+					editor->shaderTypeSelectionCallback = [node=this,editor=editor,mesh=mesh](ShaderType type) {
+						mesh->setShaderType(type);
+						editor->editedScene->updateRenderable(node);
+					};
+				}
+			}
+		} else {
+			if(editor->meshSelectionCallback == nullptr &&ImGui::Button("Add mesh...")) {
+				if(editor != nullptr) {
+					editor->meshSelectionCallback = [this, editor](SerializableType type) {
+						if (!editor->typeCreationExists(type)) {
+							editor->addTypeCreation(type, [this, editor](void* mesh) {
+								this->mesh = reinterpret_cast<Mesh*>(mesh);
+								editor->editedScene->updateRenderable(this);
+							});
+						}
+					};
+				}
+			}
+		}
 		for (auto &comp : components) {
 			comp->renderGui();
 			ImGui::NewLine();

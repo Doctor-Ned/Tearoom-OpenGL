@@ -16,6 +16,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshTorus() {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createTorusSegment(std::vector<TextureVertex>* vertices, float angle, float radStep);
 	void createRectangle(std::vector<TextureVertex>* vertices, glm::vec3* tL, glm::vec3* tR, glm::vec3* dR,

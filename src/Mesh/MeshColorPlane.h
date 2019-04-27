@@ -15,6 +15,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshColorPlane() {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();
 	glm::vec3 baseCenter;

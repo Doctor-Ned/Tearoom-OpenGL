@@ -23,12 +23,14 @@ public:
 	void setCamera(Camera *camera);
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
-	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight=false);
+	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
 	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false);
 	void renderUiUsingRenderMap(Shader *shader = nullptr);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
 	void addToRenderMap(UiElement *uiElement, bool recurse = true);
+	void updateRenderable(Renderable *renderable, bool addIfNotFound = false);
+	void updateElement(UiElement *uiElement, bool addIfNotFound = false);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);
 	void removeFromRenderMap(GraphNode *node, bool recurse = true);

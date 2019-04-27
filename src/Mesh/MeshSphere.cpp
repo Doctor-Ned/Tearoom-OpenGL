@@ -7,6 +7,27 @@ MeshSphere::MeshSphere(float radius, int precision, std::string texturePath, glm
 	setupMesh();
 }
 
+void MeshSphere::renderGui() {
+	MeshTexture::renderGui();
+	float radius = this->radius;
+	int precision = this->precision;
+	glm::vec3 baseCenter = this->baseCenter;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderInt("Precision", &precision, 3, 30);
+	ImGui::SameLine();
+	ImGui::InputInt("Precision (fixed)", &precision);
+	if (precision < 3) {
+		precision = 3;
+	}
+	ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Radius (fixed)", &radius);
+	if(radius != this->radius || precision != this->precision || baseCenter != this->baseCenter) {
+		updateValues(radius, precision, baseCenter);
+	}
+}
+
 void MeshSphere::draw(Shader *shader, glm::mat4 world) {
 	MeshTexture::draw(shader, world);
 	glActiveTexture(GL_TEXTURE0);

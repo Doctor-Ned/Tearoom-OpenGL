@@ -43,6 +43,34 @@ void Model::setCulled(bool culled) {
 	}
 }
 
+void Model::setUseLight(bool useLight) {
+	Mesh::setUseLight(useLight);
+	for (auto &mesh : meshes) {
+		mesh->setUseLight(useLight);
+	}
+}
+
+void Model::setCastShadows(bool castShadows) {
+	Mesh::setCastShadows(castShadows);
+	for (auto &mesh : meshes) {
+		mesh->setCastShadows(castShadows);
+	}
+}
+
+void Model::setRenderMode(GLuint renderMode) {
+	Mesh::setRenderMode(renderMode);
+	for (auto &mesh : meshes) {
+		mesh->setRenderMode(renderMode);
+	}
+}
+
+void Model::setOpaque(bool opaque) {
+	Mesh::setOpaque(opaque);
+	for (auto &mesh : meshes) {
+		mesh->setOpaque(opaque);
+	}
+}
+
 SerializableType Model::getSerializableType() {
 	return SModel;
 }
@@ -57,6 +85,11 @@ void Model::deserialize(Json::Value& root, Serializer* serializer) {
 	Mesh::deserialize(root, serializer);
 	this->path = root.get("model", "").asString();
 	initialize(AssetManager::getInstance()->getModelData(path));
+}
+
+void Model::renderGui() {
+	Mesh::renderGui();
+	ImGui::Text(path.c_str());
 }
 
 void Model::initialize(std::vector<ModelData*> data) {

@@ -20,11 +20,16 @@ public:
 	static std::vector<ModelData*> createModelData(std::string path);
 	void setOpacity(float opacity) override;
 	void setCulled(bool culled) override;
+	void setUseLight(bool useLight) override;
+	void setCastShadows(bool castShadows) override;
+	void setRenderMode(GLuint renderMode) override;
+	void setOpaque(bool opaque) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 private:
 	Model() {}
+	void renderGui() override;
 	void initialize(std::vector<ModelData*> data);
 	std::string path;
 	Model(std::vector<ModelData*> data);

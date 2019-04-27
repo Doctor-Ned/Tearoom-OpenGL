@@ -17,6 +17,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshCylinder() {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	void createBottomTriangle(std::vector<TextureVertex>* vertices, float angle1, float angle2) const;
 	void createTopTriangle(std::vector<TextureVertex>* vertices) const;

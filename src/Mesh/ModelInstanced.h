@@ -17,6 +17,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 private:
 	ModelInstanced() {}
+	void renderGui() override;
 	void initialize(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
 	std::string path;
 	ModelInstanced(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);

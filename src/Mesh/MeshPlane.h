@@ -16,6 +16,7 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	void renderGui() override;
 	MeshPlane() {}
 	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();
