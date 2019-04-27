@@ -35,6 +35,13 @@ MiszukScene::MiszukScene() {
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
 	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
 	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
+	
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
+	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+
+	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
+	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
+
 	//-------------
 
 	// COLLECTABLE ITEM
@@ -51,6 +58,22 @@ MiszukScene::MiszukScene() {
     tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
     tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 	//-----------------
+
+	//miszuk animation
+	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
+	MeshColorBox* doorMesh = new MeshColorBox(glm::vec3(2.0f, 3.0f, 0.2f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f));
+	GraphNode* door = new GraphNode(doorMesh, doorPivot);
+	door->setName("door");
+	door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
+	Animation* anim = new Animation(door, "doorOpening");
+	anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
+	anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
+	anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	door->addComponent(anim);
+	doorPivot->localTransform.setPosition(-4.0f, -1.0f, -2.0f);
+	doorPivot->localTransform.rotateYDegrees(180.0f);
+	//
+
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
@@ -92,18 +115,15 @@ MiszukScene::MiszukScene() {
 
 	wallNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(8.0f, -2.0f, -15.0f));
-	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
-	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
-
-	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
-	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	
 	boxNode2->addComponent(new SphereCollider(boxNode2, DYNAMIC, true, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, DYNAMIC, true, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
 	boxNode->addComponent(new CollisionTest(boxNode));
 	simpleBox1->addComponent(new BoxCollider(simpleBox1, STATIC, false, glm::vec3(0, 0, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 	simpleBox2->addComponent(new BoxCollider(simpleBox2, STATIC, false, glm::vec3(0, 0, 0), glm::vec3(0.5f, 0.5f, 0.5f)));
-	simpleBox2->addComponent(new Animation(simpleBox2, "Animation"));
+	simpleBox2->setName("animatedObject");
+	//simpleBox2->addComponent(new Animation(simpleBox2, "Animation"));
 	pivot->addComponent(new BoxCollider(pivot, DYNAMIC, true, glm::vec3(7.0f, 3.0f, 0.0f), glm::vec3(0.5f, 1.0f, 0.5f)));
 	pivot->addComponent(new CollisionTest(pivot));
 
@@ -161,15 +181,15 @@ void MiszukScene::update(double deltaTime) {
 	}
 
 	rootNode->update(deltaTime);
-	GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
-	if(node != nullptr)
-	{
-		//std::cout << "Game object hit" << std::endl;
-	}
-	else
-	{
-		//std::cout << "ray casted" << std::endl;
-	}
+	//GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
+	//if(node != nullptr)
+	//{
+	//	//std::cout << "Game object hit" << std::endl;
+	//}
+	//else
+	//{
+	//	//std::cout << "ray casted" << std::endl;
+	//}
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 
 	OctreeNode::getInstance()->RebuildTree(15.0f);

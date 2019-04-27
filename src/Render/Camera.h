@@ -33,7 +33,7 @@ public:
 	void moveDown(float timeDelta, int steps = 1);
 	void setSpeed(float speed);
 	void setRotSpeed(float rotSpeed);
-	GraphNode* castRayFromCamera(glm::vec3 direction, float distance);
+	GraphNode* castRayFromCamera(glm::vec3 direction, float distance, Collider* toIgnore = nullptr);
 	void RecalculateFrustum();
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;

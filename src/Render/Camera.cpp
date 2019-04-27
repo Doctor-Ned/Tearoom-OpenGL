@@ -129,15 +129,9 @@ void Camera::setRotSpeed(float rotSpeed) {
 	this->rotSpeed = rotSpeed;
 }
 
-GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance)
+GraphNode* Camera::castRayFromCamera(glm::vec3 _direction, float distance, Collider* toIgnore)
 {
-	GraphNode *hitObject = CollisionSystem::getInstance()->castRay(this->getPos() + this->getFront() * 1.0f, this->getFront(), 0.3f);
-	if(hitObject != nullptr)
-	{
-		hitObject->beingHitByRay();
-	}
-
-	return CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance);
+	return CollisionSystem::getInstance()->castRay(this->cameraPos, _direction, distance, toIgnore);
 }
 
 void Camera::RecalculateFrustum()

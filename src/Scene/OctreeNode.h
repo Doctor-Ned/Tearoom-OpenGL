@@ -17,6 +17,7 @@ struct Box
 struct Frustum;
 class GraphNode;
 class Camera;
+class Collider;
 class OctreeNode
 {
 private:
@@ -30,7 +31,7 @@ private:
 	inline void divideSpace(std::vector<Box>& boxes);
 public:
 	static std::shared_ptr<OctreeNode>& getInstance();
-	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node);
+	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node, Collider* toIgnore = nullptr);
 	static std::vector<GraphNode*> frustumContainer;
 	static std::set<GraphNode*> toInsert2;
 	static inline bool containTest(glm::vec3& point, Box& box);

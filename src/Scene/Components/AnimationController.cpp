@@ -17,9 +17,6 @@ void AnimationController::startAnimation() {
 
 void AnimationController::update(float msec)
 {
-    GameManager* gameManager = GameManager::getInstance();
-    if(gameManager->getKeyState(GLFW_KEY_F) && gameObject->getHitByRay()) {startAnimation();}
-
     if(animating) {
         switch (type) {
             case DoorOpeningX:

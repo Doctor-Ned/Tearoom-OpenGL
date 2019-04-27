@@ -132,7 +132,7 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 	return false;
 }
 
-GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction, float distance)
+GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction, float distance, Collider* toIgnore)
 {
 	glm::vec3 startPos = startPoint;
 	glm::vec3 direction = glm::normalize(_direction);
@@ -144,7 +144,7 @@ GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction,
 		currentPos = startPos + direction * k;
 		k += 0.01f;
 
-		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree);
+		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree, toIgnore);
 		if (detectedNode != nullptr) {
 			return detectedNode;
 		}
