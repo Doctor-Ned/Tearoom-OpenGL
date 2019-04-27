@@ -44,8 +44,7 @@ void EditorScene::renderUi() {
 	if (shaderTypeSelectionCallback != nullptr && ImGui::Button("Stop selecting shader type")) {
 		shaderTypeSelectionCallback = nullptr;
 	}
-	if (ImGui::Button("New scene") && !showConfirmationDialog) {
-		showConfirmationDialog = true;
+	if (confirmationDialogCallback == nullptr && ImGui::Button("New scene")) {
 		confirmationDialogCallback = [this]() {
 			setEditedScene(new Scene());
 		};
@@ -60,20 +59,18 @@ void EditorScene::renderUi() {
 			showSaveDialog = true;
 		}
 	}
-	if (editedScene != nullptr && !showConfirmationDialog) {
+	if (confirmationDialogCallback == nullptr && editedScene != nullptr) {
 		if (ImGui::Button("Close scene")) {
 			confirmationDialogCallback = [this]() {
 				setEditedScene(nullptr);
 			};
-			showConfirmationDialog = true;
 		}
 	}
-	if (ImGui::Button("Reload resources") && !showConfirmationDialog) {
+	if (confirmationDialogCallback == nullptr && ImGui::Button("Reload resources")) {
 		confirmationDialogCallback = [this]() {
 			assetManager->reloadResources();
 			loadTexturesModels();
 		};
-		showConfirmationDialog = true;
 	}
 	ImGui::End();
 	static std::vector<TypeCreation*> typeCreationsToDelete;
@@ -246,7 +243,7 @@ void EditorScene::renderUi() {
 		ImGui::PopID();
 	}
 
-	for(auto &tc : typeCreationsToDelete) {
+	for (auto &tc : typeCreationsToDelete) {
 		deleteTypeCreation(tc);
 	}
 
@@ -326,8 +323,7 @@ void EditorScene::renderUi() {
 			ImGui::Text(("Found " + std::to_string(scenes.size()) + " available scenes:").c_str());
 			ImGui::Indent();
 			for (auto &name : scenes) {
-				if (ImGui::Button(name.c_str()) && !showConfirmationDialog) {
-					showConfirmationDialog = true;
+				if (confirmationDialogCallback == nullptr && ImGui::Button(name.c_str())) {
 					confirmationDialogCallback = [this, name]() {
 						setEditedScene(serializer->loadScene(name));
 					};
@@ -367,25 +363,18 @@ void EditorScene::renderUi() {
 		}
 		ImGui::End();
 	}
-	if (showConfirmationDialog) {
-		if (confirmationDialogCallback == nullptr) {
-			showConfirmationDialog = false;
-		} else {
-			ImGui::Begin("Confirmation dialog", nullptr, 64);
-			ImGui::Text("Are you sure?");
-			if (ImGui::Button("Yes")) {
-				if (confirmationDialogCallback != nullptr) {
-					confirmationDialogCallback();
-					confirmationDialogCallback = nullptr;
-				}
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("No")) {
-				confirmationDialogCallback = nullptr;
-				showConfirmationDialog = false;
-			}
-			ImGui::End();
+	if (confirmationDialogCallback != nullptr) {
+		ImGui::Begin("Confirmation dialog", nullptr, 64);
+		ImGui::Text("Are you sure?");
+		if (ImGui::Button("Yes")) {
+			confirmationDialogCallback();
+			confirmationDialogCallback = nullptr;
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("No")) {
+			confirmationDialogCallback = nullptr;
+		}
+		ImGui::End();
 	}
 	if (editedScene != nullptr) {
 		ImGui::Begin("Scene objects", nullptr, 64);
@@ -614,7 +603,6 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	Scene *previous = editedScene;
 
 	editedNodes.clear();
-	showConfirmationDialog = false;
 	showSaveDialog = false;
 	showLoadDialog = false;
 	confirmationDialogCallback = nullptr;
@@ -682,7 +670,7 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 	}
 	ImGui::SameLine();
 	if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child...")) {
-		addTypeCreation(SGraphNode, [this,node](void* nod) {
+		addTypeCreation(SGraphNode, [this, node](void* nod) {
 			if (nod != nullptr) {
 				appendNode(reinterpret_cast<GraphNode*>(nod), node);
 			}
@@ -700,7 +688,7 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			}
 			ImGui::SameLine();
 		}
-		if(this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
+		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
 			confirmationDialogCallback = [node]() {
 				node->setParent(nullptr);
 			};
@@ -729,8 +717,7 @@ void EditorScene::keyEvent(int key, bool pressed) {
 				setCursorLocked(!getCursorLocked());
 				break;
 			case KEY_QUIT:
-				if (!showConfirmationDialog) {
-					showConfirmationDialog = true;
+				if (confirmationDialogCallback == nullptr) {
 					confirmationDialogCallback = [this]() {
 						setEditedScene(nullptr);
 						gameManager->goToMenu(false);

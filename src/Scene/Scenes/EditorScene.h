@@ -51,7 +51,7 @@ public:
 		SDirLightComp, SSpotLightComp, SPointLightComp, SSun};
 	SerializableType creatableMeshes[15] = { SModel, SMeshBox, SMeshColorBox, SMeshColorCone, SMeshColorCylinder, SMeshColorPlane, SMeshColorSphere, SMeshColorTorus, SMeshCone, SMeshCylinder, SMeshPlane, SMeshRefBox, SMeshRefSphere,
 	SMeshSphere, SMeshTorus};
-	bool showConfirmationDialog = false, showSaveDialog = false, showLoadDialog = false;
+	bool showSaveDialog = false, showLoadDialog = false;
 	std::function<void()> confirmationDialogCallback = nullptr;
 	std::function<void(GraphNode*)> nodeSelectionCallback = nullptr;
 	std::function<void(Texture)> textureSelectionCallback = nullptr;
