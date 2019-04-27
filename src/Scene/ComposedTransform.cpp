@@ -204,10 +204,20 @@ void ComposedTransform::renderGui() {
 		ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scale), 0.0f, 2.0f);
 		ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
 	}
-	ImGui::SliderAngle("Rotation X", &eulerRotation.x);
-	ImGui::SliderAngle("Rotation Y", &eulerRotation.y);
-	ImGui::SliderAngle("Rotation Z", &eulerRotation.z);
-	if(translation != data.translation || scale != data.scale || eulerRotation != data.eulerRotation) {
-		initialize(translation, scale, eulerRotation);
+	glm::vec3 eulerRotationDegrees = Global::radiansToDegrees(eulerRotation);
+	ImGui::SliderAngle("X Rotation", &eulerRotation.x);
+	ImGui::InputFloat("X Rotation (fixed)", &eulerRotationDegrees.x);
+	ImGui::SliderAngle("Y Rotation", &eulerRotation.y);
+	ImGui::InputFloat("Y Rotation (fixed)", &eulerRotationDegrees.y);
+	ImGui::SliderAngle("Z Rotation", &eulerRotation.z);
+	ImGui::InputFloat("Z Rotation (fixed)", &eulerRotationDegrees.z);
+	if(translation != data.translation || scale != data.scale || eulerRotation != data.eulerRotation || Global::degreesToRadians(eulerRotationDegrees) != data.eulerRotation) {
+		glm::vec3 rot;
+		if(eulerRotation != data.eulerRotation) {
+			rot = eulerRotation;
+		} else {
+			rot = Global::degreesToRadians(eulerRotationDegrees);
+		}
+		initialize(translation, scale, rot);
 	}
 }

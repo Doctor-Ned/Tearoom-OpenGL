@@ -7,6 +7,17 @@
 #include "Mesh/Model.h"
 #include "Mesh/MeshRefBox.h"
 #include "Mesh/MeshBox.h"
+#include "Mesh/MeshSphere.h"
+#include "Mesh/MeshRefSphere.h"
+#include "Mesh/MeshColorSphere.h"
+#include "Mesh/MeshTorus.h"
+#include "Mesh/MeshColorTorus.h"
+#include "Mesh/MeshColorPlane.h"
+#include "Mesh/MeshPlane.h"
+#include "Mesh/MeshColorCylinder.h"
+#include "Mesh/MeshCylinder.h"
+#include "Mesh/MeshColorCone.h"
+#include "Mesh/MeshCone.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -46,6 +57,13 @@ void EditorScene::renderUi() {
 	if (shaderTypeSelectionCallback != nullptr && ImGui::Button("Stop selecting shader type")) {
 		shaderTypeSelectionCallback = nullptr;
 	}
+
+	ImGui::Checkbox("Update edited scene", &updateEditedScene);
+	if(updateEditedScene) {
+		ImGui::SliderFloat("Time scale", &timeScale, -1.0f, 1.0f);
+		ImGui::InputFloat("Time scale (fixed)", &timeScale);
+	}
+
 	if (confirmationDialogCallback == nullptr && ImGui::Button("New scene")) {
 		confirmationDialogCallback = [this]() {
 			setEditedScene(new Scene());
@@ -238,21 +256,7 @@ void EditorScene::renderUi() {
 				switch (typeCreation->typeToCreate) {
 					case SMeshBox:
 					{
-						std::string txt = "Texture: ";
-						if (texture.length() == 0) {
-							txt += "-";
-						} else {
-							txt += texture;
-						}
-						ImGui::Text(txt.c_str());
-						if (textureSelectionCallback == nullptr) {
-							ImGui::SameLine();
-							if (ImGui::Button("Change...")) {
-								textureSelectionCallback = [&](Texture t) {
-									texture = t.path;
-								};
-							}
-						}
+						showTextureGui(texture);
 						if (valid && texture.length() == 0) {
 							valid = false;
 						}
@@ -284,32 +288,243 @@ void EditorScene::renderUi() {
 			case SMeshCone:
 			case SMeshColorCone:
 			{
+				static glm::vec4 color;
+				static std::string texture;
+				float radius, height;
+				int sideAmount;
+				if (typeCreation->typeCreationStarted) {
+					texture = "";
+					radius = 0.5f;
+					height = 1.0f;
+					sideAmount = 25;
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				bool valid = true;
 
+				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::InputFloat("Radius (fixed)", &radius);
+				ImGui::SliderFloat("Height", &height, 0.0f, 5.0f);
+				ImGui::InputFloat("Height (fixed)", &height);
+				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+
+				switch (typeCreation->typeToCreate) {
+					case SMeshCone:
+					{
+						showTextureGui(texture);
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+					break;
+					case SMeshColorCone:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *cone;
+					if (typeCreation->typeToCreate == SMeshColorCone) {
+						cone = new MeshColorCone(radius, height, sideAmount, color);
+					} else {
+						cone = new MeshCone(radius, height, sideAmount, texture);
+					}
+					typeCreation->creationCallback(cone);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SMeshCylinder:
 			case SMeshColorCylinder:
 			{
+				static glm::vec4 color;
+				static std::string texture;
+				float radius, height;
+				int sideAmount;
+				if (typeCreation->typeCreationStarted) {
+					texture = "";
+					radius = 0.5f;
+					height = 1.0f;
+					sideAmount = 25;
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				bool valid = true;
 
+				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::InputFloat("Radius (fixed)", &radius);
+				ImGui::SliderFloat("Height", &height, 0.0f, 5.0f);
+				ImGui::InputFloat("Height (fixed)", &height);
+				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+
+				switch (typeCreation->typeToCreate) {
+					case SMeshCylinder:
+					{
+						showTextureGui(texture);
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+					break;
+					case SMeshColorCylinder:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *cylinder;
+					if (typeCreation->typeToCreate == SMeshColorCylinder) {
+						cylinder = new MeshColorCylinder(radius, height, sideAmount, color);
+					} else {
+						cylinder = new MeshCylinder(radius, height, sideAmount, texture);
+					}
+					typeCreation->creationCallback(cylinder);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SMeshPlane:
 			case SMeshColorPlane:
 			{
+				static glm::vec4 color;
+				static std::string texture;
+				static float width, length;
+				if (typeCreation->typeCreationStarted) {
+					texture = "";
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+					width = 1.0f;
+					length = 1.0f;
+				}
+				bool valid = true;
 
+				ImGui::SliderFloat("Width", &width, 0.0f, 5.0f);
+				ImGui::InputFloat("Width (fixed)", &width);
+				ImGui::SliderFloat("Length", &length, 0.0f, 5.0f);
+				ImGui::InputFloat("Length (fixed)", &length);
+
+				switch (typeCreation->typeToCreate) {
+					case SMeshPlane:
+					{
+						showTextureGui(texture);
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+					break;
+					case SMeshColorPlane:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *plane;
+					if (typeCreation->typeToCreate == SMeshColorPlane) {
+						plane = new MeshColorPlane(width, length, color);
+					} else {
+						plane = new MeshPlane(width, length, texture);
+					}
+					typeCreation->creationCallback(plane);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SMeshSphere:
 			case SMeshColorSphere:
 			case SMeshRefSphere:
 			{
+				static bool reflective;
+				static glm::vec4 color;
+				static std::string texture;
+				static int precision;
+				static float radius;
+				if (typeCreation->typeCreationStarted) {
+					reflective = true;
+					texture = "";
+					precision = 25;
+					radius = 0.5f;
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				bool valid = true;
 
+				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::InputFloat("Radius (fixed)", &radius);
+				ImGui::SliderInt("Precision", &precision, 3, 75);
+
+				switch (typeCreation->typeToCreate) {
+					case SMeshSphere:
+					{
+						showTextureGui(texture);
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+					break;
+					case SMeshColorSphere:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+					case SMeshRefSphere:
+						ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *sphere;
+					if (typeCreation->typeToCreate == SMeshColorSphere) {
+						sphere = new MeshColorSphere(radius, precision, color);
+					} else if (typeCreation->typeToCreate == SMeshRefSphere) {
+						sphere = new MeshRefSphere(reflective, radius, precision);
+					} else {
+						sphere = new MeshSphere(radius, precision, texture);
+					}
+					typeCreation->creationCallback(sphere);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SMeshTorus:
 			case SMeshColorTorus:
 			{
+				static glm::vec4 color;
+				static std::string texture;
+				float radiusIn, radiusOut;
+				int sideAmount;
+				if (typeCreation->typeCreationStarted) {
+					texture = "";
+					radiusIn = 0.5f;
+					radiusOut = 1.0f;
+					sideAmount = 25;
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				bool valid = true;
 
+				ImGui::SliderFloat("Radius 1", &radiusIn, 0.0f, 5.0f);
+				ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
+				ImGui::SliderFloat("Radius 2", &radiusOut, 0.0f, 5.0f);
+				ImGui::InputFloat("Radius 2", &radiusOut, 0.0f, 5.0f);
+				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+
+				switch (typeCreation->typeToCreate) {
+					case SMeshTorus:
+					{
+						showTextureGui(texture);
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+					break;
+					case SMeshColorTorus:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *torus;
+					if (typeCreation->typeToCreate == SMeshColorTorus) {
+						torus = new MeshColorTorus(radiusIn, radiusOut, sideAmount, color);
+					} else {
+						torus = new MeshTorus(radiusIn, radiusOut, sideAmount, texture);
+					}
+					typeCreation->creationCallback(torus);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 		}
@@ -505,8 +720,8 @@ Camera* EditorScene::getCamera() {
 }
 
 void EditorScene::update(double deltaTime) {
-	if (editedScene != nullptr) {
-		editedScene->update(deltaTime);
+	if (editedScene != nullptr && updateEditedScene) {
+		editedScene->update(deltaTime * timeScale);
 	}
 	Scene::update(deltaTime);
 	if (getCursorLocked()) {
@@ -570,6 +785,24 @@ void EditorScene::addEditedNode(GraphNode* node) {
 		}
 	}
 	editedNodes.push_back(node);
+}
+
+void EditorScene::showTextureGui(std::string& texture) {
+	std::string txt = "Texture: ";
+	if (texture.length() == 0) {
+		txt += "-";
+	} else {
+		txt += texture;
+	}
+	ImGui::Text(txt.c_str());
+	if (textureSelectionCallback == nullptr) {
+		ImGui::SameLine();
+		if (ImGui::Button("Change...")) {
+			textureSelectionCallback = [&](Texture t) {
+				texture = t.path;
+			};
+		}
+	}
 }
 
 void EditorScene::addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback) {

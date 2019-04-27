@@ -30,6 +30,7 @@ public:
 	void update(double deltaTime) override;
 	void addEditedNode(GraphNode *node);
 //protected:
+	void showTextureGui(std::string &texture);
 	void addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback);
 	bool typeCreationExists(SerializableType type);
 	void deleteTypeCreation(TypeCreation *typeCreation);
@@ -37,6 +38,8 @@ public:
 	void loadTexturesModels();
 	void setEditedScene(Scene *scene, bool deletePrevious = true);
 	std::vector<GraphNode*> editedNodes;
+	bool updateEditedScene = true;
+	float timeScale = 1.0f;
 	int nodeCounter = 1;
 	int idCounter = 1;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
