@@ -123,7 +123,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* floor = new GraphNode(floorMesh, rootNode);
 
 	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
-	GraphNode* player = new GraphNode(playerMesh, rootNode);
+	player = new GraphNode(playerMesh, rootNode);
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
@@ -253,10 +253,25 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 				setCursorLocked(!getCursorLocked());
 			}
 			break;
-		case KEY_QUIT:
-		{
+		case KEY_QUIT: {
 			gameManager->goToMenu(false);
 		}
-		break;
+			break;
+		case GLFW_KEY_I: {
+			Picking *temp = player->getComponent<Picking>();
+
+			if (pressed) {
+				if (temp->getSwitch() == false) temp->setSwitch(true);
+				else temp->setSwitch(false);
+			} else {
+				if (temp->getSwitch() == true) {
+					temp->showInventoryUi();
+				} else {
+					temp->hideInventoryUi();
+				}
+
+			}
+		}
 	}
 }
+

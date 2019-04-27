@@ -15,6 +15,10 @@ public:
 	 SerializableType getSerializableType() override;
 	 Json::Value serialize(Serializer *serializer) override;
 	 void deserialize(Json::Value &root, Serializer* serializer) override;
+	 void showInventoryUi();
+	 void hideInventoryUi();
+	 bool getSwitch();
+	 void setSwitch(bool ifShown);
 private:
 	Scene* scene;
     bool inventoryUI = false;
