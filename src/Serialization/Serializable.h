@@ -54,6 +54,57 @@ enum SerializableType {
 	SSkybox
 };
 
+const std::string SerializableTypeNames[] = {
+	"SNone",
+	"SGraphNode",
+	"SMesh",
+	"SMeshBox",
+	"SMeshColorBox",
+	"SMeshColorCone",
+	"SMeshColorCylinder",
+	"SMeshColorPlane",
+	"SMeshColorSphere",
+	"SMeshColorTorus",
+	"SMeshCone",
+	"SMeshCylinder",
+	"SMeshPlane",
+	"SMeshRef",
+	"SMeshRefBox",
+	"SMeshRefSphere",
+	"SMeshSimple",
+	"SMeshSphere",
+	"SMeshTexture",
+	"SModel",
+	"SModelInstanced",
+	"SMeshTorus",
+	"SScene",
+	"SCamera",
+	"SComponent",
+	"SAnimationController",
+	"SBillboard",
+	"SBoxCollider",
+	"SSphereCollider",
+	"SCollider",
+	"SCollectableObject",
+	"SPhysicalObject",
+	"SPicking",
+	"SPlayerMovement",
+	"SAnimation",
+	"SRotatingObject",
+	"SDirLightComp",
+	"SLightComp",
+	"SQuadraticLightComp",
+	"SPointLightComp",
+	"SSpotLightComp",
+	"SSun",
+	"SCollisionTest",
+	"SDirLight",
+	"SSpotLight",
+	"SPointLight",
+	"STestScene",
+	"SSkybox"
+};
+
 class Serializable {
 public:
 	virtual Json::Value serialize(Serializer *serializer) = 0;

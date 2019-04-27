@@ -12,6 +12,30 @@ void MeshTorus::updateValues(float radiusIn, float radiusOut, int sideAmount) {
 	updateValues(radiusIn, radiusOut, sideAmount, baseCenter);
 }
 
+void MeshTorus::renderGui() {
+	MeshTexture::renderGui();
+	float radiusIn = this->radiusIn, radiusOut = this->radiusOut;
+	int sideAmount = this->sideAmount;
+	glm::vec3 baseCenter = this->baseCenter;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderInt("Side amount", &sideAmount, 3, 30);
+	ImGui::SameLine();
+	ImGui::InputInt("Side amount (fixed)", &sideAmount);
+	if(sideAmount < 3) {
+		sideAmount = 3;
+	}
+	ImGui::SliderFloat("Radius 1", &radiusIn, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
+	ImGui::SliderFloat("Radius 2", &radiusOut, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Radius 2 (fixed)", &radiusOut);
+	if(baseCenter != this->baseCenter || sideAmount !=this->sideAmount || radiusIn!=this->radiusIn || radiusOut != this->radiusOut) {
+		updateValues(radiusIn, radiusOut, sideAmount, baseCenter);
+	}
+}
+
 void MeshTorus::draw(Shader *shader, glm::mat4 world) {
 	MeshTexture::draw(shader, world);
 	glActiveTexture(GL_TEXTURE0);

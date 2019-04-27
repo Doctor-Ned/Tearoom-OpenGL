@@ -126,6 +126,7 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 }
 
 void Mesh::renderGui() {
+	ImGui::Text(("Mesh type: " + SerializableTypeNames[getSerializableType()]).c_str());
 	bool useLight = this->useLight,
 		opaque = this->opaque,
 		culled = this->culled,

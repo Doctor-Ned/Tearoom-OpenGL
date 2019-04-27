@@ -114,6 +114,24 @@ void MeshPlane::deserialize(Json::Value& root, Serializer* serializer) {
 	setupMesh();
 }
 
+void MeshPlane::renderGui() {
+	MeshTexture::renderGui();
+	glm::vec3 baseCenter = this->baseCenter;
+	float width = this->width, length = this->length;
+	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
+	ImGui::SliderFloat("Width", &width, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Width (fixed)", &width);
+	ImGui::SliderFloat("Length", &length, 0.0f, 10.0f);
+	ImGui::SameLine();
+	ImGui::InputFloat("Length (fixed)", &length);
+
+	if(baseCenter != this->baseCenter || width != this->width || length != this->length) {
+		updateValues(width, length, baseCenter);
+	}
+}
+
 void MeshPlane::setupMesh() {
 	glGenVertexArrays(1, &VAO);
 	updateValues(width, length, baseCenter);

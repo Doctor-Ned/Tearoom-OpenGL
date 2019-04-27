@@ -11,6 +11,31 @@ MeshRefBox::MeshRefBox(bool reflective, glm::vec3 min, glm::vec3 max)
 	setupMesh();
 }
 
+void MeshRefBox::renderGui() {
+	MeshRef::renderGui();
+	static bool useDimensions = false;
+	ImGui::Checkbox("Use dimensions", &useDimensions);
+	if (useDimensions) {
+		glm::vec3 dimensions = getDimensions();
+		glm::vec3 oldDim = dimensions;
+		ImGui::SliderFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.0f, 10.0f);
+		ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+		if (dimensions != oldDim) {
+			updateValues(dimensions);
+		}
+	} else {
+		glm::vec3 min = this->min;
+		glm::vec3 max = this->max;
+		ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -10.0f, 0.0f);
+		ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
+		ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 10.0f);
+		ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
+		if (min != this->min || max != this->max) {
+			updateValues(min, max);
+		}
+	}
+}
+
 void MeshRefBox::draw(Shader *shader, glm::mat4 world) {
 	MeshRef::draw(shader, world);
 	//glBindVertexArray(VAO);

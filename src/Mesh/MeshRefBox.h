@@ -18,6 +18,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
 	MeshRefBox() : MeshRef(false) {}
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	glm::vec3 getUnmodeledCenter() override;
 	void setupMesh();

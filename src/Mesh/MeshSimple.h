@@ -19,6 +19,7 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
 	MeshSimple(glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	glm::vec4 color;
