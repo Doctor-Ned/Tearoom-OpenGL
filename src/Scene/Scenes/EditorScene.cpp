@@ -290,8 +290,8 @@ void EditorScene::renderUi() {
 			{
 				static glm::vec4 color;
 				static std::string texture;
-				float radius, height;
-				int sideAmount;
+				static float radius, height;
+				static int sideAmount;
 				if (typeCreation->typeCreationStarted) {
 					texture = "";
 					radius = 0.5f;
@@ -338,8 +338,8 @@ void EditorScene::renderUi() {
 			{
 				static glm::vec4 color;
 				static std::string texture;
-				float radius, height;
-				int sideAmount;
+				static float radius, height;
+				static int sideAmount;
 				if (typeCreation->typeCreationStarted) {
 					texture = "";
 					radius = 0.5f;
@@ -484,8 +484,8 @@ void EditorScene::renderUi() {
 			{
 				static glm::vec4 color;
 				static std::string texture;
-				float radiusIn, radiusOut;
-				int sideAmount;
+				static float radiusIn, radiusOut;
+				static int sideAmount;
 				if (typeCreation->typeCreationStarted) {
 					texture = "";
 					radiusIn = 0.5f;
