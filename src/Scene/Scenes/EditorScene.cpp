@@ -690,15 +690,15 @@ void EditorScene::renderUi() {
 		ImGui::TreePop();
 		ImGui::End();
 
-		ImGui::Begin("Object builder", nullptr, 64);
-		if (ImGui::Button("Add box")) {
-			appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
-		}
-		ImGui::End();
+		//ImGui::Begin("Object builder", nullptr, 64);
+		//if (ImGui::Button("Add box")) {
+		//	appendNode(Node::createBox(glm::vec3(1), Node::getRandomColor()));
+		//}
+		//ImGui::End();
 		static std::vector<GraphNode*> toDelete;
 		for (auto &node : editedNodes) {
 			ImGui::PushID(idCounter++);
-			ImGui::Begin(("Node '" + node->getName() + "'").c_str());
+			ImGui::Begin(("Node '" + node->getName() + "'").c_str(), nullptr, 64);
 			if (ImGui::Button("Close")) {
 				toDelete.push_back(node);
 			}
