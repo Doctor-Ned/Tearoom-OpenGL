@@ -20,7 +20,6 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, S
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
-	I_KEY_STATE = gameManager->getKeyState(GLFW_KEY_I);
 
 	Collider* coll = gameObject->getComponent<Collider>();
 
@@ -57,15 +56,13 @@ void Picking::update(float msec) {
 		scene->removeFromRenderMap(encouragementBackground);
 	}
 
-	if(I_KEY_STATE) {
-		if (inventoryUI == true) {
+
+		if (!gameManager->getKeyState(GLFW_KEY_I)) {
 			scene->removeFromRenderMap(scene->getInventoryText());
 			scene->removeFromRenderMap(scene->getInventoryBackground());
 			for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
 				scene->removeFromRenderMap(obj);
 			}
-
-			inventoryUI = false;
 		}
 		else  {
 			int i = 0;
@@ -73,7 +70,6 @@ void Picking::update(float msec) {
 			scene->addToRenderMap(scene->getInventoryBackground());
 
 			for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
-
 				if (i >= inventory.size()) {
 					break;
 				}
@@ -82,10 +78,8 @@ void Picking::update(float msec) {
 				scene->addToRenderMap(obj);
 				i++;
 			}
-
-			inventoryUI = true;
 		}
-	}
+
 
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
 	{

@@ -22,7 +22,6 @@ private:
 	std::vector<GraphNode*> inventory;
 	Picking(){}
 	friend class Serializer;
-	bool I_KEY_STATE = false;
 	UiColorPlane* encouragementBackground;
 	UiText* encouragement;
 };
