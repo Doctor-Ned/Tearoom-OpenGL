@@ -23,6 +23,8 @@ private:
 	Picking(){}
 	friend class Serializer;
 	bool I_KEY_STATE = false;
+	UiColorPlane* encouragementBackground;
+	UiText* encouragement;
 };
 
 #endif
