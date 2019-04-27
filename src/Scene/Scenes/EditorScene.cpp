@@ -76,7 +76,7 @@ void EditorScene::renderUi() {
 		showConfirmationDialog = true;
 	}
 	ImGui::End();
-
+	static std::vector<TypeCreation*> typeCreationsToDelete;
 	for (auto &typeCreation : typeCreations) {
 		ImGui::PushID(typeCreation);
 		std::string title = "Create a ";
@@ -109,7 +109,7 @@ void EditorScene::renderUi() {
 				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(node);
 					node = nullptr;
-					delete typeCreation;
+					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}
 			break;
@@ -167,7 +167,7 @@ void EditorScene::renderUi() {
 						fcs.push_back(faces[i]);
 					}
 					typeCreation->creationCallback(new Skybox(fcs));
-					deleteTypeCreation(typeCreation);
+					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}
 			break;
@@ -195,7 +195,7 @@ void EditorScene::renderUi() {
 				if (model.length() > 0 && ImGui::Button("Create")) {
 					Model *mdl = new Model(model);
 					typeCreation->creationCallback(mdl);
-					deleteTypeCreation(typeCreation);
+					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}
 			break;
@@ -240,10 +240,14 @@ void EditorScene::renderUi() {
 		}
 		typeCreation->typeCreationStarted = false;
 		if (ImGui::Button("CANCEL")) {
-			deleteTypeCreation(typeCreation);
+			typeCreationsToDelete.push_back(typeCreation);
 		}
 		ImGui::End();
 		ImGui::PopID();
+	}
+
+	for(auto &tc : typeCreationsToDelete) {
+		deleteTypeCreation(tc);
 	}
 
 	if (meshSelectionCallback != nullptr) {
@@ -678,19 +682,27 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 	}
 	ImGui::SameLine();
 	if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child...")) {
-		addTypeCreation(SGraphNode, [node](void* nod) {
+		addTypeCreation(SGraphNode, [this,node](void* nod) {
 			if (nod != nullptr) {
-				node->addChild(reinterpret_cast<GraphNode*>(nod));
+				appendNode(reinterpret_cast<GraphNode*>(nod), node);
 			}
 		});
 	}
 	ImGui::SameLine();
-	if (node != editedScene->getRootNode() && nodeSelectionCallback == nullptr) {
-		if (ImGui::Button("Set parent...")) {
-			nodeSelectionCallback = [this, node](GraphNode *parent) {
-				if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
-					node->setParent(parent);
-				}
+	if (node != editedScene->getRootNode()) {
+		if (nodeSelectionCallback == nullptr) {
+			if (ImGui::Button("Set parent...")) {
+				nodeSelectionCallback = [this, node](GraphNode *parent) {
+					if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
+						node->setParent(parent);
+					}
+				};
+			}
+			ImGui::SameLine();
+		}
+		if(this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
+			confirmationDialogCallback = [node]() {
+				node->setParent(nullptr);
 			};
 		}
 		ImGui::SameLine();
