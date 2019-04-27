@@ -232,6 +232,22 @@ void Scene::removeFromRenderMap(UiElement* uiElement, bool recurse) {
 	}
 }
 
+UiColorPlane* Scene::getInventoryBackground() {
+	return inventoryBackground;
+}
+
+UiText* Scene::getInventoryText() {
+	return  inventoryText;
+}
+
+std::vector<UiColorPlane*>* Scene::getObjectRepresentations() {
+	return &objectRepresentasions;
+}
+
+UiElement* Scene::getUiRoot() {
+	return rootUiElement;
+}
+
 void Scene::reinitializeRenderMap() {
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {

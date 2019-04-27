@@ -1,10 +1,9 @@
 #ifndef PICKING_H
 #define PICKING_H
 
-#include <Ui/UiPlane.h>
+#include <Ui/UiColorPlane.h>
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
-#include "Ui/UiPlane.h"
 
 class Camera;
 class Picking : public Component
@@ -18,12 +17,12 @@ public:
 	 void deserialize(Json::Value &root, Serializer* serializer) override;
 private:
 	Scene* scene;
-	UiPlane* hud;
     bool inventoryUI = false;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
 	Picking(){}
 	friend class Serializer;
+	bool I_KEY_STATE = false;
 };
 
 #endif

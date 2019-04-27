@@ -13,7 +13,6 @@ void UiPlane::render(Shader *shader) {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	
 }
 
 void UiPlane::setup() {
