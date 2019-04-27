@@ -5,6 +5,8 @@
 #include "Scene/Node.h"
 #include "Serialization/Serializer.h"
 #include "Mesh/Model.h"
+#include "Mesh/MeshRefBox.h"
+#include "Mesh/MeshBox.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -200,7 +202,83 @@ void EditorScene::renderUi() {
 			case SMeshColorBox:
 			case SMeshRefBox:
 			{
+				static bool useDimensions = true;
+				ImGui::Checkbox("Use dimensions", &useDimensions);
+				static glm::vec3 min, max, dimensions;
+				static bool reflective;
+				static glm::vec4 color;
+				static std::string texture;
+				if (typeCreation->typeCreationStarted) {
+					reflective = true;
+					texture = "";
+					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+					min = glm::vec3(-0.5f, -0.5f, -0.5f);
+					max = glm::vec3(0.5f, 0.5f, 0.5f);
+					dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
+				}
+				if (useDimensions) {
+					ImGui::SliderFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.0f, 10.0f);
+					ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+					min = -dimensions / 2.0f;
+					max = dimensions / 2.0f;
+				} else {
+					ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -5.0f, 0.0f);
+					ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
+					ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 5.0f);
+					ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
+				}
+				bool valid = true;
+				for (int i = 0; i < 3; i++) {
+					if (min[i] > max[i]) {
+						valid = false;
+						break;
+					}
+				}
 
+				switch (typeCreation->typeToCreate) {
+					case SMeshBox:
+					{
+						std::string txt = "Texture: ";
+						if (texture.length() == 0) {
+							txt += "-";
+						} else {
+							txt += texture;
+						}
+						ImGui::Text(txt.c_str());
+						if (textureSelectionCallback == nullptr) {
+							ImGui::SameLine();
+							if (ImGui::Button("Change...")) {
+								textureSelectionCallback = [&](Texture t) {
+									texture = t.path;
+								};
+							}
+						}
+						if (valid && texture.length() == 0) {
+							valid = false;
+						}
+					}
+						break;
+					case SMeshColorBox:
+						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+						break;
+					case SMeshRefBox:
+						ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
+						break;
+				}
+
+				if (valid && ImGui::Button("Create")) {
+					Mesh *box;
+					if(typeCreation->typeToCreate == SMeshColorBox) {
+						box = new MeshColorBox(min, max, color);
+					} else if(typeCreation->typeToCreate == SMeshRefBox) {
+						box = new MeshRefBox(reflective, min, max);
+					} else {
+						//SMeshBox
+						box = new MeshBox(min, max, texture);
+					}
+					typeCreation->creationCallback(box);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SMeshCone:
@@ -689,7 +767,7 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			ImGui::SameLine();
 		}
 		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
-			confirmationDialogCallback = [this,node]() {
+			confirmationDialogCallback = [this, node]() {
 				editedScene->removeNode(node);
 			};
 		}

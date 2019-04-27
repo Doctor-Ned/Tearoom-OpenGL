@@ -50,9 +50,9 @@ void MeshColorBox::renderGui() {
 	} else {
 		glm::vec3 min = this->min;
 		glm::vec3 max = this->max;
-		ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -10.0f, 0.0f);
+		ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -5.0f, 0.0f);
 		ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
-		ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 10.0f);
+		ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 5.0f);
 		ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
 		if(min != this->min || max != this->max) {
 			updateValues(min, max);
