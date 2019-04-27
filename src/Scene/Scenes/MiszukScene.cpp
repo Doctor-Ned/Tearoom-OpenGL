@@ -43,21 +43,13 @@ MiszukScene::MiszukScene() {
 	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 
 	//-------------
-//INVENTORY UI
+    //INVENTORY UI
     UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
     UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-    boxRepresentation->setOpacity(0.0f);
-    boxRepresentation2->setOpacity(0.0f);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
-    rootUiElement->addChild(boxRepresentation);
-    rootUiElement->addChild(boxRepresentation2);
     inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f,30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
     inventoryBackground = new UiColorPlane(glm::vec4(0.76f, 0.65f, 0.27f, 0.85f), glm::vec2(1400.0f, 700.0f), glm::vec2(400.0f, 700.0f), Right);
-    inventoryBackground->setActive(false);
-    inventoryBackground->setOpacity(0.0f);
-    rootUiElement->addChild(inventoryBackground);
-    rootUiElement->addChild(inventoryText);
 
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));

@@ -54,19 +54,20 @@ void Picking::update(float msec) {
 	}
 
 	if(I_KEY_STATE && inventoryUI == true){
-		scene->getInventoryBackground()->setActive(false);
-		scene->getInventoryBackground()->setOpacity(0.0f);
-		scene->getUiRoot()->setOpacity(0.0f);
-		scene->getInventoryText()->setOpacity(0.0f);
-		scene->addToRenderMap(scene->getInventoryText());
+		scene->removeFromRenderMap(scene->getInventoryText());
+		scene->removeFromRenderMap(scene->getInventoryBackground());
+
+        for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
+            scene->removeFromRenderMap(obj);
+        }
+
 		inventoryUI = false;
 	}
 
 	if(I_KEY_STATE && inventoryUI == false) {
-				scene->getInventoryBackground()->setActive(true);
-				scene->getInventoryBackground()->setOpacity(1.0f);
 				int i=0;
 				scene->addToRenderMap(scene->getInventoryText());
+                scene->addToRenderMap(scene->getInventoryBackground());
 
 				for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
 
@@ -75,14 +76,12 @@ void Picking::update(float msec) {
 					}
 
 					obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
-					obj->setOpacity(1.0f);
+					scene->addToRenderMap(obj);
 					i++;
-					std::cout<<i<<std::endl;
 				}
 
 				inventoryUI = true;
 		}
-
 
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
 	{
