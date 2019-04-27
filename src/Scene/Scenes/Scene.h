@@ -7,6 +7,8 @@
 #include "Scene/OctreeNode.h"
 #include "Render/LightManager.h"
 #include "Render/Skybox.h"
+#include "Ui/UiText.h"
+#include "Ui/UiColorPlane.h"
 
 //#define ENABLE_FRUSTUM_CULLING
 
@@ -52,6 +54,12 @@ public:
 	GraphNode* getRootNode() const;
 	virtual Skybox *getSkybox();
 	void setSkybox(Skybox *skybox);
+	//inventory
+	UiColorPlane* getInventoryBackground();
+	std::vector<UiColorPlane*>* getObjectRepresentations();
+	UiText* getInventoryText();
+	UiElement* getUiRoot();
+
 protected:
 	bool getCursorLocked() const;
 	void setCursorLocked(bool locked) const;
@@ -77,6 +85,13 @@ protected:
 	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	UiElement *rootUiElement;
+
+	//inventory
+	UiColorPlane* inventoryBackground;
+	UiText * inventoryText;
+	std::vector<UiColorPlane*> objectRepresentasions;
+	//-----------
+
 	GraphNode *rootNode;
 	LightManager *lightManager;
 	glm::mat4 projection;

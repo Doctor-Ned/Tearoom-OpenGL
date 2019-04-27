@@ -14,11 +14,16 @@
 Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
 
-	hud = new UiPlane("res/textures/inventory.png", glm::vec2(0.0f, 5.0f), glm::vec2(0.5f, 0.5f), Center);
+}
+
+void showEncouragement() {
+
 }
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
+	I_KEY_STATE = gameManager->getKeyState(GLFW_KEY_I);
+
 	Collider* coll = gameObject->getComponent<Collider>();
 
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos(), camera->getFront(), 2.0f, coll);
@@ -48,16 +53,36 @@ void Picking::update(float msec) {
 		}
 	}
 
-	if (gameManager->getKeyState(GLFW_KEY_I && inventoryUI == false)) {
-		inventoryUI = true;
-		scene->addToRenderMap(hud);
-
-	}
-
-	if (gameManager->getKeyState(GLFW_KEY_I && inventoryUI == true)) {
+	if(I_KEY_STATE && inventoryUI == true){
+		scene->getInventoryBackground()->setActive(false);
+		scene->getInventoryBackground()->setOpacity(0.0f);
+		scene->getUiRoot()->setOpacity(0.0f);
+		scene->getInventoryText()->setOpacity(0.0f);
+		scene->addToRenderMap(scene->getInventoryText());
 		inventoryUI = false;
-		scene->removeFromRenderMap(hud);
 	}
+
+	if(I_KEY_STATE && inventoryUI == false) {
+				scene->getInventoryBackground()->setActive(true);
+				scene->getInventoryBackground()->setOpacity(1.0f);
+				int i=0;
+				scene->addToRenderMap(scene->getInventoryText());
+
+				for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
+
+					if(i >= inventory.size()) {
+						break;
+					}
+
+					obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
+					obj->setOpacity(1.0f);
+					i++;
+					std::cout<<i<<std::endl;
+				}
+
+				inventoryUI = true;
+		}
+
 
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
 	{
@@ -66,8 +91,10 @@ void Picking::update(float msec) {
 		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken() == true) {
 			inventory.erase(inventory.begin() + i);
 			collectable->leaveObject();
+			for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
+				obj->setOpacity(0.0f);
+			}
 		}
-
 	}
 }
 

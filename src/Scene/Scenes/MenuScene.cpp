@@ -2,6 +2,7 @@
 #include "MiszukScene.h"
 #include "TestScene.h"
 #include "Ui/UiTextButton.h"
+#include "Ui/UiPlane.h"
 #include "Serialization/Serializer.h"
 #include "EditorScene.h"
 
