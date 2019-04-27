@@ -286,6 +286,13 @@ void GraphNode::renderGui() {
 		localTransform.drawGui();
 		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
+			if(editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
+				editor->confirmationDialogCallback = [this,editor]() {
+					//delete mesh;
+					mesh = nullptr;
+					editor->editedScene->updateRenderable(this);
+				};
+			}
 			mesh->renderGui();
 			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
 			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {

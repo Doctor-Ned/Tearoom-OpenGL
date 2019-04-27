@@ -689,8 +689,8 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			ImGui::SameLine();
 		}
 		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
-			confirmationDialogCallback = [node]() {
-				node->setParent(nullptr);
+			confirmationDialogCallback = [this,node]() {
+				editedScene->removeNode(node);
 			};
 		}
 		ImGui::SameLine();
