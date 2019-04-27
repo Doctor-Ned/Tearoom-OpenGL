@@ -25,7 +25,6 @@ namespace anim {
 class Animation : public Component
 {
 private:
-	std::string name = "animation";
 	float speed = 1.0f;
 	float currentTime = 0.0f;
 	float endTime = 0.0f;
@@ -44,6 +43,7 @@ private:
 	void setSpeed(float _speed);
 	void takeObjectsToAnimate(GraphNode* objectToAnimate);
 	//#TODO: std::map serialization
+	void setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map);
 
 	friend class Serializer;
 	Animation() {}
@@ -60,7 +60,6 @@ public:
 	void stopPlaying();
 	bool addKeyFrame(std::string&& gameObjectName, anim::Animated type, float time, glm::vec3 values);
 	bool deleteKeyFrame(std::string&& gameObjectName, anim::Animated type, float time);
-	void setName(std::string&& _name);
 	std::string getName();
 };
 

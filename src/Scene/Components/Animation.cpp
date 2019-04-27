@@ -2,12 +2,13 @@
 #include "Scene/GraphNode.h"
 #include <iostream>
 #include "Scene/GameManager.h"
+#include "Serialization/DataSerializer.h"
 
 using anim::Animated;
 using anim::animMap;
 using anim::ObjectAnimation;
 using keyFramePair = std::pair<anim::animMap::iterator, anim::animMap::iterator>;
-Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject), name(_name)
+Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
 	takeObjectsToAnimate(gameObject);
 	/*addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
@@ -42,30 +43,33 @@ Json::Value Animation::serialize(Serializer* serializer)
 	root["currentTime"] = currentTime;
 	root["endTime"] = endTime;
 	root["isPlaying"] = isPlaying;
-
+	root["objectAnimations"] = DataSerializer::serializeObjectAnimationsMap(objectAnimations);
+	
 	return root;
 }
 
 void Animation::deserialize(Json::Value& root, Serializer* serializer)
 {
 	Component::deserialize(root, serializer);
-	setName(root["name"].asString());
 	setCurrentTime(root["currentTime"].asFloat());
 	setEndTime(root["endTime"].asFloat());
 	setIsPlaying(root["isPlaying"].asBool());
+	setObjectAnimations(DataSerializer::deserializeObjectAnimationsMap(root["objectAnimations"]));
+	takeObjectsToAnimate(gameObject);
 }
 
 void Animation::update(float msec)
 {
-	/*if(!isPlaying && GameManager::getInstance()->getKeyState(GLFW_KEY_1))
+	if(!isPlaying && GameManager::getInstance()->getKeyState(GLFW_KEY_1))
 	{
-		play(0.5f, true);
+		//play(0.5f, true);
+		play();
 	}
 
 	if(GameManager::getInstance()->getKeyState(GLFW_KEY_2))
 	{
 		stopPlaying();
-	}*/
+	}
 
 	if(isPlaying)
 	{
@@ -246,11 +250,6 @@ void Animation::setSpeed(float _speed)
 	speed = _speed;
 }
 
-void Animation::setName(std::string&& _name)
-{
-	name = _name;
-}
-
 std::string Animation::getName()
 {
 	return name;
@@ -265,12 +264,17 @@ void Animation::takeObjectsToAnimate(GraphNode* objectToAnimate)
 	}
 }
 
+void Animation::setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map)
+{
+	objectAnimations = map;
+}
+
 
 void Animation::setEndTime()
 {
 	for (auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
 	{
-		if (!it->second.translation.empty())
+		if (it->second.translation.size() >= 2)
 		{
 			auto it2 = std::prev(it->second.translation.end());
 			if (endTime < it2->first)
@@ -279,7 +283,7 @@ void Animation::setEndTime()
 			}
 		}
 
-		if (!it->second.translation.empty())
+		if (it->second.scale.size() >= 2)
 		{
 			auto it2 = std::prev(it->second.scale.end());
 			if (endTime < it2->first)
@@ -288,7 +292,7 @@ void Animation::setEndTime()
 			}
 		}
 
-		if (!it->second.translation.empty())
+		if (it->second.rotation.size() >= 2)
 		{
 			auto it2 = std::prev(it->second.rotation.end());
 			if (endTime < it2->first)

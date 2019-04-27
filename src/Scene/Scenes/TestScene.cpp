@@ -13,6 +13,7 @@
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/Components/LightComponents/PointLightComp.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Components/Animation.h"
 
 TestScene::TestScene() : TestScene(false) {}
 
@@ -230,6 +231,45 @@ TestScene::TestScene(bool serialized) {
 		pivot->addComponent(new CollisionTest(pivot));
 
 		floor1->addComponent(new BoxCollider(floor1, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
+
+		//miszuk animation
+		GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
+		MeshColorBox* doorMesh = new MeshColorBox(glm::vec3(2.0f, 3.0f, 0.2f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f));
+		MeshColorBox* handleMesh = new MeshColorBox(glm::vec3(0.2f, 0.4f, 0.4f), glm::vec4(0.8f, 0.0f, 0.0f, 1.0f));
+
+		GraphNode* door = new GraphNode(doorMesh, doorPivot);
+		door->setName("door");
+		GraphNode* handle = new GraphNode(handleMesh, door);
+		handle->setName("handle");
+
+		door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
+		Animation* anim = new Animation(door, "doorOpening");
+		anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
+		anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		door->addComponent(anim);
+		doorPivot->localTransform.setPosition(-4.0f, 2.0f, -2.0f);
+		doorPivot->localTransform.rotateYDegrees(180.0f);
+
+
+		anim->addKeyFrame("handle", anim::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
+		anim->addKeyFrame("handle", anim::TRANSLATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("handle", anim::TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		anim->addKeyFrame("handle", anim::TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
+		anim->addKeyFrame("handle", anim::TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
+		anim->addKeyFrame("handle", anim::TRANSLATION, 4.0f, glm::vec3(0));
+
+		anim->addKeyFrame("handle", anim::SCALE, 0.0f, glm::vec3(1));
+		anim->addKeyFrame("handle", anim::SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
+		anim->addKeyFrame("handle", anim::SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
+		anim->addKeyFrame("handle", anim::SCALE, 4.0f, glm::vec3(1));
+
+		anim->addKeyFrame("handle", anim::ROTATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("handle", anim::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
+		anim->addKeyFrame("handle", anim::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
+
+		anim->deleteKeyFrame("handle", anim::ROTATION, 2.0f);
+		//
 
 
 		GraphNode *rotatingNode2 = new GraphNode(nullptr, rootNode);

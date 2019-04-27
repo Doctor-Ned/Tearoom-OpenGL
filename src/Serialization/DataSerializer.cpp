@@ -1,5 +1,7 @@
 #include "DataSerializer.h"
 #include "Scene/ComposedTransform.h"
+#include "Scene/Components/Animation.h"
+
 
 Json::Value DataSerializer::serializeVec2(glm::vec2 vec) {
 	Json::Value root;
@@ -110,5 +112,68 @@ TransformData DataSerializer::deserializeTransformData(const Json::Value& root) 
 	result.translation = deserializeVec3(root.get("translation", serializeVec3(result.translation)));
 	result.scale = deserializeVec3(root.get("scale", serializeVec3(result.scale)));
 	result.eulerRotation = deserializeVec3(root.get("eulerRotation", serializeVec3(result.eulerRotation)));
+	return result;
+}
+
+Json::Value DataSerializer::serializeObjectAnimationsMap(std::map<std::string, anim::ObjectAnimation>& map)
+{
+	Json::Value root;
+	for (auto it = map.begin(); it != map.end(); ++it)
+	{
+		root[it->first] = serializeObjectAnimation(it->second);
+	}
+	return root;
+}
+
+std::map<std::string, anim::ObjectAnimation> DataSerializer::deserializeObjectAnimationsMap(const Json::Value& root)
+{
+	std::map<std::string, anim::ObjectAnimation> result;
+
+	for (Json::ValueConstIterator it = root.begin(); it != root.end(); ++it)
+	{
+		std::string animatedObject = it.key().asString();
+		anim::ObjectAnimation anim = deserializeObjectAnimation(root[animatedObject]);
+		result.emplace(animatedObject, anim);
+	}
+	return result;
+}
+
+Json::Value DataSerializer::serializeObjectAnimation(anim::ObjectAnimation& objAnim)
+{
+	Json::Value root;
+	root["translation"] = serializeTransformationMap(objAnim.translation);
+	root["scale"] = serializeTransformationMap(objAnim.scale);
+	root["rotation"] = serializeTransformationMap(objAnim.rotation);
+	return root;
+}
+
+anim::ObjectAnimation DataSerializer::deserializeObjectAnimation(const Json::Value& root)
+{
+	anim::ObjectAnimation anim;
+	anim.translation = deserializeTransformationMap(root["translation"]);
+	anim.scale = deserializeTransformationMap(root["scale"]);
+	anim.rotation = deserializeTransformationMap(root["rotation"]);
+	return anim;
+}
+
+Json::Value DataSerializer::serializeTransformationMap(std::map<float, glm::vec3>& map)
+{
+	Json::Value root;
+	for (auto it : map)
+	{
+		root[std::to_string(it.first)] = serializeVec3(it.second);
+	}
+	return root;
+}
+
+std::map<float, glm::vec3> DataSerializer::deserializeTransformationMap(const Json::Value& root)
+{
+	std::map<float, glm::vec3> result;
+	for (auto it = root.begin(); it != root.end(); ++it)
+	{
+		std::string key = it.key().asString();
+		glm::vec3 transformation = deserializeVec3(root[key]);
+		result.emplace(atof(key.c_str()), transformation);
+	}
 	return result;
 }
