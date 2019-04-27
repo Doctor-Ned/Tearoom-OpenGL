@@ -284,16 +284,29 @@ void GraphNode::renderGui() {
 			buff[0] = '\0';
 		}
 		localTransform.drawGui();
+		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
 			mesh->renderGui();
 			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
-			EditorScene *editor = GameManager::getInstance()->getEditorScene();
 			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
 				ImGui::SameLine();
 				if (ImGui::Button("Change...")) {
 					editor->shaderTypeSelectionCallback = [node=this,editor=editor,mesh=mesh](ShaderType type) {
 						mesh->setShaderType(type);
 						editor->editedScene->updateRenderable(node);
+					};
+				}
+			}
+		} else {
+			if(editor->meshSelectionCallback == nullptr &&ImGui::Button("Add mesh...")) {
+				if(editor != nullptr) {
+					editor->meshSelectionCallback = [this, editor](SerializableType type) {
+						if (!editor->typeCreationExists(type)) {
+							editor->addTypeCreation(type, [this, editor](void* mesh) {
+								this->mesh = reinterpret_cast<Mesh*>(mesh);
+								editor->editedScene->updateRenderable(this);
+							});
+						}
 					};
 				}
 			}

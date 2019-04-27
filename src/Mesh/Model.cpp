@@ -87,6 +87,11 @@ void Model::deserialize(Json::Value& root, Serializer* serializer) {
 	initialize(AssetManager::getInstance()->getModelData(path));
 }
 
+void Model::renderGui() {
+	Mesh::renderGui();
+	ImGui::Text(path.c_str());
+}
+
 void Model::initialize(std::vector<ModelData*> data) {
 	for (auto &modelData : data) {
 		meshes.push_back(new MeshModel(modelData->vertices, modelData->indices, modelData->textures));

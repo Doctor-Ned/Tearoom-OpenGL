@@ -29,6 +29,7 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 private:
 	Model() {}
+	void renderGui() override;
 	void initialize(std::vector<ModelData*> data);
 	std::string path;
 	Model(std::vector<ModelData*> data);

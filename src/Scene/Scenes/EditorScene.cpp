@@ -4,6 +4,7 @@
 #include "TestScene.h"
 #include "Scene/Node.h"
 #include "Serialization/Serializer.h"
+#include "Mesh/Model.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -28,6 +29,9 @@ void EditorScene::renderUi() {
 	Scene::renderUi();
 	idCounter = 0;
 	ImGui::Begin("Editor manager", nullptr, 64);
+	if (meshSelectionCallback != nullptr && ImGui::Button("Stop selecting mesh")) {
+		meshSelectionCallback = nullptr;
+	}
 	if (nodeSelectionCallback != nullptr && ImGui::Button("Stop selecting graph node")) {
 		nodeSelectionCallback = nullptr;
 	}
@@ -37,7 +41,7 @@ void EditorScene::renderUi() {
 	if (modelSelectionCallback != nullptr && ImGui::Button("Stop selecting model")) {
 		modelSelectionCallback = nullptr;
 	}
-	if(shaderTypeSelectionCallback!=nullptr && ImGui::Button("Stop selecting shader type")) {
+	if (shaderTypeSelectionCallback != nullptr && ImGui::Button("Stop selecting shader type")) {
 		shaderTypeSelectionCallback = nullptr;
 	}
 	if (ImGui::Button("New scene") && !showConfirmationDialog) {
@@ -73,9 +77,10 @@ void EditorScene::renderUi() {
 	}
 	ImGui::End();
 
-	if (typeToCreate != SNone) {
+	for (auto &typeCreation : typeCreations) {
+		ImGui::PushID(typeCreation);
 		std::string title = "Create a ";
-		switch (ttc) {
+		switch (typeCreation->ttc) {
 			case TTCComponent:
 				title += "component";
 				break;
@@ -90,12 +95,30 @@ void EditorScene::renderUi() {
 				break;
 		}
 		ImGui::Begin(title.c_str(), nullptr, 64);
-		switch (typeToCreate) {
+		switch (typeCreation->typeToCreate) {
+			case SGraphNode:
+			{
+				static const auto BUFFER_SIZE = 50;
+				static char nameBuffer[BUFFER_SIZE];
+				static GraphNode *node;
+				if (typeCreation->typeCreationStarted) {
+					nameBuffer[0] = '\0';
+					node = new GraphNode();
+				}
+				node->drawGui();
+				if (ImGui::Button("Create")) {
+					typeCreation->creationCallback(node);
+					node = nullptr;
+					delete typeCreation;
+				}
+			}
+			break;
 			case SSkybox:
+			{
 				static std::string faces[6];
-				if (typeCreationStarted) {
-					for (int i = 0; i < 6; i++) {
-						faces[i] = "";
+				if (typeCreation->typeCreationStarted) {
+					for (auto& face : faces) {
+						face = "";
 					}
 				}
 				static bool correct;
@@ -143,12 +166,97 @@ void EditorScene::renderUi() {
 					for (int i = 0; i < 6; i++) {
 						fcs.push_back(faces[i]);
 					}
-					creationCallback(new Skybox(fcs));
-					setCreationTarget(SNone);
+					typeCreation->creationCallback(new Skybox(fcs));
+					deleteTypeCreation(typeCreation);
 				}
-				break;
+			}
+			break;
+			case SModel:
+			{
+				static std::string model;
+				if (typeCreation->typeCreationStarted) {
+					model = "";
+				}
+				std::string title = "Model: ";
+				if (model.length() == 0) {
+					title += "-";
+				} else {
+					title += model;
+				}
+				ImGui::Text(title.c_str());
+				if (modelSelectionCallback == nullptr) {
+					ImGui::SameLine();
+					if (ImGui::Button("Change...")) {
+						modelSelectionCallback = [&](std::string mdl) {
+							model = mdl;
+						};
+					}
+				}
+				if (model.length() > 0 && ImGui::Button("Create")) {
+					Model *mdl = new Model(model);
+					typeCreation->creationCallback(mdl);
+					deleteTypeCreation(typeCreation);
+				}
+			}
+			break;
+			case SMeshBox:
+			case SMeshColorBox:
+			case SMeshRefBox:
+			{
+
+			}
+			break;
+			case SMeshCone:
+			case SMeshColorCone:
+			{
+
+			}
+			break;
+			case SMeshCylinder:
+			case SMeshColorCylinder:
+			{
+
+			}
+			break;
+			case SMeshPlane:
+			case SMeshColorPlane:
+			{
+
+			}
+			break;
+			case SMeshSphere:
+			case SMeshColorSphere:
+			case SMeshRefSphere:
+			{
+
+			}
+			break;
+			case SMeshTorus:
+			case SMeshColorTorus:
+			{
+
+			}
+			break;
 		}
-		typeCreationStarted = false;
+		typeCreation->typeCreationStarted = false;
+		if (ImGui::Button("CANCEL")) {
+			deleteTypeCreation(typeCreation);
+		}
+		ImGui::End();
+		ImGui::PopID();
+	}
+
+	if (meshSelectionCallback != nullptr) {
+		ImGui::Begin("SELECT MESH TYPE", nullptr, 64);
+		for (auto &type : creatableMeshes) {
+			if (ImGui::Button(SerializableTypeNames[type].c_str())) {
+				meshSelectionCallback(type);
+				meshSelectionCallback = nullptr;
+			}
+		}
+		if (ImGui::Button("CANCEL")) {
+			meshSelectionCallback = nullptr;
+		}
 		ImGui::End();
 	}
 
@@ -163,6 +271,9 @@ void EditorScene::renderUi() {
 			}
 			ImGui::PopID();
 		}
+		if (ImGui::Button("CANCEL")) {
+			textureSelectionCallback = nullptr;
+		}
 		ImGui::End();
 	}
 
@@ -172,24 +283,31 @@ void EditorScene::renderUi() {
 		for (auto &model : models) {
 			ImGui::PushID(&model);
 			if (ImGui::Button(model.c_str())) {
-				modelSelectionCallback(assetManager->getModelData(model));
+				modelSelectionCallback(model);
+				//modelSelectionCallback(assetManager->getModelData(model));
 				modelSelectionCallback = nullptr;
 			}
 			ImGui::PopID();
 		}
+		if (ImGui::Button("CANCEL")) {
+			modelSelectionCallback = nullptr;
+		}
 		ImGui::End();
 	}
 
-	if(shaderTypeSelectionCallback != nullptr) {
+	if (shaderTypeSelectionCallback != nullptr) {
 		ImGui::Begin("SELECT SHADER TYPE", nullptr, 64);
-		for (int i = 0; i < sizeof(ShaderTypeNames) / sizeof(*ShaderTypeNames);i++) {
+		for (int i = 0; i < sizeof(ShaderTypeNames) / sizeof(*ShaderTypeNames); i++) {
 			std::string shaderType = ShaderTypeNames[i];
 			ImGui::PushID(shaderType.c_str());
-			if(ImGui::Button(shaderType.c_str())) {
+			if (ImGui::Button(shaderType.c_str())) {
 				shaderTypeSelectionCallback(ShaderTypes[i]);
 				shaderTypeSelectionCallback = nullptr;
 			}
 			ImGui::PopID();
+		}
+		if (ImGui::Button("CANCEL")) {
+			shaderTypeSelectionCallback = nullptr;
 		}
 		ImGui::End();
 	}
@@ -225,9 +343,10 @@ void EditorScene::renderUi() {
 		static const auto BUFFER_SIZE = 50;
 		static char nameBuffer[BUFFER_SIZE] = "";
 		ImGui::InputText("Scene name", nameBuffer, sizeof(nameBuffer));
-		if (ImGui::Button("SAVE")) {
-			std::string targetName(nameBuffer);
-			if (targetName.length() > 0) {
+		std::string targetName(nameBuffer);
+		targetName = Global::trim(targetName);
+		if (targetName.length() > 0) {
+			if (ImGui::Button("SAVE")) {
 				if (useEditorCamera) {
 					editedScene->setCamera(playerCamera);
 				}
@@ -268,8 +387,8 @@ void EditorScene::renderUi() {
 		ImGui::Begin("Scene objects", nullptr, 64);
 		ImGui::TreePush();
 		if (editedScene->getSkybox() == nullptr) {
-			if (ImGui::Button("Create a skybox")) {
-				setCreationTarget(SSkybox, [editedScene = editedScene](void *skybox) {
+			if (!typeCreationExists(SSkybox) && ImGui::Button("Create a skybox")) {
+				addTypeCreation(SSkybox, [editedScene = editedScene](void *skybox) {
 					editedScene->setSkybox(reinterpret_cast<Skybox*>(skybox));
 				});
 			}
@@ -353,6 +472,17 @@ void EditorScene::update(double deltaTime) {
 	}
 }
 
+void EditorScene::deleteTypeCreation(TypeCreation* typeCreation) {
+	for (auto i = typeCreations.begin(); i != typeCreations.end();) {
+		if (*i == typeCreation) {
+			typeCreations.erase(i);
+			delete typeCreation;
+			return;
+		}
+		++i;
+	}
+}
+
 bool EditorScene::doesAnyChildContain(GraphNode* node, GraphNode* target) {
 	for (auto &child : target->getChildren()) {
 		if (doesAnyChildContain(node, child)) {
@@ -362,45 +492,110 @@ bool EditorScene::doesAnyChildContain(GraphNode* node, GraphNode* target) {
 	return false;
 }
 
-void EditorScene::setCreationTarget(SerializableType type, std::function<void(void*)> creationCallback) {
-	if (type == SNone) {
-		typeToCreate = SNone;
-		ttc = TTCNone;
-		this->creationCallback = nullptr;
-		typeCreationStarted = false;
+void EditorScene::addEditedNode(GraphNode* node) {
+	for (auto &nod : editedNodes) {
+		if (nod == node) {
+			return;
+		}
+	}
+	editedNodes.push_back(node);
+}
+
+void EditorScene::addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback) {
+	if (type == SNone || typeCreationExists(type)) {
 		return;
 	}
-	ttc = TTCNone;
+	TypeCreation *creation = new TypeCreation();
+	creation->ttc = TTCNone;
 	if (type == SGraphNode) {
-		ttc = TTCGraphNode;
+		creation->ttc = TTCGraphNode;
 	} else if (type == SSkybox) {
-		ttc = TTCSkybox;
+		creation->ttc = TTCSkybox;
 	}
 	for (int i = 0; i < sizeof(creatableComponents) / sizeof(*creatableComponents); i++) {
 		if (creatableComponents[i] == type) {
-			ttc = TTCComponent;
+			creation->ttc = TTCComponent;
 			break;
 		}
 	}
 	for (int i = 0; i < sizeof(creatableMeshes) / sizeof(*creatableMeshes); i++) {
 		if (creatableMeshes[i] == type) {
-			ttc = TTCMesh;
+			creation->ttc = TTCMesh;
 		}
 	}
-	if (ttc != TTCNone) {
-		typeCreationStarted = true;
-		typeToCreate = type;
-		this->creationCallback = creationCallback;
+	if (creation->ttc != TTCNone) {
+		creation->typeCreationStarted = true;
+		creation->typeToCreate = type;
+		creation->creationCallback = creationCallback;
+		typeCreations.push_back(creation);
+	} else {
+		delete creation;
 	}
 }
 
-void EditorScene::addEditedNode(GraphNode* node) {
-	for(auto &nod : editedNodes) {
-		if(nod == node) {
-			return;
+bool EditorScene::typeCreationExists(SerializableType type) {
+	for (auto &tc : typeCreations) {
+		switch (type) {
+			default:
+				if (tc->typeToCreate == type) {
+					return true;
+				}
+				break;
+			case SMeshBox:
+			case SMeshColorBox:
+			case SMeshRefBox:
+				switch (tc->typeToCreate) {
+					case SMeshBox:
+					case SMeshColorBox:
+					case SMeshRefBox:
+						return true;
+				}
+				break;
+			case SMeshCone:
+			case SMeshColorCone:
+				switch (tc->typeToCreate) {
+					case SMeshCone:
+					case SMeshColorCone:
+						return true;
+				}
+				break;
+			case SMeshCylinder:
+			case SMeshColorCylinder:
+				switch (tc->typeToCreate) {
+					case SMeshCylinder:
+					case SMeshColorCylinder:
+						return true;
+				}
+				break;
+			case SMeshPlane:
+			case SMeshColorPlane:
+				switch (tc->typeToCreate) {
+					case SMeshPlane:
+					case SMeshColorPlane:
+						return true;
+				}
+				break;
+			case SMeshSphere:
+			case SMeshColorSphere:
+			case SMeshRefSphere:
+				switch (tc->typeToCreate) {
+					case SMeshSphere:
+					case SMeshColorSphere:
+					case SMeshRefSphere:
+						return true;
+				}
+				break;
+			case SMeshTorus:
+			case SMeshColorTorus:
+				switch (tc->typeToCreate) {
+					case SMeshTorus:
+					case SMeshColorTorus:
+						return true;
+				}
+				break;
 		}
 	}
-	editedNodes.push_back(node);
+	return false;
 }
 
 void EditorScene::loadTexturesModels() {
@@ -420,7 +615,10 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	showLoadDialog = false;
 	confirmationDialogCallback = nullptr;
 	nodeSelectionCallback = nullptr;
-	setCreationTarget(SNone);
+	for (auto &tc : typeCreations) {
+		delete tc;
+	}
+	typeCreations.clear();
 
 	if (scene != nullptr) {
 		delete editorCamera;
@@ -477,6 +675,14 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 	}
 	if (!opened && ImGui::Button("Open...")) {
 		editedNodes.push_back(node);
+	}
+	ImGui::SameLine();
+	if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child...")) {
+		addTypeCreation(SGraphNode, [node](void* nod) {
+			if (nod != nullptr) {
+				node->addChild(reinterpret_cast<GraphNode*>(nod));
+			}
+		});
 	}
 	ImGui::SameLine();
 	if (node != editedScene->getRootNode() && nodeSelectionCallback == nullptr) {
