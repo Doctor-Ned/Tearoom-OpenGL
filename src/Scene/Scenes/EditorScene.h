@@ -63,6 +63,7 @@ public:
 	std::function<void(GraphNode*)> nodeSelectionCallback = nullptr;
 	std::function<void(Texture)> textureSelectionCallback = nullptr;
 	std::function<void(ShaderType)> shaderTypeSelectionCallback = nullptr;
+	std::function<void(SerializableType)> componentSelectionCallback = nullptr;
 	std::function<void(SerializableType)> meshSelectionCallback = nullptr;
 	std::function<void(std::string)> modelSelectionCallback = nullptr;
 	std::vector<TypeCreation*> typeCreations;

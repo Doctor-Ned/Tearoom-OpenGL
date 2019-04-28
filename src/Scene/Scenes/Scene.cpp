@@ -140,6 +140,10 @@ void Scene::addToRenderMap(GraphNode* node, bool recurse) {
 	addToRenderMap(node, recurse, true);
 }
 
+void Scene::addToRenderMap(Renderable* renderable) {
+	addToRenderMap(renderable, true);
+}
+
 void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 	bool found = false;
 	for (auto &type : ShaderTypes) {

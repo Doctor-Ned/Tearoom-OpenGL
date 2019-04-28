@@ -42,6 +42,9 @@ void EditorScene::renderUi() {
 	Scene::renderUi();
 	idCounter = 0;
 	ImGui::Begin("Editor manager", nullptr, 64);
+	if(componentSelectionCallback != nullptr && ImGui::Button("Stop selectin component")) {
+		componentSelectionCallback = nullptr;
+	}
 	if (meshSelectionCallback != nullptr && ImGui::Button("Stop selecting mesh")) {
 		meshSelectionCallback = nullptr;
 	}
@@ -604,6 +607,20 @@ void EditorScene::renderUi() {
 		}
 		if (ImGui::Button("CANCEL")) {
 			meshSelectionCallback = nullptr;
+		}
+		ImGui::End();
+	}
+
+	if(componentSelectionCallback != nullptr) {
+		ImGui::Begin("SELECT COMPOENT TYPE", nullptr, 64);
+		for(auto &type : creatableComponents) {
+			if(ImGui::Button(SerializableTypeNames[type].c_str())) {
+				componentSelectionCallback(type);
+				componentSelectionCallback = nullptr;
+			}
+		}
+		if(ImGui::Button("CANCEL")) {
+			componentSelectionCallback = nullptr;
 		}
 		ImGui::End();
 	}

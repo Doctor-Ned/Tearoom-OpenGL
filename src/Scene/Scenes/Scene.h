@@ -31,6 +31,7 @@ public:
 	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling=true, bool ignoreRefractive=false);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
+	void addToRenderMap(Renderable *renderable);
 	void updateRenderable(Renderable *renderable, bool addIfNotFound = false);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);

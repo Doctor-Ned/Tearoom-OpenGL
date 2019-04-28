@@ -58,7 +58,7 @@ void GraphNode::drawSelf(Shader *shader) {
 			mesh->setRenderMode(tempRenderMode);
 		}
 		mesh->drawSelf(shader, worldTransform.getMatrix());
-		if(tempRenderMode != GL_NONE) {
+		if (tempRenderMode != GL_NONE) {
 			mesh->setRenderMode(rm);
 		}
 	}
@@ -312,16 +312,27 @@ void GraphNode::renderGui() {
 				}
 			}
 		} else {
-			if (editor->meshSelectionCallback == nullptr &&ImGui::Button("Add mesh...")) {
-				if (editor != nullptr) {
-					editor->meshSelectionCallback = [this, editor](SerializableType type) {
-						if (!editor->typeCreationExists(type)) {
-							editor->addTypeCreation(type, [this, editor](void* mesh) {
-								this->mesh = reinterpret_cast<Mesh*>(mesh);
-								editor->editedScene->updateRenderable(this, true);
-							});
+			if (editor != nullptr && editor->meshSelectionCallback == nullptr && ImGui::Button("Add mesh...")) {
+				editor->meshSelectionCallback = [this, editor](SerializableType type) {
+					if (!editor->typeCreationExists(type)) {
+						editor->addTypeCreation(type, [this, editor](void* mesh) {
+							this->mesh = reinterpret_cast<Mesh*>(mesh);
+							editor->editedScene->updateRenderable(this, true);
+						});
+					}
+				};
+			}
+		}
+		if (editor != nullptr && editor->componentSelectionCallback == nullptr && ImGui::Button("Add component...")) {
+			editor->componentSelectionCallback = [this,editor](SerializableType type) {
+				if(!editor->typeCreationExists(type)) {
+					editor->addTypeCreation(type, [this, editor](void *component) {
+						this->addComponent(reinterpret_cast<Component*>(component));
+						Renderable *rend = dynamic_cast<Renderable*>(reinterpret_cast<Component*>(component));
+						if(rend != nullptr) {
+							editor->editedScene->addToRenderMap(rend);
 						}
-					};
+					});
 				}
 			}
 		}
