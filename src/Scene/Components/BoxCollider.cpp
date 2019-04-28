@@ -53,5 +53,4 @@ void BoxCollider::renderGui()
 		(hDim[i] < 0.0f) ? (hDim2[i] = 0.0f) : (hDim2[i] = hDim[i]);
 	}
 	setHalfDimensions(hDim2);
-
 }

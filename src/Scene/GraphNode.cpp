@@ -310,10 +310,18 @@ void GraphNode::renderGui() {
 				}
 			}
 		}
-		for (auto &comp : components) {
-			ImGui::Text("_____________________");
-			comp->renderGui();
-			ImGui::NewLine();
+		if (ImGui::TreeNode("Components"))
+		{
+			int counter = 0;
+			for (auto &comp : components) {
+				if (ImGui::TreeNode((void*)(intptr_t)counter, comp->getName().c_str(), counter))
+				{
+					comp->renderGui();
+					ImGui::TreePop();
+					counter++;
+				}
+			}
+			ImGui::TreePop();
 		}
 	}
 }

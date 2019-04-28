@@ -42,6 +42,11 @@ GraphNode* Component::getGameObject() const {
 	return gameObject;
 }
 
+std::string Component::getName()
+{
+	return name;
+}
+
 void Component::renderGui() {
 	bool active = this->active;
 	ImGui::Checkbox(name.c_str(), &active);
