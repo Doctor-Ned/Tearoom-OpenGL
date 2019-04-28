@@ -314,7 +314,7 @@ void GraphNode::renderGui() {
 		{
 			int counter = 0;
 			for (auto &comp : components) {
-				if (ImGui::TreeNode(reinterpret_cast<void*>(static_cast<intptr_t>(counter)), comp->getName().c_str(), counter))
+				if (ImGui::TreeNode(comp->getName().c_str()))
 				{
 					comp->renderGui();
 					ImGui::TreePop();

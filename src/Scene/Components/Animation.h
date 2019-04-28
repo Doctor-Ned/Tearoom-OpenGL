@@ -19,6 +19,17 @@ namespace anim {
 		animMap translation;
 		animMap scale;
 		animMap rotation;
+		bool empty() const
+		{
+			if (!translation.empty())
+				return false;
+			if (!rotation.empty())
+				return false;
+			if (!rotation.empty())
+				return false;
+
+			return true;
+		}
 	};
 }
 
@@ -55,6 +66,7 @@ public:
 	void update(float msec) override;
 	~Animation() override;
 	void renderGui() override;
+	void animationGui(static const char* animation, anim::animMap& map);
 	
 	void play(float startTime = 0.0f, bool _looped = false);
 	void stopPlaying();

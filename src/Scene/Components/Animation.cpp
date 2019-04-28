@@ -148,7 +148,100 @@ Animation::~Animation()
 void Animation::renderGui()
 {
 	Component::renderGui();
+
+	static float time = 0;
+	static float x = 0.0f;
+	static float y = 0.0f;
+	static float z = 0.0f;
+	static char str0[128] = "Object to animate";
+
+	ImGui::InputText("AnimatedObject", str0, IM_ARRAYSIZE(str0));
+	ImGui::InputFloat("time:", &time);
+	ImGui::InputFloat("fixed X:", &x);
+	ImGui::InputFloat("fixed Y:", &y);
+	ImGui::InputFloat("fixed Z:", &z);
+	if (ImGui::Button("Add/edit pos KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		addKeyFrame(str0, anim::TRANSLATION, time, values);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Delete pos KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		deleteKeyFrame(str0, anim::TRANSLATION, time);
+	}
+
+	if (ImGui::Button("Add/edit scale KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		addKeyFrame(str0, anim::SCALE, time, values);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Delete scale KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		deleteKeyFrame(str0, anim::SCALE, time);
+	}
+
+	if (ImGui::Button("Add/edit rot KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		addKeyFrame(str0, anim::ROTATION, time, values);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Delete rot KeyFrame"))
+	{
+		glm::vec3 values = { x, y, z };
+		deleteKeyFrame(str0, anim::ROTATION, time);
+	}
+
+
+	for(auto animObjIt = objectAnimations.begin(); animObjIt != objectAnimations.end(); ++animObjIt)
+	{
+		std::string animatedObject = animObjIt->first;
+		ImGui::Text("Object:");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.6f, 1.0f), animatedObject.c_str());
+
+		animationGui("Translation", animObjIt->second.translation);
+		animationGui("Scale", animObjIt->second.scale);
+		animationGui("Rotation", animObjIt->second.rotation);
+	}
 }
+
+void Animation::animationGui(const char* animation, anim::animMap& map)
+{
+	ImGui::Indent(15.0f);
+	if (!map.empty())
+	{
+		ImGui::TextColored(ImVec4(0.0f, 0.2f, 1.0f, 1.0f), animation);
+		auto it = map.begin();
+		ImGui::Indent(15.0f);
+		for (; it != map.end(); ++it)
+		{
+			std::string time = std::to_string(it->first) + "s";
+			ImGui::Text(time.c_str());
+			ImGui::SameLine();
+			ImGui::Text("[");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), std::to_string(it->second.x).c_str());
+			ImGui::SameLine();
+			ImGui::Text(",");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), std::to_string(it->second.y).c_str());
+			ImGui::SameLine();
+			ImGui::Text(",");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 0.2f, 0.8f, 1.0f), std::to_string(it->second.z).c_str());
+			ImGui::SameLine();
+			ImGui::Text("]");
+		}
+		ImGui::Unindent(15.0f);
+	}
+	ImGui::Unindent(15.0f);
+}
+
 
 void Animation::play(float startTime, bool _looped)
 {
@@ -167,6 +260,8 @@ void Animation::stopPlaying()
 bool Animation::addKeyFrame(std::string&& gameObjectName, Animated type, float time, glm::vec3 values)
 {
 	if (time < 0)
+		return false;
+	if (isPlaying)
 		return false;
 	auto it = objectAnimations.find(gameObjectName);
 	if (it == objectAnimations.end())
@@ -196,6 +291,9 @@ bool Animation::addKeyFrame(std::string&& gameObjectName, Animated type, float t
 
 bool Animation::deleteKeyFrame(std::string&& gameObjectName, Animated type, float time)
 {
+	if (isPlaying)
+		return false;
+
 	auto it = objectAnimations.find(gameObjectName);
 	if (it == objectAnimations.end())
 	{
@@ -225,6 +323,12 @@ bool Animation::deleteKeyFrame(std::string&& gameObjectName, Animated type, floa
 		{
 			it->second.rotation.erase(keyFrameToDelete);
 		}
+	}
+
+	//removing empty animated object
+	if(it->second.empty())
+	{
+		objectAnimations.erase(it);
 	}
 	setEndTime();
 	return true;
