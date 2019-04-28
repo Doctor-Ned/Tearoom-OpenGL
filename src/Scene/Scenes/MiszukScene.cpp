@@ -48,6 +48,8 @@ MiszukScene::MiszukScene() {
     UiPlane* hud = new UiPlane("res/textures/inventory.png",glm::vec2(500.0f, 500.0f), glm::vec2(400.0f,400.0f), Center);
     UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
     UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+	boxRepresentation->setParent(rootUiElement);
+	boxRepresentation2->setParent(rootUiElement);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
     inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f,30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
@@ -161,6 +163,7 @@ MiszukScene::MiszukScene() {
 	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
 	rootNode->updateDrawData();
+	rootUiElement->updateDrawData();
 	reinitializeRenderMap();
 }
 

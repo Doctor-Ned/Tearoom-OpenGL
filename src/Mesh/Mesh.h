@@ -30,6 +30,8 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 	void renderGui() override;
+	void setUiScale(float uiScale);
+	float getUiScale();
 protected:
 	Mesh(ShaderType shaderType, GLuint renderMode = GL_TRIANGLES);
 	virtual void draw(Shader *shader, glm::mat4 world);
@@ -42,6 +44,7 @@ protected:
 	bool useLight;
 	bool castShadows;
 	float opacity = 1.0f;
+	float uiScale = 1.0f;
 	Mesh() : Mesh(STNone) {}
 	friend class Serializer;
 };

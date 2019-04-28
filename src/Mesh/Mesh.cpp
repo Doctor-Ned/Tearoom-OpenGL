@@ -110,6 +110,7 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 	root["opaque"] = opaque;
 	root["opacity"] = opacity;
 	root["castShadows"] = castShadows;
+	root["uiScale"] = uiScale;
 	root["renderMode"] = static_cast<int>(renderMode);
 	return root;
 }
@@ -122,6 +123,7 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setOpaque(root.get("opaque", opaque).asBool());
 	setCastShadows(root.get("castShadows", castShadows).asBool());
 	setOpacity(root.get("opacity", opacity).asFloat());
+	setUiScale(root.get("uiScale", uiScale).asFloat());
 	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
 }
 
@@ -153,6 +155,14 @@ void Mesh::renderGui() {
 	if (culled != this->culled) {
 		setCulled(culled);
 	}
+}
+
+void Mesh::setUiScale(float uiScale) {
+	this->uiScale = uiScale;
+}
+
+float Mesh::getUiScale() {
+	return uiScale;
 }
 
 Mesh::Mesh(ShaderType shaderType, GLuint renderMode) {

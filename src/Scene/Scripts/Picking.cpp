@@ -33,7 +33,7 @@ void Picking::showInventoryUi() {
 
 	for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
 		if (i >= inventory.size()) {
-			break;
+			//break;
 		}
 
 		obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
