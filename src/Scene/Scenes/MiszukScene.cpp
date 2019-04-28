@@ -25,7 +25,8 @@ MiszukScene::MiszukScene() {
 	lightManager->recreateLights(0, 0, 0);
 	camera = new Camera();
 	rootUiElement->setPosition(glm::vec2(700.0f,700.0f));
-	clockHand = new UiPlane("res/textures/clockHand.png", glm::vec2(130.0f, 560.0f), glm::vec2(60.0f,80.0f),TopRight);
+	clockHand = new UiPlane("res/textures/clockHand.png", glm::vec2(180.0f, 515.0f), glm::vec2(60.0f,130.0f),TopRight);
+	clockHand->setRotationAnchor(BottomLeft);
 	rootUiElement->addChild(clockHand);
 
 	// for basic animation testing
@@ -40,7 +41,6 @@ MiszukScene::MiszukScene() {
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
 	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
 	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	
 	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
 	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 
@@ -54,7 +54,7 @@ MiszukScene::MiszukScene() {
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
 
-	UiPlane* clock = new UiPlane("res/textures/clockFace.png", glm::vec2(60.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
+	UiPlane* clock = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
 
 	rootUiElement->addChild(clock);
 
@@ -216,7 +216,15 @@ void MiszukScene::update(double deltaTime) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
 
+    if(getKeyState(GLFW_KEY_1))
+    {
+        clockHand->localTransform.rotateZ(0.2f);
+    }
 
+    if(getKeyState(GLFW_KEY_2))
+    {
+        clockHand->localTransform.rotateZ(-0.2f);
+    }
 
 	rootNode->update(deltaTime);
 	//GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
