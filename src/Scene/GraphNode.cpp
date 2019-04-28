@@ -53,7 +53,14 @@ void GraphNode::updateDrawData() {
 
 void GraphNode::drawSelf(Shader *shader) {
 	if (mesh != nullptr) {
+		GLenum rm = mesh->getRenderMode();
+		if (tempRenderMode != GL_NONE) {
+			mesh->setRenderMode(tempRenderMode);
+		}
 		mesh->drawSelf(shader, worldTransform.getMatrix());
+		if(tempRenderMode != GL_NONE) {
+			mesh->setRenderMode(rm);
+		}
 	}
 }
 
@@ -238,6 +245,14 @@ SerializableType GraphNode::getSerializableType() {
 	return SGraphNode;
 }
 
+void GraphNode::setTempRenderMode(GLenum tempRenderMode) {
+	this->tempRenderMode = tempRenderMode;
+}
+
+void GraphNode::removeTempRenderMode() {
+	this->tempRenderMode = GL_NONE;
+}
+
 void GraphNode::updateWorld() {
 	if (dirty) {
 		localTransform.updateLast();
@@ -278,8 +293,8 @@ void GraphNode::renderGui() {
 		ImGui::Text("_____________________");
 		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
-			if(editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
-				editor->confirmationDialogCallback = [this,editor]() {
+			if (editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
+				editor->confirmationDialogCallback = [this, editor]() {
 					//delete mesh;
 					mesh = nullptr;
 					editor->editedScene->updateRenderable(this);
@@ -290,32 +305,30 @@ void GraphNode::renderGui() {
 			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
 				ImGui::SameLine();
 				if (ImGui::Button("Change...")) {
-					editor->shaderTypeSelectionCallback = [node=this,editor=editor,mesh=mesh](ShaderType type) {
+					editor->shaderTypeSelectionCallback = [node = this, editor = editor, mesh = mesh](ShaderType type) {
 						mesh->setShaderType(type);
 						editor->editedScene->updateRenderable(node);
 					};
 				}
 			}
 		} else {
-			if(editor->meshSelectionCallback == nullptr &&ImGui::Button("Add mesh...")) {
-				if(editor != nullptr) {
+			if (editor->meshSelectionCallback == nullptr &&ImGui::Button("Add mesh...")) {
+				if (editor != nullptr) {
 					editor->meshSelectionCallback = [this, editor](SerializableType type) {
 						if (!editor->typeCreationExists(type)) {
 							editor->addTypeCreation(type, [this, editor](void* mesh) {
 								this->mesh = reinterpret_cast<Mesh*>(mesh);
-								editor->editedScene->updateRenderable(this);
+								editor->editedScene->updateRenderable(this, true);
 							});
 						}
 					};
 				}
 			}
 		}
-		if (!components.empty() && ImGui::TreeNode("Components"))
-		{
+		if (!components.empty() && ImGui::TreeNode("Components")) {
 			int counter = 0;
 			for (auto &comp : components) {
-				if (ImGui::TreeNode(comp->getName().c_str()))
-				{
+				if (ImGui::TreeNode(comp->getName().c_str())) {
 					comp->renderGui();
 					ImGui::TreePop();
 					counter++;

@@ -59,7 +59,7 @@ void EditorScene::renderUi() {
 	}
 
 	ImGui::Checkbox("Update edited scene", &updateEditedScene);
-	if(updateEditedScene) {
+	if (updateEditedScene) {
 		ImGui::SliderFloat("Time scale", &timeScale, -1.0f, 1.0f);
 		ImGui::InputFloat("Time scale (fixed)", &timeScale);
 	}
@@ -237,8 +237,8 @@ void EditorScene::renderUi() {
 				if (useDimensions) {
 					ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
 					ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
-					for(int i=0;i<3;i++ ) {
-						if(dimensions[i] < 0.0f) {
+					for (int i = 0; i < 3; i++) {
+						if (dimensions[i] < 0.0f) {
 							dimensions[i] = 0.0f;
 						}
 					}
@@ -249,8 +249,8 @@ void EditorScene::renderUi() {
 					ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
 					ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f);
 					ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
-					for(int i=0;i<3;i++) {
-						if(min[i] > max[i]) {
+					for (int i = 0; i < 3; i++) {
+						if (min[i] > max[i]) {
 							min[i] = max[i];
 						}
 					}
@@ -271,7 +271,7 @@ void EditorScene::renderUi() {
 							valid = false;
 						}
 					}
-						break;
+					break;
 					case SMeshColorBox:
 						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
 						break;
@@ -282,9 +282,9 @@ void EditorScene::renderUi() {
 
 				if (valid && ImGui::Button("Create")) {
 					Mesh *box;
-					if(typeCreation->typeToCreate == SMeshColorBox) {
+					if (typeCreation->typeToCreate == SMeshColorBox) {
 						box = new MeshColorBox(min, max, color);
-					} else if(typeCreation->typeToCreate == SMeshRefBox) {
+					} else if (typeCreation->typeToCreate == SMeshRefBox) {
 						box = new MeshRefBox(reflective, min, max);
 					} else {
 						//SMeshBox
@@ -375,13 +375,13 @@ void EditorScene::renderUi() {
 				ImGui::InputFloat("Height (fixed)", &height);
 				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
 
-				if(radius < 0.0f) {
+				if (radius < 0.0f) {
 					radius = 0.0f;
 				}
-				if(height < 0.0f) {
+				if (height < 0.0f) {
 					height = 0.0f;
 				}
-				if(sideAmount <3) {
+				if (sideAmount < 3) {
 					sideAmount = 3;
 				}
 
@@ -430,10 +430,10 @@ void EditorScene::renderUi() {
 				ImGui::DragFloat("Length", &length, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Length (fixed)", &length);
 
-				if(width < 0.0f) {
+				if (width < 0.0f) {
 					width = 0.0f;
 				}
-				if(length < 0.0f) {
+				if (length < 0.0f) {
 					length = 0.0f;
 				}
 
@@ -485,10 +485,10 @@ void EditorScene::renderUi() {
 				ImGui::InputFloat("Radius (fixed)", &radius);
 				ImGui::DragInt("Precision", &precision, 1, 3, std::numeric_limits<int>::max());
 
-				if(radius < 0.0f) {
+				if (radius < 0.0f) {
 					radius = 0.0f;
 				}
-				if(precision < 3) {
+				if (precision < 3) {
 					precision = 3;
 				}
 
@@ -542,16 +542,16 @@ void EditorScene::renderUi() {
 				ImGui::DragFloat("Radius 1", &radiusIn, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
 				ImGui::DragFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
+				ImGui::InputFloat("Radius 2", &radiusOut, 0.1f);
 				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
 
-				if(radiusIn < 0.0f) {
+				if (radiusIn < 0.0f) {
 					radiusIn = 0.0f;
 				}
-				if(radiusOut < 0.0f) {
+				if (radiusOut < 0.0f) {
 					radiusOut = 0.0f;
 				}
-				if(sideAmount < 3) {
+				if (sideAmount < 3) {
 					sideAmount = 3;
 				}
 
@@ -755,6 +755,9 @@ void EditorScene::renderUi() {
 			ImGui::Begin(("Node '" + node->getName() + "'").c_str(), nullptr, 64);
 			if (ImGui::Button("Close")) {
 				toDelete.push_back(node);
+				if (useWireframe) {
+					node->removeTempRenderMode();
+				}
 			}
 			node->drawGui();
 			ImGui::End();
@@ -1013,6 +1016,19 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	}
 }
 
+void EditorScene::toggleWireframe() {
+	useWireframe = !useWireframe;
+	if (useWireframe) {
+		for (auto &node : editedNodes) {
+			node->setTempRenderMode(GL_LINE_STRIP);
+		}
+	} else {
+		for (auto &node : editedNodes) {
+			node->removeTempRenderMode();
+		}
+	}
+}
+
 void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 	addRenderedNodeQueue.push_back(std::pair<GraphNode*, GraphNode*>(node, parent));
 }
@@ -1038,12 +1054,17 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 	}
 	if (!opened && ImGui::Button("Open...")) {
 		editedNodes.push_back(node);
+		if (useWireframe) {
+			node->setTempRenderMode(GL_LINE_STRIP);
+		}
 	}
 	ImGui::SameLine();
 	if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child...")) {
 		addTypeCreation(SGraphNode, [this, node](void* nod) {
 			if (nod != nullptr) {
 				appendNode(reinterpret_cast<GraphNode*>(nod), node);
+				editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
+				node->setTempRenderMode(GL_LINE_STRIP);
 			}
 		});
 	}
@@ -1062,8 +1083,8 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
 			confirmationDialogCallback = [this, node]() {
 				editedScene->removeNode(node);
-				for(auto i =editedNodes.begin();i!=editedNodes.end();) {
-					if(*i == node) {
+				for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+					if (*i == node) {
 						editedNodes.erase(i);
 						break;
 					}
@@ -1091,6 +1112,9 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 void EditorScene::keyEvent(int key, bool pressed) {
 	if (pressed) {
 		switch (key) {
+			case EDITOR_KEY_TOGGLE_WIREFRAME:
+				toggleWireframe();
+				break;
 			case KEY_TOGGLE_MOUSE_LOCK:
 				setCursorLocked(!getCursorLocked());
 				break;

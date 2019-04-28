@@ -4,7 +4,8 @@
 class UiText;
 
 const int
-EDITOR_KEY_TOGGLE_CAMERA = GLFW_KEY_C;
+EDITOR_KEY_TOGGLE_CAMERA = GLFW_KEY_C,
+EDITOR_KEY_TOGGLE_WIREFRAME = GLFW_KEY_V;
 
 enum TypeToCreate {
 	TTCNone,
@@ -42,6 +43,8 @@ public:
 	float timeScale = 1.0f;
 	int nodeCounter = 1;
 	int idCounter = 1;
+	void toggleWireframe();
+	bool useWireframe = true;
 	std::vector<std::pair<GraphNode*, GraphNode*>> addRenderedNodeQueue;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
 	void showNodeAsTree(GraphNode *node);

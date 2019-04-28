@@ -46,7 +46,10 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer *serializer) override;
 	SerializableType getSerializableType() override;
+	void setTempRenderMode(GLenum tempRenderMode);
+	void removeTempRenderMode();
 protected:
+	GLenum tempRenderMode = GL_NONE;
 	void updateWorld();
 	std::string name;
 	void renderGui() override;
