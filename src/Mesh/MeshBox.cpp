@@ -132,10 +132,10 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	vertices[14].Normal = normal;
 	vertices[15].Normal = normal;
 
-	vertices[12].TexCoords = vertices[0].TexCoords;
-	vertices[13].TexCoords = vertices[1].TexCoords;
-	vertices[14].TexCoords = vertices[2].TexCoords;
-	vertices[15].TexCoords = vertices[3].TexCoords;
+	vertices[12].TexCoords = vertices[2].TexCoords;
+	vertices[13].TexCoords = vertices[3].TexCoords;
+	vertices[14].TexCoords = vertices[0].TexCoords;
+	vertices[15].TexCoords = vertices[1].TexCoords;
 
 	vertices[12].Position = vertices[9].Position;
 	vertices[12].Position.z = min.z;
@@ -172,10 +172,10 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	vertices[22].Normal = normal;
 	vertices[23].Normal = normal;
 
-	vertices[20].TexCoords = vertices[0].TexCoords;
-	vertices[21].TexCoords = vertices[1].TexCoords;
-	vertices[22].TexCoords = vertices[2].TexCoords;
-	vertices[23].TexCoords = vertices[3].TexCoords;
+	vertices[20].TexCoords = vertices[2].TexCoords;
+	vertices[21].TexCoords = vertices[3].TexCoords;
+	vertices[22].TexCoords = vertices[0].TexCoords;
+	vertices[23].TexCoords = vertices[1].TexCoords;
 
 	vertices[20].Position = vertices[17].Position;
 	vertices[20].Position.x = max.x;
