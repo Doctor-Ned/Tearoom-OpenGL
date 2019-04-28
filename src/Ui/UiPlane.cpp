@@ -44,6 +44,7 @@ void UiPlane::setup() {
 	}
 
 	glGenBuffers(1, &vbo);
+	glBindVertexArray(vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiTextureVertex), &data[0], GL_STATIC_DRAW);

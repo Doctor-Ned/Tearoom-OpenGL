@@ -49,8 +49,6 @@ void UiText::setText(std::string text) {
 	}
 }
 
-void UiText::setup() {}
-
 void UiText::setPosition(glm::vec2 position, UiAnchor anchor) {
 	this->anchor = anchor;
 	actualPosition = position;

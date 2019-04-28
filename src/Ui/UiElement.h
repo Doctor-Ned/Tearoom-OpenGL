@@ -81,7 +81,7 @@ protected:
 	glm::vec2 getRescaledModeledPosition();
 	glm::vec2 getRescaledModeledSize();
 	float opacity = 1.0f;
-	virtual void setup() = 0;
+	virtual void setup();
 	bool dirty = true;
 	glm::vec2 actualPosition{};
 	glm::vec2 modeledPosition{};

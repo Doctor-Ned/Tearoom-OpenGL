@@ -7,6 +7,7 @@
 #include "Render/Camera.h"
 #include "Ui/UiCanvas.h"
 #include "Mesh/MeshRef.h"
+#include "Ui/UiPlane.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -36,9 +37,9 @@ void Scene::render() {
 			}
 		}
 		glViewport(0, 0, ENVMAP_SIZE.x, ENVMAP_SIZE.y);
-		for(auto &refNode : refNodes) {
+		for (auto &refNode : refNodes) {
 			MeshRef *ref = dynamic_cast<MeshRef*>(refNode->getMesh());
-			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [this,refNode](glm::mat4 view, glm::mat4 projection) {
+			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [this, refNode](glm::mat4 view, glm::mat4 projection) {
 				for (auto &shader : updatableShaders) {
 					shader->use();
 					shader->setViewPosition(refNode->worldTransform.getPosition());
@@ -118,9 +119,7 @@ void Scene::renderUiUsingRenderMap(Shader* shader) {
 		for (auto &type : ShaderTypes) {
 			if (type != STNone) {
 				shader = shaders[type];
-				if (shader != nullptr) {
-					shader->use();
-				}
+				shader->use();
 				for (auto &uiElement : *uiRenderMap[type]) {
 					uiElement->render(shader);
 				}
@@ -240,7 +239,7 @@ UiText* Scene::getInventoryText() {
 	return  inventoryText;
 }
 
-std::vector<UiColorPlane*>* Scene::getObjectRepresentations() {
+std::vector<UiPlane*>* Scene::getObjectRepresentations() {
 	return &objectRepresentasions;
 }
 
@@ -550,7 +549,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 						if (gn == nullptr) {
 							Component *comp = dynamic_cast<Component*>(node);
 							gn = comp->getGameObject();
-				}
+						}
 						bool skip = true;
 						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
 							if (*i == gn) {
@@ -562,16 +561,16 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 						if (skip) {
 							continue;
 						}
-			}
+					}
 #endif
 					if (opaque && !node->isOpaque()) {
 						transparentRenderMap[type]->push_back(node);
 						continue;
 					}
 					node->drawSelf(shader);
+				}
+			}
 		}
-	}
-}
 	} else {
 		shader->use();
 		for (auto &type : ShaderTypes) {

@@ -24,5 +24,3 @@ void UiTextButton::setPosition(glm::vec2 position, UiAnchor anchor) {
 	UiElement::setPosition(position, anchor);
 	this->text->setPosition(glm::vec2(actualPosition.x + size.x / 2.0f, actualPosition.y + size.y / 2.0f), Center);
 }
-
-void UiTextButton::setup() { }

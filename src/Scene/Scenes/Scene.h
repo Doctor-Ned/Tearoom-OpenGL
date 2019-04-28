@@ -9,6 +9,7 @@
 #include "Render/Skybox.h"
 #include "Ui/UiText.h"
 #include "Ui/UiColorPlane.h"
+#include "Ui/UiPlane.h"
 
 //#define ENABLE_FRUSTUM_CULLING
 
@@ -56,7 +57,7 @@ public:
 	void setSkybox(Skybox *skybox);
 	//inventory
 	UiColorPlane* getInventoryBackground();
-	std::vector<UiColorPlane*>* getObjectRepresentations();
+	std::vector<UiPlane*>* getObjectRepresentations();
 	UiText* getInventoryText();
 	UiElement* getUiRoot();
 
@@ -89,7 +90,7 @@ protected:
 	//inventory
 	UiColorPlane* inventoryBackground;
 	UiText * inventoryText;
-	std::vector<UiColorPlane*> objectRepresentasions;
+	std::vector<UiPlane*> objectRepresentasions;
 	//-----------
 
 	GraphNode *rootNode;

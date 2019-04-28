@@ -17,7 +17,6 @@ public:
 	void render(Shader *shader) override;
 	void setText(const char* text);
 	void setText(std::string text);
-	void setup() override;
 	using UiElement::setPosition;
 	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	ShaderType getShaderType() override;

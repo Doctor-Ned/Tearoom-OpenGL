@@ -84,11 +84,6 @@ void UiSliderInt::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
-void UiSliderInt::setPosition(glm::vec2 position, UiAnchor anchor) {
-	UiElement::setPosition(position, anchor);
-	setup();
-}
-
 void UiSliderInt::setup() {
 	this->button->setup();
 
