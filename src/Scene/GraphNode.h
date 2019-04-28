@@ -26,7 +26,6 @@ public:
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component* component);
-	bool getHitByRay();
 	template <class T> void removeComponent(T *component);
 	template <class T> void removeComponents();
 	template <class T> T* getComponent();
