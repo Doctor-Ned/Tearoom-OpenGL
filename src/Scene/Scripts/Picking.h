@@ -4,6 +4,7 @@
 #include <Ui/UiColorPlane.h>
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
+#include "Ui/UiCanvas.h"
 
 class Camera;
 class Picking : public Component
@@ -22,6 +23,7 @@ public:
 private:
 	Scene* scene;
     bool inventoryUI = false;
+	UiCanvas *inventoryCanvas, *encouragementCanvas;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
 	Picking(){}

@@ -45,18 +45,12 @@ MiszukScene::MiszukScene() {
 
 	//-------------
     //INVENTORY UI
-    UiPlane* hud = new UiPlane("res/textures/inventory.png",glm::vec2(500.0f, 500.0f), glm::vec2(400.0f,400.0f), Center);
     //UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
     //UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
 	UiPlane* boxRepresentation = new UiPlane("res/textures/face.png", glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
 	UiPlane* boxRepresentation2 = new UiPlane("res/textures/face.png", glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-	boxRepresentation->setParent(rootUiElement);
-	boxRepresentation2->setParent(rootUiElement);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
-    inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f,30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-    inventoryBackground = new UiColorPlane(glm::vec4(0.76f, 0.65f, 0.27f, 0.85f), glm::vec2(1400.0f, 700.0f), glm::vec2(400.0f, 700.0f), Right);
-	addToRenderMap(hud);
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
@@ -180,6 +174,7 @@ void MiszukScene::render() {
 
 void MiszukScene::renderUi() {
 	Scene::renderUi();
+	assetManager->getShader(STText)->use();
 	assetManager->getTextRenderer()->renderText(assetManager->getShader(STText), "+", gameManager->getScreenWidth() / 2.0f, gameManager->getScreenHeight() / 2.0f, 1.0f);
 }
 

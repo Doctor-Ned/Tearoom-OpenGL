@@ -21,6 +21,7 @@ class GameManager;
 class Scene : public Serializable {
 public:
 	virtual void render();
+	void renderUiElement(UiElement* uiElement);
 	virtual void renderUi();
 	virtual Camera *getCamera();
 	void setCamera(Camera *camera);
@@ -28,16 +29,12 @@ public:
 	void removeNode(GraphNode* node, bool recurse = true);
 	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling = true, bool ignoreRefractive=false);
 	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling=true, bool ignoreRefractive=false);
-	void renderUiUsingRenderMap(Shader *shader = nullptr);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
-	void addToRenderMap(UiElement *uiElement, bool recurse = true);
 	void updateRenderable(Renderable *renderable, bool addIfNotFound = false);
-	void updateElement(UiElement *uiElement, bool addIfNotFound = false);
 	void removeComponent(GraphNode *node, Component *component);
 	void removeFromRenderMap(Renderable *renderable);
 	void removeFromRenderMap(GraphNode *node, bool recurse = true);
-	void removeFromRenderMap(UiElement *uiElement, bool recurse = true);
 	void reinitializeRenderMap();
 	virtual void keyEvent(int key, bool pressed);
 	virtual void mouseEvent(int key, bool pressed);
@@ -56,9 +53,7 @@ public:
 	virtual Skybox *getSkybox();
 	void setSkybox(Skybox *skybox);
 	//inventory
-	UiColorPlane* getInventoryBackground();
 	std::vector<UiPlane*>* getObjectRepresentations();
-	UiText* getInventoryText();
 	UiElement* getUiRoot();
 
 protected:
@@ -68,11 +63,9 @@ protected:
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
-	void addToRenderMap(UiElement *uiElement, bool recurse, bool checkIfExists);
 	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight, bool frustumCulling = true, bool ignoreRefractive = false);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
-	std::map<ShaderType, std::vector<UiElement*>*> uiRenderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
 	std::vector<Renderable*> lightIgnoredObjects;
 	UboLights *uboLights;
@@ -88,8 +81,6 @@ protected:
 	UiElement *rootUiElement;
 
 	//inventory
-	UiColorPlane* inventoryBackground;
-	UiText * inventoryText;
 	std::vector<UiPlane*> objectRepresentasions;
 	//-----------
 

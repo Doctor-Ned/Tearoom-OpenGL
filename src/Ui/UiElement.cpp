@@ -8,6 +8,7 @@ float UiElement::windowHeight = 0.0f;
 float UiElement::screenWidth = 0.0f;
 float UiElement::screenHeight = 0.0f;
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
+glm::mat4 UiElement::view = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	glGenVertexArrays(1, &vao);
@@ -21,13 +22,13 @@ void UiElement::render(Shader *shader) {
 }
 
 void UiElement::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	for(auto &child : children) {
+	for (auto &child : children) {
 		child->mouse_callback(window, xpos, ypos);
 	}
 }
 
 void UiElement::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	for(auto &child : children) {
+	for (auto &child : children) {
 		child->mouse_button_callback(window, button, action, mods);
 	}
 }
@@ -98,11 +99,11 @@ glm::vec2 UiElement::getSize() const {
 }
 
 void UiElement::removeChild(UiElement* element) {
-	if(element->parent != this) {
+	if (element->parent != this) {
 		return;
 	}
-	for(auto i = children.begin();i!=children.end();) {
-		if(*i == element) {
+	for (auto i = children.begin(); i != children.end();) {
+		if (*i == element) {
 			children.erase(i);
 			element->parent = nullptr;
 			break;
@@ -112,19 +113,19 @@ void UiElement::removeChild(UiElement* element) {
 }
 
 void UiElement::setParent(UiElement* element) {
-	if(parent != nullptr) {
+	if (parent != nullptr) {
 		parent->removeChild(this);
 	}
 	element->addChild(this);
 }
 
 void UiElement::addChild(UiElement* element) {
-	for(auto &child : children) {
-		if(child == element) {
+	for (auto &child : children) {
+		if (child == element) {
 			return;
 		}
 	}
-	if(element->parent != nullptr) {
+	if (element->parent != nullptr) {
 		element->parent->removeChild(element);
 	}
 	element->parent = this;
@@ -147,16 +148,16 @@ void UiElement::updateDrawData() {
 		return;
 	}
 
-	if(parent != nullptr) {
+	if (parent != nullptr) {
 		dirty |= parent->dirty;
-		if(dirty) {
+		if (dirty) {
 			updateWorld();
 		}
-	} else if(dirty) {
+	} else if (dirty) {
 		updateWorld();
 	}
 
-	for(auto &child : children) {
+	for (auto &child : children) {
 		child->updateDrawData();
 	}
 
@@ -176,6 +177,7 @@ void UiElement::updateProjection(float windowWidth, float windowHeight, float sc
 			case STUiColor:
 			case STText:
 				pair.second->use();
+				pair.second->setView(view);
 				pair.second->setProjection(projection);
 				break;
 		}
@@ -206,9 +208,9 @@ bool UiElement::isActive() {
 }
 
 void UiElement::updateWorld() {
-	if(dirty) {
-		if(parent != nullptr) {
-			worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
+	if (dirty) {
+		if (parent != nullptr) {
+			worldTransform.setMatrix(parent->worldTransform.getMatrix()* localTransform.getMatrix());
 		} else {
 			worldTransform.setMatrix(localTransform.getMatrix());
 		}

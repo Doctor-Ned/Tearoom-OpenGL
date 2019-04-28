@@ -72,9 +72,23 @@ void Scene::render() {
 	}
 }
 
+void Scene::renderUiElement(UiElement* uiElement) {
+	if (!uiElement->isActive()) {
+		return;
+	}
+	Shader *shader = assetManager->getShader(uiElement->getShaderType());
+	if (shader != nullptr) {
+		shader->use();
+		uiElement->render(shader);
+	}
+	for (auto &child : uiElement->getChildren()) {
+		renderUiElement(child);
+	}
+}
+
 void Scene::renderUi() {
 	rootUiElement->updateDrawData();
-	renderUiUsingRenderMap();
+	renderUiElement(rootUiElement);
 }
 
 Camera *Scene::getCamera() {
@@ -114,29 +128,6 @@ void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLigh
 	renderFromMap(false, shader, ignoreLight, frustumCulling, ignoreRefractive);
 }
 
-void Scene::renderUiUsingRenderMap(Shader* shader) {
-	if (shader == nullptr) {
-		for (auto &type : ShaderTypes) {
-			if (type != STNone) {
-				shader = shaders[type];
-				shader->use();
-				for (auto &uiElement : *uiRenderMap[type]) {
-					uiElement->render(shader);
-				}
-			}
-		}
-	} else {
-		shader->use();
-		for (auto &type : ShaderTypes) {
-			if (type != STNone) {
-				for (auto &uiElement : *uiRenderMap[type]) {
-					uiElement->render(shader);
-				}
-			}
-		}
-	}
-}
-
 void Scene::addComponent(GraphNode* node, Component* component) {
 	node->addComponent(component);
 	Renderable *r = dynamic_cast<Renderable*>(component);
@@ -147,10 +138,6 @@ void Scene::addComponent(GraphNode* node, Component* component) {
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse) {
 	addToRenderMap(node, recurse, true);
-}
-
-void Scene::addToRenderMap(UiElement* uiElement, bool recurse) {
-	addToRenderMap(uiElement, recurse, true);
 }
 
 void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
@@ -175,28 +162,6 @@ void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 	}
 }
 
-void Scene::updateElement(UiElement* uiElement, bool addIfNotFound) {
-	bool found = false;
-	for (auto &type : ShaderTypes) {
-		if (type != STNone) {
-			auto vec = *uiRenderMap[type];
-			for (auto i = vec.begin(); i != vec.end();) {
-				if (*i == uiElement) {
-					found = true;
-					break;
-				}
-				++i;
-			}
-		}
-		if (found) {
-			break;
-		}
-	}
-	if (found || addIfNotFound && !found) {
-		addToRenderMap(uiElement, false);
-	}
-}
-
 void Scene::removeComponent(GraphNode* node, Component* component) {
 	node->removeComponent(component);
 	Renderable *r = dynamic_cast<Renderable*>(component);
@@ -215,30 +180,6 @@ void Scene::removeFromRenderMap(GraphNode* node, bool recurse) {
 	}
 }
 
-void Scene::removeFromRenderMap(UiElement* uiElement, bool recurse) {
-	std::vector<UiElement*>* vec = uiRenderMap[uiElement->getShaderType()];
-	for (auto i = vec->begin(); i != vec->end();) {
-		if (*i == uiElement) {
-			if (recurse) {
-				for (auto &child : uiElement->getChildren()) {
-					removeFromRenderMap(child, recurse);
-				}
-			}
-			vec->erase(i);
-			break;
-		}
-		++i;
-	}
-}
-
-UiColorPlane* Scene::getInventoryBackground() {
-	return inventoryBackground;
-}
-
-UiText* Scene::getInventoryText() {
-	return  inventoryText;
-}
-
 std::vector<UiPlane*>* Scene::getObjectRepresentations() {
 	return &objectRepresentasions;
 }
@@ -253,13 +194,9 @@ void Scene::reinitializeRenderMap() {
 			delete renderMap[type];
 			renderMap.erase(type);
 			renderMap.emplace(type, new std::vector<Renderable*>());
-			delete uiRenderMap[type];
-			uiRenderMap.erase(type);
-			uiRenderMap.emplace(type, new std::vector<UiElement*>());
 		}
 	}
 	addToRenderMap(rootNode, true, false);
-	addToRenderMap(rootUiElement, true, false);
 }
 
 void Scene::update(double deltaTime) {
@@ -340,7 +277,6 @@ Scene::Scene() {
 		if (type != STNone) {
 			renderMap.emplace(type, new std::vector<Renderable*>());
 			transparentRenderMap.emplace(type, new std::vector<Renderable*>());
-			uiRenderMap.emplace(type, new std::vector<UiElement*>());
 		}
 	}
 }
@@ -351,11 +287,9 @@ Scene::~Scene() {
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			delete renderMap[type];
-			delete uiRenderMap[type];
 		}
 	}
 	renderMap.clear();
-	uiRenderMap.clear();
 	delete rootNode;
 }
 
@@ -484,35 +418,6 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 	}
 	if (!exists) {
 		vec->push_back(renderable);
-	}
-}
-
-void Scene::addToRenderMap(UiElement* uiElement, bool recurse, bool checkIfExists) {
-	bool exists = false;
-	if (uiElement->getShaderType() == STNone) {
-		if (recurse) {
-			for (auto &child : uiElement->getChildren()) {
-				addToRenderMap(child, recurse, checkIfExists);
-			}
-		}
-		return;
-	}
-	std::vector<UiElement*>* vec = uiRenderMap[uiElement->getShaderType()];
-	if (checkIfExists) {
-		for (auto &r : *vec) {
-			if (r == uiElement) {
-				exists = true;
-				break;
-			}
-		}
-	}
-	if (!exists) {
-		vec->push_back(uiElement);
-		if (recurse) {
-			for (auto &child : uiElement->getChildren()) {
-				addToRenderMap(child, recurse, checkIfExists);
-			}
-		}
 	}
 }
 

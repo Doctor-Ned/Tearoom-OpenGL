@@ -73,6 +73,7 @@ protected:
 	static float screenWidth;
 	static float screenHeight;
 	static glm::mat4 projection;
+	static glm::mat4 view;
 	static glm::vec2 createScaledSize(float width, float height);
 	glm::vec2 createSizeScaledByWidth(float size);
 	glm::vec2 createSizeScaledByHeight(float size);

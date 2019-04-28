@@ -13,23 +13,36 @@
 
 Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
+	UiElement *root = scene->getUiRoot();
+	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	inventoryCanvas->setParent(root);
+	inventoryCanvas->setActive(false);
 
+	UiText *inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f, 30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	UiColorPlane *inventoryBackground = new UiColorPlane(glm::vec4(0.76f, 0.65f, 0.27f, 0.85f), glm::vec2(1400.0f, 700.0f), glm::vec2(400.0f, 700.0f), Right);
+	//UiPlane* hud = new UiPlane("res/textures/inventory.png", glm::vec2(500.0f, 500.0f), glm::vec2(400.0f, 400.0f), Center);
+	//inventoryCanvas->addChild(hud);
+	inventoryCanvas->addChild(inventoryBackground);
+	inventoryCanvas->addChild(inventoryText);
+	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	encouragementCanvas->setParent(root);
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f),glm::vec2(720.0f, 260.0f), glm::vec2(200.0f,30.0f),Center);
     encouragement = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f,30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementCanvas->setActive(false);
+	encouragementCanvas->addChild(encouragementBackground);
+	encouragementCanvas->addChild(encouragement);
 }
 
 void Picking::hideInventoryUi() {
-	scene->removeFromRenderMap(scene->getInventoryText());
-	scene->removeFromRenderMap(scene->getInventoryBackground());
-	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
-		scene->removeFromRenderMap(obj);
+	inventoryCanvas->setActive(false);
+	for(auto &obj : *(scene->getObjectRepresentations())) {
+		inventoryCanvas->removeChild(obj);
 	}
 }
 
 void Picking::showInventoryUi() {
 	int i = 0;
-	scene->addToRenderMap(scene->getInventoryText());
-	scene->addToRenderMap(scene->getInventoryBackground());
+	inventoryCanvas->setActive(true);
 
 	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
 		if (i >= inventory.size()) {
@@ -37,7 +50,7 @@ void Picking::showInventoryUi() {
 		}
 
 		//obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
-		scene->addToRenderMap(obj);
+		inventoryCanvas->addChild(obj);
 		i++;
 	}
 }
@@ -57,8 +70,7 @@ void Picking::update(float msec) {
 
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos(), camera->getFront(), 2.0f, coll);
 	if (object) {
-		scene->addToRenderMap(encouragement);
-		scene->addToRenderMap(encouragementBackground);
+		encouragementCanvas->setActive(true);
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
 
@@ -68,7 +80,7 @@ void Picking::update(float msec) {
 
 				if(inventoryUI) //TODO: getting proper item icon to render
 				{
-					scene->addToRenderMap(scene->getObjectRepresentations()->front());
+					inventoryCanvas->addChild(scene->getObjectRepresentations()->front());
 				}
 			}
 		}
@@ -90,8 +102,7 @@ void Picking::update(float msec) {
 
 	}
 	else {
-		scene->removeFromRenderMap(encouragement);
-		scene->removeFromRenderMap(encouragementBackground);
+		encouragementCanvas->setActive(false);
 	}
 
 
@@ -103,7 +114,7 @@ void Picking::update(float msec) {
 			inventory.erase(inventory.begin() + i);
 			collectable->leaveObject();
 			for(UiPlane* obj : *(scene->getObjectRepresentations())) {
-				scene->removeFromRenderMap(obj);
+				inventoryCanvas->removeChild(obj);
 			}
 		}
 	}
