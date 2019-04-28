@@ -46,7 +46,8 @@ public:
 	void setLastData(TransformData data);
 	TransformData getData() const;
 	TransformData getLastData() const;
-	static glm::mat4 dataToMatrix(TransformData data);
+	virtual glm::mat4 dataToMatrix(TransformData data);
+	static glm::mat4 standardDataToMatrix(TransformData data);
 protected:
 	TransformData data, lastData;
 	glm::mat4 transform, lastTransform;

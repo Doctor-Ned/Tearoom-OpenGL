@@ -164,6 +164,12 @@ void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 	if (found || addIfNotFound && !found) {
 		addToRenderMap(renderable, false);
 	}
+	GraphNode *node = dynamic_cast<GraphNode*>(renderable);
+	if(node != nullptr) {
+		for(auto &rend : node->getRenderableComponents()) {
+			updateRenderable(rend, addIfNotFound);
+		}
+	}
 }
 
 void Scene::removeComponent(GraphNode* node, Component* component) {

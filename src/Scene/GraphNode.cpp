@@ -332,9 +332,9 @@ void GraphNode::renderGui() {
 						if(rend != nullptr) {
 							editor->editedScene->addToRenderMap(rend);
 						}
-					});
+					}, this);
 				}
-			}
+			};
 		}
 		if (!components.empty() && ImGui::TreeNode("Components")) {
 			int counter = 0;

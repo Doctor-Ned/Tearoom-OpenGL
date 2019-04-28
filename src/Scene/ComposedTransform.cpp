@@ -181,6 +181,10 @@ TransformData ComposedTransform::getLastData() const {
 }
 
 glm::mat4 ComposedTransform::dataToMatrix(const TransformData data) {
+	return standardDataToMatrix(data);
+}
+
+glm::mat4 ComposedTransform::standardDataToMatrix(TransformData data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
 	glm::mat4 rotation = glm::eulerAngleYXZ(data.eulerRotation.y, data.eulerRotation.x, data.eulerRotation.z);

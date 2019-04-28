@@ -18,6 +18,7 @@
 #include "Mesh/MeshCylinder.h"
 #include "Mesh/MeshColorCone.h"
 #include "Mesh/MeshCone.h"
+#include "Scene/Components/Billboard.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -42,7 +43,7 @@ void EditorScene::renderUi() {
 	Scene::renderUi();
 	idCounter = 0;
 	ImGui::Begin("Editor manager", nullptr, 64);
-	if(componentSelectionCallback != nullptr && ImGui::Button("Stop selectin component")) {
+	if (componentSelectionCallback != nullptr && ImGui::Button("Stop selectin component")) {
 		componentSelectionCallback = nullptr;
 	}
 	if (meshSelectionCallback != nullptr && ImGui::Button("Stop selecting mesh")) {
@@ -584,6 +585,84 @@ void EditorScene::renderUi() {
 				}
 			}
 			break;
+			case SAnimation:
+			{
+
+			}
+			break;
+			case SAnimationController:
+			{
+
+			}
+			break;
+			case SBillboard:
+			{
+				static bool rescale;
+				if (typeCreation->typeCreationStarted) {
+					rescale = true;
+				}
+				if (ImGui::Button("Create")) {
+					typeCreation->creationCallback(new Billboard(playerCamera, reinterpret_cast<GraphNode*>(typeCreation->arg), rescale));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
+			break;
+			case SSphereCollider:
+			case SBoxCollider:
+			{
+
+			}
+			break;
+			case SPhysicalObject:
+			{
+
+			}
+			break;
+			case SRotatingObject:
+			{
+
+			}
+			break;
+			case SCollectableObject:
+			{
+
+			}
+			break;
+			case SCollisionTest:
+			{
+
+			}
+			break;
+			case SPicking:
+			{
+
+			}
+			break;
+			case SPlayerMovement:
+			{
+
+			}
+			break;
+			case SDirLightComp:
+			{
+
+			}
+			break;
+			case SSpotLightComp:
+			{
+
+			}
+			break;
+			case SPointLightComp:
+			{
+
+			}
+			break;
+			case SSun:
+			{
+
+			}
+			break;
 		}
 		typeCreation->typeCreationStarted = false;
 		if (ImGui::Button("CANCEL")) {
@@ -611,15 +690,15 @@ void EditorScene::renderUi() {
 		ImGui::End();
 	}
 
-	if(componentSelectionCallback != nullptr) {
+	if (componentSelectionCallback != nullptr) {
 		ImGui::Begin("SELECT COMPOENT TYPE", nullptr, 64);
-		for(auto &type : creatableComponents) {
-			if(ImGui::Button(SerializableTypeNames[type].c_str())) {
+		for (auto &type : creatableComponents) {
+			if (ImGui::Button(SerializableTypeNames[type].c_str())) {
 				componentSelectionCallback(type);
 				componentSelectionCallback = nullptr;
 			}
 		}
-		if(ImGui::Button("CANCEL")) {
+		if (ImGui::Button("CANCEL")) {
 			componentSelectionCallback = nullptr;
 		}
 		ImGui::End();
@@ -894,7 +973,7 @@ void EditorScene::showTextureGui(std::string& texture) {
 	}
 }
 
-void EditorScene::addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback) {
+void EditorScene::addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback, void* arg) {
 	if (type == SNone || typeCreationExists(type)) {
 		return;
 	}
@@ -920,6 +999,7 @@ void EditorScene::addTypeCreation(SerializableType type, std::function<void(void
 		creation->typeCreationStarted = true;
 		creation->typeToCreate = type;
 		creation->creationCallback = creationCallback;
+		creation->arg = arg;
 		typeCreations.push_back(creation);
 	} else {
 		delete creation;

@@ -20,6 +20,7 @@ struct TypeCreation {
 	bool typeCreationStarted = true;
 	std::function<void(void*)> creationCallback = nullptr;
 	TypeToCreate ttc = TTCNone;
+	void *arg = nullptr;
 };
 
 class EditorScene : public Scene {
@@ -32,7 +33,7 @@ public:
 	void addEditedNode(GraphNode *node);
 //protected:
 	void showTextureGui(std::string &texture);
-	void addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback);
+	void addTypeCreation(SerializableType type, std::function<void(void*)> creationCallback, void* arg = nullptr);
 	bool typeCreationExists(SerializableType type);
 	void deleteTypeCreation(TypeCreation *typeCreation);
 	bool doesAnyChildContain(GraphNode *node, GraphNode *target);
