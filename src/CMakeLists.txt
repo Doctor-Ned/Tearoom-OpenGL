@@ -18,7 +18,7 @@ file(COPY ${FREETYPE_DIR}/freetype.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Components/SunController.cpp Scene/Components/SunController.h)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # Define the include DIRs

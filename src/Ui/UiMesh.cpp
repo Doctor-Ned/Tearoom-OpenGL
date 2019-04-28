@@ -3,7 +3,7 @@
 #include "Mesh/Mesh.h"
 
 UiMesh::UiMesh(glm::vec2 position, Mesh* mesh) : UiElement(position, glm::vec2(0.0f, 0.0f)) {
-	setMesh(mesh);
+	this->mesh = mesh;
 	localTransform.setRotationDegrees(glm::vec3(45.0f, 45.0f, 0.0f));
 }
 

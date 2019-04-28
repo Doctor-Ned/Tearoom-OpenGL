@@ -18,8 +18,8 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, S
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
 
-	UiText *inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f, 30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	UiColorPlane *inventoryBackground = new UiColorPlane(glm::vec4(0.76f, 0.65f, 0.27f, 0.85f), glm::vec2(1400.0f, 700.0f), glm::vec2(400.0f, 700.0f), Right);
+	UiText *inventoryText = new UiText(glm::vec2(1135.0f, 280.0f), glm::vec2(60.0f, 30.0f), "Inventory", glm::vec4(0.39f, 0.3f, 0.25f, 1.0f), MatchHeight);
+	UiPlane *inventoryBackground = new UiPlane("res/textures/inventory.jpg", glm::vec2(1285.0f, 500.0f), glm::vec2(300.0f, 500.0f), Right);
 	//UiPlane* hud = new UiPlane("res/textures/inventory.png", glm::vec2(500.0f, 500.0f), glm::vec2(400.0f, 400.0f), Center);
 	//inventoryCanvas->addChild(hud);
 	inventoryCanvas->addChild(inventoryBackground);
@@ -46,9 +46,8 @@ void Picking::showInventoryUi() {
 
 	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
 		if (i >= inventory.size()) {
-			//break;
+			break;
 		}
-
 		//obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
 		inventoryCanvas->addChild(obj);
 		i++;
@@ -105,6 +104,11 @@ void Picking::update(float msec) {
 		encouragementCanvas->setActive(false);
 	}
 
+	if(gameManager->getKeyState(GLFW_KEY_1))
+	{
+		scene->getObjectRepresentations()->front()->localTransform.setRotationZDegrees(1.0f);
+
+	}
 
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
 	{

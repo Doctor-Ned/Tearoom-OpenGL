@@ -17,12 +17,16 @@
 #include "Scene/Scripts/CollectableObject.h"
 #include "Scene/Components/Animation.h"
 #include "Ui/UiPlane.h"
+#include "Ui/UiMesh.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
 
 	lightManager->recreateLights(0, 0, 0);
 	camera = new Camera();
+	rootUiElement->setPosition(glm::vec2(700.0f,700.0f));
+	clockHand = new UiPlane("res/textures/clockHand.png", glm::vec2(130.0f, 560.0f), glm::vec2(60.0f,80.0f),TopRight);
+	rootUiElement->addChild(clockHand);
 
 	// for basic animation testing
 	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -45,12 +49,15 @@ MiszukScene::MiszukScene() {
 
 	//-------------
     //INVENTORY UI
-    //UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-    //UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-	UiPlane* boxRepresentation = new UiPlane("res/textures/face.png", glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-	UiPlane* boxRepresentation2 = new UiPlane("res/textures/face.png", glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+	UiPlane* boxRepresentation = new UiPlane("res/textures/face.png", glm::vec2(1075.0f, 380.0f),glm::vec2(50.0f, 50.0f), Right);
+	UiPlane* boxRepresentation2 = new UiPlane("res/textures/face.png", glm::vec2(1160.0f, 380.0f),glm::vec2(50.0f, 50.0f), Right);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
+
+	UiPlane* clock = new UiPlane("res/textures/clockFace.png", glm::vec2(60.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
+
+	rootUiElement->addChild(clock);
+
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
@@ -65,7 +72,6 @@ MiszukScene::MiszukScene() {
     tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
     tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 	//-----------------
-
 	//miszuk animation
 	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
 	MeshColorBox* doorMesh = new MeshColorBox(glm::vec3(2.0f, 3.0f, 0.2f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f));
@@ -85,7 +91,6 @@ MiszukScene::MiszukScene() {
 	doorPivot->localTransform.setPosition(-4.0f, -1.0f, -2.0f);
 	doorPivot->localTransform.rotateYDegrees(180.0f);
 
-
 	anim->addKeyFrame("handle", anim::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
 	anim->addKeyFrame("handle", anim::TRANSLATION, 0.0f, glm::vec3(0));
 	anim->addKeyFrame("handle", anim::TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -102,7 +107,6 @@ MiszukScene::MiszukScene() {
 	anim->addKeyFrame("handle", anim::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
 	anim->addKeyFrame("handle", anim::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
 	//
-
 
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
@@ -212,6 +216,8 @@ void MiszukScene::update(double deltaTime) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
 
+
+
 	rootNode->update(deltaTime);
 	//GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
 	//if(node != nullptr)
@@ -269,9 +275,10 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 				} else {
 					temp->hideInventoryUi();
 				}
-
 			}
+			break;
 		}
+
 	}
 }
 
