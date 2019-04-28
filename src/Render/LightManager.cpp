@@ -358,6 +358,18 @@ void LightManager::remove(SpotLight* light) {
 	spotLightAmount--;
 }
 
+int LightManager::getDirAmount() {
+	return dirLightAmount;
+}
+
+int LightManager::getSpotAmount() {
+	return spotLightAmount;
+}
+
+int LightManager::getPointAmount() {
+	return pointLightAmount;
+}
+
 LightManager::~LightManager() {
 	disposeLights();
 }

@@ -11,7 +11,7 @@
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/AnimationController.h"
 
-Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
+Picking::Picking(GraphNode* _gameObject, Camera* cam, Scene* scene, const std::string& name)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
 	UiElement *root = scene->getUiRoot();
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());

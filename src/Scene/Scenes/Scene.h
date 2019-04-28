@@ -56,6 +56,7 @@ public:
 	//inventory
 	std::vector<UiPlane*>* getObjectRepresentations();
 	UiElement* getUiRoot();
+	void setLights(Lights lights);
 
 protected:
 	bool getCursorLocked() const;

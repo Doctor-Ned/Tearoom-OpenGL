@@ -22,6 +22,13 @@
 #include "Scene/Components/AnimationController.h"
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/RotatingObject.h"
+#include "Scene/Components/PhysicalObject.h"
+#include "Scene/Scripts/CollectableObject.h"
+#include "Scene/Scripts/CollisionTest.h"
+#include "Scene/Scripts/Picking.h"
+#include "Scene/Scripts/PlayerMovement.h"
+#include "Scene/Components/LightComponents/SpotLightComp.h"
+#include "Scene/Components/LightComponents/PointLightComp.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -665,9 +672,9 @@ void EditorScene::renderUi() {
 						}
 						break;
 				}
-				if(ImGui::Button("Create")) {
+				if (ImGui::Button("Create")) {
 					Collider *collider;
-					if(typeCreation->typeToCreate == SSphereCollider) {
+					if (typeCreation->typeToCreate == SSphereCollider) {
 						collider = new SphereCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, radius);
 					} else {
 						collider = new BoxCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, dimensions / 2.0f);
@@ -679,20 +686,21 @@ void EditorScene::renderUi() {
 			break;
 			case SPhysicalObject:
 			{
-
+				typeCreation->creationCallback(new PhysicalObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SRotatingObject:
 			{
 				static float rotationSpeed;
-				if(typeCreation->typeCreationStarted) {
+				if (typeCreation->typeCreationStarted) {
 					rotationSpeed = glm::radians(45.0f);
 				}
 				ImGui::SliderAngle("Rotation speed (degrees/s)", &rotationSpeed);
 				float rotationSpeedDeg = glm::degrees(rotationSpeed);
 				ImGui::InputFloat("Rotation speed (fixed)", &rotationSpeedDeg);
 				rotationSpeed = glm::radians(rotationSpeedDeg);
-				if(ImGui::Button("Create")) {
+				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(new RotatingObject(rotationSpeed, reinterpret_cast<GraphNode*>(typeCreation->arg)));
 					typeCreationsToDelete.push_back(typeCreation);
 				}
@@ -700,42 +708,85 @@ void EditorScene::renderUi() {
 			break;
 			case SCollectableObject:
 			{
-
+				typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SCollisionTest:
 			{
-
+				typeCreation->creationCallback(new CollisionTest(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SPicking:
 			{
-
+				typeCreation->creationCallback(new Picking(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SPlayerMovement:
 			{
-
+				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
 			}
 			break;
 			case SDirLightComp:
 			{
-
+				if (lightManager->getDirAmount() != MAX_LIGHTS_OF_TYPE) {
+					typeCreation->creationCallback(new DirLightComp(lightManager->addDirLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					editedScene->setLights(lightManager->getLights());
+				}
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SSpotLightComp:
 			{
-
+				if (lightManager->getSpotAmount() != MAX_LIGHTS_OF_TYPE) {
+					typeCreation->creationCallback(new SpotLightComp(lightManager->addSpotLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					editedScene->setLights(lightManager->getLights());
+				}
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SPointLightComp:
 			{
-
+				if (lightManager->getPointAmount() != MAX_LIGHTS_OF_TYPE) {
+					typeCreation->creationCallback(new PointLightComp(lightManager->addPointLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					editedScene->setLights(lightManager->getLights());
+				}
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SSun:
 			{
+				if (lightManager->getDirAmount() < MAX_LIGHTS_OF_TYPE - 1) {
+					static glm::vec4 dawn, day, dusk, night;
+					static float sunDistance, initialTime, rotationAngle;
+					if (typeCreation->typeCreationStarted) {
+						dawn = normalize(glm::vec4(254, 107, 0, 255));
+						day = normalize(glm::vec4(173, 161, 70, 255));
+						dusk = normalize(glm::vec4(0, 2, 15, 255));
+						night = normalize(glm::vec4(2, 5, 18, 255));
+						sunDistance = 10.0f;
+						initialTime = 12.0f;
+						rotationAngle = glm::radians(75.0f);
+					}
+					ImGui::ColorEdit4("Dawn color", reinterpret_cast<float*>(&dawn));
+					ImGui::ColorEdit4("Day color", reinterpret_cast<float*>(&day));
+					ImGui::ColorEdit4("Dusk color", reinterpret_cast<float*>(&dusk));
+					ImGui::ColorEdit4("Night color", reinterpret_cast<float*>(&night));
+					ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
+					ImGui::DragFloat("Initial time", &initialTime, 0.1f);
+					ImGui::SliderAngle("Rotation angle", &rotationAngle);
 
+					if(ImGui::Button("Create")) {
+						typeCreation->creationCallback(new Sun(lightManager->addDirLight(), lightManager->addDirLight(), dawn, day, dusk, night,
+															   sunDistance, initialTime, rotationAngle, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+						editedScene->setLights(lightManager->getLights());
+						typeCreationsToDelete.push_back(typeCreation);
+					}
+				} else {
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 		}

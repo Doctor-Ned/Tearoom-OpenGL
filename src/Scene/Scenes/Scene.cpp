@@ -198,6 +198,10 @@ UiElement* Scene::getUiRoot() {
 	return rootUiElement;
 }
 
+void Scene::setLights(Lights lights) {
+	this->lights = lights;
+}
+
 void Scene::reinitializeRenderMap() {
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {

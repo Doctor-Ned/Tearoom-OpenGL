@@ -10,7 +10,7 @@ class Camera;
 class Picking : public Component
 {
 public:
-	Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene);
+	Picking(GraphNode* _gameObject, Camera* cam, Scene* scene, const std::string& name = "Picking");
 	void update(float msec) override;
 	 ~Picking() override;
 	 SerializableType getSerializableType() override;
