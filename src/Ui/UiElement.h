@@ -63,6 +63,7 @@ public:
 	InterfaceTransform localTransform;
 	void setActive(bool active);
 	bool isActive();
+	void setRotationAnchor(UiAnchor anchor);
 protected:
 	UiElement *parent = nullptr;
 	std::vector<UiElement*> children;
@@ -89,5 +90,5 @@ protected:
 	glm::vec2 size{};
 	glm::vec2 modeledSize{};
 	GLuint vao, vbo = 0;
-	UiAnchor anchor;
+	UiAnchor anchor, rotationAnchor;
 };

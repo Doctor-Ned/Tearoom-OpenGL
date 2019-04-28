@@ -10,7 +10,7 @@ float UiElement::screenHeight = 0.0f;
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
 glm::mat4 UiElement::view = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(InterfaceTransform(dirty, size, anchor)), worldTransform(Transform(dirty)) {
+UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), rotationAnchor(anchor), localTransform(InterfaceTransform(dirty, size, anchor)), worldTransform(Transform(dirty)) {
 	glGenVertexArrays(1, &vao);
 	UiElement::setPosition(position, anchor);
 }
@@ -36,7 +36,6 @@ void UiElement::mouse_button_callback(GLFWwindow* window, int button, int action
 void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
 	this->anchor = anchor;
 	actualPosition = position;
-	localTransform.updateAnchor(anchor);
 	localTransform.updatePosition(actualPosition);
 	switch (anchor) {
 		default:
@@ -207,6 +206,11 @@ void UiElement::setActive(bool active) {
 
 bool UiElement::isActive() {
 	return active;
+}
+
+void UiElement::setRotationAnchor(UiAnchor anchor) {
+	this->rotationAnchor = anchor;
+	localTransform.updateAnchor(anchor);
 }
 
 void UiElement::updateWorld() {
