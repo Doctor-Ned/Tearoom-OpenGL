@@ -16,6 +16,7 @@ public:
 protected:
 	void keyEvent(int key, bool pressed) override;
 	GraphNode* player;
+	UiPlane* clockHand;
 };
 
 #endif
