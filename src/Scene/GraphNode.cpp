@@ -310,11 +310,11 @@ void GraphNode::renderGui() {
 				}
 			}
 		}
-		if (ImGui::TreeNode("Components"))
+		if (!components.empty() && ImGui::TreeNode("Components"))
 		{
 			int counter = 0;
 			for (auto &comp : components) {
-				if (ImGui::TreeNode((void*)(intptr_t)counter, comp->getName().c_str(), counter))
+				if (ImGui::TreeNode(reinterpret_cast<void*>(static_cast<intptr_t>(counter)), comp->getName().c_str(), counter))
 				{
 					comp->renderGui();
 					ImGui::TreePop();
