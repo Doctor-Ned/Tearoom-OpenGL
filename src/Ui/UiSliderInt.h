@@ -13,8 +13,6 @@ public:
 	void render(Shader *shader) override;
 	void setCallback(std::function<void(int)> callback);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
-	using UiElement::setPosition;
-	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	void setup() override;
 	ShaderType getShaderType() override;
 	~UiSliderInt();

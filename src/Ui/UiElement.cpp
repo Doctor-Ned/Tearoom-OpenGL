@@ -70,6 +70,7 @@ void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
 			actualPosition.y -= size.y / 2.0f;
 			break;
 	}
+	setup();
 }
 
 void UiElement::setPosition(glm::vec2 position) {
@@ -250,3 +251,5 @@ glm::vec2 UiElement::getRescaledModeledPosition() {
 glm::vec2 UiElement::getRescaledModeledSize() {
 	return glm::vec2(modeledSize.x * screenWidth / windowWidth, modeledSize.y * screenHeight / windowHeight);
 }
+
+void UiElement::setup() {}

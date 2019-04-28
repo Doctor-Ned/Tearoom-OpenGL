@@ -20,7 +20,6 @@ public:
 	void setText(char* text);
 	using UiElement::setPosition;
 	void setPosition(glm::vec2 position, UiAnchor anchor) override;
-	void setup() override;
 protected:
 	UiText *text;
 	double moveX, moveY;

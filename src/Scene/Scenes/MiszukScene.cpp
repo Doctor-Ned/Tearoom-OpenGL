@@ -46,8 +46,10 @@ MiszukScene::MiszukScene() {
 	//-------------
     //INVENTORY UI
     UiPlane* hud = new UiPlane("res/textures/inventory.png",glm::vec2(500.0f, 500.0f), glm::vec2(400.0f,400.0f), Center);
-    UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-    UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+    //UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+    //UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+	UiPlane* boxRepresentation = new UiPlane("res/textures/face.png", glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
+	UiPlane* boxRepresentation2 = new UiPlane("res/textures/face.png", glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
 	boxRepresentation->setParent(rootUiElement);
 	boxRepresentation2->setParent(rootUiElement);
     objectRepresentasions.push_back(boxRepresentation);

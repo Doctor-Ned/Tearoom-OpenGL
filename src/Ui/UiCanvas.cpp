@@ -6,5 +6,3 @@ UiCanvas::UiCanvas(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiElem
 ShaderType UiCanvas::getShaderType() {
 	return STNone;
 }
-
-void UiCanvas::setup() { }

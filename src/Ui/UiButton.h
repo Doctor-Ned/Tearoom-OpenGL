@@ -22,7 +22,6 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	void setButtonCallback(std::function<void()> callback);
 	using UiElement::setPosition;
-	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	UiButtonState getState();
 protected:
 	Texture textureHover, textureClicked;

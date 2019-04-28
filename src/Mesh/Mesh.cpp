@@ -133,13 +133,14 @@ void Mesh::renderGui() {
 		opaque = this->opaque,
 		culled = this->culled,
 		castShadows = this->castShadows;
-	float opacity = this->opacity;
+	float opacity = this->opacity, uiScale=this->uiScale;
 
 	ImGui::Checkbox("Use light", &useLight);
 	ImGui::Checkbox("Cast shadows", &castShadows);
 	ImGui::Checkbox("Opaque", &opaque);
 	ImGui::SliderFloat("Opacity", &opacity, 0.0f, 1.0f);
 	ImGui::Checkbox("Culled", &culled);
+	ImGui::DragFloat("Scale in UI", &uiScale, 0.01f);
 	if (useLight != this->useLight) {
 		setUseLight(useLight);
 	}
@@ -154,6 +155,9 @@ void Mesh::renderGui() {
 	}
 	if (culled != this->culled) {
 		setCulled(culled);
+	}
+	if(uiScale != this->uiScale) {
+		setUiScale(uiScale);
 	}
 }
 

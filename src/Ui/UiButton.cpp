@@ -77,11 +77,6 @@ void UiButton::setButtonCallback(std::function<void()> callback) {
 	this->callback = callback;
 }
 
-void UiButton::setPosition(glm::vec2 position, UiAnchor anchor) {
-	UiPlane::setPosition(position, anchor);
-	setup();
-}
-
 UiButtonState UiButton::getState() {
 	return state;
 }

@@ -21,7 +21,7 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, S
 void Picking::hideInventoryUi() {
 	scene->removeFromRenderMap(scene->getInventoryText());
 	scene->removeFromRenderMap(scene->getInventoryBackground());
-	for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
+	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
 		scene->removeFromRenderMap(obj);
 	}
 }
@@ -31,12 +31,12 @@ void Picking::showInventoryUi() {
 	scene->addToRenderMap(scene->getInventoryText());
 	scene->addToRenderMap(scene->getInventoryBackground());
 
-	for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
+	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
 		if (i >= inventory.size()) {
 			//break;
 		}
 
-		obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
+		//obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
 		scene->addToRenderMap(obj);
 		i++;
 	}
@@ -99,10 +99,10 @@ void Picking::update(float msec) {
 	{
 		CollectableObject *collectable = inventory[i]->getComponent<CollectableObject>();
 
-		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken() == true) {
+		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken()) {
 			inventory.erase(inventory.begin() + i);
 			collectable->leaveObject();
-			for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
+			for(UiPlane* obj : *(scene->getObjectRepresentations())) {
 				scene->removeFromRenderMap(obj);
 			}
 		}

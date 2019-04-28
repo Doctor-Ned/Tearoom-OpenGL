@@ -7,6 +7,7 @@
 #include "Render/Camera.h"
 #include "Ui/UiCanvas.h"
 #include "Mesh/MeshRef.h"
+#include "Ui/UiPlane.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -238,7 +239,7 @@ UiText* Scene::getInventoryText() {
 	return  inventoryText;
 }
 
-std::vector<UiColorPlane*>* Scene::getObjectRepresentations() {
+std::vector<UiPlane*>* Scene::getObjectRepresentations() {
 	return &objectRepresentasions;
 }
 
