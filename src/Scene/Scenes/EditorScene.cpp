@@ -129,19 +129,8 @@ void EditorScene::renderUi() {
 		switch (typeCreation->typeToCreate) {
 			case SGraphNode:
 			{
-				static const auto BUFFER_SIZE = 50;
-				static char nameBuffer[BUFFER_SIZE];
-				static GraphNode *node;
-				if (typeCreation->typeCreationStarted) {
-					nameBuffer[0] = '\0';
-					node = new GraphNode();
-				}
-				//node->drawGui();
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(node);
-					node = nullptr;
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+				typeCreation->creationCallback(new GraphNode());
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SSkybox:
@@ -778,7 +767,7 @@ void EditorScene::renderUi() {
 					ImGui::DragFloat("Initial time", &initialTime, 0.1f);
 					ImGui::SliderAngle("Rotation angle", &rotationAngle);
 
-					if(ImGui::Button("Create")) {
+					if (ImGui::Button("Create")) {
 						typeCreation->creationCallback(new Sun(lightManager->addDirLight(), lightManager->addDirLight(), dawn, day, dusk, night,
 															   sunDistance, initialTime, rotationAngle, reinterpret_cast<GraphNode*>(typeCreation->arg)));
 						editedScene->setLights(lightManager->getLights());
