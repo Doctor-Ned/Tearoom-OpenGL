@@ -51,5 +51,17 @@ void Component::renderGui() {
 	bool active = this->active;
 	ImGui::Checkbox(name.c_str(), &active);
 	if (active != this->active)setComponentActive(active);
-	ImGui::NewLine();
+	static const int BUFF_SIZE = 50;
+	static char buff[BUFF_SIZE] = "";
+	if (buff[0] == '\0') {
+		for (int i = 0; i < std::min(BUFF_SIZE, static_cast<int>(name.length())); i++) {
+			buff[i] = name[i];
+		}
+	}
+	ImGui::InputText("Name", buff, IM_ARRAYSIZE(buff));
+	std::string newName(Global::trim(buff));
+	if (newName.length() > 0 && newName != name && ImGui::Button("Apply name")) {
+		setName(newName);
+		buff[0] = '\0';
+	}
 }

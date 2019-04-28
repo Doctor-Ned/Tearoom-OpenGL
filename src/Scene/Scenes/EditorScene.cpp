@@ -19,6 +19,8 @@
 #include "Mesh/MeshColorCone.h"
 #include "Mesh/MeshCone.h"
 #include "Scene/Components/Billboard.h"
+#include "Scene/Components/AnimationController.h"
+#include "Scene/Components/Animation.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -587,12 +589,32 @@ void EditorScene::renderUi() {
 			break;
 			case SAnimation:
 			{
-
+				typeCreation->creationCallback(new Animation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SAnimationController:
 			{
-
+				static int animationType;
+				if (typeCreation->typeCreationStarted) {
+					animationType = 0;
+				}
+				if (ImGui::BeginCombo("Animation type", AnimationTypeNames[animationType].c_str())) {
+					for (int i = 0; i < sizeof(AnimationTypes) / sizeof(*AnimationTypes); i++) {
+						bool isSelected = i == animationType;
+						if (ImGui::Selectable(AnimationTypeNames[animationType].c_str(), isSelected)) {
+							animationType = i;
+						}
+						if (isSelected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+				if(ImGui::Button("Create")) {
+					typeCreation->creationCallback(new AnimationController(AnimationTypes[animationType], reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SBillboard:

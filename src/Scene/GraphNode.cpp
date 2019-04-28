@@ -339,7 +339,7 @@ void GraphNode::renderGui() {
 		if (!components.empty() && ImGui::TreeNode("Components")) {
 			int counter = 0;
 			for (auto &comp : components) {
-				if (ImGui::TreeNode(comp->getName().c_str())) {
+				if (ImGui::TreeNode((comp->getName() + "(" + SerializableTypeNames[comp->getSerializableType()] + ")").c_str())) {
 					comp->renderGui();
 					ImGui::TreePop();
 					counter++;
