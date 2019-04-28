@@ -140,6 +140,9 @@ void MeshColorCylinder::createTopTriangle(std::vector<SimpleVertex>* vertices) c
 		next->Position = prev->Position;
 		next->Normal = prev->Normal;
 	}
+	SimpleVertex v = (*vertices)[index + 1];
+	(*vertices)[index + 1] = (*vertices)[index + 2];
+	(*vertices)[index + 2] = v;
 	//std::memcpy(&vertices[index], &vertices[index - 3], sizeof(SimpleVertex) * 3);
 	//std::copy(&(*vertices)[index], &(*vertices)[index] + sizeof(SimpleVertex) * 3, std::back_inserter(*vertices));
 	//index += 3;
@@ -152,47 +155,29 @@ void MeshColorCylinder::createTopTriangle(std::vector<SimpleVertex>* vertices) c
 }
 
 void MeshColorCylinder::createSideTriangles(std::vector<SimpleVertex>* vertices) const {
-	SimpleVertex dummy;
-	for (int i = 0; i < 6; i++) {
-		vertices->push_back(dummy);
-	}
 	int index = vertices->size() - 6;
-	SimpleVertex *prev, *next;
-	for (int i = index - 6; i < index; i++) {
-		prev = &(*vertices)[i];
-		next = &(*vertices)[i + 6];
-		next->Position = prev->Position;
-		next->Normal = prev->Normal;
-	}
-	//std::memcpy(&vertices[index], &vertices[index - 6], sizeof(SimpleVertex) * 6);
-	//std::copy(&(*vertices)[index], &(*vertices)[index] + sizeof(SimpleVertex) * 6, std::back_inserter(*vertices));
-	//index += 6;
-	SimpleVertex *dwCent = &(*vertices)[index], *dwClos = &(*vertices)[index + 1], *dwFar = &(*vertices)[index + 2],
-	             *upCent = &(*vertices)[index + 3], *upFar = &(*vertices)[index + 4], *upClos = &(*vertices)[index + 5];
-	SimpleVertex temp; //far and close have reverted names because i need to swap them
-	std::memcpy(&temp, upFar, sizeof(SimpleVertex));
-	std::memcpy(upFar, upClos, sizeof(SimpleVertex));
-	std::memcpy(upClos, &temp, sizeof(SimpleVertex));
-
-	std::memcpy(dwCent, upClos, sizeof(SimpleVertex));
-	std::memcpy(upCent, dwFar, sizeof(SimpleVertex));
-
+	SimpleVertex dwLeft = (*vertices)[index + 2], dwRight = (*vertices)[index + 1], upLeft = (*vertices)[index + 4], upRight = (*vertices)[index + 5];
 	glm::vec3 normal;
 	normal.y = 0.0f;
 
-	glm::vec2 flatLine(dwFar->Position.x - dwClos->Position.x, dwFar->Position.z - dwClos->Position.z);
+	glm::vec2 flatLine(dwLeft.Position.x - dwRight.Position.x, dwLeft.Position.z - dwRight.Position.z);
 	glm::vec2 perpendicular(flatLine.y, -flatLine.x);
 
 	normal.x = perpendicular.x;
 	normal.z = perpendicular.y;
 	normal = normalize(normal);
 
-	dwCent->Normal = normal;
-	dwClos->Normal = normal;
-	dwFar->Normal = normal;
-	upCent->Normal = normal;
-	upClos->Normal = normal;
-	upFar->Normal = normal;
+	dwLeft.Normal = normal;
+	dwRight.Normal = normal;
+	upLeft.Normal = normal;
+	upRight.Normal = normal;
+
+	vertices->push_back(dwLeft);
+	vertices->push_back(upRight);
+	vertices->push_back(upLeft);
+	vertices->push_back(dwLeft);
+	vertices->push_back(dwRight);
+	vertices->push_back(upRight);
 }
 
 void MeshColorCylinder::bufferData(std::vector<SimpleVertex>* vertices) {

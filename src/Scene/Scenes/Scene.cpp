@@ -446,7 +446,7 @@ void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
 	Renderable *r = dynamic_cast<Renderable*>(node);
 	bool exists = false;
 	std::vector<Renderable*>* vec = renderMap[r->getShaderType()];
-	if (checkIfExists) {
+	if (checkIfExists && r->getShaderType() != STNone) {
 		for (auto &ren : *vec) {
 			if (ren == r) {
 				exists = true;

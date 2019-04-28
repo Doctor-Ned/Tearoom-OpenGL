@@ -153,6 +153,9 @@ void MeshCylinder::createTopTriangle(std::vector<TextureVertex>* vertices) const
 		next->Normal = prev->Normal;
 		next->TexCoords = prev->TexCoords;
 	}
+	TextureVertex v = (*vertices)[index + 1];
+	(*vertices)[index + 1] = (*vertices)[index + 2];
+	(*vertices)[index + 2] = v;
 	//std::memcpy(&vertices[index], &vertices[index - 3], sizeof(TextureVertex) * 3);
 	//std::copy(&(*vertices)[index], &(*vertices)[index] + sizeof(TextureVertex) * 3, std::back_inserter(*vertices));
 	//index += 3;
@@ -165,61 +168,35 @@ void MeshCylinder::createTopTriangle(std::vector<TextureVertex>* vertices) const
 }
 
 void MeshCylinder::createSideTriangles(std::vector<TextureVertex>* vertices) const {
-	TextureVertex dummy;
-	for (int i = 0; i < 6; i++) {
-		vertices->push_back(dummy);
-	}
 	int index = vertices->size() - 6;
-	TextureVertex *prev, *next;
-	for (int i = index - 6; i < index; i++) {
-		prev = &(*vertices)[i];
-		next = &(*vertices)[i + 6];
-		next->Position = prev->Position;
-		next->Normal = prev->Normal;
-		next->TexCoords = prev->TexCoords;
-	}
-	//std::memcpy(&vertices[index], &vertices[index - 6], sizeof(TextureVertex) * 6);
-	//std::copy(&(*vertices)[index], &(*vertices)[index] + sizeof(TextureVertex) * 6, std::back_inserter(*vertices));
-	//index += 6;
-	TextureVertex *dwCent = &(*vertices)[index], *dwClos = &(*vertices)[index + 1], *dwFar = &(*vertices)[index + 2],
-	              *upCent = &(*vertices)[index + 3], *upFar = &(*vertices)[index + 4], *upClos = &(*vertices)[index + 5
-	              ];
-	TextureVertex temp; //far and close have reverted names because i need to swap them
-	std::memcpy(&temp, upFar, sizeof(TextureVertex));
-	std::memcpy(upFar, upClos, sizeof(TextureVertex));
-	std::memcpy(upClos, &temp, sizeof(TextureVertex));
+	TextureVertex dwLeft = (*vertices)[index+2], dwRight= (*vertices)[index+1], upLeft=(*vertices)[index+4], upRight=(*vertices)[index+5];
 
-	std::memcpy(dwCent, upClos, sizeof(TextureVertex));
-	std::memcpy(upCent, dwFar, sizeof(TextureVertex));
-
-	dwCent->TexCoords.x = 0.0f;
-	dwCent->TexCoords.y = 1.0f;
-	upCent->TexCoords.x = 1.0f;
-	upCent->TexCoords.y = 0.0f;
-	upClos->TexCoords.x = 0.0f;
-	upClos->TexCoords.y = 1.0f;
-	upFar->TexCoords.x = 1.0f;
-	upFar->TexCoords.y = 1.0f;
-	dwClos->TexCoords.x = 0.0f;
-	dwClos->TexCoords.y = 0.0f;
-
+	dwLeft.TexCoords = glm::vec2(0.0f, 1.0f);
+	dwRight.TexCoords = glm::vec2(1.0f, 1.0f);
+	upLeft.TexCoords = glm::vec2(0.0f, 0.0f);
+	upRight.TexCoords = glm::vec2(1.0f, 0.0f);
 
 	glm::vec3 normal;
 	normal.y = 0.0f;
 
-	glm::vec2 flatLine(dwFar->Position.x - dwClos->Position.x, dwFar->Position.z - dwClos->Position.z);
+	glm::vec2 flatLine(dwLeft.Position.x - dwRight.Position.x, dwLeft.Position.z - dwRight.Position.z);
 	glm::vec2 perpendicular(flatLine.y, -flatLine.x);
 
 	normal.x = perpendicular.x;
 	normal.z = perpendicular.y;
 	normal = normalize(normal);
+	
+	dwLeft.Normal = normal;
+	dwRight.Normal = normal;
+	upLeft.Normal = normal;
+	upRight.Normal = normal;
 
-	dwCent->Normal = normal;
-	dwClos->Normal = normal;
-	dwFar->Normal = normal;
-	upCent->Normal = normal;
-	upClos->Normal = normal;
-	upFar->Normal = normal;
+	vertices->push_back(dwLeft);
+	vertices->push_back(upRight);
+	vertices->push_back(upLeft);
+	vertices->push_back(dwLeft);
+	vertices->push_back(dwRight);
+	vertices->push_back(upRight);
 }
 
 void MeshCylinder::bufferData(std::vector<TextureVertex>* vertices) {
