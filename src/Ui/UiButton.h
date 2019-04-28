@@ -2,7 +2,7 @@
 #define UIBUTTON_H
 
 #include <functional>
-#include "UiTexturedElement.h"
+#include "UiPlane.h"
 
 enum UiButtonState {
 	Idle,
@@ -11,7 +11,7 @@ enum UiButtonState {
 };
 
 
-class UiButton : public UiTexturedElement {
+class UiButton : public UiPlane {
 public:
 	UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	         glm::vec2 position, glm::vec2 size, UiAnchor anchor = Center);
@@ -24,8 +24,6 @@ public:
 	using UiElement::setPosition;
 	void setPosition(glm::vec2 position, UiAnchor anchor) override;
 	UiButtonState getState();
-	void setup() override;
-	ShaderType getShaderType() override;
 protected:
 	Texture textureHover, textureClicked;
 	UiButtonState state = Idle;
