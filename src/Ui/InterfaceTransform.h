@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene/ComposedTransform.h"
-#include "UiElement.h"
+enum UiAnchor;
 
 class InterfaceTransform : public ComposedTransform {
 public:

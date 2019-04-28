@@ -1,5 +1,8 @@
+#include "Global.h"
 #include "InterfaceTransform.h"
 #include <glm/gtx/euler_angles.inl>
+#include "UiElement.h"
+
 InterfaceTransform::InterfaceTransform(bool& dirty, glm::vec2 size, UiAnchor anchor) : ComposedTransform(dirty), size(size), anchor(anchor) {}
 
 glm::mat4 InterfaceTransform::dataToMatrix(TransformData data) {
