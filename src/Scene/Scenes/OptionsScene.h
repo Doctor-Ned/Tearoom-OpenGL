@@ -9,6 +9,7 @@ class OptionsScene : public Scene {
 public:
 	OptionsScene(MenuScene *menuScene);
 	~OptionsScene();
+	void update(double deltaTime) override;
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 private:
 	void load();

@@ -9,34 +9,34 @@ glm::mat4 InterfaceTransform::dataToMatrix(TransformData data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
 	glm::vec2 size = glm::vec2(scale * glm::vec4(this->size, 0.0f, 1.0f));
-	glm::vec2 rotTranslation;
+	glm::vec2 rotTranslation = glm::vec2(0.0f, 0.0f);
 	switch (anchor) {
 		case TopLeft:
-			rotTranslation = glm::vec2(0.0f, 0.0f);
+			rotTranslation = glm::vec2(size.x / 2.0f, size.y/2.0f);
 			break;
 		case Top:
-			rotTranslation = glm::vec2(-size.x / 2.0f, 0.0f);
+			rotTranslation = glm::vec2(0.0f, size.y / 2.0f);
 			break;
 		case TopRight:
-			rotTranslation = glm::vec2(-size.x);
+			rotTranslation = glm::vec2(-size.x/2.0f, size.y/2.0f);
 			break;
 		case Left:
-			rotTranslation = glm::vec2(0.0f, -size.y / 2.0f);
+			rotTranslation = glm::vec2(size.x/2.0f, 0.0f);
 			break;
 		case BottomLeft:
-			rotTranslation = glm::vec2(0.0f, -size.y);
+			rotTranslation = glm::vec2(size.x/2.0f, -size.y/2.0f);
 			break;
 		case Bottom:
-			rotTranslation = glm::vec2(-size.x / 2.0f, -size.y);
+			rotTranslation = glm::vec2(0.0f, -size.y/2.0f);
 			break;
 		case BottomRight:
-			rotTranslation = glm::vec2(-size.x, -size.y);
+			rotTranslation = glm::vec2(-size.x/2.0f, -size.y/2.0f);
 			break;
 		case Right:
-			rotTranslation = glm::vec2(-size.x, -size.y / 2.0f);
+			rotTranslation = glm::vec2(-size.x/2.0f, 0.0f);
 			break;
 		case Center:
-			rotTranslation = glm::vec2(-size.x / 2.0f, -size.y / 2.0f);
+			// that's two zeros
 			break;
 	}
 	rotTranslation -= position;

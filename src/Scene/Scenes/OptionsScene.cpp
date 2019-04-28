@@ -18,6 +18,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	const float checkboxShift = windowWidth / 8.0f;
 	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 2 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
 	enableLights->setCheckboxCallback([&manager = lightManager](bool enableLights) { manager->enableLights = enableLights; });
+	//enableLights->setRotationAnchor(TopLeft);
 	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(windowCenterX - checkboxShift, 3 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
 	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
 	UiText *texelText = new UiText(glm::vec2(windowCenterX, 4 * heightSeg), glm::vec2(windowWidth, heightSeg),
@@ -106,6 +107,11 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 
 OptionsScene::~OptionsScene() {
 	save();
+}
+
+void OptionsScene::update(double deltaTime) {
+	//rootUiElement->getChildren()[1]->localTransform.rotateZDegrees(30.0f*deltaTime);
+	//rootUiElement->getChildren()[3]->localTransform.rotateZDegrees(40.0f*deltaTime);
 }
 
 void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
