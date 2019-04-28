@@ -12,20 +12,26 @@ void MeshColorCone::renderGui() {
 	float radius = this->radius, height = this->height;
 	int sideAmount = this->sideAmount;
 	glm::vec3 baseCenter = this->baseCenter;
-	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::DragFloat3("Base center", reinterpret_cast<float*>(&baseCenter), 0.1f);
 	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
-	ImGui::SliderInt("Side amount", &sideAmount, 3, 30);
+	ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
 	ImGui::SameLine();
 	ImGui::InputInt("Side amount (fixed)", &sideAmount);
 	if (sideAmount < 3) {
 		sideAmount = 3;
 	}
-	ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f);
+	ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Radius (fixed)", &radius);
-	ImGui::SliderFloat("Height", &height, 0.0f, 10.0f);
+	ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Height (fixed)", &height);
+	if(radius < 0.0f) {
+		radius = 0.0f;
+	}
+	if(height < 0.0f) {
+		height = 0.0f;
+	}
 	if (baseCenter != this->baseCenter || sideAmount != this->sideAmount || radius != this->radius || height != this->height) {
 		updateValues(radius, height, sideAmount, baseCenter);
 	}

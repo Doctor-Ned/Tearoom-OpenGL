@@ -235,15 +235,25 @@ void EditorScene::renderUi() {
 					dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
 				}
 				if (useDimensions) {
-					ImGui::SliderFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.0f, 10.0f);
+					ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
 					ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+					for(int i=0;i<3;i++ ) {
+						if(dimensions[i] < 0.0f) {
+							dimensions[i] = 0.0f;
+						}
+					}
 					min = -dimensions / 2.0f;
 					max = dimensions / 2.0f;
 				} else {
-					ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -5.0f, 0.0f);
+					ImGui::DragFloat3("Min", reinterpret_cast<float*>(&min), 0.1f);
 					ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
-					ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 5.0f);
+					ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f);
 					ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
+					for(int i=0;i<3;i++) {
+						if(min[i] > max[i]) {
+							min[i] = max[i];
+						}
+					}
 				}
 				bool valid = true;
 				for (int i = 0; i < 3; i++) {
@@ -301,11 +311,21 @@ void EditorScene::renderUi() {
 				}
 				bool valid = true;
 
-				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::SliderFloat("Height", &height, 0.0f, 5.0f);
+				ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Height (fixed)", &height);
-				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+				if (radius < 0.0f) {
+					radius = 0.0f;
+				}
+				if (height < 0.0f) {
+					height = 0.0f;
+				}
+				if (sideAmount < 3) {
+					sideAmount = 3;
+				}
 
 				switch (typeCreation->typeToCreate) {
 					case SMeshCone:
@@ -349,11 +369,21 @@ void EditorScene::renderUi() {
 				}
 				bool valid = true;
 
-				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::SliderFloat("Height", &height, 0.0f, 5.0f);
+				ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Height (fixed)", &height);
-				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+				if(radius < 0.0f) {
+					radius = 0.0f;
+				}
+				if(height < 0.0f) {
+					height = 0.0f;
+				}
+				if(sideAmount <3) {
+					sideAmount = 3;
+				}
 
 				switch (typeCreation->typeToCreate) {
 					case SMeshCylinder:
@@ -395,10 +425,17 @@ void EditorScene::renderUi() {
 				}
 				bool valid = true;
 
-				ImGui::SliderFloat("Width", &width, 0.0f, 5.0f);
+				ImGui::DragFloat("Width", &width, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Width (fixed)", &width);
-				ImGui::SliderFloat("Length", &length, 0.0f, 5.0f);
+				ImGui::DragFloat("Length", &length, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Length (fixed)", &length);
+
+				if(width < 0.0f) {
+					width = 0.0f;
+				}
+				if(length < 0.0f) {
+					length = 0.0f;
+				}
 
 				switch (typeCreation->typeToCreate) {
 					case SMeshPlane:
@@ -444,9 +481,16 @@ void EditorScene::renderUi() {
 				}
 				bool valid = true;
 
-				ImGui::SliderFloat("Radius", &radius, 0.0f, 5.0f);
+				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::SliderInt("Precision", &precision, 3, 75);
+				ImGui::DragInt("Precision", &precision, 1, 3, std::numeric_limits<int>::max());
+
+				if(radius < 0.0f) {
+					radius = 0.0f;
+				}
+				if(precision < 3) {
+					precision = 3;
+				}
 
 				switch (typeCreation->typeToCreate) {
 					case SMeshSphere:
@@ -495,11 +539,21 @@ void EditorScene::renderUi() {
 				}
 				bool valid = true;
 
-				ImGui::SliderFloat("Radius 1", &radiusIn, 0.0f, 5.0f);
+				ImGui::DragFloat("Radius 1", &radiusIn, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
-				ImGui::SliderFloat("Radius 2", &radiusOut, 0.0f, 5.0f);
-				ImGui::InputFloat("Radius 2", &radiusOut, 0.0f, 5.0f);
-				ImGui::SliderInt("Side amount", &sideAmount, 3, 75);
+				ImGui::DragFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
+				ImGui::InputFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
+				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+				if(radiusIn < 0.0f) {
+					radiusIn = 0.0f;
+				}
+				if(radiusOut < 0.0f) {
+					radiusOut = 0.0f;
+				}
+				if(sideAmount < 3) {
+					sideAmount = 3;
+				}
 
 				switch (typeCreation->typeToCreate) {
 					case SMeshTorus:
@@ -720,6 +774,21 @@ Camera* EditorScene::getCamera() {
 }
 
 void EditorScene::update(double deltaTime) {
+	for (auto &pair : addRenderedNodeQueue) {
+		if (pair.second == nullptr) {
+			pair.second = editedScene->getRootNode();
+		}
+		if (pair.first->getParent() == nullptr) {
+			pair.first->setParent(pair.second);
+		}
+		if (pair.first->getName() == "Node") {
+			pair.first->setName("Node #" + std::to_string(nodeCounter++));
+		}
+		editedScene->addRenderedNode(pair.first, pair.second);
+
+	}
+	addRenderedNodeQueue.clear();
+
 	if (editedScene != nullptr && updateEditedScene) {
 		editedScene->update(deltaTime * timeScale);
 	}
@@ -945,16 +1014,7 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 }
 
 void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
-	if (parent == nullptr) {
-		parent = editedScene->getRootNode();
-	}
-	if (node->getParent() == nullptr) {
-		node->setParent(parent);
-	}
-	if (node->getName() == "Node") {
-		node->setName("Node #" + std::to_string(nodeCounter++));
-	}
-	editedScene->addRenderedNode(node, node->getParent());
+	addRenderedNodeQueue.push_back(std::pair<GraphNode*, GraphNode*>(node, parent));
 }
 
 void EditorScene::showNodeAsTree(GraphNode* node) {
@@ -1002,6 +1062,13 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
 			confirmationDialogCallback = [this, node]() {
 				editedScene->removeNode(node);
+				for(auto i =editedNodes.begin();i!=editedNodes.end();) {
+					if(*i == node) {
+						editedNodes.erase(i);
+						break;
+					}
+					++i;
+				}
 			};
 		}
 		ImGui::SameLine();

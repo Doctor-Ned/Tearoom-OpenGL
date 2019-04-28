@@ -189,19 +189,19 @@ glm::mat4 ComposedTransform::dataToMatrix(const TransformData data) {
 
 void ComposedTransform::renderGui() {
 	glm::vec3 translation = data.translation, scale = data.scale, eulerRotation = data.eulerRotation;
-	ImGui::SliderFloat3("Translation", reinterpret_cast<float*>(&translation), -10.0f, 10.0f);
+	ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&translation), 0.1f);
 	ImGui::InputFloat3("Translation (fixed)", reinterpret_cast<float*>(&translation));
 	static bool uniformScale = true;
 	ImGui::Checkbox("Uniform scale", &uniformScale);
 	if (uniformScale) {
 		float scl = glm::min(glm::min(scale.x, scale.y), scale.z);
-		ImGui::SliderFloat("Scale", &scl, 0.0f, 2.0f);
+		ImGui::DragFloat("Scale", &scl, 0.1f);
 		ImGui::InputFloat("Scale (fixed)", &scl);
 		scale.x = scl;
 		scale.y = scl;
 		scale.z = scl;
 	} else {
-		ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scale), 0.0f, 2.0f);
+		ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.1f);
 		ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
 	}
 	glm::vec3 eulerRotationDegrees = Global::radiansToDegrees(eulerRotation);

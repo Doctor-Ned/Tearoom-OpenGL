@@ -2,7 +2,7 @@
 #include "Serialization/DataSerializer.h"
 
 MeshBox::MeshBox(glm::vec3 dimensions, std::string texturePath) :
-MeshBox(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f), texturePath) {}
+	MeshBox(glm::vec3(-dimensions.x / 2.0f, -dimensions.y / 2.0f, -dimensions.z / 2.0f), glm::vec3(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f), texturePath) {}
 
 MeshBox::MeshBox(glm::vec3 min, glm::vec3 max, std::string texturePath)
 	: MeshTexture(), min(min), max(max) {
@@ -17,18 +17,34 @@ void MeshBox::renderGui() {
 	if (useDimensions) {
 		glm::vec3 dimensions = getDimensions();
 		glm::vec3 oldDim = dimensions;
-		ImGui::SliderFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.0f, 10.0f);
+		ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+		for (int i = 0; i < 3; i++) {
+			if (dimensions[i] < 0.0f) {
+				dimensions[i] = 0.0f;
+			}
+		}
 		if (dimensions != oldDim) {
 			updateValues(dimensions);
 		}
 	} else {
 		glm::vec3 min = this->min;
 		glm::vec3 max = this->max;
-		ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -5.0f, 0.0f);
+		ImGui::DragFloat3("Min", reinterpret_cast<float*>(&min), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
-		ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 5.0f);
+		ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
+		for (int i = 0; i < 3; i++) {
+			if (min != this->min) {
+				if (min[i] > max[i]) {
+					min[i] = max[i];
+				}
+			} else if (max != this->max) {
+				if (max[i] < min[i]) {
+					max[i] = min[i];
+				}
+			}
+		}
 		if (min != this->min || max != this->max) {
 			updateValues(min, max);
 		}
@@ -43,7 +59,7 @@ void MeshBox::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexBuffer(0, VBO, 0, sizeof(TextureVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);
-	
+
 }
 
 void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
@@ -171,7 +187,7 @@ void MeshBox::updateValues(glm::vec3 min, glm::vec3 max) {
 	vertices[23].Position.x = max.x;
 
 	std::vector<TextureVertex> data;
-	for(int i=0;i<24;i+=4) {
+	for (int i = 0; i < 24; i += 4) {
 		data.push_back(vertices[i]);
 		data.push_back(vertices[i + 2]);
 		data.push_back(vertices[i + 1]);

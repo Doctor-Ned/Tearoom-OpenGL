@@ -18,18 +18,34 @@ void MeshRefBox::renderGui() {
 	if (useDimensions) {
 		glm::vec3 dimensions = getDimensions();
 		glm::vec3 oldDim = dimensions;
-		ImGui::SliderFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.0f, 10.0f);
+		ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+		for (int i = 0; i < 3; i++) {
+			if (dimensions[i] < 0.0f) {
+				dimensions[i] = 0.0f;
+			}
+		}
 		if (dimensions != oldDim) {
 			updateValues(dimensions);
 		}
 	} else {
 		glm::vec3 min = this->min;
 		glm::vec3 max = this->max;
-		ImGui::SliderFloat3("Min", reinterpret_cast<float*>(&min), -5.0f, 0.0f);
+		ImGui::DragFloat3("Min", reinterpret_cast<float*>(&min), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
-		ImGui::SliderFloat3("Max", reinterpret_cast<float*>(&max), 0.0f, 5.0f);
+		ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f, 0.0f, std::numeric_limits<float>::max());
 		ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
+		for (int i = 0; i < 3; i++) {
+			if (min != this->min) {
+				if (min[i] > max[i]) {
+					min[i] = max[i];
+				}
+			} else if (max != this->max) {
+				if (max[i] < min[i]) {
+					max[i] = min[i];
+				}
+			}
+		}
 		if (min != this->min || max != this->max) {
 			updateValues(min, max);
 		}

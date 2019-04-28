@@ -12,18 +12,21 @@ void MeshSphere::renderGui() {
 	float radius = this->radius;
 	int precision = this->precision;
 	glm::vec3 baseCenter = this->baseCenter;
-	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::DragFloat3("Base center", reinterpret_cast<float*>(&baseCenter), 0.1f);
 	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
-	ImGui::SliderInt("Precision", &precision, 3, 30);
+	ImGui::DragInt("Precision", &precision, 1);
 	ImGui::SameLine();
 	ImGui::InputInt("Precision (fixed)", &precision);
 	if (precision < 3) {
 		precision = 3;
 	}
-	ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f);
+	ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Radius (fixed)", &radius);
-	if(radius != this->radius || precision != this->precision || baseCenter != this->baseCenter) {
+	if(radius < 0.0f) {
+		radius = 0.0f;
+	}
+	if (radius != this->radius || precision != this->precision || baseCenter != this->baseCenter) {
 		updateValues(radius, precision, baseCenter);
 	}
 }

@@ -42,6 +42,7 @@ public:
 	float timeScale = 1.0f;
 	int nodeCounter = 1;
 	int idCounter = 1;
+	std::vector<std::pair<GraphNode*, GraphNode*>> addRenderedNodeQueue;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
 	void showNodeAsTree(GraphNode *node);
 	void keyEvent(int key, bool pressed) override;

@@ -22,8 +22,8 @@ Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayC
 	light1Node->addComponent(light1Comp);
 	light2Comp = new DirLightComp(light2, light2Node);
 	light2Node->addComponent(light2Comp);
-	light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
-	light2Comp->getGameObject()->localTransform.setPosition(0.0f, 0.0f, sunDistance);
+	//light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
+	//light2Comp->getGameObject()->localTransform.initialize(0.0f, 0.0f, sunDistance);
 }
 
 void Sun::setTime(float time) {
@@ -59,21 +59,14 @@ void Sun::renderGui() {
 	Component::renderGui();
 	if (active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
-		ImGui::NewLine();
 		ImGui::SliderAngle("Rotation angle", &rotationAngle);
-		ImGui::NewLine();
 		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f, 1.0f);
-		ImGui::NewLine();
 		ImGui::SliderFloat("Specular factor", &specularFactor, 0.0f, 1.0f);
-		ImGui::NewLine();
+		ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
 		ImGui::ColorEdit3("Dawn color", reinterpret_cast<float*>(&dawnColor));
-		ImGui::NewLine();
 		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
-		ImGui::NewLine();
 		ImGui::ColorEdit3("Dusk color", reinterpret_cast<float*>(&duskColor));
-		ImGui::NewLine();
 		ImGui::ColorEdit3("Night color", reinterpret_cast<float*>(&nightColor));
-		ImGui::NewLine();
 		dirty = true;
 	}
 }
@@ -153,6 +146,8 @@ void Sun::recalculateMatrix() {
 	dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
 	dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 	glm::vec4 position = gameObject->worldTransform.getMatrix()[3];
+	light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
+	light2Comp->getGameObject()->localTransform.initialize(0.0f, 0.0f, sunDistance);
 	gameObject->worldTransform.setMatrix(
 		rotate(
 			rotate(

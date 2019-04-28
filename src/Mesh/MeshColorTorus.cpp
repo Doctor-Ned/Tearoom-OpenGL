@@ -14,20 +14,26 @@ void MeshColorTorus::renderGui() {
 	float radiusIn = this->radiusIn, radiusOut = this->radiusOut;
 	int sideAmount = this->sideAmount;
 	glm::vec3 baseCenter = this->baseCenter;
-	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::DragFloat3("Base center", reinterpret_cast<float*>(&baseCenter), 0.1f);
 	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
-	ImGui::SliderInt("Side amount", &sideAmount, 3, 30);
+	ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
 	ImGui::SameLine();
 	ImGui::InputInt("Side amount (fixed)", &sideAmount);
 	if (sideAmount < 3) {
 		sideAmount = 3;
 	}
-	ImGui::SliderFloat("Radius 1", &radiusIn, 0.0f, 10.0f);
+	ImGui::DragFloat("Radius 1", &radiusIn, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
-	ImGui::SliderFloat("Radius 2", &radiusOut, 0.0f, 10.0f);
+	ImGui::DragFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Radius 2 (fixed)", &radiusOut);
+	if (radiusIn < 0.0f) {
+		radiusIn = 0.0f;
+	}
+	if (radiusOut < 0.0f) {
+		radiusOut = 0.0f;
+	}
 	if (baseCenter != this->baseCenter || sideAmount != this->sideAmount || radiusIn != this->radiusIn || radiusOut != this->radiusOut) {
 		updateValues(radiusIn, radiusOut, sideAmount, baseCenter);
 	}

@@ -10,15 +10,20 @@ void MeshColorPlane::renderGui() {
 	MeshSimple::renderGui();
 	glm::vec3 baseCenter = this->baseCenter;
 	float width = this->width, length = this->length;
-	ImGui::SliderFloat3("Base center", reinterpret_cast<float*>(&baseCenter), -10.0f, 10.0f);
+	ImGui::DragFloat3("Base center", reinterpret_cast<float*>(&baseCenter), 0.1f);
 	ImGui::InputFloat3("Base center (fixed)", reinterpret_cast<float*>(&baseCenter));
-	ImGui::SliderFloat("Width", &width, 0.0f, 10.0f);
+	ImGui::DragFloat("Width", &width, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Width (fixed)", &width);
-	ImGui::SliderFloat("Length", &length, 0.0f, 10.0f);
+	ImGui::DragFloat("Length", &length, 0.1f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::SameLine();
 	ImGui::InputFloat("Length (fixed)", &length);
-
+	if (width < 0.0f) {
+		width = 0.0f;
+	}
+	if (length < 0.0f) {
+		length = 0.0f;
+	}
 	if (baseCenter != this->baseCenter || width != this->width || length != this->length) {
 		updateValues(width, length, baseCenter);
 	}
