@@ -21,6 +21,7 @@
 #include "Scene/Components/Billboard.h"
 #include "Scene/Components/AnimationController.h"
 #include "Scene/Components/Animation.h"
+#include "Scene/Components/RotatingObject.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -611,7 +612,7 @@ void EditorScene::renderUi() {
 					}
 					ImGui::EndCombo();
 				}
-				if(ImGui::Button("Create")) {
+				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(new AnimationController(AnimationTypes[animationType], reinterpret_cast<GraphNode*>(typeCreation->arg)));
 					typeCreationsToDelete.push_back(typeCreation);
 				}
@@ -632,7 +633,48 @@ void EditorScene::renderUi() {
 			case SSphereCollider:
 			case SBoxCollider:
 			{
-
+				static bool isTrigger;
+				static bool isDynamic;
+				static float radius;
+				static glm::vec3 dimensions;
+				static glm::vec3 positionOffset;
+				if (typeCreation->typeCreationStarted) {
+					isTrigger = false;
+					isDynamic = true;
+					radius = 0.5f;
+					dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
+					positionOffset = glm::vec3(0.0f, 0.0f, 0.0f);
+				}
+				ImGui::Checkbox("Trigger", &isTrigger);
+				ImGui::Checkbox("Dynamic", &isDynamic);
+				switch (typeCreation->typeToCreate) {
+					case SSphereCollider:
+						ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
+						ImGui::InputFloat("Radius (fixed)", &radius);
+						if (radius < 0.0f) {
+							radius = 0.0f;
+						}
+						break;
+					case SBoxCollider:
+						ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
+						ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+						for (int i = 0; i < 3; i++) {
+							if (dimensions[i] < 0.0f) {
+								dimensions[i] = 0.0f;
+							}
+						}
+						break;
+				}
+				if(ImGui::Button("Create")) {
+					Collider *collider;
+					if(typeCreation->typeToCreate == SSphereCollider) {
+						collider = new SphereCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, radius);
+					} else {
+						collider = new BoxCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, dimensions / 2.0f);
+					}
+					typeCreation->creationCallback(collider);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SPhysicalObject:
@@ -642,7 +684,18 @@ void EditorScene::renderUi() {
 			break;
 			case SRotatingObject:
 			{
-
+				static float rotationSpeed;
+				if(typeCreation->typeCreationStarted) {
+					rotationSpeed = glm::radians(45.0f);
+				}
+				ImGui::SliderAngle("Rotation speed (degrees/s)", &rotationSpeed);
+				float rotationSpeedDeg = glm::degrees(rotationSpeed);
+				ImGui::InputFloat("Rotation speed (fixed)", &rotationSpeedDeg);
+				rotationSpeed = glm::radians(rotationSpeedDeg);
+				if(ImGui::Button("Create")) {
+					typeCreation->creationCallback(new RotatingObject(rotationSpeed, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SCollectableObject:
