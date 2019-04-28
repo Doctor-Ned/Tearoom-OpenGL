@@ -15,6 +15,7 @@ public:
 	~MiszukScene();
 protected:
 	void keyEvent(int key, bool pressed) override;
+	GraphNode* player;
 };
 
 #endif

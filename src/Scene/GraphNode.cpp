@@ -273,7 +273,9 @@ void GraphNode::renderGui() {
 			setName(newName);
 			buff[0] = '\0';
 		}
+		ImGui::Text("_____________________");
 		localTransform.drawGui();
+		ImGui::Text("_____________________");
 		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
 			if(editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
@@ -308,9 +310,18 @@ void GraphNode::renderGui() {
 				}
 			}
 		}
-		for (auto &comp : components) {
-			comp->renderGui();
-			ImGui::NewLine();
+		if (ImGui::TreeNode("Components"))
+		{
+			int counter = 0;
+			for (auto &comp : components) {
+				if (ImGui::TreeNode((void*)(intptr_t)counter, comp->getName().c_str(), counter))
+				{
+					comp->renderGui();
+					ImGui::TreePop();
+					counter++;
+				}
+			}
+			ImGui::TreePop();
 		}
 	}
 }

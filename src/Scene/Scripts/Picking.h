@@ -15,6 +15,10 @@ public:
 	 SerializableType getSerializableType() override;
 	 Json::Value serialize(Serializer *serializer) override;
 	 void deserialize(Json::Value &root, Serializer* serializer) override;
+	 void showInventoryUi();
+	 void hideInventoryUi();
+	 bool getSwitch();
+	 void setSwitch(bool ifShown);
 private:
 	Scene* scene;
     bool inventoryUI = false;
@@ -22,7 +26,8 @@ private:
 	std::vector<GraphNode*> inventory;
 	Picking(){}
 	friend class Serializer;
-	bool I_KEY_STATE = false;
+	UiColorPlane* encouragementBackground;
+	UiText* encouragement;
 };
 
 #endif

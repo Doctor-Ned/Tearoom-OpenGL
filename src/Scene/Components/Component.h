@@ -27,6 +27,7 @@ public:
 	virtual void setComponentActive(bool active);
 	virtual void update(float msec);
 	GraphNode* getGameObject() const;
+	std::string getName();
 	virtual ~Component() = default;
 	void renderGui() override;
 };

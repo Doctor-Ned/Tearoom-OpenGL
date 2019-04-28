@@ -16,6 +16,7 @@
 #include "Scene/Scripts/Picking.h"
 #include "Scene/Scripts/CollectableObject.h"
 #include "Scene/Components/Animation.h"
+#include "Ui/UiPlane.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -43,22 +44,15 @@ MiszukScene::MiszukScene() {
 	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 
 	//-------------
-//INVENTORY UI
+    //INVENTORY UI
+    UiPlane* hud = new UiPlane("res/textures/inventory.png",glm::vec2(500.0f, 500.0f), glm::vec2(400.0f,400.0f), Center);
     UiColorPlane* boxRepresentation = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1080.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
     UiColorPlane* boxRepresentation2 = new UiColorPlane(glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec2(1170.0f, 430.0f),glm::vec2(50.0f, 50.0f), Right);
-    boxRepresentation->setOpacity(0.0f);
-    boxRepresentation2->setOpacity(0.0f);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
-    rootUiElement->addChild(boxRepresentation);
-    rootUiElement->addChild(boxRepresentation2);
     inventoryText = new UiText(glm::vec2(1140.0f, 360.0f), glm::vec2(60.0f,30.0f), "Inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
     inventoryBackground = new UiColorPlane(glm::vec4(0.76f, 0.65f, 0.27f, 0.85f), glm::vec2(1400.0f, 700.0f), glm::vec2(400.0f, 700.0f), Right);
-    inventoryBackground->setActive(false);
-    inventoryBackground->setOpacity(0.0f);
-    rootUiElement->addChild(inventoryBackground);
-    rootUiElement->addChild(inventoryText);
-
+	addToRenderMap(hud);
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
@@ -78,7 +72,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
 	MeshColorBox* doorMesh = new MeshColorBox(glm::vec3(2.0f, 3.0f, 0.2f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* handleMesh = new MeshColorBox(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.8f, 0.0f, 0.0f, 1.0f));
-	
+	doorPivot->setName("doorPivot");
 	GraphNode* door = new GraphNode(doorMesh, doorPivot);
 	door->setName("door");
 	GraphNode* handle = new GraphNode(handleMesh, door);
@@ -129,7 +123,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* floor = new GraphNode(floorMesh, rootNode);
 
 	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
-	GraphNode* player = new GraphNode(playerMesh, rootNode);
+	player = new GraphNode(playerMesh, rootNode);
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
@@ -176,7 +170,7 @@ MiszukScene::~MiszukScene() {
 
 void MiszukScene::render() {
 	Scene::render();
-	OctreeNode::getInstance()->draw();
+	//OctreeNode::getInstance()->draw();
 }
 
 void MiszukScene::renderUi() {
@@ -259,10 +253,25 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 				setCursorLocked(!getCursorLocked());
 			}
 			break;
-		case KEY_QUIT:
-		{
+		case KEY_QUIT: {
 			gameManager->goToMenu(false);
 		}
-		break;
+			break;
+		case GLFW_KEY_I: {
+			Picking *temp = player->getComponent<Picking>();
+
+			if (pressed) {
+				if (temp->getSwitch() == false) temp->setSwitch(true);
+				else temp->setSwitch(false);
+			} else {
+				if (temp->getSwitch() == true) {
+					temp->showInventoryUi();
+				} else {
+					temp->hideInventoryUi();
+				}
+
+			}
+		}
 	}
 }
+

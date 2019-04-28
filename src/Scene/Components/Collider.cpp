@@ -5,7 +5,6 @@
 #include "Serialization/Serializer.h"
 #include "Serialization/DataSerializer.h"
 
-using vec3 = glm::vec3;
 void Collider::update(float m_sec) {
 }
 
@@ -23,6 +22,22 @@ ShaderType Collider::getShaderType() {
 
 void Collider::setCollisionCallback(std::function<void(Collider*)> f) {
 	callbackFunctions.push_back(f);
+}
+
+void Collider::renderGui()
+{
+	Component::renderGui();
+
+	ImGui::Text("Offset:");
+	ImGui::DragFloat("X: ", &positionOffset.x, 0.005f);
+	ImGui::DragFloat("Y: ", &positionOffset.y, 0.005f);
+	ImGui::DragFloat("Z: ", &positionOffset.z, 0.005f);
+
+	ImGui::InputFloat("fixed X:", &positionOffset.x);
+	ImGui::InputFloat("fixed Y:", &positionOffset.y);
+	ImGui::InputFloat("fixed Z:", &positionOffset.z);
+
+	ImGui::NewLine();
 }
 
 SerializableType Collider::getSerializableType() {

@@ -41,3 +41,17 @@ float SphereCollider::getRadius()
 {
 	return radius;
 }
+
+void SphereCollider::renderGui()
+{
+	Collider::renderGui();
+
+	ImGui::Text("Radius:");
+	float r = radius;
+
+	ImGui::DragFloat("R: ", &r, 0.005f);
+	float r2;
+	(r < 0.0f) ? (r2 = 0.0f) : (r2 = r);
+		
+	setRadius(r2);
+}

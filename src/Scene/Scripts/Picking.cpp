@@ -14,26 +14,62 @@
 Picking::Picking(GraphNode* _gameObject, const std::string& name, Camera* cam, Scene* scene)
 	: Component(_gameObject, name), camera(cam), scene(scene) {
 
+	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f),glm::vec2(720.0f, 260.0f), glm::vec2(200.0f,30.0f),Center);
+    encouragement = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f,30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 }
 
-void showEncouragement() {
+void Picking::hideInventoryUi() {
+	scene->removeFromRenderMap(scene->getInventoryText());
+	scene->removeFromRenderMap(scene->getInventoryBackground());
+	for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
+		scene->removeFromRenderMap(obj);
+	}
+}
 
+void Picking::showInventoryUi() {
+	int i = 0;
+	scene->addToRenderMap(scene->getInventoryText());
+	scene->addToRenderMap(scene->getInventoryBackground());
+
+	for (UiColorPlane *obj : *(scene->getObjectRepresentations())) {
+		if (i >= inventory.size()) {
+			break;
+		}
+
+		obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
+		scene->addToRenderMap(obj);
+		i++;
+	}
+}
+
+bool Picking::getSwitch() {
+	return inventoryUI;
+}
+
+void Picking::setSwitch(bool ifShown) {
+	this->inventoryUI = ifShown;
 }
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
-	I_KEY_STATE = gameManager->getKeyState(GLFW_KEY_I);
 
 	Collider* coll = gameObject->getComponent<Collider>();
 
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos(), camera->getFront(), 2.0f, coll);
 	if (object) {
+		scene->addToRenderMap(encouragement);
+		scene->addToRenderMap(encouragementBackground);
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
 
 			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
 				inventory.push_back(object);
 				collectable->takeObject();
+
+				if(inventoryUI) //TODO: getting proper item icon to render
+				{
+					scene->addToRenderMap(scene->getObjectRepresentations()->front());
+				}
 			}
 		}
 		Animation* anim = object->getComponent<Animation>();
@@ -51,37 +87,12 @@ void Picking::update(float msec) {
 				animController->startAnimation();
 			}
 		}
+
 	}
-
-	if(I_KEY_STATE && inventoryUI == true){
-		scene->getInventoryBackground()->setActive(false);
-		scene->getInventoryBackground()->setOpacity(0.0f);
-		scene->getUiRoot()->setOpacity(0.0f);
-		scene->getInventoryText()->setOpacity(0.0f);
-		scene->addToRenderMap(scene->getInventoryText());
-		inventoryUI = false;
+	else {
+		scene->removeFromRenderMap(encouragement);
+		scene->removeFromRenderMap(encouragementBackground);
 	}
-
-	if(I_KEY_STATE && inventoryUI == false) {
-				scene->getInventoryBackground()->setActive(true);
-				scene->getInventoryBackground()->setOpacity(1.0f);
-				int i=0;
-				scene->addToRenderMap(scene->getInventoryText());
-
-				for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
-
-					if(i >= inventory.size()) {
-						break;
-					}
-
-					obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
-					obj->setOpacity(1.0f);
-					i++;
-					std::cout<<i<<std::endl;
-				}
-
-				inventoryUI = true;
-		}
 
 
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
@@ -92,10 +103,20 @@ void Picking::update(float msec) {
 			inventory.erase(inventory.begin() + i);
 			collectable->leaveObject();
 			for(UiColorPlane* obj : *(scene->getObjectRepresentations())) {
-				obj->setOpacity(0.0f);
+				scene->removeFromRenderMap(obj);
 			}
 		}
 	}
+
+	if(inventoryUI)
+	{
+		showInventoryUi();
+	}
+	else
+	{
+		hideInventoryUi();
+	}
+
 }
 
 Picking::~Picking() {}
