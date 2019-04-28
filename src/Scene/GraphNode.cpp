@@ -340,6 +340,14 @@ void GraphNode::renderGui() {
 			int counter = 0;
 			for (auto &comp : components) {
 				if (ImGui::TreeNode((comp->getName() + "(" + SerializableTypeNames[comp->getSerializableType()] + ")").c_str())) {
+					if(editor != nullptr && editor->confirmationDialogCallback == nullptr) {
+						ImGui::SameLine();
+						if(ImGui::Button("Delete")) {
+							editor->confirmationDialogCallback = [this,comp,editor]() {
+								editor->editedScene->removeComponent(this, comp);
+							};
+						}
+					}
 					comp->renderGui();
 					ImGui::TreePop();
 					counter++;

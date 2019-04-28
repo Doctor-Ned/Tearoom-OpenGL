@@ -136,7 +136,7 @@ void EditorScene::renderUi() {
 					nameBuffer[0] = '\0';
 					node = new GraphNode();
 				}
-				node->drawGui();
+				//node->drawGui();
 				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(node);
 					node = nullptr;

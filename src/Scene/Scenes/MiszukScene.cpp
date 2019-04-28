@@ -130,7 +130,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	//player->addComponent(new PhysicalObject(player));
-	player->addComponent(new Picking(player, "picking", camera, this));
+	player->addComponent(new Picking(player, camera, this));
 
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
 	fallingBoxNode->addComponent(new SphereCollider(fallingBoxNode, STATIC));
