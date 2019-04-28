@@ -15,5 +15,6 @@ public:
 	SphereCollider(GraphNode* _gameObject, Collision classification = STATIC, bool isTrigger = false, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float radius = 0.5f);
 	void setRadius(float size);
 	float getRadius();
+	void renderGui() override;
 };
 #endif

@@ -72,7 +72,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
 	MeshColorBox* doorMesh = new MeshColorBox(glm::vec3(2.0f, 3.0f, 0.2f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* handleMesh = new MeshColorBox(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.8f, 0.0f, 0.0f, 1.0f));
-	
+	doorPivot->setName("doorPivot");
 	GraphNode* door = new GraphNode(doorMesh, doorPivot);
 	door->setName("door");
 	GraphNode* handle = new GraphNode(handleMesh, door);
@@ -170,7 +170,7 @@ MiszukScene::~MiszukScene() {
 
 void MiszukScene::render() {
 	Scene::render();
-	OctreeNode::getInstance()->draw();
+	//OctreeNode::getInstance()->draw();
 }
 
 void MiszukScene::renderUi() {

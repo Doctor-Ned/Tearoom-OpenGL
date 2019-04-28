@@ -25,7 +25,7 @@ BoxCollider::BoxCollider(GraphNode* _gameObject, Collision classification , bool
 	mesh_ptr->setRenderMode(GL_LINE_STRIP);
 }
 
-void BoxCollider::setHalfDimensions(glm::vec3 half_dimensions)
+void BoxCollider::setHalfDimensions(glm::vec3& half_dimensions)
 {
 	this->halfDimensions = half_dimensions;
 	MeshColorBox *box = dynamic_cast<MeshColorBox*>(mesh_ptr.get());
@@ -35,4 +35,23 @@ void BoxCollider::setHalfDimensions(glm::vec3 half_dimensions)
 glm::vec3 BoxCollider::getHalfDimensions()
 {
 	return halfDimensions;
+}
+
+void BoxCollider::renderGui()
+{
+	Collider::renderGui();
+
+	ImGui::Text("HalfDimensions:");
+	glm::vec3 hDim = halfDimensions;
+	
+	ImGui::DragFloat("HalfX: ", &hDim.x, 0.005f);
+	ImGui::DragFloat("HalfY: ", &hDim.y, 0.005f);
+	ImGui::DragFloat("HalfZ: ", &hDim.z, 0.005f);
+	glm::vec3 hDim2;
+	for (int i = 0; i < 3; i++)
+	{
+		(hDim[i] < 0.0f) ? (hDim2[i] = 0.0f) : (hDim2[i] = hDim[i]);
+	}
+	setHalfDimensions(hDim2);
+
 }

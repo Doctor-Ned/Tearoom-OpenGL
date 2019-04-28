@@ -273,7 +273,9 @@ void GraphNode::renderGui() {
 			setName(newName);
 			buff[0] = '\0';
 		}
+		ImGui::Text("_____________________");
 		localTransform.drawGui();
+		ImGui::Text("_____________________");
 		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
 			if(editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
@@ -309,6 +311,7 @@ void GraphNode::renderGui() {
 			}
 		}
 		for (auto &comp : components) {
+			ImGui::Text("_____________________");
 			comp->renderGui();
 			ImGui::NewLine();
 		}
