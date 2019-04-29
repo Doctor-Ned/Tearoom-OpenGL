@@ -60,17 +60,6 @@ void Animation::deserialize(Json::Value& root, Serializer* serializer)
 
 void Animation::update(float msec)
 {
-	if(!isPlaying && GameManager::getInstance()->getKeyState(GLFW_KEY_1))
-	{
-		//play(0.5f, true);
-		play();
-	}
-
-	if(GameManager::getInstance()->getKeyState(GLFW_KEY_2))
-	{
-		stopPlaying();
-	}
-
 	if(isPlaying)
 	{
 		for(GraphNode* gameObject: objectsToAnimate)
@@ -148,13 +137,25 @@ Animation::~Animation()
 void Animation::renderGui()
 {
 	Component::renderGui();
-
-	static float time = 0;
+	ImGui::Text("__________________");
+	static float startTime = 0.0f;
+	static bool looped = false;
+	ImGui::Checkbox("Looped", &looped);
+	ImGui::InputFloat("startTime:", &startTime);
+	if(ImGui::Button("Play"))
+	{
+		play(startTime, looped);
+	}
+	if(ImGui::Button("Stop"))
+	{
+		stopPlaying();
+	}
+	ImGui::Text("Edition");
+	static float time = 0.0f;
 	static float x = 0.0f;
 	static float y = 0.0f;
 	static float z = 0.0f;
 	static char str0[128] = "Object to animate";
-
 	ImGui::InputText("AnimatedObject", str0, IM_ARRAYSIZE(str0));
 	ImGui::InputFloat("time:", &time);
 	ImGui::InputFloat("fixed X:", &x);
