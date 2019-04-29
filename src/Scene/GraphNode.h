@@ -64,9 +64,8 @@ protected:
 
 template <class T>
 void GraphNode::removeComponent(T* component) {
-	for (std::vector<Component*>::iterator i = components.begin(); i != components.end(); ++i) {
+	for (std::vector<Component*>::iterator i = components.begin(); i != components.end();) {
 		if (*i == component) {
-			i = components.erase(i);
 			Renderable *r = dynamic_cast<Renderable*>(*i);
 			if (r) {
 				for (auto j = renderableComponents.begin(); j != renderableComponents.end();) {
@@ -77,8 +76,10 @@ void GraphNode::removeComponent(T* component) {
 					++j;
 				}
 			}
+			i = components.erase(i);
 			break;
 		}
+		++i;
 	}
 }
 
