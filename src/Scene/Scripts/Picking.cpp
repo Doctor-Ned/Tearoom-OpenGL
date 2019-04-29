@@ -104,12 +104,6 @@ void Picking::update(float msec) {
 		encouragementCanvas->setActive(false);
 	}
 
-	if(gameManager->getKeyState(GLFW_KEY_1))
-	{
-		scene->getObjectRepresentations()->front()->localTransform.setRotationZDegrees(1.0f);
-
-	}
-
 	for (int i = 0; i < inventory.size(); i++) //TEMPORARY STATEMENT
 	{
 		CollectableObject *collectable = inventory[i]->getComponent<CollectableObject>();
