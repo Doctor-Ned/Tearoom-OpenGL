@@ -31,12 +31,12 @@ void AnimationController::update(float msec)
                 break;
             case DoorOpeningY:
                 if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
+                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.04f, 0.0f));
                 elapsed += 0.04f;
                 break;
             case DoorClosingY:
                 if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
+                    gameObject->localTransform.translate(glm::vec3(0.0f, -0.04f, 0.00f));
                 elapsed += 0.04f;
                 break;
             case SafePullOutX:

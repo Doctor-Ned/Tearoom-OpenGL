@@ -11,3 +11,4 @@ Build/
 *.TMP
 StartRemote.bat
 cmake-build-debug/
+.idea/
