@@ -30,6 +30,7 @@ private:
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
 	UiText* encouragement;
+
 };
 
 #endif

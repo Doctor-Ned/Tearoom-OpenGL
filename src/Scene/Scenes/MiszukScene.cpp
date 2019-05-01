@@ -18,16 +18,13 @@
 #include "Scene/Components/Animation.h"
 #include "Ui/UiPlane.h"
 #include "Ui/UiMesh.h"
+#include "Scene/Components/SunController.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
 
 	lightManager->recreateLights(0, 0, 0);
 	camera = new Camera();
-	rootUiElement->setPosition(glm::vec2(700.0f,700.0f));
-	clockHand = new UiPlane("res/textures/clockHand.png", glm::vec2(180.0f, 515.0f), glm::vec2(60.0f,130.0f),TopRight);
-	clockHand->setRotationAnchor(BottomLeft);
-	rootUiElement->addChild(clockHand);
 
 	// for basic animation testing
 	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -53,10 +50,6 @@ MiszukScene::MiszukScene() {
 	UiPlane* boxRepresentation2 = new UiPlane("res/textures/face.png", glm::vec2(1160.0f, 380.0f),glm::vec2(50.0f, 50.0f), Right);
     objectRepresentasions.push_back(boxRepresentation);
     objectRepresentasions.push_back(boxRepresentation2);
-
-	UiPlane* clock = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
-
-	rootUiElement->addChild(clock);
 
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
@@ -129,7 +122,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player, camera, this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
-	//player->addComponent(new PhysicalObject(player));
+	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
 
 	GraphNode* fallingBoxNode = new GraphNode(fallingBox, rootNode);
@@ -215,16 +208,6 @@ void MiszukScene::update(double deltaTime) {
 	if (getKeyState(KEY_MOUSE_DOWN)) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
-
-    if(getKeyState(GLFW_KEY_1))
-    {
-        clockHand->localTransform.rotateZ(0.2f);
-    }
-
-    if(getKeyState(GLFW_KEY_2))
-    {
-        clockHand->localTransform.rotateZ(-0.2f);
-    }
 
 	rootNode->update(deltaTime);
 	//GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);

@@ -7,14 +7,26 @@
 
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
+#include "Ui/UiCanvas.h"
 
-class SunController {
+class SunController: public Component{
 public:
-    SunController(GraphNode* _gameObject, const std::string& name, Scene* scene);
-
-protected:
+    SunController(GraphNode* _gameObject, Scene* scene, const std::string& name = "SunController");
+    ~SunController() override;
+    void moveSunForward();
+    void moveSunBackwards();
+    void update(float msec) override;
+    //SerializableType getSerializableType() override;
+   // Json::Value serialize(Serializer *serializer) override;
+  //  void deserialize(Json::Value &root, Serializer* serializer) override;
+private:
     Scene* scene;
     UiColorPlane* clockBackground;
+    //Clock UI
+    bool clockUI = false;
+    UiPlane* clockHand;
+    UiPlane* clockFace;
+    friend class Serializer;
 
 };
 #endif //TEAROOM_SUNCONTROLLER_H
