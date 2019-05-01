@@ -1265,10 +1265,25 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 		}
 		ImGui::SameLine();
 	}
-	if (!opened && ImGui::Button("Open...")) {
-		editedNodes.push_back(node);
-		if (useWireframe) {
-			node->setTempRenderMode(GL_LINE_STRIP);
+	if (!opened) {
+		if (ImGui::Button("Open...")) {
+			editedNodes.push_back(node);
+			if (useWireframe) {
+				node->setTempRenderMode(GL_LINE_STRIP);
+			}
+		}
+	} else {
+		if(ImGui::Button("Close...")) {
+			for(auto i=editedNodes.begin();i!=editedNodes.end();) {
+				if(*i == node) {
+					if(useWireframe) {
+						node->removeTempRenderMode();
+					}
+					editedNodes.erase(i);
+					break;
+				}
+				++i;
+			}
 		}
 	}
 	ImGui::SameLine();

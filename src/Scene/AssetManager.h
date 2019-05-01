@@ -96,10 +96,12 @@ public:
 	std::vector<std::string> getTextures();
 	std::vector<std::string> getModels();
 	void reloadResources();
+	Texture getDefaultTexture();
 private:
 	bool loaded = false;
 	GameManager *gameManager;
 	std::vector<Ubo*> ubos;
+	Texture defaultTexture;
 	Texture createTexture(const char * textureFile);
 	std::map <std::string, std::vector<ModelData*>> models;
 	std::map<ShaderType, Shader*> shaders;

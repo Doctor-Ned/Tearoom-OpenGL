@@ -1,5 +1,7 @@
 #include "MeshModelInstanced.h"
 
+Texture MeshModelInstanced::defaultTexture;
+
 MeshModelInstanced::MeshModelInstanced(std::vector<ModelVertex> vertices,
                                        std::vector<unsigned int> indices, std::vector<ModelTexture> textures,
                                        glm::vec3* offsets, int offsetSize)
@@ -29,6 +31,12 @@ void MeshModelInstanced::draw(Shader *shader, glm::mat4 world) {
 
 		glUniform1i(shader->getUniformLocation((name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+
+	if (diffuseNr == 1) {
+		glActiveTexture(GL_TEXTURE0);
+		shader->setInt("texture_diffuse1", 0);
+		glBindTexture(GL_TEXTURE_2D, defaultTexture.id);
 	}
 
 	shader->setUseSpecular(specularNr > 1);

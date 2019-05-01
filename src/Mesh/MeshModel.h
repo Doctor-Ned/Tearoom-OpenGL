@@ -24,6 +24,7 @@ class MeshModel : public Mesh {
 public:
 	MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
 	          std::vector<ModelTexture> textures);
+	static Texture defaultTexture;
 protected:
 	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();

@@ -8,6 +8,7 @@
 #include "Mesh/Model.h"
 #include "Render/PostProcessingShader.h"
 #include "Render/LightManager.h"
+#include "Mesh/MeshModelInstanced.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -36,7 +37,7 @@ GLuint AssetManager::createCubemap(std::vector<std::string> faces) {
 		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
 		if (data) {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-				data);
+						 data);
 			stbi_image_free(data);
 		} else {
 			printf("Cubemap texture failed to load at path '%s'!\n", faces[i].c_str());
@@ -235,7 +236,16 @@ void AssetManager::reloadResources() {
 			}
 		}
 	}
-	loaded = true;
+	if (!loaded) {
+		defaultTexture = getTexture("res/textures/default.png");
+		MeshModel::defaultTexture = defaultTexture;
+		MeshModelInstanced::defaultTexture = defaultTexture;
+		loaded = true;
+	}
+}
+
+Texture AssetManager::getDefaultTexture() {
+	return defaultTexture;
 }
 
 TextRenderer* AssetManager::getTextRenderer() {
