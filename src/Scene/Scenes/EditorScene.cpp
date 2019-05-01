@@ -790,6 +790,7 @@ void EditorScene::renderUi() {
 	for (auto &tc : typeCreationsToDelete) {
 		deleteTypeCreation(tc);
 	}
+	typeCreationsToDelete.clear();
 
 	if (meshSelectionCallback != nullptr) {
 		ImGui::Begin("SELECT MESH TYPE", nullptr, 64);
