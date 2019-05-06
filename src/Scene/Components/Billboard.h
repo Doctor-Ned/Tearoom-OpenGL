@@ -18,6 +18,7 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 protected:
+	void renderGui() override;
 	void recalculateMatrix();
 	Camera *camera;
 	bool rescale;

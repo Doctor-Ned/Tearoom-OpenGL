@@ -47,6 +47,17 @@ void Billboard::deserialize(Json::Value& root, Serializer* serializer) {
 	rescale = root["rescale"].asBool();
 }
 
+void Billboard::renderGui() {
+	Component::renderGui();
+	if(active) {
+		bool rescale = getRescaling();
+		ImGui::Checkbox("Rescale", &rescale);
+		if(rescale != getRescaling()) {
+			setRescaling(rescale);
+		}
+	}
+}
+
 void Billboard::recalculateMatrix() {
 	glm::vec3 pos = gameObject->worldTransform.getMatrix()[3] + gameObject->localTransform.getMatrix()[3];
 	glm::mat4 world = translate(glm::mat4(1.0f), pos);

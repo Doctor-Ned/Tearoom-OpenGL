@@ -620,6 +620,7 @@ void EditorScene::renderUi() {
 				if (typeCreation->typeCreationStarted) {
 					rescale = true;
 				}
+				ImGui::Checkbox("Rescale", &rescale);
 				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(new Billboard(playerCamera, reinterpret_cast<GraphNode*>(typeCreation->arg), rescale));
 					typeCreationsToDelete.push_back(typeCreation);
