@@ -11,25 +11,6 @@ using keyFramePair = std::pair<anim::animMap::iterator, anim::animMap::iterator>
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
 	takeObjectsToAnimate(gameObject);
-	/*addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
-	addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 0.0f, glm::vec3(0));
-	addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
-	addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
-	addKeyFrame(gameObject->getName(), Animated::TRANSLATION, 4.0f, glm::vec3(0));
-
-	addKeyFrame(gameObject->getName(), Animated::SCALE, 0.0f, glm::vec3(1));
-	addKeyFrame(gameObject->getName(), Animated::SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
-	addKeyFrame(gameObject->getName(), Animated::SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
-	addKeyFrame(gameObject->getName(), Animated::SCALE, 4.0f, glm::vec3(1));
-
-	addKeyFrame(gameObject->getName(), Animated::ROTATION, 0.0f, glm::vec3(0));
-	addKeyFrame(gameObject->getName(), Animated::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
-	addKeyFrame(gameObject->getName(), Animated::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
-
-	deleteKeyFrame(gameObject->getName(), Animated::ROTATION, 4.0f);
-
-	setSpeed(0.5f);*/
 }
 
 SerializableType Animation::getSerializableType()
@@ -43,6 +24,8 @@ Json::Value Animation::serialize(Serializer* serializer)
 	root["currentTime"] = currentTime;
 	root["endTime"] = endTime;
 	root["isPlaying"] = isPlaying;
+	root["looped"] = looped;
+	root["speed"] = speed;
 	root["objectAnimations"] = DataSerializer::serializeObjectAnimationsMap(objectAnimations);
 	
 	return root;
@@ -54,6 +37,8 @@ void Animation::deserialize(Json::Value& root, Serializer* serializer)
 	setCurrentTime(root["currentTime"].asFloat());
 	setEndTime(root["endTime"].asFloat());
 	setIsPlaying(root["isPlaying"].asBool());
+	setLooped(root["looped"].asBool());
+	setSpeed(root["speed"].asFloat());
 	setObjectAnimations(DataSerializer::deserializeObjectAnimationsMap(root["objectAnimations"]));
 	takeObjectsToAnimate(gameObject);
 }
@@ -142,6 +127,7 @@ void Animation::renderGui()
 	static bool looped = false;
 	ImGui::Checkbox("Looped", &looped);
 	ImGui::InputFloat("startTime:", &startTime);
+	ImGui::InputFloat("Speed", &speed);
 	if(ImGui::Button("Play"))
 	{
 		play(startTime, looped);
@@ -149,6 +135,11 @@ void Animation::renderGui()
 	if(ImGui::Button("Stop"))
 	{
 		stopPlaying();
+	}
+	ImGui::Text("If anim doesn't work, try reload.");
+	if(ImGui::Button("Reload"))
+	{
+		takeObjectsToAnimate(gameObject);
 	}
 	ImGui::Text("Edition");
 	static float time = 0.0f;
@@ -353,6 +344,11 @@ void Animation::setIsPlaying(bool playing)
 void Animation::setSpeed(float _speed)
 {
 	speed = _speed;
+}
+
+void Animation::setLooped(bool val)
+{
+	looped = val;
 }
 
 std::string Animation::getName()

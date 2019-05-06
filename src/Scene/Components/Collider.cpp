@@ -4,6 +4,7 @@
 #include "Scene/GraphNode.h"
 #include "Serialization/Serializer.h"
 #include "Serialization/DataSerializer.h"
+#include <iostream>
 
 void Collider::update(float m_sec) {
 }
@@ -27,6 +28,26 @@ void Collider::setCollisionCallback(std::function<void(Collider*)> f) {
 void Collider::renderGui()
 {
 	Component::renderGui();
+	static bool initialized = false;
+	static bool isDynamic = false;
+	if(!initialized)
+	{
+		isDynamic = getCollisionType();
+		initialized = true;
+	}
+	
+	ImGui::Checkbox("IsTrigger", &isTrigger);
+	if (ImGui::Checkbox("IsDynamic", &isDynamic))
+	{
+		if(isDynamic)
+		{
+			collisionType = DYNAMIC;
+		}
+		else
+		{
+			collisionType = STATIC;
+		}
+	}
 
 	ImGui::Text("Offset:");
 	ImGui::DragFloat("X: ", &positionOffset.x, 0.005f);

@@ -52,6 +52,7 @@ private:
 	void setEndTime(float);
 	void setIsPlaying(bool playing);
 	void setSpeed(float _speed);
+	void setLooped(bool);
 	void takeObjectsToAnimate(GraphNode* objectToAnimate);
 	//#TODO: std::map serialization
 	void setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map);

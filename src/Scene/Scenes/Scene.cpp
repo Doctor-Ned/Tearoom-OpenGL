@@ -234,7 +234,6 @@ void Scene::update(double deltaTime) {
 		Frustum frustum = camera->getFrustum();
 		OctreeNode::getInstance()->frustumCulling(frustum);
 	}
-	OctreeNode::getInstance()->CollisionTests();
 }
 
 void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
