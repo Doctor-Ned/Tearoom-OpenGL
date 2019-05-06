@@ -717,6 +717,7 @@ void EditorScene::renderUi() {
 			case SPlayerMovement:
 			{
 				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SDirLightComp:
@@ -1274,10 +1275,10 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			}
 		}
 	} else {
-		if(ImGui::Button("Close...")) {
-			for(auto i=editedNodes.begin();i!=editedNodes.end();) {
-				if(*i == node) {
-					if(useWireframe) {
+		if (ImGui::Button("Close...")) {
+			for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+				if (*i == node) {
+					if (useWireframe) {
 						node->removeTempRenderMode();
 					}
 					editedNodes.erase(i);
@@ -1293,7 +1294,9 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			if (nod != nullptr) {
 				appendNode(reinterpret_cast<GraphNode*>(nod), node);
 				editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
-				node->setTempRenderMode(GL_LINE_STRIP);
+				if (useWireframe) {
+					node->setTempRenderMode(GL_LINE_STRIP);
+				}
 			}
 		});
 	}
