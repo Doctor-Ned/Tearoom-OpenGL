@@ -11,7 +11,7 @@
 #include "Ui/UiColorPlane.h"
 #include "Ui/UiPlane.h"
 
-//#define ENABLE_FRUSTUM_CULLING
+#define ENABLE_FRUSTUM_CULLING
 
 class LightManager;
 struct GameFramebuffers;

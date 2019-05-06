@@ -225,15 +225,18 @@ void Scene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
-	rootNode->update(deltaTime);
-	OctreeNode::getInstance()->RebuildTree(15.0f);
-	OctreeNode::getInstance()->Calculate();
-	OctreeNode::getInstance()->CollisionTests();
-	if (camera != nullptr) {
-		camera->RecalculateFrustum();
-		Frustum frustum = camera->getFrustum();
-		OctreeNode::getInstance()->frustumCulling(frustum);
+	if(!rootNode->getChildren().empty())
+	{
+		OctreeNode::getInstance()->RebuildTree(15.0f);
+		OctreeNode::getInstance()->Calculate();
+		OctreeNode::getInstance()->CollisionTests();
+		if (camera != nullptr) {
+			camera->RecalculateFrustum();
+			Frustum frustum = camera->getFrustum();
+			OctreeNode::getInstance()->frustumCulling(frustum);
+		}
 	}
+	rootNode->update(deltaTime);
 }
 
 void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {

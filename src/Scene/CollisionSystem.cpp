@@ -137,7 +137,7 @@ GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction,
 	glm::vec3 startPos = startPoint;
 	glm::vec3 direction = glm::normalize(_direction);
 	glm::vec3 currentPos = startPos;
-	float k = 0.5f;
+	float k = 0.1f;
 	std::shared_ptr<OctreeNode> octree = OctreeNode::getInstance();
 	while (glm::distance(startPos, currentPos) < distance)
 	{

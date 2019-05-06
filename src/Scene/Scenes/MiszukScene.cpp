@@ -221,12 +221,12 @@ void MiszukScene::update(double deltaTime) {
 	//}
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 
-	OctreeNode::getInstance()->RebuildTree(15.0f);
+	/*OctreeNode::getInstance()->RebuildTree(15.0f);
 	OctreeNode::getInstance()->Calculate();
 	OctreeNode::getInstance()->CollisionTests();
 	camera->RecalculateFrustum();
 	Frustum frustum = camera->getFrustum();
-	OctreeNode::getInstance()->frustumCulling(frustum);
+	OctreeNode::getInstance()->frustumCulling(frustum);*/
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {

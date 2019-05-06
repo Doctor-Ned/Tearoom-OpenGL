@@ -30,15 +30,12 @@ PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _
 }
 
 void PlayerMovement::update(float msec) {
-	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, -0.6f, 0.0f), glm::vec3(0, -1, 0), 0.2f);
-	if (floor == nullptr) {
-		gameObject->localTransform.translate(glm::vec3(0.0f, -2.0f * msec, 0.0f));
-	}
-
-	glm::vec3 front = camera->getFront();
+	
+	Camera* cam = GameManager::getInstance()->getCamera();
+	glm::vec3 front = cam->getFront();
 	glm::vec2 xz = glm::vec2(front.x, front.z);
 	xz = glm::normalize(xz);
-	glm::vec3 camRight = camera->getRight();
+	glm::vec3 camRight = cam->getRight();
 
 	glm::vec2 right = glm::normalize(glm::vec2(camRight.x, camRight.z));
 
@@ -67,5 +64,11 @@ void PlayerMovement::update(float msec) {
 		direction = glm::normalize(direction);
 	gameObject->localTransform.translate(direction * msec * speed);
 
-	camera->setPos(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, 0.5f, 0.0f));
+	cam->setPos(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, 0.5f, 0.0f));
+
+	Collider* collider = gameObject->getComponent<Collider>();
+	GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, -1, 0), 0.5f, collider);
+	if (floor == nullptr) {
+		gameObject->localTransform.translate(glm::vec3(0.0f, -2.0f * msec, 0.0f));
+	}
 }
