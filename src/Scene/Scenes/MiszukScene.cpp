@@ -120,7 +120,7 @@ MiszukScene::MiszukScene() {
 	Mesh* playerMesh = new MeshColorBox(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec4(1));
 	player = new GraphNode(playerMesh, rootNode);
 	player->addComponent(new BoxCollider(player, DYNAMIC));
-	player->addComponent(new PlayerMovement(player, camera, this));
+	player->addComponent(new PlayerMovement(player));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
@@ -220,13 +220,6 @@ void MiszukScene::update(double deltaTime) {
 	//	//std::cout << "ray casted" << std::endl;
 	//}
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
-
-	/*OctreeNode::getInstance()->RebuildTree(15.0f);
-	OctreeNode::getInstance()->Calculate();
-	OctreeNode::getInstance()->CollisionTests();
-	camera->RecalculateFrustum();
-	Frustum frustum = camera->getFrustum();
-	OctreeNode::getInstance()->frustumCulling(frustum);*/
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {

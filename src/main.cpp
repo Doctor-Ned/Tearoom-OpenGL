@@ -19,6 +19,7 @@
 #include "Ui/UiColorPlane.h"
 #include "Serialization/Serializer.h"
 #include "Scene/Node.h"
+#include "Scene/SoundSystem.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -268,6 +269,7 @@ int main(int argc, char** argv) {
 
 	serializer->setup();
 	gameManager->setup();
+	SoundSystem::loadSounds();
 
 	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
 

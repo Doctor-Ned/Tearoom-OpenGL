@@ -15,17 +15,15 @@ SerializableType PlayerMovement::getSerializableType() {
 Json::Value PlayerMovement::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["camera"] = serializer->serialize(camera);
-	root["scene"] = serializer->serialize(scene);
 	return root;
 }
 
 void PlayerMovement::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
-	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
 }
 
-PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera* _camera, Scene* _scene) : Component(_gameObject, "Player movement"), camera(_camera), scene(_scene) {
+PlayerMovement::PlayerMovement(GraphNode* _gameObject) : Component(_gameObject, "Player movement") {
 
 }
 

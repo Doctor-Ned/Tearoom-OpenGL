@@ -716,7 +716,7 @@ void EditorScene::renderUi() {
 			break;
 			case SPlayerMovement:
 			{
-				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
+				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;

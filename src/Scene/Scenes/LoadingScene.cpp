@@ -9,6 +9,7 @@ LoadingScene::LoadingScene() {
 	rootUiElement->addChild(loadingText);
 	reinitializeRenderMap();
 }
+
 void LoadingScene::setLoadingText(std::string text) {
 	loadingText->setText(text);
 }
