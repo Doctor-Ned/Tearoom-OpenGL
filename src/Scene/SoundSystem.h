@@ -2,17 +2,18 @@
 #define SOUND_SYSTEM_H
 #include "irrKlang.h"
 #include <vector>
+#include <map>
 
 class SoundSystem
 {
 private:
-	static SoundSystem* soundSystem;
 	irrklang::ISoundEngine* irrKlangEngine;
-	static std::vector<irrklang::ISoundSource*> sounds;
+	std::map<std::string, irrklang::ISoundSource*> soundsMap;
 	SoundSystem();
 	~SoundSystem();
 public:
-	static irrklang::ISoundEngine* getInstance();
+	static SoundSystem* getInstance();
+	static irrklang::ISoundEngine* getEngine();
 	static void loadSounds();
 };
 

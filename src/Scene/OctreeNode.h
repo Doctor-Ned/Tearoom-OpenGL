@@ -22,7 +22,7 @@ class OctreeNode
 {
 private:
 	
-	std::vector<std::shared_ptr<OctreeNode>> nodes;
+	std::vector<OctreeNode> nodes;
 	std::vector<GraphNode*> gameObjects;
 	OctreeNode* parent;
 	std::shared_ptr<MeshColorBox> mesh_ptr;
@@ -30,8 +30,8 @@ private:
 	OctreeNode(float dimension);
 	inline void divideSpace(std::vector<Box>& boxes);
 public:
-	static std::shared_ptr<OctreeNode>& getInstance();
-	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node, Collider* toIgnore = nullptr);
+	static OctreeNode& getInstance();
+	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static OctreeNode& node, Collider* toIgnore = nullptr);
 	static std::vector<GraphNode*> frustumContainer;
 	static std::set<GraphNode*> toInsert2;
 	static inline bool containTest(glm::vec3& point, Box& box);
@@ -42,7 +42,7 @@ public:
 	void draw();
 	void Calculate();
 	void CollisionTests(std::vector<GraphNode*> objectsWithColliders = std::vector<GraphNode*>());
-	std::vector<std::shared_ptr<OctreeNode>>& getNodes();
+	std::vector<OctreeNode>& getNodes();
 	std::vector<GraphNode*>& getGameObjects();
 	Box& getBox();
 	void frustumCulling(Frustum& frustum);

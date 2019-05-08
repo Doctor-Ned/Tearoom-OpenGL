@@ -22,6 +22,7 @@ void OctreeNode::Calculate()
 
 	std::vector<Box> boxes(8);
 	divideSpace(boxes);
+	
 	std::vector<std::vector<GraphNode*>> octList(8);
 	std::vector<GraphNode*> deList;
 
@@ -66,14 +67,14 @@ void OctreeNode::Calculate()
 	{
 		if(!octList[i].empty())
 		{
-			nodes.push_back(std::make_shared<OctreeNode>(boxes[i], this, octList[i]));
+			nodes.emplace_back(OctreeNode( boxes[i], this, octList[i] ));
 		}
 	}
 
 	for (auto& child : nodes)
 	{
-		if(!child->gameObjects.empty())
-			child->Calculate();
+		if(!child.gameObjects.empty())
+			child.Calculate();
 	}
 }
 
@@ -116,11 +117,11 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 
 	for(auto& node : nodes)
 	{
-		node->CollisionTests(objectsWithColliders);
+		node.CollisionTests(objectsWithColliders);
 	}
 }
 
-std::vector<std::shared_ptr<OctreeNode>>& OctreeNode::getNodes()
+std::vector<OctreeNode>& OctreeNode::getNodes()
 {
 	return nodes;
 }
@@ -144,14 +145,14 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 		{
 			if(collider->getType() == BoxCol)
 			{
-				if(frustum.boxInFrustum(dynamic_cast<BoxCollider*>(collider)))
+				if(frustum.boxInFrustum(static_cast<BoxCollider*>(collider)))
 				{
 					frustumContainer.push_back(gameObject);
 				}
 			}
 			else if(collider->getType() == SphereCol)
 			{
-				if (frustum.sphereInFrustum(dynamic_cast<SphereCollider*>(collider)))
+				if (frustum.sphereInFrustum(static_cast<SphereCollider*>(collider)))
 				{
 					frustumContainer.push_back(gameObject);
 				}
@@ -168,7 +169,7 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 
 	for(auto& node : nodes)
 	{
-		node->frustumCulling(frustum);
+		node.frustumCulling(frustum);
 	}
 }
 
@@ -238,16 +239,18 @@ void OctreeNode::draw()
 		mesh_ptr->drawSelf(AssetManager::getInstance()->getShader(STColor), glm::mat4(1));
 	for(auto& octree : nodes)
 	{
-			octree->draw();
+			octree.draw();
 	}
 }
 
-std::shared_ptr<OctreeNode>& OctreeNode::getInstance()
+OctreeNode& OctreeNode::getInstance()
 {
-	static std::shared_ptr<OctreeNode> octreeRoot;
-	if (octreeRoot == nullptr)
+	static bool initialized = false;
+	static OctreeNode octreeRoot;
+	if (!initialized)
 	{
-		octreeRoot = std::make_shared<OctreeNode>();
+		octreeRoot = OctreeNode();
+		initialized = true;
 	}
 	return octreeRoot;
 }
@@ -260,9 +263,9 @@ void OctreeNode::RebuildTree(float dimension)
 	boxPos.maxPos = glm::vec3(dimension);
 	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
-	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	/*mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setRenderMode(GL_LINE_STRIP);
-	mesh_ptr->setUseLight(false);
+	mesh_ptr->setUseLight(false);*/
 	for (GraphNode* graphNode : toInsert2)
 	{
 		gameObjects.push_back(graphNode);
@@ -275,9 +278,9 @@ OctreeNode::OctreeNode(float dimension)
 	boxPos.maxPos = glm::vec3(dimension);
 	boxPos.minPos = glm::vec3(-dimension);
 	boxPos.middle = (boxPos.maxPos + boxPos.minPos) / 2.0f;
-	mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	/*mesh_ptr = std::make_shared<MeshColorBox>(glm::vec3(-dimension), glm::vec3(dimension), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setRenderMode(GL_LINE_STRIP);
-	mesh_ptr->setUseLight(false);
+	mesh_ptr->setUseLight(false);*/
 	for(GraphNode* graphNode : toInsert2)
 	{
 		gameObjects.push_back(graphNode);
@@ -289,9 +292,9 @@ OctreeNode::OctreeNode(Box _box, OctreeNode* _parent, std::vector<GraphNode*> _g
 	: boxPos(_box), parent(_parent), gameObjects(_gameObjects)
 {
 
-	mesh_ptr = std::make_shared<MeshColorBox>(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	/*mesh_ptr = std::make_shared<MeshColorBox>(boxPos.minPos, boxPos.maxPos, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	mesh_ptr->setRenderMode(GL_LINE_STRIP);
-	mesh_ptr->setUseLight(false);
+	mesh_ptr->setUseLight(false);*/
 }
 
 OctreeNode::OctreeNode()
@@ -301,14 +304,15 @@ OctreeNode::OctreeNode()
 
 OctreeNode::~OctreeNode()
 {
-
+	//std::cout << "OctreeNode destroyed" << std::endl;
+	nodes.clear();
 }
 
-GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static std::shared_ptr<OctreeNode>& node, Collider* toIgnore)
+GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static OctreeNode& node, Collider* toIgnore)
 {
-	if (containTest(glm::vec3(rayPos), node->boxPos)) 
+	if (containTest(glm::vec3(rayPos), node.boxPos)) 
 	{
-		for (GraphNode* game_object : node->gameObjects) {
+		for (GraphNode* game_object : node.gameObjects) {
 			Collider* collider = game_object->getComponent<Collider>();
 			if (collider != nullptr)
 			{
@@ -321,7 +325,7 @@ GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static std:
 				}
 			}
 		}
-		for (auto& octreeNode : node->nodes) 
+		for (auto& octreeNode : node.nodes) 
 		{
 			GraphNode* gameObject = findObjectByRayPoint(rayPos, octreeNode, toIgnore);
 			if (gameObject != nullptr) {

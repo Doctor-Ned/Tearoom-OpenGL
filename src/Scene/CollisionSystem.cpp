@@ -5,6 +5,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/OctreeNode.h"
 #include <iostream>
+#include "nmmintrin.h"
 
 CollisionSystem::CollisionSystem()
 {
@@ -79,22 +80,33 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 	return collision;
 }
 
-bool CollisionSystem::containTest(glm::vec3 min, glm::vec3 max, Collider* collider)
+bool CollisionSystem::containTest(glm::vec3& min, glm::vec3& max, Collider* collider)
 {
 	if(collider->getType() == BoxCol)
-	{	
-		BoxCollider* b_collider = dynamic_cast<BoxCollider*>(collider);
+	{
+		float timebefore = glfwGetTime();
+		BoxCollider* b_collider = static_cast<BoxCollider*>(collider);
+		
 		glm::vec3 halfDimension = b_collider->getHalfDimensions();
+		glm::vec3 pos = b_collider->getPosition();
+		/*SSEfloat4 minPoint, maxPoint, position, halfs;
+		position.v = glm::vec4(b_collider->getPosition(), 1.0f);
+		halfs.v = glm::vec4(b_collider->getHalfDimensions(), 1.0f);
+		minPoint.f4 = _mm_sub_ps(position.f4, halfs.f4);
+		maxPoint.f4 = _mm_add_ps(position.f4, halfs.f4);*/
+
 		for(int i = 0; i < 3; i++)
 		{
-			if (b_collider->getPosition()[i] - halfDimension[i] <= min[i] || b_collider->getPosition()[i] + halfDimension[i] >= max[i])
+			if (pos[i] - halfDimension[i] <= min[i]
+				|| pos[i] + halfDimension[i] >= max[i])
 				return false;
 		}
+		float Time = glfwGetTime() - timebefore;
 		return true;
 	}
 	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis align directions)
 	{
-		SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider);
+		SphereCollider* sphere = static_cast<SphereCollider*>(collider);
 		float radius = sphere->getRadius();
 		for(int i = 0; i < 3; i++)
 		{
@@ -110,18 +122,24 @@ bool CollisionSystem::containTest(glm::vec3 point, Collider* collider)
 {
 	if (collider->getType() == BoxCol)
 	{
-		BoxCollider* b_collider = dynamic_cast<BoxCollider*>(collider);
-		glm::vec3 halfDimension = b_collider->getHalfDimensions();
+		BoxCollider* b_collider = static_cast<BoxCollider*>(collider);
+		
+		SSEfloat4 minPoint, maxPoint, position, halfs;
+		position.v = glm::vec4(b_collider->getPosition(), 1.0f);
+		halfs.v = glm::vec4(b_collider->getHalfDimensions(), 1.0f);
+		minPoint.f4 = _mm_sub_ps(position.f4, halfs.f4);
+		maxPoint.f4 = _mm_add_ps(position.f4, halfs.f4);
+		
 		for (int i = 0; i < 3; i++)
 		{
-			if(point[i] < b_collider->getPosition()[i] - halfDimension[i]) return false;
-			if(point[i] > b_collider->getPosition()[i] + halfDimension[i]) return false;
+			if(point[i] < minPoint.v[i]) return false;
+			if(point[i] > maxPoint.v[i]) return false;
 		}
 		return true;
 	}
 	if (collider->getType() == SphereCol) //testing it like a box inside other box (furthest distance from center in axis aligned directions)
 	{
-		SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider);
+		SphereCollider* sphere = static_cast<SphereCollider*>(collider);
 		float radius = sphere->getRadius();
 		glm::vec3 sphereCenter = sphere->getPosition();
 		float squareDistSpherePoint = pow(sphereCenter.x - point.x, 2) +
@@ -138,13 +156,13 @@ GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction,
 	glm::vec3 direction = glm::normalize(_direction);
 	glm::vec3 currentPos = startPos;
 	float k = 0.1f;
-	std::shared_ptr<OctreeNode> octree = OctreeNode::getInstance();
+	
 	while (glm::distance(startPos, currentPos) < distance)
 	{
 		currentPos = startPos + direction * k;
 		k += 0.01f;
 
-		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, octree, toIgnore);
+		GraphNode* detectedNode = OctreeNode::findObjectByRayPoint(currentPos, OctreeNode::getInstance(), toIgnore);
 		if (detectedNode != nullptr) {
 			return detectedNode;
 		}
@@ -154,12 +172,19 @@ GraphNode * CollisionSystem::castRay(glm::vec3 startPoint, glm::vec3 _direction,
 
 bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)
 {
-	SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(collider1);
-	SphereCollider* sphere2 = dynamic_cast<SphereCollider*>(coliider2);
+	SphereCollider* sphere1 = static_cast<SphereCollider*>(collider1);
+	SphereCollider* sphere2 = static_cast<SphereCollider*>(coliider2);
+	glm::vec3 sphere2pos = sphere2->getPosition();
+	glm::vec3 sphere1pos = sphere1->getPosition();
+
+	SSEfloat4 pos2, pos1, result;
+	pos2.v = glm::vec4(sphere2pos, 1.0f);
+	pos1.v = glm::vec4(sphere1pos, 1.0f);
+	result.f4 = _mm_sub_ps(pos2.f4, pos1.f4);
 	float distanceSquared =
-		pow(sphere2->getPosition().x - sphere1->getPosition().x, 2) +
-		pow(sphere2->getPosition().y - sphere1->getPosition().y, 2) +
-		pow(sphere2->getPosition().z - sphere1->getPosition().z, 2);
+		pow(result.v.x, 2) +
+		pow(result.v.x, 2) +
+		pow(result.v.x, 2);
 	float radiusSumSquared = pow(sphere1->getRadius() + sphere2->getRadius(), 2);
 	
 	bool collision = distanceSquared <= radiusSumSquared;
@@ -174,13 +199,17 @@ bool CollisionSystem::SphereToSphere(Collider* collider1, Collider* coliider2)
 
 bool CollisionSystem::AABBtoAABB(Collider* collider1, Collider* collider2)
 {
-	BoxCollider* box1 = dynamic_cast<BoxCollider*>(collider1);
-	BoxCollider* box2 = dynamic_cast<BoxCollider*>(collider2);
+	BoxCollider* box1 = static_cast<BoxCollider*>(collider1);
+	BoxCollider* box2 = static_cast<BoxCollider*>(collider2);
+	glm::vec3 box1pos = box1->getPosition();
+	glm::vec3 box2pos = box2->getPosition();
+	glm::vec3 box1HDim = box1->getHalfDimensions();
+	glm::vec3 box2HDim = box2->getHalfDimensions();
 	glm::vec3 intersectionDepth(0);
 	for(int i = 0; i < 3; i++)
 	{
-		float distance = glm::distance(box1->getPosition()[i], box2->getPosition()[i]);
-		float gapBetweenBoxes = distance - box1->getHalfDimensions()[i] - box2->getHalfDimensions()[i];
+		float distance = glm::distance(box1pos[i], box2pos[i]);
+		float gapBetweenBoxes = distance - box1HDim[i] - box2HDim[i];
 		if (gapBetweenBoxes > 0)
 			return false;
 
@@ -195,19 +224,26 @@ bool CollisionSystem::AABBtoSphere(Collider* _box, Collider* _sphere)
 	//collider is sphere
 	//finding closest point withing AABB to the sphere
 	
-	BoxCollider* box = dynamic_cast<BoxCollider*>(_box);
-	SphereCollider* sphere = dynamic_cast<SphereCollider*>(_sphere);
+	BoxCollider* box = static_cast<BoxCollider*>(_box);
+	SphereCollider* sphere = static_cast<SphereCollider*>(_sphere);
 	glm::vec3 closestPoint;
+
+	SSEfloat4 position, halfs, minPoint, maxPoint;
+	position.v = glm::vec4(box->getPosition(), 1.0f);
+	halfs.v = glm::vec4(box->getHalfDimensions(), 1.0f);
+	minPoint.f4 = _mm_sub_ps(position.f4, halfs.f4);
+	maxPoint.f4 = _mm_add_ps(position.f4, halfs.f4);
+
 	for (int i = 0; i < 3; i++)
 	{
 		float v = sphere->getPosition()[i]; // v = x, y, z (sphere center)
-		if (v < box->getPosition()[i] - box->getHalfDimensions()[i])
+		if (v < minPoint.v[i])
 		{
-			v = box->getPosition()[i] - box->getHalfDimensions()[i];
+			v = minPoint.v[i];
 		}
-		if (v > box->getPosition()[i] + box->getHalfDimensions()[i])
+		if (v > maxPoint.v[i])
 		{
-			v = box->getPosition()[i] + box->getHalfDimensions()[i];
+			v = maxPoint.v[i];
 		}
 		closestPoint[i] = v;
 	}

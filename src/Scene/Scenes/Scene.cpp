@@ -8,6 +8,7 @@
 #include "Ui/UiCanvas.h"
 #include "Mesh/MeshRef.h"
 #include "Ui/UiPlane.h"
+#include <iostream>
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -227,13 +228,13 @@ void Scene::update(double deltaTime) {
 	mouseMovementY = 0.0f;
 	if(!rootNode->getChildren().empty())
 	{
-		OctreeNode::getInstance()->RebuildTree(15.0f);
-		OctreeNode::getInstance()->Calculate();
-		OctreeNode::getInstance()->CollisionTests();
+		OctreeNode::getInstance().RebuildTree(50.0f);
+		OctreeNode::getInstance().Calculate();
+		OctreeNode::getInstance().CollisionTests();
 		if (camera != nullptr) {
 			camera->RecalculateFrustum();
 			Frustum frustum = camera->getFrustum();
-			OctreeNode::getInstance()->frustumCulling(frustum);
+			OctreeNode::getInstance().frustumCulling(frustum);
 		}
 	}
 	rootNode->update(deltaTime);
@@ -472,7 +473,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 							gn = comp->getGameObject();
 						}
 						bool skip = true;
-						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+						for (auto i = octree.frustumContainer.begin(); i != octree.frustumContainer.end();) {
 							if (*i == gn) {
 								skip = false;
 								break;
@@ -523,7 +524,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 							gn = comp->getGameObject();
 						}
 						bool skip = true;
-						for (auto i = octree->frustumContainer.begin(); i != octree->frustumContainer.end();) {
+						for (auto i = octree.frustumContainer.begin(); i != octree.frustumContainer.end();) {
 							if (*i == gn) {
 								skip = false;
 								break;

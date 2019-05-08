@@ -3,9 +3,6 @@
 #include <filesystem>
 namespace fs = std::experimental::filesystem;
 
-SoundSystem* SoundSystem::soundSystem = new SoundSystem();
-std::vector<irrklang::ISoundSource*> SoundSystem::sounds = std::vector<irrklang::ISoundSource*>();
-
 SoundSystem::SoundSystem()
 {
 	irrKlangEngine = irrklang::createIrrKlangDevice();
@@ -20,9 +17,19 @@ SoundSystem::~SoundSystem()
 	irrKlangEngine->drop();
 }
 
-irrklang::ISoundEngine* SoundSystem::getInstance()
+SoundSystem* SoundSystem::getInstance()
 {
-	return soundSystem->irrKlangEngine;
+	static SoundSystem* soundSys;
+	if(!soundSys)
+	{
+		soundSys = new SoundSystem();
+	}
+	return soundSys;
+}
+
+irrklang::ISoundEngine* SoundSystem::getEngine()
+{
+	return getInstance()->irrKlangEngine;
 }
 
 void SoundSystem::loadSounds()
@@ -39,14 +46,14 @@ void SoundSystem::loadSounds()
 
 	for(auto it : fs::recursive_directory_iterator(srcPath))
 	{
-		std::cout << it << std::endl;
-		getInstance()->addSoundSourceFromFile(it.path().u8string().c_str());
-		sounds.push_back(getInstance()->getSoundSource(it.path().u8string().c_str()));
+		std::cout << it.path().filename().stem() << std::endl;
+		getEngine()->addSoundSourceFromFile(it.path().u8string().c_str());
+		getInstance()->soundsMap.emplace(it.path().filename().stem().string(), getEngine()->getSoundSource(it.path().u8string().c_str()));
 	}
 
 
-	std::cout << getInstance()->getSoundSourceCount() << std::endl;
-	auto sound = sounds[0];
+	std::cout << getEngine()->getSoundSourceCount() << std::endl;
+	auto sound = getInstance()->soundsMap.at("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
 	sound->setDefaultVolume(0.03f);
-	getInstance()->play2D(sound);
+	getEngine()->play2D(sound);
 }

@@ -33,6 +33,13 @@
 
 #include <functional>
 #include "json/json.h"
+#include <xmmintrin.h>
+
+union SSEfloat4
+{
+	union __m128 f4;
+	glm::vec4 v;
+};
 
 struct Texture {
 	GLuint id{};

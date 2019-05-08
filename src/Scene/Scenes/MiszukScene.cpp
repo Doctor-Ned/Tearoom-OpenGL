@@ -19,6 +19,7 @@
 #include "Ui/UiPlane.h"
 #include "Ui/UiMesh.h"
 #include "Scene/Components/SunController.h"
+#include <ctime>
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -155,6 +156,17 @@ MiszukScene::MiszukScene() {
 
 	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
+	srand(time(NULL));
+	for (int i = 0; i < 1000; i++)
+	{
+		int x = (rand() % 100) - 50;
+		int y = (rand() % 100) - 50;
+		int z = (rand() % 100) - 50;
+		GraphNode* node = new GraphNode(nullptr, rootNode);
+		node->localTransform.setPosition(x, y, z);
+		node->addComponent(new BoxCollider(node, DYNAMIC, true));
+	}
+	
 	rootNode->updateDrawData();
 	rootUiElement->updateDrawData();
 	reinitializeRenderMap();

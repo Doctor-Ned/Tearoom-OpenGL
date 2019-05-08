@@ -110,13 +110,6 @@ void TestScene::update(double deltaTime) {
 	//rootNode->update(deltaTime);
 
 	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
-	OctreeNode::getInstance()->RebuildTree(15.0f);
-	OctreeNode::getInstance()->Calculate();
-	OctreeNode::getInstance()->CollisionTests();
-	camera->RecalculateFrustum();
-	Frustum frustum = camera->getFrustum();
-	OctreeNode::getInstance()->frustumCulling(frustum);
-	//OctreeNode::getInstance()->CollisionTests();
 }
 
 SerializableType TestScene::getSerializableType() {
