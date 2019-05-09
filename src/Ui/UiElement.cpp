@@ -35,8 +35,7 @@ void UiElement::mouse_button_callback(GLFWwindow* window, int button, int action
 
 void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
 	this->anchor = anchor;
-	actualPosition = position;
-	localTransform.updatePosition(actualPosition);
+	glm::vec2 pos = position;
 	switch (anchor) {
 		default:
 			throw std::exception("Unsupported UiAnchor provided!");
@@ -44,35 +43,35 @@ void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
 		//already set	
 			break;
 		case Top:
-			actualPosition.x -= size.x / 2.0f;
+			pos.x -= size.x / 2.0f;
 			break;
 		case TopRight:
-			actualPosition.x -= size.x;
+			pos.x -= size.x;
 			break;
 		case Left:
-			actualPosition.y -= size.y / 2.0f;
+			pos.y -= size.y / 2.0f;
 			break;
 		case BottomLeft:
-			actualPosition.y -= size.y;
+			pos.y -= size.y;
 			break;
 		case Bottom:
-			actualPosition.x -= size.x / 2.0f;
-			actualPosition.y -= size.y;
+			pos.x -= size.x / 2.0f;
+			pos.y -= size.y;
 			break;
 		case BottomRight:
-			actualPosition.x -= size.x;
-			actualPosition.y -= size.y;
+			pos.x -= size.x;
+			pos.y -= size.y;
 			break;
 		case Right:
-			actualPosition.x -= size.x;
-			actualPosition.y -= size.y / 2.0f;
+			pos.x -= size.x;
+			pos.y -= size.y / 2.0f;
 			break;
 		case Center:
-			actualPosition.x -= size.x / 2.0f;
-			actualPosition.y -= size.y / 2.0f;
+			pos.x -= size.x / 2.0f;
+			pos.y -= size.y / 2.0f;
 			break;
 	}
-	setup();
+	localTransform.setPosition(pos.x, pos.y, localTransform.getMatrix()[3].z);
 }
 
 void UiElement::setPosition(glm::vec2 position) {
@@ -87,12 +86,20 @@ void UiElement::setOpacity(float opacity) {
 	this->opacity = opacity;
 }
 
-glm::vec2 UiElement::getPosition() const {
-	return actualPosition;
+glm::vec2 UiElement::getPosition() {
+	return glm::vec2(localTransform.getMatrix()[3]);
 }
 
-glm::vec2 UiElement::getCenter() const {
-	return glm::vec2(actualPosition.x + size.x / 2.0f, actualPosition.y + size.y / 2.0f);
+glm::vec2 UiElement::getModeledPosition() {
+	return modeledPosition;
+}
+
+glm::vec2 UiElement::getModeledCenter() {
+	return modeledPosition + modeledSize / 2.0f;
+}
+
+glm::vec2 UiElement::getCenter() {
+	return glm::vec2(localTransform.getMatrix()[3].x + size.x / 2.0f, localTransform.getMatrix()[3].y + size.y / 2.0f);
 }
 
 glm::vec2 UiElement::getSize() const {
@@ -220,9 +227,7 @@ void UiElement::updateWorld() {
 		} else {
 			worldTransform.setMatrix(localTransform.getMatrix());
 		}
-		glm::vec4 pos = glm::vec4(actualPosition, 0.0f, 1.0f);
-		pos = worldTransform.getMatrix() * pos;
-		modeledPosition = glm::vec2(pos.x, pos.y);
+		modeledPosition = glm::vec2(worldTransform.getMatrix()[3]);
 		glm::vec3 scale = Global::getScale(worldTransform.getMatrix());
 		modeledSize = size;
 		modeledSize.x *= scale.x;
@@ -245,7 +250,7 @@ glm::vec2 UiElement::createSizeScaledByHeight(float size) {
 }
 
 glm::vec2 UiElement::getRescaledPosition() {
-	return glm::vec2(actualPosition.x * screenWidth / windowWidth, actualPosition.y * screenHeight / windowHeight);
+	return glm::vec2(localTransform.getMatrix()[3].x * screenWidth / windowWidth, localTransform.getMatrix()[3].y * screenHeight / windowHeight);
 }
 
 glm::vec2 UiElement::getRescaledSize() {

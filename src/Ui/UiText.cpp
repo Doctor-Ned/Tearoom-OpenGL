@@ -35,7 +35,7 @@ UiText::UiText(glm::vec2 position, std::string text, glm::vec2 textScale, glm::v
 
 void UiText::render(Shader *shader) {
 	shader->setModel(worldTransform.getMatrix());
-	textRenderer->renderText(shader, text, actualPosition, scale, anchor, color);
+	textRenderer->renderText(shader, text, glm::vec2(0.0f, 0.0f), scale, anchor, color);
 }
 
 void UiText::setText(const char * text) {
@@ -50,8 +50,8 @@ void UiText::setText(std::string text) {
 }
 
 void UiText::setPosition(glm::vec2 position, UiAnchor anchor) {
+	UiElement::setPosition(position, TopLeft);
 	this->anchor = anchor;
-	actualPosition = position;
 }
 
 ShaderType UiText::getShaderType() {

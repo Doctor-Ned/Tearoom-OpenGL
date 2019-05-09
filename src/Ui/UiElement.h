@@ -46,8 +46,10 @@ public:
 	void setPosition(glm::vec2 position);
 	float getOpacity() const;
 	void setOpacity(float opacity);
-	glm::vec2 getPosition() const;
-	glm::vec2 getCenter() const;
+	glm::vec2 getPosition();
+	glm::vec2 getModeledPosition();
+	glm::vec2 getModeledCenter();
+	glm::vec2 getCenter();
 	glm::vec2 getSize() const;
 	void removeChild(UiElement* element);
 	void setParent(UiElement *element);
@@ -85,7 +87,6 @@ protected:
 	float opacity = 1.0f;
 	virtual void setup();
 	bool dirty = true;
-	glm::vec2 actualPosition{};
 	glm::vec2 modeledPosition{};
 	glm::vec2 size{};
 	glm::vec2 modeledSize{};

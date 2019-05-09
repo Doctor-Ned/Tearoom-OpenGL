@@ -292,6 +292,9 @@ int main(int argc, char** argv) {
 	planeCenter.x += fpsPlane->getSize().x / 2.0f;
 	planeCenter.y += fpsPlane->getSize().y / 2.0f;
 	UiText *fpsText = new UiText(planeCenter, fpsPlane->getSize(), "FPS: -", glm::vec3(1.0f, 1.0f, 1.0f), None);
+	fpsPlane->addChild(fpsText);
+
+	fpsPlane->updateDrawData();
 
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
 

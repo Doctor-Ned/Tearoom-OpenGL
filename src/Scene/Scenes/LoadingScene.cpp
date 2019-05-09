@@ -22,4 +22,5 @@ void LoadingScene::setLoadingText(std::string text) {
 
 void LoadingScene::update(double deltaTime) {
 	loadingBar->localTransform.setScale(glm::vec3(assetManager->getLoadingProgress(), 1.0f, 1.0f));
+	//loadingBar->localTransform.setRotationZDegrees(45.0f);
 }

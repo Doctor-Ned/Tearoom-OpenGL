@@ -4,7 +4,7 @@
 
 UiSliderInt::UiSliderInt(const char* textureIdle, const char* textureHover, const char* textureClicked,
 	glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, int value,
-	int min, int max, glm::vec4 lineColor, UiAnchor anchor) : UiTexturedElement(nullptr, position, size, anchor) {
+	int min, int max, glm::vec4 lineColor, UiAnchor anchor) : UiElement(position, size, anchor) {
 	this->min = min;
 	this->max = max;
 	this->value = value;
@@ -12,11 +12,13 @@ UiSliderInt::UiSliderInt(const char* textureIdle, const char* textureHover, cons
 	this->buttonSize = buttonSize;
 	this->lineThickness = lineThickness;
 	this->lineColor = lineColor;
+	plane = new UiColorPlane(lineColor, glm::vec2(0.0f, size.y/2.0f), glm::vec2(size.x, lineThickness), Left);
+	addChild(plane);
 	button = new UiButton(textureIdle, textureHover, textureClicked, glm::vec2(0.0f, 0.0f), buttonSize, Center);
-	button->localTransform.setPosition(Global::remap(static_cast<double>(value), static_cast<double>(min), static_cast<double>(max), 0.0, size.x) + actualPosition.x, actualPosition.y + size.y / 2.0f, 0.0f);
+	button->setPosition(glm::vec2(Global::remap(static_cast<double>(value), static_cast<double>(min), static_cast<double>(max), 0.0, size.x), size.y / 2.0f));
 	addChild(button);
 	UiSliderInt::setPosition(position, anchor);
-	//setup();
+	setup();
 }
 
 UiSliderInt::UiSliderInt(glm::vec2 position, glm::vec2 size, double lineThickness, int value, int min, int max,
@@ -24,12 +26,7 @@ UiSliderInt::UiSliderInt(glm::vec2 position, glm::vec2 size, double lineThicknes
 	UiSliderInt(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, position, size, lineThickness, glm::vec2(size.y, size.y), value, min, max, lineColor, anchor) {}
 
 void UiSliderInt::render(Shader *shader) {
-	UiTexturedElement::render(shader);
-	shader->setColor(lineColor);
-	glBindVertexArray(vao);
-	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
+	UiElement::render(shader);
 }
 
 void UiSliderInt::setCallback(std::function<void(int)> callback) {
@@ -78,52 +75,19 @@ void UiSliderInt::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 			moving = true;
 			moveX = xpos;
 		}
-		button->localTransform.setPosition(Global::remap(static_cast<double>(value), static_cast<double>(min), static_cast<double>(max), 0.0, size.x) + actualPosition.x, actualPosition.y + size.y / 2.0f, 0.0f);
+		button->setPosition(glm::vec2(Global::remap(static_cast<double>(value), static_cast<double>(min), static_cast<double>(max), 0.0, size.x), size.y / 2.0f));
 	} else {
 		moving = false;
 	}
 }
 
 void UiSliderInt::setup() {
+	this->plane->setup();
 	this->button->setup();
-
-	const float minX = actualPosition.x;
-	const float minY = actualPosition.y + (size.y - lineThickness) / 2.0f;
-
-	UiVertex vertices[4];
-
-	vertices[0].Position = glm::vec2(minX, minY + lineThickness);
-	vertices[1].Position = glm::vec2(minX, minY);
-	vertices[2].Position = glm::vec2(minX + size.x, minY);
-	vertices[3].Position = glm::vec2(minX + size.x, minY + lineThickness);
-
-	std::vector<UiVertex> data;
-	data.push_back(vertices[0]);
-	data.push_back(vertices[2]);
-	data.push_back(vertices[1]);
-	data.push_back(vertices[0]);
-	data.push_back(vertices[3]);
-	data.push_back(vertices[2]);
-
-	if (vbo != 0) {
-		glDeleteBuffers(1, &vbo);
-	}
-	glGenBuffers(1, &vbo);
-
-	glBindVertexArray(vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiVertex), &data[0], GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiVertex), static_cast<void*>(nullptr));
-
-	glBindVertexArray(0);
-	data.clear();
 }
 
 ShaderType UiSliderInt::getShaderType() {
-	return STUiColor;
+	return STNone;
 }
 
 UiSliderInt::~UiSliderInt() {

@@ -16,9 +16,6 @@ void UiPlane::render(Shader *shader) {
 }
 
 void UiPlane::setup() {
-	const float minX = actualPosition.x;
-	const float minY = actualPosition.y;
-
 	UiTextureVertex vertices[4];
 
 	vertices[0].TexCoords = glm::vec2(0.0f, 1.0f);
@@ -26,10 +23,10 @@ void UiPlane::setup() {
 	vertices[2].TexCoords = glm::vec2(1.0f, 0.0f);
 	vertices[3].TexCoords = glm::vec2(1.0f, 1.0f);
 
-	vertices[0].Position = glm::vec2(minX, minY + size.y);
-	vertices[1].Position = glm::vec2(minX, minY);
-	vertices[2].Position = glm::vec2(minX + size.x, minY);
-	vertices[3].Position = glm::vec2(minX + size.x, minY + size.y);
+	vertices[0].Position = glm::vec2(0.0f, size.y);
+	vertices[1].Position = glm::vec2(0.0f, 0.0f);
+	vertices[2].Position = glm::vec2(size.x, 0.0f);
+	vertices[3].Position = glm::vec2(size.x, 0.0f + size.y);
 
 	std::vector<UiTextureVertex> data;
 	data.push_back(vertices[0]);

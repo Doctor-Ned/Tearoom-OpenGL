@@ -3,8 +3,9 @@
 #include "Global.h"
 #include <functional>
 #include "UiButton.h"
+#include "UiColorPlane.h"
 
-class UiSliderInt : public UiTexturedElement {
+class UiSliderInt : public UiElement {
 public:
 	UiSliderInt(const char* textureIdle, const char* textureHover, const char* textureClicked,
 		glm::vec2 position, glm::vec2 size, double lineThickness, glm::vec2 buttonSize, int value, int min, int max,
@@ -23,6 +24,7 @@ protected:
 	glm::vec2 buttonSize;
 	glm::vec4 lineColor;
 	UiButton* button;
+	UiColorPlane *plane;
 	double moveX;
 	bool moving = false;
 	std::function<void(int)> callback = [](int) {};

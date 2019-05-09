@@ -18,15 +18,13 @@ void UiColorPlane::render(Shader *shader) {
 }
 
 void UiColorPlane::setup() {
-	const float minX = actualPosition.x;
-	const float minY = actualPosition.y;
 
 	UiVertex vertices[4];
 
-	vertices[0].Position = glm::vec2(minX, minY + size.y);
-	vertices[1].Position = glm::vec2(minX, minY);
-	vertices[2].Position = glm::vec2(minX + size.x, minY);
-	vertices[3].Position = glm::vec2(minX + size.x, minY + size.y);
+	vertices[0].Position = glm::vec2(0.0f, size.y);
+	vertices[1].Position = glm::vec2(0.0f, 0.0f);
+	vertices[2].Position = glm::vec2(size.x, 0.0f);
+	vertices[3].Position = glm::vec2(size.x, size.y);
 
 	std::vector<UiVertex> data;
 	data.push_back(vertices[0]);
