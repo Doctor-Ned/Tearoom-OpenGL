@@ -24,13 +24,14 @@ uniform float opacity;
 uniform float roughness;
 uniform float metallic;
 uniform vec3 emissive;
+const float ao = 1.0f;
 
 //%lightComputations.glsl%
 
 void main() {
 	vec4 albedo = texture(texture_diffuse1, fs_in.texCoords);
 	vec3 albedoRGB = albedo.rgb;
-	float opac = opacity * color.w;
+	float opac = opacity * albedo.w;
 	vec3 color = initialAmbient * albedoRGB;
 	if(useLight == 0 || !enableLights) {
 		FragColor = vec4(albedoRGB, opac);
@@ -41,7 +42,7 @@ void main() {
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, texColor.a * opacity);
+		FragColor = vec4(color, opac);
 	}
 
 	FragColor = FragColor + vec4(emissive, 0.0f);

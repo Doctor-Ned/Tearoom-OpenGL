@@ -23,6 +23,7 @@ uniform float opacity;
 uniform float roughness;
 uniform float metallic;
 uniform vec3 emissive;
+const float ao = 1.0f;
 
 //%lightComputations.glsl%
 

@@ -71,9 +71,11 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 	vec3 F0 = vec3(0.04f);
 	F0 = mix(F0, albedo, metallic);
 	vec3 Lo = vec3(0.0f);
+	mat4 directionWorld = light.model;
+	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec3 L = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));  // direction
 	vec3 H = normalize(V + L);
-	vec3 radiance = light.color * light.strength;
+	vec3 radiance = light.color.rgb * light.strength;
 
 	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
@@ -146,13 +148,13 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 		attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 	}
 
-	vec3 radiance = light.color * attenuation;
+	vec3 radiance = light.color.rgb * attenuation;
 
 	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
 	float NdotL = max(dot(N, L), 0.0f);
-	float G = GeometryShlickGGX(NdotV, roughness);
-	vec3 F = fresnelShlickRoughness(max(dot(H, V), 0.0), F0);
+	float G = geometrySchlickGGX(NdotV, roughness);
+	vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0), F0);
 
 	vec3 kS = F;
 	vec3 kD = vec3(1.0f) - kS;
@@ -225,13 +227,13 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughn
 		attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 	}
 
-	vec3 radiance = light.color * attenuation;
+	vec3 radiance = light.color.rgb * attenuation;
 
 	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
 	float NdotL = max(dot(N, L), 0.0f);
-	float G = GeometryShlickGGX(NdotV, roughness);
-	vec3 F = fresnelShlickRoughness(max(dot(H, V), 0.0), F0);
+	float G = geometrySchlickGGX(NdotV, roughness);
+	vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0), F0);
 
 	vec3 kS = F;
 	vec3 kD = vec3(1.0f) - kS;
