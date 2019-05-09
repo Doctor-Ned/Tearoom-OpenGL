@@ -16,7 +16,7 @@ struct ModelNodeData {
 
 struct ModelData {
 	std::vector<ModelNodeData*> nodeData;
-	ModelTexture textures[6];
+	Texture textures[6];
 };
 
 class Model : public Mesh {
@@ -42,8 +42,8 @@ private:
 	std::vector<MeshModel*> meshes;
 	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output);
 	static ModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
-	static ModelTexture* loadModelTextures(const std::string& objPath);
-	static ModelTexture textureFromFile(const std::string& path);
+	static Texture* loadModelTextures(const std::string& objPath);
+	static Texture textureFromFile(const std::string& path);
 	friend class Serializer;
 };
 

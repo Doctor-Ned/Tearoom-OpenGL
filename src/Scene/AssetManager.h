@@ -96,9 +96,14 @@ public:
 	std::vector<std::string> getTextures();
 	std::vector<std::string> getModels();
 	void reloadResources();
+	void loadNextPendingResource();
 	Texture getDefaultTexture();
+	float getLoadingProgress();
 private:
-	bool loaded = false;
+	int loadableResources, loadedResources;
+	void loadResource(std::string path, bool verify);
+	bool loaded = false, loadingStarted=false;
+	std::vector<std::string> resourcesToLoad;
 	GameManager *gameManager;
 	std::vector<Ubo*> ubos;
 	Texture defaultTexture;

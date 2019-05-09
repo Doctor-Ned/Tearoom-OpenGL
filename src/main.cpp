@@ -386,8 +386,11 @@ int main(int argc, char** argv) {
 
 		glfwSwapBuffers(window);
 
-		if (!assetManager->isLoaded()) {
-			assetManager->reloadResources();
+		static bool loading = !assetManager->isLoaded();
+		if (loading) {
+			assetManager->loadNextPendingResource();
+		}
+		if(loading && assetManager->isLoaded()) {
 			gameManager->goToMenu();
 		}
 	}

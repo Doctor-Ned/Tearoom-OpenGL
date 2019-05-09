@@ -1,5 +1,6 @@
 #include "Model.h"
 #include <stb_image.h>
+#include <fstream>
 
 Model::Model(std::string path) : Model(AssetManager::getInstance()->getModelData(path)) {
 	this->path = path;
@@ -25,7 +26,7 @@ ModelData* Model::createModelData(std::string path) {
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
 	ModelData* result = new ModelData();
-	ModelTexture *textures = loadModelTextures(path);
+	Texture *textures = loadModelTextures(path);
 	for(int i=0;i<6;i++ ) {
 		result->textures[i] = textures[i];
 	}
@@ -160,8 +161,9 @@ ModelNodeData *Model::processMesh(aiMesh* mesh, const aiScene* scene, const std:
 	return result;
 }
 
-ModelTexture *Model::loadModelTextures(const std::string &objPath) {
-	ModelTexture *textures = new ModelTexture[6];
+Texture *Model::loadModelTextures(const std::string &objPath) {
+	Texture *textures = new Texture[6];
+	AssetManager *assetManager = AssetManager::getInstance();
 	textures[0] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_AO.png"));
 	textures[1] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_BaseColor.png"));
 	textures[2] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_Emissive.png"));
@@ -171,37 +173,10 @@ ModelTexture *Model::loadModelTextures(const std::string &objPath) {
 	return textures;
 }
 
-ModelTexture Model::textureFromFile(const std::string &path) {
-	ModelTexture result;
-	glGenTextures(1, &result.id);
-	result.path = path;
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
-	if (data) {
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, result.id);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-		return result;
-	} else {
-		glDeleteTextures(1, &result.id);
-		printf("Failed to load texture from file '%s'!\n", path);
-		stbi_image_free(data);
-		return ModelTexture();
+Texture Model::textureFromFile(const std::string &path) {
+	std::ifstream infile(path);
+	if(infile.good()) {
+		return AssetManager::getInstance()->getTexture(path);
 	}
-
+	return Texture();
 }
