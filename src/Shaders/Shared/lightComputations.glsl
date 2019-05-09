@@ -10,15 +10,42 @@ const float PI = 3.14159265359;
 #define DBL_MAX 1.7976931348623158e+308
 #define DBL_MIN 2.2250738585072014e-308
 
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0) {
+	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float distributionGGX(vec3 N, vec3 H, float roughness) {
+	float a = roughness * roughness;
+	float a2 = a * a;
+	float NdotH = max(dot(N, H), 0.0);
+	float NdotH2 = NdotH * NdotH;
+
+	float num = a2;
+	float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+	denom = PI * denom * denom;
+
+	return num / denom;
+}
+
+float geometrySchlickGGX(float NdotV, float roughness) {
+	float r = (roughness + 1.0);
+	float k = (r*r) / 8.0;
+
+	float num = NdotV;
+	float denom = NdotV * (1.0 - k) + k;
+
+	return num / denom;
+}
+
 vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	if (!light.enabled) {
 		return vec3(0.0f);
 	}
-    float shadow = 0.0;
-	if(castShadows > 0 && enableShadowCasting) {
+	float shadow = 0.0;
+	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
 		projCoords = projCoords * 0.5 + 0.5;
-		float closestDepth = texture(tex, projCoords.xy).r; 
+		float closestDepth = texture(tex, projCoords.xy).r;
 		float currentDepth = projCoords.z;
 		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
 		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
@@ -27,18 +54,16 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 		} else {
 			vec2 texelSize = 1.0 / textureSize(tex, 0);
 			int offset = (spotDirShadowTexelResolution - 1) / 2;
-			for(int x = -offset; x <= offset; ++x)
-			{
-				for(int y = -offset; y <= offset; ++y)
-				{
-					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r; 
-					shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
-				}    
+			for (int x = -offset; x <= offset; ++x) {
+				for (int y = -offset; y <= offset; ++y) {
+					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r;
+					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+				}
 			}
 			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
 		}
-    
-		if(projCoords.z > 1.0) {
+
+		if (projCoords.z > 1.0) {
 			shadow = 0.0;
 		}
 	}
@@ -50,10 +75,10 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 	vec3 H = normalize(V + L);
 	vec3 radiance = light.color * light.strength;
 
-	float NDF = DistributionGGX(N, H, roughness);
+	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
 	float NdotL = max(dot(N, L), 0.0f);
-	float G = GeometrySchlickGGX(NdotV, roughness);
+	float G = geometrySchlickGGX(NdotV, roughness);
 	vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0f), F0);
 
 	vec3 kS = F;
@@ -76,10 +101,10 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 		return vec3(0.0f);
 	}
 	float shadow = 0.0;
-	if(castShadows > 0 && enableShadowCasting) {
+	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
 		projCoords = projCoords * 0.5 + 0.5;
-		float closestDepth = texture(tex, projCoords.xy).r; 
+		float closestDepth = texture(tex, projCoords.xy).r;
 		float currentDepth = projCoords.z;
 		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
 		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
@@ -97,8 +122,8 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 			}
 			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
 		}
-    
-		if(projCoords.z > 1.0) {
+
+		if (projCoords.z > 1.0) {
 			shadow = 0.0;
 		}
 	}
@@ -123,7 +148,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 
 	vec3 radiance = light.color * attenuation;
 
-	float NDF = DistributionGGX(N, H, roughness);
+	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
 	float NdotL = max(dot(N, L), 0.0f);
 	float G = GeometryShlickGGX(NdotV, roughness);
@@ -149,34 +174,33 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 	float epsilon = cutOff - outerCutOff;
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
 
-	return color * intensity * (1.0f-shadow);
+	return color * intensity * (1.0f - shadow);
 }
 
 vec3 gridSamplingDisk[20] = vec3[]
 (
-   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
-   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
-   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
-   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
-   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
-);
+	vec3(1, 1, 1), vec3(1, -1, 1), vec3(-1, -1, 1), vec3(-1, 1, 1),
+	vec3(1, 1, -1), vec3(1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+	vec3(1, 1, 0), vec3(1, -1, 0), vec3(-1, -1, 0), vec3(-1, 1, 0),
+	vec3(1, 0, 1), vec3(-1, 0, 1), vec3(1, 0, -1), vec3(-1, 0, -1),
+	vec3(0, 1, 1), vec3(0, -1, 1), vec3(0, -1, -1), vec3(0, 1, -1)
+	);
 
 vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	if (!light.enabled) {
 		return vec3(0.0f);
 	}
 	float shadow = 0.0;
-	if(castShadows > 0 && enableShadowCasting) {
+	if (castShadows > 0 && enableShadowCasting) {
 		vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
 		float currentDepth = length(fragToLight);
 		float bias = 0.15;
 		float viewDistance = length(fs_in.viewPosition - fs_in.pos);
 		float diskRadius = (1.0 + (viewDistance / light.far_plane)) / 25.0;
-		for(int i = 0; i < pointShadowSamples; ++i)
-		{
+		for (int i = 0; i < pointShadowSamples; ++i) {
 			float closestDepth = texture(tex, fragToLight + gridSamplingDisk[i] * diskRadius).r;
 			closestDepth *= light.far_plane;
-			if(currentDepth - bias > closestDepth)
+			if (currentDepth - bias > closestDepth)
 				shadow += 1.0;
 		}
 		shadow /= float(pointShadowSamples);
@@ -203,7 +227,7 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughn
 
 	vec3 radiance = light.color * attenuation;
 
-	float NDF = DistributionGGX(N, H, roughness);
+	float NDF = distributionGGX(N, H, roughness);
 	float NdotV = max(dot(N, V), 0.0f);
 	float NdotL = max(dot(N, L), 0.0f);
 	float G = GeometryShlickGGX(NdotV, roughness);
