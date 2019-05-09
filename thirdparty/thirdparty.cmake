@@ -9,8 +9,10 @@ set(FREETYPE_LIBRARY "${FREETYPE_DIR}/freetype.lib")
 find_package(Freetype REQUIRED)
 
 # irrKlang
+set(IRRKLANG_DIR "${THIRDPARTY_DIR}/irrKlang-1.6.0")
+
 FIND_PATH( IRRKLANG_INCLUDE_DIR NAMES irrKlang.h PATHS
-		   "${THIRDPARTY_DIR}/irrKlang-1.6.0/include")
+		   "${IRRKLANG_DIR}/include")
 
 if(WIN32)
 	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")

@@ -16,6 +16,12 @@ file(GLOB_RECURSE SHADER_FILES
 	 
 file(COPY ${FREETYPE_DIR}/freetype.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	 
+file(COPY ${IRRKLANG_DIR}/ikpMP3.dll
+	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	 
+file(COPY ${IRRKLANG_DIR}/irrKlang.dll
+	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Define the executable
 add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Components/SunController.cpp Scene/Components/SunController.h)
