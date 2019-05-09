@@ -1,39 +1,26 @@
 #include "MeshModelInstanced.h"
 
-Texture MeshModelInstanced::defaultTexture;
-
-MeshModelInstanced::MeshModelInstanced(std::vector<ModelVertex> vertices,
-                                       std::vector<unsigned int> indices, std::vector<ModelTexture> textures,
-                                       glm::vec3* offsets, int offsetSize)
-	: Mesh(STModelInstanced), indices(indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices), textures(textures) {
+MeshModelInstanced::MeshModelInstanced(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices, ModelTexture textures[6], glm::vec3* offsets, int offsetSize)
+	: Mesh(STModelInstanced), indices(indices), offsets(offsets), offsetSize(offsetSize), vertices(vertices) {
+	for(int i=0;i<6;i++) {
+		this->textures[i] = textures[i];
+	}
 	setupMesh();
 }
 
 void MeshModelInstanced::draw(Shader *shader, glm::mat4 world) {
 	Mesh::draw(shader, world);
-	GLuint diffuseNr = 1;
-	GLuint specularNr = 1;
-	GLuint normalNr = 1;
-	GLuint heightNr = 1;
-	for (GLuint i = 0; i < textures.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
-
-		std::string number;
-		std::string name = textures[i].type;
-		if (name == "texture_diffuse")
-			number = std::to_string(diffuseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(specularNr++);
-		else if (name == "texture_normal")
-			number = std::to_string(normalNr++);
-		else if (name == "texture_height")
-			number = std::to_string(heightNr++);
-
-		glUniform1i(shader->getUniformLocation((name + number).c_str()), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	int counter = 0;
+	for (int i = 0; i < 6; i++) {
+		if (textures[i].id != 0) {
+			glActiveTexture(GL_TEXTURE0 + counter);
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+			shader->setInt(("textures[" + std::to_string(i) + "]").c_str(), counter++);
+			shader->setInt(("available[" + std::to_string(i) + "]").c_str(), 1);
+		} else {
+			shader->setInt(("available[" + std::to_string(i) + "]").c_str(), 0);
+		}
 	}
-
-	shader->setUseSpecular(specularNr > 1);
 	glBindVertexArray(VAO);
 	glDrawElementsInstanced(renderMode, indices.size(), GL_UNSIGNED_INT, nullptr, offsetSize);
 	glBindVertexArray(0);

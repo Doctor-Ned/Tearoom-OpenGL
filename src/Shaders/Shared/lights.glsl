@@ -2,7 +2,8 @@ struct DirLight {
 	mat4 lightSpace;
 	vec4 color;
 	mat4 model;
-	vec3 padding;
+	vec2 padding;
+	float strength;
 	bool enabled;
 };
 

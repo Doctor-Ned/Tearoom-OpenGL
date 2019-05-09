@@ -102,7 +102,7 @@ Model * AssetManager::getModel(std::string path) {
 	return new Model(path);
 }
 
-std::vector<ModelData*> AssetManager::getModelData(std::string path) {
+ModelData* AssetManager::getModelData(std::string path) {
 	for (auto &pair : models) {
 		if (pair.first.compare(path) == 0) {
 			return pair.second;

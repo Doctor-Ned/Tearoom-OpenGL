@@ -20,7 +20,9 @@ in VS_OUT {
 
 uniform sampler2D default_texture;
 
-uniform sampler2D textures[6];     // ao, albedo, emissive, metallic, normal, roughness
+uniform sampler2D textures[6];
+// ao, albedo, emissive, metallic, normal, roughness
+//  0,      1,        2,        3,      4,         5
 uniform bool available[6];
 uniform mat4 model;
 uniform float opacity;
@@ -28,26 +30,34 @@ uniform float opacity;
 //%lightComputations.glsl%
 
 void main() {
-	vec4 diffuse = vec4(tcolor.rgb, 1.0f);
-	if(!disableTexture) diffuse *= texture(texture_diffuse1, fs_in.texCoords);
-    vec4 ambient = initialAmbient * diffuse;
-	ambient.w = diffuse.w;
+	vec4 albedo = texture(available[1] ? textures[1] : default_texture, fs_in.texCoords);
+	vec3 albedoRGB = albedo.rgb;
+	float roughness = available[5] ? texture(textures[5], fs_in.texCoords).y : 1.0f;
+	float metallic = available[3] ? texture(textures[3], fs_in.texCoords).y : 0.0f;
+	float ao = available[0] ? texture(textures[0], fs_in.texCoords).y : 1.0f;
+	vec3 emissive = available[2] ? texture(textures[2], fs_in.texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
+	//todo: add AO and normal
+	//vec3 normal = available[4] ? texture(textures[4], fs_in.texCoords).rgb : fs_in.normal;
+	vec3 color = initialAmbient * albedoRGB;
+	float opacity = albedo.w * opacity;
 	if(useLight == 0 || !enableLights) {
-		FragColor = vec4(diffuse.rgb, diffuse.w * opacity);
+		FragColor = vec4(albedoRGB, opacity);
 	} else {
-		vec3 specular = useSpecularMap > 0 ? texture(texture_specular1, fs_in.texCoords).rgb : vec3(0.5f);
-		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
-
-		vec3 color = ambient.rgb;
+		vec3 N = fs_in.normal;
+		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
+		vec3 I = normalize(fs_in.pos - fs_in.viewPosition);
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, ambient.w * opacity);
+		FragColor = vec4(color, opacity);
 	}
+
+	FragColor = FragColor + vec4(emissive, 0.0f);
+
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
+		BrightColor = vec4(0.0, 0.0, 0.0, opacity) + vec4(emissive, 0.0f);
 	}
 }

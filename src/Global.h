@@ -59,6 +59,10 @@ public:
 	static std::string ltrim(const std::string &s);
 	static std::string rtrim(const std::string &s);
 	static std::string trim(const std::string &s);
+	static std::string getReplace(const std::string &str, const std::string &from, const std::string &to);
+	static std::string getReplaceAll(const std::string &str, const std::string &from, const std::string &to);
+	static bool replace(std::string &str, const std::string &from, const std::string &to);
+	static void replaceAll(std::string &str, const std::string &from, const std::string &to);
 	static glm::vec3 degreesToRadians(glm::vec3 rotation);
 	static glm::vec3 radiansToDegrees(glm::vec3 rotation);
 	static glm::vec3 getScale(glm::mat4 matrix);

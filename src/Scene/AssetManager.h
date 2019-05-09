@@ -86,7 +86,7 @@ public:
 	std::map<ShaderType, Shader*> getShaders() const;
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
-	std::vector<ModelData*> getModelData(std::string path);
+	ModelData* getModelData(std::string path);
 	static bool endsWith(std::string const& fullString, std::string const& ending);
 	AssetManager(AssetManager const&) = delete;
 	void operator=(AssetManager const&) = delete;
@@ -103,7 +103,7 @@ private:
 	std::vector<Ubo*> ubos;
 	Texture defaultTexture;
 	Texture createTexture(const char * textureFile);
-	std::map <std::string, std::vector<ModelData*>> models;
+	std::map <std::string, ModelData*> models;
 	std::map<ShaderType, Shader*> shaders;
 	std::vector<Texture> textures;
 	AssetManager() {}

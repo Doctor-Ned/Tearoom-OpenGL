@@ -10,6 +10,10 @@ glm::vec4 DirLightComp::getColor() {
 	return light->color;
 }
 
+float DirLightComp::getStrength() {
+	return light->strength;
+}
+
 void DirLightComp::setColor(glm::vec4 color) {
 	light->color = color;
 	LightComp::setColor(color);
@@ -34,6 +38,15 @@ void DirLightComp::deserialize(Json::Value& root, Serializer* serializer) {
 	LightComp::deserialize(root, serializer);
 }
 
+void DirLightComp::renderGui() {
+	LightComp::renderGui();
+	if(active) {
+		float strength = getStrength();
+		ImGui::DragFloat("Strength", &strength, 0.001f, 0.0f);
+		setStrength(strength);
+	}
+}
+
 bool DirLightComp::getEnabled() {
 	return light->enabled;
 }
@@ -44,4 +57,8 @@ void DirLightComp::setEnabled(bool enabled) {
 
 void DirLightComp::setModel(glm::mat4 model) {
 	light->model = model;
+}
+
+void DirLightComp::setStrength(float strength) {
+	light->strength = strength;
 }

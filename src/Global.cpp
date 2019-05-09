@@ -17,6 +17,36 @@ std::string Global::trim(const std::string& s) {
 	return rtrim(ltrim(s));
 }
 
+std::string Global::getReplace(const std::string& str, const std::string& from, const std::string& to) {
+	std::string result = str;
+	replace(result, from, to);
+	return result;
+}
+
+std::string Global::getReplaceAll(const std::string& str, const std::string& from, const std::string& to) {
+	std::string result = str;
+	replaceAll(result, from, to);
+	return result;
+}
+
+bool Global::replace(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return false;
+	str.replace(start_pos, from.length(), to);
+	return true;
+}
+
+void Global::replaceAll(std::string& str, const std::string& from, const std::string& to) {
+	if (from.empty())
+		return;
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+}
+
 glm::vec3 Global::degreesToRadians(glm::vec3 rotation) {
 	return glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
 }

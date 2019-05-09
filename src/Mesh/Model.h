@@ -8,16 +8,21 @@
 #include <vector>
 #include <string>
 
-struct ModelData {
+
+struct ModelNodeData {
 	std::vector<ModelVertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<ModelTexture> textures;
+};
+
+struct ModelData {
+	std::vector<ModelNodeData*> nodeData;
+	ModelTexture textures[6];
 };
 
 class Model : public Mesh {
 public:
 	Model(std::string path);
-	static std::vector<ModelData*> createModelData(std::string path);
+	static ModelData* createModelData(std::string path);
 	void setOpacity(float opacity) override;
 	void setCulled(bool culled) override;
 	void setUseLight(bool useLight) override;
@@ -30,15 +35,15 @@ public:
 private:
 	Model() {}
 	void renderGui() override;
-	void initialize(std::vector<ModelData*> data);
+	void initialize(ModelData* data);
 	std::string path;
-	Model(std::vector<ModelData*> data);
+	Model(ModelData* data);
 	void draw(Shader *shader, glm::mat4 world) override;
 	std::vector<MeshModel*> meshes;
-	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, std::vector<ModelData*> &output);
-	static ModelData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory, std::vector<ModelTexture> &textures_loaded);
-	static std::vector<ModelTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const std::string& directory, std::vector<ModelTexture> &textures_loaded);
-	static GLuint textureFromFile(const char* path, const std::string& directory);
+	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output);
+	static ModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
+	static ModelTexture* loadModelTextures(const std::string& objPath);
+	static ModelTexture textureFromFile(const std::string& path);
 	friend class Serializer;
 };
 

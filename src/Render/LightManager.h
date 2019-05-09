@@ -12,11 +12,12 @@ class UboLights;
 class Shader;
 
 struct DirLight : Serializable {
-	DirLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1) {}
+	DirLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1), strength(1.0f) {}
 	glm::mat4 lightSpace;
 	glm::vec4 color;
 	glm::mat4 model;
-	glm::vec3 padding;
+	glm::vec2 padding;
+	float strength;
 	int enabled;
 	SerializableType getSerializableType() override {
 		return SDirLight;
@@ -26,6 +27,7 @@ struct DirLight : Serializable {
 		root["lightSpace"] = DataSerializer::serializeMat4(lightSpace);
 		root["color"] = DataSerializer::serializeVec4(color);
 		root["model"] = DataSerializer::serializeMat4(model);
+		root["strength"] = strength;
 		root["enabled"] = enabled;
 		return root;
 	}
@@ -33,6 +35,7 @@ struct DirLight : Serializable {
 		lightSpace = DataSerializer::deserializeMat4(root["lightSpace"]);
 		color = DataSerializer::deserializeVec4(root["color"]);
 		model = DataSerializer::deserializeMat4(root["model"]);
+		strength = root.get("strength", strength).asFloat();
 		enabled = root["enabled"].asInt();
 	}
 };

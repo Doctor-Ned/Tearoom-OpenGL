@@ -15,22 +15,20 @@ struct ModelVertex {
 };
 
 struct ModelTexture {
+	ModelTexture() : id(0), path("") {}
 	GLuint id;
-	std::string type;
 	std::string path;
 };
 
 class MeshModel : public Mesh {
 public:
-	MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices,
-	          std::vector<ModelTexture> textures);
-	static Texture defaultTexture;
+	MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices, ModelTexture textures[6]);
 protected:
 	void draw(Shader *shader, glm::mat4 world) override;
 	void setupMesh();
 	std::vector<unsigned int> indices;
 	std::vector<ModelVertex> vertices;
-	std::vector<ModelTexture> textures;
+	ModelTexture textures[6];
 };
 
 #endif

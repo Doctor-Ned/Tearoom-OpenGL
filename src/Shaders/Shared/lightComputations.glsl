@@ -1,16 +1,19 @@
 uniform int useLight;
 uniform int castShadows;
-uniform float shininess;
 uniform sampler2D dir_shadows[MAX_LIGHTS_OF_TYPE];
 uniform sampler2D spot_shadows[MAX_LIGHTS_OF_TYPE];
 uniform samplerCube point_shadows[MAX_LIGHTS_OF_TYPE];
 
+const float PI = 3.14159265359;
 #define FLT_MAX 3.402823466e+38
 #define FLT_MIN 1.175494351e-38
 #define DBL_MAX 1.7976931348623158e+308
 #define DBL_MIN 2.2250738585072014e-308
 
-vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 specular, vec3 viewDir) {
+vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
+	if (!light.enabled) {
+		return vec3(0.0f);
+	}
     float shadow = 0.0;
 	if(castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
@@ -40,19 +43,38 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 
 		}
 	}
 
-	mat4 directionWorld = light.model;
-	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec3 direction = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
-    float diff = max(dot(direction, fs_in.normal), 0.0);
+	vec3 F0 = vec3(0.04f);
+	F0 = mix(F0, albedo, metallic);
+	vec3 Lo = vec3(0.0f);
+	vec3 L = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));  // direction
+	vec3 H = normalize(V + L);
+	vec3 radiance = light.color * light.strength;
 
-	vec3 reflectDir = reflect(-direction, fs_in.normal);
-	vec3 halfwayDir = normalize(direction + viewDir);
-    float spec = pow(max(dot(fs_in.normal, halfwayDir), 0.0), shininess);
+	float NDF = DistributionGGX(N, H, roughness);
+	float NdotV = max(dot(N, V), 0.0f);
+	float NdotL = max(dot(N, L), 0.0f);
+	float G = GeometrySchlickGGX(NdotV, roughness);
+	vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0f), F0);
 
-	return (vec3(light.ambient) * diffuse) + ((vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular)) * (1 - vec3(shadow));
+	vec3 kS = F;
+	vec3 kD = vec3(1.0f) - kS;
+	kD *= 1.0f - metallic;
+
+	vec3 numerator = NDF * G*F;
+	float denominator = 4.0f * NdotV * NdotL;
+	vec3 specular = numerator / max(denominator, 0.001f);
+
+	Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+	//vec3 color = initialAmbient * albedo * ao;
+	vec3 color = initialAmbient * albedo;
+	return color * (1.0f - shadow);
 }
 
-vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec3 specular, vec3 viewDir) {
+vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
+	if (!light.enabled) {
+		return vec3(0.0f);
+	}
 	float shadow = 0.0;
 	if(castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
@@ -80,20 +102,17 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
 			shadow = 0.0;
 		}
 	}
+	vec3 F0 = vec3(0.04f);
+	F0 = mix(F0, albedo, metallic);
+	vec3 Lo = vec3(0.0f);
 	vec3 position = vec3(light.model[3]);
-	vec3 direction = normalize(position - fs_in.pos);
+	vec3 L = normalize(position - fs_in.pos); //direction
+	vec3 H = normalize(V + L);
+
 	mat4 directionWorld = light.model;
 	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec3 spotDirection = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
-	float diff = max(dot(direction, fs_in.normal), 0.0);
 
-	float cutOff = cos(light.cutOff);
-	float outerCutOff = cos(light.outerCutOff);
-	
-	vec3 reflectDir = reflect(-direction, fs_in.normal);
-	vec3 halfwayDir = normalize(direction + viewDir);
-    float spec = pow(max(dot(fs_in.normal, halfwayDir), 0.0), shininess);
-	
 	float dist = length(position - fs_in.pos);
 	float attenuation;
 	if (light.constant < 0.001f && light.linear < 0.001f && light.quadratic < 0.001f) {
@@ -101,16 +120,36 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 diffuse, vec
 	} else {
 		attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 	}
-	
-	float theta = dot(direction, spotDirection);
+
+	vec3 radiance = light.color * attenuation;
+
+	float NDF = DistributionGGX(N, H, roughness);
+	float NdotV = max(dot(N, V), 0.0f);
+	float NdotL = max(dot(N, L), 0.0f);
+	float G = GeometryShlickGGX(NdotV, roughness);
+	vec3 F = fresnelShlickRoughness(max(dot(H, V), 0.0), F0);
+
+	vec3 kS = F;
+	vec3 kD = vec3(1.0f) - kS;
+	kD *= 1.0 - metallic;
+
+	vec3 numerator = NDF * G*F;
+	float denominator = 4.0f * NdotV * NdotL;
+	vec3 specular = numerator / max(denominator, 0.001f);
+
+	Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+	//vec3 color = initialAmbient * albedo * ao;
+	vec3 color = initialAmbient * albedo + Lo;
+
+	float cutOff = cos(light.cutOff);
+	float outerCutOff = cos(light.outerCutOff);
+
+	float theta = dot(L, spotDirection);
 	float epsilon = cutOff - outerCutOff;
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
 
-	vec3 amb = vec3(light.ambient) * diffuse;
-	vec3 dif = vec3(light.diffuse) * diff * diffuse * intensity;
-	vec3 spe = vec3(light.specular) * spec * specular * intensity;
-
-	return ((amb + (dif + spe) * (1 - vec3(shadow)) * attenuation));
+	return color * intensity * (1.0f-shadow);
 }
 
 vec3 gridSamplingDisk[20] = vec3[]
@@ -122,7 +161,10 @@ vec3 gridSamplingDisk[20] = vec3[]
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
 );
 
-vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specular, vec3 viewDir) {
+vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
+	if (!light.enabled) {
+		return vec3(0.0f);
+	}
 	float shadow = 0.0;
 	if(castShadows > 0 && enableShadowCasting) {
 		vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
@@ -139,16 +181,19 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specul
 		}
 		shadow /= float(pointShadowSamples);
 	}
+
+	vec3 F0 = vec3(0.04f);
+	F0 = mix(F0, albedo, metallic);
+	vec3 Lo = vec3(0.0f);
 	vec3 position = vec3(light.model[3]);
-	vec3 direction = normalize(position - fs_in.pos);
-	float diff = max(dot(direction, fs_in.normal), 0.0);
-	
-	vec3 reflectDir = reflect(-direction, fs_in.normal);
-	vec3 halfwayDir = normalize(direction + viewDir);
-    float spec = pow(max(dot(fs_in.normal, halfwayDir), 0.0), shininess);
+	vec3 L = normalize(position - fs_in.pos); //direction
+	vec3 H = normalize(V + L);
+
+	mat4 directionWorld = light.model;
+	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec3 spotDirection = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
 
 	float dist = length(position - fs_in.pos);
-
 	float attenuation;
 	if (light.constant < 0.001f && light.linear < 0.001f && light.quadratic < 0.001f) {
 		attenuation = FLT_MAX;
@@ -156,5 +201,26 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 diffuse, vec3 specul
 		attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 	}
 
-	return (((vec3(light.ambient) * diffuse) + (vec3(light.diffuse) * diff * diffuse) + (vec3(light.specular) * spec * specular)) * vec3(1-shadow) * attenuation);
+	vec3 radiance = light.color * attenuation;
+
+	float NDF = DistributionGGX(N, H, roughness);
+	float NdotV = max(dot(N, V), 0.0f);
+	float NdotL = max(dot(N, L), 0.0f);
+	float G = GeometryShlickGGX(NdotV, roughness);
+	vec3 F = fresnelShlickRoughness(max(dot(H, V), 0.0), F0);
+
+	vec3 kS = F;
+	vec3 kD = vec3(1.0f) - kS;
+	kD *= 1.0 - metallic;
+
+	vec3 numerator = NDF * G*F;
+	float denominator = 4.0f * NdotV * NdotL;
+	vec3 specular = numerator / max(denominator, 0.001f);
+
+	Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+	//vec3 color = initialAmbient * albedo * ao;
+	vec3 color = initialAmbient * albedo + Lo;
+
+	return color * (1.0f - shadow);
 }
