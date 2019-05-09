@@ -441,7 +441,6 @@ LightShadowData LightManager::createPointShadowData() {
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, result.texture, 0);
 	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
 }

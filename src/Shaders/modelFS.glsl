@@ -32,9 +32,9 @@ uniform float opacity;
 void main() {
 	vec4 albedo = texture(available[1] ? textures[1] : default_texture, fs_in.texCoords);
 	vec3 albedoRGB = albedo.rgb;
-	float roughness = available[5] ? texture(textures[5], fs_in.texCoords).y : 1.0f;
-	float metallic = available[3] ? texture(textures[3], fs_in.texCoords).y : 0.0f;
-	float ao = available[0] ? texture(textures[0], fs_in.texCoords).y : 1.0f;
+	float roughness = available[5] ? texture(textures[5], fs_in.texCoords).r : 1.0f;
+	float metallic = available[3] ? texture(textures[3], fs_in.texCoords).r : 0.0f;
+	float ao = available[0] ? texture(textures[0], fs_in.texCoords).r : 1.0f;
 	vec3 emissive = available[2] ? texture(textures[2], fs_in.texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
 	//todo: add AO and normal
 	//vec3 normal = available[4] ? texture(textures[4], fs_in.texCoords).rgb : fs_in.normal;

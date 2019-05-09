@@ -947,10 +947,12 @@ void EditorScene::renderUi() {
 				});
 			}
 		} else {
-			if (ImGui::Button("Delete the skybox")) {
-				Skybox *skybox = editedScene->getSkybox();
-				editedScene->setSkybox(nullptr);
-				delete skybox;
+			if (confirmationDialogCallback == nullptr && ImGui::Button("Delete the skybox")) {
+				confirmationDialogCallback = [this]() {
+					Skybox *skybox = editedScene->getSkybox();
+					editedScene->setSkybox(nullptr);
+					delete skybox;
+				};
 			}
 		}
 		ImGui::NewLine();

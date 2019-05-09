@@ -92,7 +92,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 
 	//vec3 color = initialAmbient * albedo * ao;
 	vec3 color = initialAmbient * albedo;
-	return color + Lo * (1.0f - shadow);
+	return color + Lo * (1.0f - shadow) * ao;
 }
 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
@@ -170,7 +170,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 	float epsilon = cutOff - outerCutOff;
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
 
-	return color + Lo * intensity * (1.0f - shadow);
+	return color + Lo * intensity * (1.0f - shadow) * ao;
 }
 
 vec3 gridSamplingDisk[20] = vec3[]
@@ -238,6 +238,5 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughn
 
 	//vec3 color = initialAmbient * albedo * ao;
 	vec3 color = initialAmbient * albedo;
-
-	return color + Lo * (1.0f - shadow);
+	return color + Lo * (1.0f - shadow) * ao;
 }

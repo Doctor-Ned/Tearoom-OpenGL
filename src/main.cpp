@@ -222,6 +222,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.01f);
 
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, keyboard_callback);
@@ -386,7 +388,7 @@ int main(int argc, char** argv) {
 
 		glfwSwapBuffers(window);
 
-		static bool loading = !assetManager->isLoaded();
+		bool loading = !assetManager->isLoaded();
 		if (loading) {
 			assetManager->loadNextPendingResource();
 		}

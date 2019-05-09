@@ -47,6 +47,8 @@ void TestScene::render() {
 void TestScene::renderUi() {
 	Scene::renderUi();
 
+	rootNode->getChild(1)->drawGui();
+
 	sun->renderGui();
 
 	if (modelNode != nullptr) {
@@ -168,6 +170,9 @@ TestScene::TestScene(bool serialized) {
 		Model *model = new Model("res/models/muro/muro.obj");
 		modelNode = new GraphNode(model, rootNode);
 		modelNode->localTransform.initialize(-5.0f, 0.0f, 0.0f, 0.01f);
+
+		GraphNode *rock = new GraphNode(new Model("res/models/pbr_rock/sharprockfree.obj"), rootNode);
+		rock->localTransform.setScale(0.01f);
 
 		MeshColorBox *floor = new MeshColorBox(glm::vec3(10.0f, 1.0f, 10.0f), glm::vec4(0.1f, 1.0f, 0.1f, 1.0f));
 

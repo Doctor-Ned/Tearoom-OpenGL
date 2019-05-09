@@ -9,6 +9,9 @@
 #include "Mesh/MeshRef.h"
 #include "Ui/UiPlane.h"
 #include <iostream>
+#include "Scene/Components/LightComponents/DirLightComp.h"
+#include "Scene/Components/LightComponents/SpotLightComp.h"
+#include "Scene/Components/LightComponents/PointLightComp.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -109,16 +112,18 @@ void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
 }
 
 void Scene::removeNode(GraphNode* node, bool recurse) {
+	if(recurse) {
+		for(auto &nod : node->getChildren()) {
+			removeNode(nod, true);
+		}
+	}
 	if (node->getParent() != nullptr) {
 		node->getParent()->removeChild(node);
 	}
 	for (auto &comp : node->getComponents()) {
-		Renderable*r = dynamic_cast<Renderable*>(comp);
-		if (r) {
-			removeFromRenderMap(r);
-		}
+		removeComponent(node, comp);
 	}
-	removeFromRenderMap(node, recurse);
+	removeFromRenderMap(node, false);
 }
 
 void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
@@ -175,6 +180,23 @@ void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 
 void Scene::removeComponent(GraphNode* node, Component* component) {
 	node->removeComponent(component);
+	{
+		DirLightComp *dir = dynamic_cast<DirLightComp*>(component);
+		if (dir) {
+			LightManager::getInstance()->remove(dir->getLight());
+			setLights(LightManager::getInstance()->getLights());
+		}
+		SpotLightComp *spot = dynamic_cast<SpotLightComp*>(component);
+		if (spot) {
+			LightManager::getInstance()->remove(spot->getLight());
+			setLights(LightManager::getInstance()->getLights());
+		}
+		PointLightComp *point = dynamic_cast<PointLightComp*>(component);
+		if (point) {
+			LightManager::getInstance()->remove(point->getLight());
+			setLights(LightManager::getInstance()->getLights());
+		}
+	}
 	Renderable *r = dynamic_cast<Renderable*>(component);
 	if (r) {
 		removeFromRenderMap(r);

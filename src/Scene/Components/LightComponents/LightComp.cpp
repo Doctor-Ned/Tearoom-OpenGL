@@ -52,7 +52,7 @@ void LightComp::renderGui() {
 	Component::renderGui();
 	if (active) {
 		glm::vec4 color = getColor();
-		ImGui::ColorEdit4("Ambient", &color[0]);
+		ImGui::ColorEdit4("Color", &color[0]);
 		bool overrideColor = getOverrideMeshColor();
 		ImGui::Checkbox("Override mesh color", &overrideColor);
 		if(overrideColor != getOverrideMeshColor()) {

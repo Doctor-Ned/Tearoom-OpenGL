@@ -41,7 +41,7 @@ struct DirLight : Serializable {
 };
 
 struct PointLight : Serializable {
-	PointLight() : constant(100.0f), linear(100.0f), quadratic(100.0f), near_plane(0.01f), far_plane(10.0f),
+	PointLight() : constant(1.0f), linear(1.0f), quadratic(1.0f), near_plane(0.01f), far_plane(10.0f),
 		color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1) {}
 	float constant;
 	float linear;
@@ -80,7 +80,7 @@ struct PointLight : Serializable {
 };
 
 struct SpotLight : Serializable {
-	SpotLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), constant(100.0f), linear(100.0f), quadratic(100.0f),
+	SpotLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), constant(1.0f), linear(1.0f), quadratic(1.0f),
 		cutOff(M_PI / 12.0f), outerCutOff(M_PI / 4.0f), enabled(1) {}
 	glm::mat4 lightSpace;
 	glm::vec4 color;

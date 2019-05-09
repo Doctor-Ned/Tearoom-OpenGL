@@ -8,6 +8,9 @@
 #include "Serialization/DataSerializer.h"
 #include "Serialization/Serializer.h"
 #include "Scene/Scenes/EditorScene.h"
+#include "Components/LightComponents/DirLightComp.h"
+#include "Components/LightComponents/SpotLightComp.h"
+#include "Components/LightComponents/PointLightComp.h"
 
 GraphNode::GraphNode(Mesh* mesh, GraphNode* parent) : parent(parent), mesh(mesh), dirty(true), localTransform(ComposedTransform(dirty)), worldTransform(Transform(dirty)) {
 	this->name = "Node";
@@ -345,6 +348,23 @@ void GraphNode::renderGui() {
 						if(ImGui::Button("Delete")) {
 							editor->confirmationDialogCallback = [this,comp,editor]() {
 								editor->editedScene->removeComponent(this, comp);
+								{
+									DirLightComp *dir = dynamic_cast<DirLightComp*>(comp);
+									if(dir) {
+										LightManager::getInstance()->remove(dir->getLight());
+										editor->editedScene->setLights(LightManager::getInstance()->getLights());
+									}
+									SpotLightComp *spot = dynamic_cast<SpotLightComp*>(comp);
+									if (spot) {
+										LightManager::getInstance()->remove(spot->getLight());
+										editor->editedScene->setLights(LightManager::getInstance()->getLights());
+									}
+									PointLightComp *point = dynamic_cast<PointLightComp*>(comp);
+									if (point) {
+										LightManager::getInstance()->remove(point->getLight());
+										editor->editedScene->setLights(LightManager::getInstance()->getLights());
+									}
+								}
 							};
 						}
 					}
