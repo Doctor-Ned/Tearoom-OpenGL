@@ -38,9 +38,6 @@ float geometrySchlickGGX(float NdotV, float roughness) {
 }
 
 vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
-	if (!light.enabled) {
-		return vec3(0.0f);
-	}
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
@@ -95,13 +92,10 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 
 	//vec3 color = initialAmbient * albedo * ao;
 	vec3 color = initialAmbient * albedo;
-	return color * (1.0f - shadow);
+	return color + Lo * (1.0f - shadow);
 }
 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
-	if (!light.enabled) {
-		return vec3(0.0f);
-	}
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
@@ -167,7 +161,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 	Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
 	//vec3 color = initialAmbient * albedo * ao;
-	vec3 color = initialAmbient * albedo + Lo;
+	vec3 color = initialAmbient * albedo;
 
 	float cutOff = cos(light.cutOff);
 	float outerCutOff = cos(light.outerCutOff);
@@ -176,7 +170,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 	float epsilon = cutOff - outerCutOff;
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
 
-	return color * intensity * (1.0f - shadow);
+	return color + Lo * intensity * (1.0f - shadow);
 }
 
 vec3 gridSamplingDisk[20] = vec3[]
@@ -189,9 +183,6 @@ vec3 gridSamplingDisk[20] = vec3[]
 	);
 
 vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
-	if (!light.enabled) {
-		return vec3(0.0f);
-	}
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
 		vec3 fragToLight = fs_in.pos - vec3(light.model[3]);
@@ -246,7 +237,7 @@ vec3 calcPointLight(PointLight light, samplerCube tex, vec3 albedo, float roughn
 	Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
 	//vec3 color = initialAmbient * albedo * ao;
-	vec3 color = initialAmbient * albedo + Lo;
+	vec3 color = initialAmbient * albedo;
 
-	return color * (1.0f - shadow);
+	return color + Lo * (1.0f - shadow);
 }

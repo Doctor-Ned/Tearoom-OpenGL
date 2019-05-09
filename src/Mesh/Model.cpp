@@ -29,7 +29,7 @@ ModelData* Model::createModelData(std::string path) {
 	for(int i=0;i<6;i++ ) {
 		result->textures[i] = textures[i];
 	}
-	delete textures;
+	delete[] textures;
 	processNode(scene->mRootNode, scene, directory, result);
 	return result;
 }

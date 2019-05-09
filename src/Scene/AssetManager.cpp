@@ -62,7 +62,9 @@ Texture AssetManager::createTexture(const char* textureFile) {
 		exit(1);
 	}
 	GLenum format = GL_RGB;
-	if (imgChannels == 4) {
+	if(imgChannels == 1) {
+		format = GL_RED;
+	} else if (imgChannels == 4) {
 		format = GL_RGBA;
 	}
 	GLuint imgTexture;
