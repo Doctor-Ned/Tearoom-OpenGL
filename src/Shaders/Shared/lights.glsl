@@ -1,8 +1,6 @@
 struct DirLight {
 	mat4 lightSpace;
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
+	vec4 color;
 	mat4 model;
 	vec3 padding;
 	bool enabled;
@@ -16,17 +14,13 @@ struct PointLight {
 	vec2 padding;
 	float far_plane;
 	bool enabled;
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
+	vec4 color;
 	mat4 model;
 };
 
 struct SpotLight {
 	mat4 lightSpace;
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
+	vec4 color;
 	mat4 model;
 	float constant;
 	float linear;

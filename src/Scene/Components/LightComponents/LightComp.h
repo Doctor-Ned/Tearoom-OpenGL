@@ -8,17 +8,17 @@ public:
 	LightComp(GraphNode *gameObject);
 	void updateWorld() override;
 	void setComponentActive(bool active) override;
-	virtual glm::vec4 getAmbient() = 0;
-	virtual glm::vec4 getDiffuse() = 0;
-	virtual glm::vec4 getSpecular() = 0;
-	virtual void setAmbient(glm::vec4 ambient) = 0;
-	virtual void setDiffuse(glm::vec4 diffuse) = 0;
-	virtual void setSpecular(glm::vec4 specular) = 0;
+	virtual glm::vec4 getColor() = 0;
+	virtual void setColor(glm::vec4 color);
 	SerializableType getSerializableType() override;
+	virtual void setModel(glm::mat4 model) = 0;
+	bool getOverrideMeshColor();
+	void setOverrideMeshColor(bool overrideColor);
 protected:
+	bool overrideMeshColor = false;
+	void setMeshColor(glm::vec4 color);
 	virtual bool getEnabled() = 0;
 	virtual void setEnabled(bool enabled) = 0;
-	virtual void setModel(glm::mat4 model) = 0;
 	void renderGui() override;
 	LightComp(){}
 };

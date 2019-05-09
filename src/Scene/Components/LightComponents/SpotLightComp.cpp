@@ -6,16 +6,8 @@ SpotLightComp::SpotLightComp(SpotLight * light, GraphNode *gameObject) : Quadrat
 	this->light = light;
 }
 
-glm::vec4 SpotLightComp::getAmbient() {
-	return light->ambient;
-}
-
-glm::vec4 SpotLightComp::getDiffuse() {
-	return light->diffuse;
-}
-
-glm::vec4 SpotLightComp::getSpecular() {
-	return light->specular;
+glm::vec4 SpotLightComp::getColor() {
+	return light->color;
 }
 
 float SpotLightComp::getConstant() {
@@ -38,16 +30,9 @@ float SpotLightComp::getOuterCutoff() {
 	return light->outerCutOff;
 }
 
-void SpotLightComp::setAmbient(glm::vec4 ambient) {
-	light->ambient = ambient;
-}
-
-void SpotLightComp::setDiffuse(glm::vec4 diffuse) {
-	light->diffuse = diffuse;
-}
-
-void SpotLightComp::setSpecular(glm::vec4 specular) {
-	light->specular = specular;
+void SpotLightComp::setColor(glm::vec4 color) {
+	light->color = color;
+	LightComp::setColor(color);
 }
 
 void SpotLightComp::setConstant(float constant) {

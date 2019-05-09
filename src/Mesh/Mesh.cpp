@@ -6,10 +6,6 @@ void Mesh::setShaderType(ShaderType shaderType) {
 	this->shaderType = shaderType;
 }
 
-void Mesh::setShininess(float shininess) {
-	this->shininess = shininess;
-}
-
 void Mesh::setUseLight(bool useLight) {
 	this->useLight = useLight;
 }
@@ -42,17 +38,11 @@ void Mesh::setCulled(bool culled) {
 	this->culled = culled;
 }
 
-float Mesh::getShininess() const {
-	return shininess;
-}
-
 void Mesh::draw(Shader *shader, glm::mat4 world) {
 	//shader->use();
-	shader->setShininess(shininess);
 	shader->setOpacity(opacity);
 	shader->setModel(world);
 	shader->setUseLight(useLight);
-	shader->setUseSpecular(false);
 	shader->setCastShadows(castShadows);
 }
 
@@ -104,7 +94,6 @@ SerializableType Mesh::getSerializableType() {
 Json::Value Mesh::serialize(Serializer* serializer) {
 	Json::Value root;
 	root["shaderType"] = static_cast<int>(shaderType);
-	root["shininess"] = shininess;
 	root["culled"] = culled;
 	root["useLight"] = useLight;
 	root["opaque"] = opaque;
@@ -117,7 +106,6 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 
 void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setShaderType(static_cast<ShaderType>(root.get("shaderType", static_cast<int>(shaderType)).asInt()));
-	setShininess(root.get("shininess", shininess).asFloat());
 	setCulled(root.get("culled", culled).asBool());
 	setUseLight(root.get("useLight", useLight).asBool());
 	setOpaque(root.get("opaque", opaque).asBool());

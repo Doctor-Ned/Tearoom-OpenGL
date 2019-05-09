@@ -6,18 +6,18 @@ SerializableType MeshTexture::getSerializableType() {
 }
 
 Json::Value MeshTexture::serialize(Serializer* serializer) {
-	Json::Value root = Mesh::serialize(serializer);
+	Json::Value root = MeshProperty::serialize(serializer);
 	root["texture"] = texture.path;
 	return root;
 }
 
 void MeshTexture::deserialize(Json::Value& root, Serializer* serializer) {
-	Mesh::deserialize(root, serializer);
+	MeshProperty::deserialize(root, serializer);
 	texture = AssetManager::getInstance()->getTexture(root.get("texture", "").asString());
 }
 
 void MeshTexture::renderGui() {
-	Mesh::renderGui();
+	MeshProperty::renderGui();
 	ImGui::Text(("Texture: " + texture.path).c_str());
 	EditorScene *editor = GameManager::getInstance()->getEditorScene();
 	if (editor != nullptr && editor->textureSelectionCallback == nullptr) {
@@ -31,7 +31,7 @@ void MeshTexture::renderGui() {
 }
 
 void MeshTexture::draw(Shader *shader, glm::mat4 world) {
-	Mesh::draw(shader, world);
+	MeshProperty::draw(shader, world);
 }
 
-MeshTexture::MeshTexture() : Mesh(STTexture) { }
+MeshTexture::MeshTexture() : MeshProperty(STTexture) { }

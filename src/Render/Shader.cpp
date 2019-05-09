@@ -72,14 +72,6 @@ void Shader::setViewDirection(glm::vec3 &viewDirection) {
 	setVec3("viewDirection", viewDirection);
 }
 
-void Shader::setShininess(float shininess) {
-	setFloat("shininess", shininess);
-}
-
-void Shader::setUseSpecular(bool useSpecular) {
-	setBool("useSpecularMap", useSpecular);
-}
-
 void Shader::setUseLight(bool useLight) {
 	setBool("useLight", useLight);
 }
@@ -102,6 +94,18 @@ void Shader::setCastShadows(bool castShadows) {
 
 void Shader::setOpacity(float opacity) {
 	setFloat("opacity", opacity);
+}
+
+void Shader::setEmissive(glm::vec3& emissive) {
+	setVec3("emissive", emissive);
+}
+
+void Shader::setRoughness(float roughness) {
+	setFloat("roughness", roughness);
+}
+
+void Shader::setMetallic(float metallic) {
+	setFloat("metallic", metallic);
 }
 
 void Shader::setInt(const char* name, int value) {

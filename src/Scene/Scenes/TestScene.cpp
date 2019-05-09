@@ -25,7 +25,7 @@ void TestScene::render() {
 		renderNodesUsingTransparentRenderMap(shader, true);
 	}, updatableShaders);
 
-	pointLightSphere->setColor(lights.pointLights[0]->diffuse);
+	pointLightSphere->setColor(lights.pointLights[0]->color);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -269,9 +269,7 @@ TestScene::TestScene(bool serialized) {
 		rotatingNode2->addComponent(new RotatingObject(0.075f, rotatingNode2));
 
 		SpotLight *spotLight = lights.spotLights[0];
-		spotLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		spotLight->diffuse = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-		spotLight->specular = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+		spotLight->color = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 		spotLight->constant = 0.18f;
 		spotLight->linear = 0.1f;
 		spotLight->quadratic = 0.1f;
@@ -283,13 +281,11 @@ TestScene::TestScene(bool serialized) {
 		rotatingNode3->addComponent(new RotatingObject(0.15f, rotatingNode3));
 
 		PointLight *pointLight = lights.pointLights[0];
-		pointLight->ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		pointLight->diffuse = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
-		pointLight->specular = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
+		pointLight->color = glm::vec4(0.3f, 0.3f, 0.1f, 1.0f);
 		pointLight->constant = 0.18f;
 		pointLight->linear = 0.1f;
 		pointLight->quadratic = 0.1f;
-		pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->diffuse);
+		pointLightSphere = new MeshColorSphere(0.125f, 30, pointLight->color);
 		pointLightSphere->setShaderType(STLight);
 		GraphNode *pointLightNode = new GraphNode(pointLightSphere, rotatingNode3);
 		pointLightNode->localTransform.translate(0.5f, 0.5f, 0.0f);

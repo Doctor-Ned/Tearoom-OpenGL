@@ -60,8 +60,6 @@ void Sun::renderGui() {
 	if (active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
 		ImGui::SliderAngle("Rotation angle", &rotationAngle);
-		ImGui::SliderFloat("Ambient factor", &ambientFactor, 0.0f, 1.0f);
-		ImGui::SliderFloat("Specular factor", &specularFactor, 0.0f, 1.0f);
 		ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
 		ImGui::ColorEdit3("Dawn color", reinterpret_cast<float*>(&dawnColor));
 		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
@@ -77,32 +75,12 @@ void Sun::setComponentActive(bool active) {
 	light2Comp->setComponentActive(active);
 }
 
-float Sun::getAmbientFactor() {
-	return ambientFactor;
-}
-
-void Sun::setAmbientFactor(float ambientFactor) {
-	this->ambientFactor = ambientFactor;
-	dirty = true;
-}
-
-float Sun::getSpecularFactor() {
-	return specularFactor;
-}
-
-void Sun::setSpecularFactor(float specularFactor) {
-	this->specularFactor = specularFactor;
-	dirty = true;
-}
-
 SerializableType Sun::getSerializableType() {
 	return SSun;
 }
 
 Json::Value Sun::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
-	root["ambientFactor"] = ambientFactor;
-	root["specularFactor"] = specularFactor;
 	root["time"] = time;
 	root["rotationAngle"] = rotationAngle;
 	root["dawnColor"] = DataSerializer::serializeVec4(dawnColor);
@@ -123,8 +101,6 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 	light1Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light1Comp"]).object);
 	light2Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light2Comp"]).object);
 	Component::deserialize(root, serializer);
-	ambientFactor = root["ambientFactor"].asFloat();
-	specularFactor = root["specularFactor"].asFloat();
 	time = root["time"].asFloat();
 	rotationAngle = root["rotationAngle"].asFloat();
 	dawnColor = DataSerializer::deserializeVec4(root["dawnColor"]);
@@ -137,12 +113,8 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 
 void Sun::recalculateMatrix() {
 	glm::vec4 light1Color = timeToColor(time, true), light2Color = timeToColor(time, false);
-	light1->ambient = light1Color * ambientFactor;
-	light1->diffuse = light1Color;
-	light1->specular = light1Color * specularFactor;
-	light2->ambient = light2Color * ambientFactor;
-	light2->diffuse = light2Color;
-	light2->specular = light2Color * specularFactor;
+	light1->color = light1Color;
+	light2->color = light2Color;
 	dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
 	dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
 	glm::vec4 position = gameObject->worldTransform.getMatrix()[3];

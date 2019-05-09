@@ -15,14 +15,15 @@ public:
 	void setModel(glm::mat4 &model);
 	void setViewPosition(glm::vec3 &viewPosition);
 	void setViewDirection(glm::vec3 &viewDirection);
-	void setShininess(float shininess);
-	void setUseSpecular(bool useSpecular);
 	void setUseLight(bool useLight);
 	void setView(glm::mat4 &view);
 	void setProjection(glm::mat4 &projection);
 	void setLightSpace(glm::mat4 &lightSpace);
 	void setCastShadows(bool castShadows);
 	void setOpacity(float opacity);
+	void setEmissive(glm::vec3 &emissive);
+	void setRoughness(float roughness);
+	void setMetallic(float metallic);
 	void updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);

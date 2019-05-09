@@ -2,7 +2,7 @@
 #define MESHSIMPLE_H
 
 #include "Global.h"
-#include "Mesh.h"
+#include "MeshProperty.h"
 #include <string>
 #include <vector>
 
@@ -11,7 +11,7 @@ struct SimpleVertex {
 	glm::vec3 Normal;
 };
 
-class MeshSimple abstract: public Mesh {
+class MeshSimple abstract: public MeshProperty {
 public:
 	void setColor(glm::vec4 color);
 	bool isOpaque() const override;

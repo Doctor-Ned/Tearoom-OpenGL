@@ -238,8 +238,12 @@ void AssetManager::reloadResources() {
 	}
 	if (!loaded) {
 		defaultTexture = getTexture("res/textures/default.png");
-		MeshModel::defaultTexture = defaultTexture;
-		MeshModelInstanced::defaultTexture = defaultTexture;
+		Shader *shader = getShader(STModel);
+		Shader *shader2 = getShader(STModelInstanced);
+		shader->use();
+		shader->setInt("default_texture", defaultTexture.id);
+		shader2->use();
+		shader2->setInt("default_texture", defaultTexture.id);
 		loaded = true;
 	}
 }

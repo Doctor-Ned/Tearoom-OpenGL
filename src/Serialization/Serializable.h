@@ -51,7 +51,8 @@ enum SerializableType {
 	SSpotLight,
 	SPointLight,
 	STestScene,
-	SSkybox
+	SSkybox,
+	SMeshProperty
 };
 
 const std::string SerializableTypeNames[] = {
@@ -102,7 +103,8 @@ const std::string SerializableTypeNames[] = {
 	"SSpotLight",
 	"SPointLight",
 	"STestScene",
-	"SSkybox"
+	"SSkybox",
+	"SMeshProperty"
 };
 
 class Serializable {

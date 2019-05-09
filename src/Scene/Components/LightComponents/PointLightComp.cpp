@@ -6,16 +6,8 @@ PointLightComp::PointLightComp(PointLight * light, GraphNode *gameObject) : Quad
 	this->light = light;
 }
 
-glm::vec4 PointLightComp::getAmbient() {
-	return light->ambient;
-}
-
-glm::vec4 PointLightComp::getDiffuse() {
-	return light->diffuse;
-}
-
-glm::vec4 PointLightComp::getSpecular() {
-	return light->specular;
+glm::vec4 PointLightComp::getColor() {
+	return light->color;
 }
 
 float PointLightComp::getConstant() {
@@ -30,16 +22,9 @@ float PointLightComp::getQuadratic() {
 	return light->quadratic;
 }
 
-void PointLightComp::setAmbient(glm::vec4 ambient) {
-	light->ambient = ambient;
-}
-
-void PointLightComp::setDiffuse(glm::vec4 diffuse) {
-	light->diffuse = diffuse;
-}
-
-void PointLightComp::setSpecular(glm::vec4 specular) {
-	light->specular = specular;
+void PointLightComp::setColor(glm::vec4 color) {
+	light->color = color;
+	LightComp::setColor(color);
 }
 
 void PointLightComp::setConstant(float constant) {

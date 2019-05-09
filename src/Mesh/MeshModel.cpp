@@ -32,12 +32,6 @@ void MeshModel::draw(Shader *shader, glm::mat4 world) {
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
-	if(diffuseNr == 1) {
-		glActiveTexture(GL_TEXTURE0);
-		shader->setInt("texture_diffuse1", 0);
-		glBindTexture(GL_TEXTURE_2D, defaultTexture.id);
-	}
-
 	shader->setUseSpecular(specularNr > 1);
 	glBindVertexArray(VAO);
 	glDrawElements(renderMode, indices.size(), GL_UNSIGNED_INT, nullptr);

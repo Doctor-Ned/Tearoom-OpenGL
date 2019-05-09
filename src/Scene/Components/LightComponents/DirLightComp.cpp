@@ -6,28 +6,13 @@ DirLightComp::DirLightComp(DirLight * light, GraphNode *gameObject) : LightComp(
 	this->light = light;
 }
 
-glm::vec4 DirLightComp::getAmbient() {
-	return light->ambient;
+glm::vec4 DirLightComp::getColor() {
+	return light->color;
 }
 
-glm::vec4 DirLightComp::getDiffuse() {
-	return light->diffuse;
-}
-
-glm::vec4 DirLightComp::getSpecular() {
-	return light->specular;
-}
-
-void DirLightComp::setAmbient(glm::vec4 ambient) {
-	light->ambient = ambient;
-}
-
-void DirLightComp::setDiffuse(glm::vec4 diffuse) {
-	light->diffuse = diffuse;
-}
-
-void DirLightComp::setSpecular(glm::vec4 specular) {
-	light->specular = specular;
+void DirLightComp::setColor(glm::vec4 color) {
+	light->color = color;
+	LightComp::setColor(color);
 }
 
 DirLight* DirLightComp::getLight() const {

@@ -18,11 +18,12 @@ in VS_OUT {
 	vec4 fragSpotSpaces[MAX_LIGHTS_OF_TYPE];
 } fs_in;
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
+uniform sampler2D default_texture;
+
+uniform sampler2D textures[6];     // ao, albedo, emissive, metallic, normal, roughness
+uniform bool available[6];
 uniform mat4 model;
 uniform float opacity;
-uniform int useSpecularMap;
 
 //%lightComputations.glsl%
 
