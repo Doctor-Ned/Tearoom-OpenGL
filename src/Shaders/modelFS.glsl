@@ -39,9 +39,9 @@ void main() {
 	//todo: add AO and normal
 	//vec3 normal = available[4] ? texture(textures[4], fs_in.texCoords).rgb : fs_in.normal;
 	vec3 color = initialAmbient * albedoRGB;
-	float opacity = albedo.w * opacity;
+	float opac = albedo.w * opacity;
 	if(useLight == 0 || !enableLights) {
-		FragColor = vec4(albedoRGB, opacity);
+		FragColor = vec4(albedoRGB, opac);
 	} else {
 		vec3 N = fs_in.normal;
 		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
@@ -49,7 +49,7 @@ void main() {
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, opacity);
+		FragColor = vec4(color, opac);
 	}
 
 	FragColor = FragColor + vec4(emissive, 0.0f);
@@ -58,6 +58,6 @@ void main() {
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opacity) + vec4(emissive, 0.0f);
+		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive, 0.0f);
 	}
 }

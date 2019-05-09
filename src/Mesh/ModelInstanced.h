@@ -18,9 +18,9 @@ public:
 private:
 	ModelInstanced() {}
 	void renderGui() override;
-	void initialize(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
+	void initialize(ModelData* data, glm::vec3 *offsets, int offsetSize);
 	std::string path;
-	ModelInstanced(std::vector<ModelData*> data, glm::vec3 *offsets, int offsetSize);
+	ModelInstanced(ModelData* data, glm::vec3 *offsets, int offsetSize);
 	void draw(Shader *shader, glm::mat4 world) override;
 	glm::vec3* offsets;
 	int offsetSize;

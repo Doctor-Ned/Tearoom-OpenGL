@@ -17,6 +17,7 @@ protected:
 	Component(GraphNode* _gameObject, std::string name = "Component");
 	bool active = true;
 	std::string name;
+	void renderGui() override;
 public:
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
@@ -29,6 +30,5 @@ public:
 	GraphNode* getGameObject() const;
 	std::string getName();
 	virtual ~Component() = default;
-	void renderGui() override;
 };
 #endif

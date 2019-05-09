@@ -300,7 +300,7 @@ void GraphNode::renderGui() {
 					editor->editedScene->updateRenderable(this);
 				};
 			}
-			mesh->renderGui();
+			mesh->drawGui();
 			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
 			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
 				ImGui::SameLine();
@@ -348,7 +348,7 @@ void GraphNode::renderGui() {
 							};
 						}
 					}
-					comp->renderGui();
+					comp->drawGui();
 					ImGui::TreePop();
 					counter++;
 				}

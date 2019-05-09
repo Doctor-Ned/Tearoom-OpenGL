@@ -20,28 +20,35 @@ in VS_OUT {
 uniform vec4 color;
 uniform mat4 model;
 uniform float opacity;
+uniform float roughness;
+uniform float metallic;
+uniform vec3 emissive;
 
 //%lightComputations.glsl%
 
 void main() {
-	vec4 diffuse = tcolor * color;
-    vec3 ambient = initialAmbient * diffuse.rgb;
+	vec4 albedo = color;
+	vec3 albedoRGB = albedo.rgb;
+	float opac = opacity * color.w;
+	vec3 color = initialAmbient * albedoRGB;
 	if(useLight == 0 || !enableLights) {
-		FragColor = vec4(color.rgb, opacity);
+		FragColor = vec4(albedoRGB, opac);
 	} else {
-		vec3 specular = vec3(0.5f);
-		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
-
-		vec3 color = ambient;
+		vec3 N = fs_in.normal;
+		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
+		vec3 I = normalize(fs_in.pos - fs_in.viewPosition);
 
 		//%lightColorAddition.glsl%
 
-		FragColor = vec4(color, opacity*diffuse.w);
+		FragColor = vec4(color, opac);
 	}
+
+	FragColor = FragColor + vec4(emissive, 0.0f);
+
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opacity);
+		BrightColor = vec4(0.0, 0.0, 0.0, opacity) + vec4(emissive, 0.0f);
 	}
 }

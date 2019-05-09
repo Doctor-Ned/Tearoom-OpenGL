@@ -21,30 +21,35 @@ in VS_OUT {
 uniform sampler2D texture_diffuse1;
 uniform mat4 model;
 uniform float opacity;
+uniform float roughness;
+uniform float metallic;
+uniform vec3 emissive;
 
 //%lightComputations.glsl%
 
 void main() {
-	vec3 diffuse = tcolor.rgb;
-	vec4 texColor = texture(texture_diffuse1, fs_in.texCoords);
-	if(!disableTexture) diffuse = diffuse * texColor.rgb;
-    vec3 ambient = initialAmbient * diffuse;
+	vec4 albedo = texture(texture_diffuse1, fs_in.texCoords);
+	vec3 albedoRGB = albedo.rgb;
+	float opac = opacity * color.w;
+	vec3 color = initialAmbient * albedoRGB;
 	if(useLight == 0 || !enableLights) {
-		FragColor = vec4(diffuse, texColor.a * opacity);
+		FragColor = vec4(albedoRGB, opac);
 	} else {
-		vec3 specular = vec3(0.5f);
-		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
-
-		vec3 color = ambient;
+		vec3 N = fs_in.normal;
+		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
+		vec3 I = normalize(fs_in.pos - fs_in.viewPosition);
 
 		//%lightColorAddition.glsl%
 
 		FragColor = vec4(color, texColor.a * opacity);
 	}
+
+	FragColor = FragColor + vec4(emissive, 0.0f);
+
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, texColor.a * opacity);
+		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive, 0.0f);
 	}
 }

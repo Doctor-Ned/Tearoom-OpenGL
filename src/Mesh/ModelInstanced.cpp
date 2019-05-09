@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "Serialization/DataSerializer.h"
 
-ModelInstanced::ModelInstanced(std::vector<ModelData*> data, glm::vec3* offsets, int offsetSize) : Mesh(STModelInstanced) {
+ModelInstanced::ModelInstanced(ModelData* data, glm::vec3* offsets, int offsetSize) : Mesh(STModelInstanced) {
 	initialize(data, offsets, offsetSize);
 }
 
@@ -59,10 +59,10 @@ void ModelInstanced::renderGui() {
 	ImGui::Text(path.c_str());
 }
 
-void ModelInstanced::initialize(std::vector<ModelData*> data, glm::vec3* offsets, int offsetSize) {
+void ModelInstanced::initialize(ModelData* data, glm::vec3* offsets, int offsetSize) {
 	this->offsets = offsets;
 	this->offsetSize = offsetSize;
-	for (auto &modelData : data) {
-		meshes.push_back(new MeshModelInstanced(modelData->vertices, modelData->indices, modelData->textures, offsets, offsetSize));
+	for (auto &modelNodeData : data->nodeData) {
+		meshes.push_back(new MeshModelInstanced(modelNodeData->vertices, modelNodeData->indices, data->textures, offsets, offsetSize));
 	}
 }
