@@ -72,6 +72,13 @@ bool Global::endsWith(std::string text, std::string end) {
 	return std::equal(end.rbegin(), end.rend(), text.rbegin());
 }
 
+bool Global::startsWith(std::string text, std::string start) {
+	if(text.length() < start.length()) {
+		return false;
+	}
+	return std::equal(start.begin(), start.end(), text.begin());
+}
+
 std::string Global::jsonValueToString(Json::Value value) {
 	static Json::StyledWriter styledWriter;
 	return styledWriter.write(value);

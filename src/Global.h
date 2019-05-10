@@ -67,6 +67,7 @@ public:
 	static glm::vec3 radiansToDegrees(glm::vec3 rotation);
 	static glm::vec3 getScale(glm::mat4 matrix);
 	static bool endsWith(std::string text, std::string end);
+	static bool startsWith(std::string text, std::string start);
 	static std::string jsonValueToString(Json::Value value);
 	static std::string readFullFile(std::string path);
 	static Json::Value readJsonFile(std::string path);

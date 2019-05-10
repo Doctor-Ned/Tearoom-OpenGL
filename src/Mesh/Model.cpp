@@ -27,7 +27,7 @@ ModelData* Model::createModelData(std::string path) {
 	std::string directory = path.substr(0, path.find_last_of('/'));
 	ModelData* result = new ModelData();
 	Texture *textures = loadModelTextures(path);
-	for(int i=0;i<6;i++ ) {
+	for (int i = 0; i < 6; i++) {
 		result->textures[i] = textures[i];
 	}
 	delete[] textures;
@@ -164,19 +164,23 @@ ModelNodeData *Model::processMesh(aiMesh* mesh, const aiScene* scene, const std:
 Texture *Model::loadModelTextures(const std::string &objPath) {
 	Texture *textures = new Texture[6];
 	AssetManager *assetManager = AssetManager::getInstance();
-	textures[0] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_AO.png"));
-	textures[1] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_BaseColor.png"));
-	textures[2] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_Emissive.png"));
-	textures[3] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_Metallic.png"));
-	textures[4] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_Normal.png"));
-	textures[5] = textureFromFile(Global::getReplace(objPath, ".obj", "_default_Roughness.png"));
-	return textures;
-}
-
-Texture Model::textureFromFile(const std::string &path) {
-	std::ifstream infile(path);
-	if(infile.good()) {
-		return AssetManager::getInstance()->getTexture(path);
+	std::string dir = objPath.substr(0, objPath.find_last_of("/") + 1);
+	for(auto &text : assetManager->getTextures()) {
+		if(Global::startsWith(text, dir)) {
+			if(Global::endsWith(text, "_AO.png")) {
+				textures[0] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_BaseColor.png")) {
+				textures[1] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_Emissive.png")) {
+				textures[2] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_Metallic.png")) {
+				textures[3] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_Normal.png")) {
+				textures[4] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_Roughness.png")) {
+				textures[5] = assetManager->getTexture(text);
+			}
+		}
 	}
-	return Texture();
+	return textures;
 }

@@ -43,7 +43,6 @@ private:
 	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output);
 	static ModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
 	static Texture* loadModelTextures(const std::string& objPath);
-	static Texture textureFromFile(const std::string& path);
 	friend class Serializer;
 };
 
