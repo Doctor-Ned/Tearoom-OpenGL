@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "Serialization/Serializable.h"
 #include "Serialization/DataSerializer.h"
+#include "Scene/GuiConfigurable.h"
 
 class GameManager;
 class GeometryShader;
@@ -150,7 +151,7 @@ struct Lights {
 	std::vector<PointLight*> pointLights;
 };
 
-class LightManager {
+class LightManager : public GuiConfigurable {
 public:
 	static LightManager *getInstance();
 	void setup();
@@ -181,6 +182,7 @@ public:
 	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.
 private:
 	LightManager() {}
+	void renderGui() override;
 	void disposeLights();
 	void dispose(DirLightData data);
 	void dispose(SpotLightData data);

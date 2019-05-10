@@ -16,6 +16,7 @@ in VS_OUT {
 	vec3 viewPosition;
 	vec4 fragDirSpaces[MAX_LIGHTS_OF_TYPE];
 	vec4 fragSpotSpaces[MAX_LIGHTS_OF_TYPE];
+	mat3 TBN;
 } fs_in;
 
 uniform sampler2D default_texture;
@@ -44,6 +45,11 @@ void main() {
 		FragColor = vec4(albedoRGB, opac);
 	} else {
 		vec3 N = fs_in.normal;
+		if (available[4]) {
+			vec3 norm = texture(textures[4], fs_in.texCoords).rgb;
+			norm = normalize(norm*2.0f - 1.0f);
+			N = normalize(fs_in.TBN * norm);
+		}
 		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
 		vec3 I = normalize(fs_in.pos - fs_in.viewPosition);
 

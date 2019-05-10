@@ -72,6 +72,10 @@ void EditorScene::renderUi() {
 		shaderTypeSelectionCallback = nullptr;
 	}
 
+	ImGui::Begin("Light manager", nullptr, 64);
+	lightManager->drawGui();
+	ImGui::End();
+
 	ImGui::Checkbox("Update edited scene", &updateEditedScene);
 	if (updateEditedScene) {
 		ImGui::SliderFloat("Time scale", &timeScale, -1.0f, 1.0f);

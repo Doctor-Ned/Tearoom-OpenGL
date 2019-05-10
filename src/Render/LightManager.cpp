@@ -374,6 +374,30 @@ LightManager::~LightManager() {
 	disposeLights();
 }
 
+void LightManager::renderGui() {
+	ImGui::SliderFloat("Initial ambient", &initialAmbient, 0.0f, 1.0f);
+	ImGui::DragFloat("Spot near", &spotNear, 0.01f);
+	ImGui::DragFloat("Spot far", &spotFar, 0.01f);
+	ImGui::DragFloat("Dir near", &dirNear, 0.01f);
+	ImGui::DragFloat("Dir far", &dirFar, 0.01f);
+	ImGui::DragFloat("Dir proj size", &dirProjSize, 0.01f);
+	if (spotNear < 0.0f) {
+		spotNear = 0.0f;
+	}
+	if (spotFar < 0.0f) {
+		spotFar = 0.0f;
+	}
+	if (dirNear < 0.0f) {
+		dirNear = 0.0f;
+	}
+	if (dirFar < 0.0f) {
+		dirFar = 0.0f;
+	}
+	if (dirProjSize < 0.0f) {
+		dirProjSize = 0.0f;
+	}
+}
+
 void LightManager::disposeLights() {
 	for (int i = 0; i < dirLightAmount; i++) {
 		dispose(dirLights[i]);
