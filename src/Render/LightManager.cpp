@@ -76,9 +76,8 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			glClear(GL_DEPTH_BUFFER_BIT);
 			depthPointShader->setFloat("near_plane", data.light->near_plane);
 			depthPointShader->setFloat("far_plane", data.light->far_plane);
-			glm::mat4 world = data.light->model;
-			glm::vec3 position = world[3];
-			depthPointShader->setPointPosition(position);
+			glm::vec3 position = data.light->model[3];
+			depthPointShader->setPointPosition(data.light->model[3]);
 			glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, data.light->near_plane, data.light->far_plane);
 
 			glm::mat4 pointSpaces[6];
@@ -181,20 +180,14 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to create too many lights!";
 	}
-	dirLightAmount = dirs;
-	spotLightAmount = spots;
-	pointLightAmount = points;
-	for (int i = 0; i < dirs; i++) {
-		dirLights[i].light = new DirLight();
-		dirLights[i].data = createDirShadowData();
+	for(int i=0;i<dirs;i++) {
+		addDirLight();
 	}
-	for (int i = 0; i < spots; i++) {
-		spotLights[i].light = new SpotLight();
-		spotLights[i].data = createSpotShadowData();
+	for(int i=0;i<spots;i++) {
+		addSpotLight();
 	}
-	for (int i = 0; i < points; i++) {
-		pointLights[i].light = new PointLight();
-		pointLights[i].data = createPointShadowData();
+	for(int i=0;i<points;i++) {
+		addPointLight();
 	}
 	return getLights();
 }

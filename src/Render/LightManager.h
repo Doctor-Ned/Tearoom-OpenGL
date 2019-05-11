@@ -159,7 +159,7 @@ public:
 	void operator=(LightManager const&) = delete;
 	void renderAndUpdate(std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders);
 	void clearLights();
-	float spotNear = 0.4f, spotFar = 25.0f, dirNear = 5.0f, dirFar = 25.0f, dirProjSize = 10.0f;
+	float spotNear = 0.4f, spotFar = 15.0f, dirNear = 0.01f, dirFar = 10.0f, dirProjSize = 10.0f;
 	bool enableLights = true, enableShadowCasting = true;
 	Lights getLights();
 	Lights recreateLights(int dirs, int spots, int points);

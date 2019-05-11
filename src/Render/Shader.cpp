@@ -174,7 +174,7 @@ void Shader::setMat4(const char* name, glm::mat4& value) {
 void Shader::updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points) {
 	int padding = 0;
 	int current;
-	const GLuint baseTex = 28;
+	const GLuint baseTex = 26;
 	for (int i = 0; i < dirs.size(); i++) {
 		current = baseTex - padding--;
 		glActiveTexture(GL_TEXTURE0 + current);

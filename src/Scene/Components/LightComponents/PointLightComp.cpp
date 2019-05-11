@@ -10,6 +10,14 @@ glm::vec4 PointLightComp::getColor() {
 	return light->color;
 }
 
+float PointLightComp::getNearPlane() {
+	return light->near_plane;
+}
+
+float PointLightComp::getFarPlane() {
+	return light->far_plane;
+}
+
 float PointLightComp::getConstant() {
 	return light->constant;
 }
@@ -58,6 +66,23 @@ void PointLightComp::deserialize(Json::Value& root, Serializer* serializer) {
 	LightComp::deserialize(root, serializer);
 }
 
+void PointLightComp::renderGui() {
+	QuadraticLightComp::renderGui();
+	if(active) {
+		float n = getNearPlane(), f = getFarPlane();
+		ImGui::DragFloat("Near plane", &n, 0.01f);
+		ImGui::DragFloat("Far plane", &f, 0.01f);
+		if(n<0.0f) {
+			n = 0.0f;
+		}
+		if(f<0.0f) {
+			f = 0.0f;
+		}
+		setNearPlane(n);
+		setFarPlane(f);
+	}
+}
+
 bool PointLightComp::getEnabled() {
 	return light->enabled;
 }
@@ -68,4 +93,12 @@ void PointLightComp::setEnabled(bool enabled) {
 
 void PointLightComp::setModel(glm::mat4 model) {
 	light->model = model;
+}
+
+void PointLightComp::setNearPlane(float nearPlane) {
+	light->near_plane = nearPlane;
+}
+
+void PointLightComp::setFarPlane(float farPlane) {
+	light->far_plane = farPlane;
 }

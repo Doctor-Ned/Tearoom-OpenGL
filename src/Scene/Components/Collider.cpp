@@ -99,7 +99,7 @@ Collider::Collider(ColliderType _type, GraphNode* _gameObject, Collision classif
 	: Component(_gameObject), type(_type), collisionType(classification), isTrigger(_isTrigger), positionOffset(positionOffset) { }
 
 bool Collider::isOpaque() {
-	return mesh_ptr == nullptr || mesh_ptr->isOpaque();
+	return mesh_ptr != nullptr && mesh_ptr->isOpaque();
 }
 
 Collider::~Collider() {
