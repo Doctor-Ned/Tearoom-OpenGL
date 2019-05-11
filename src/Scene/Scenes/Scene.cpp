@@ -112,8 +112,8 @@ void Scene::addRenderedNode(GraphNode* node, GraphNode* parent, bool recurse) {
 }
 
 void Scene::removeNode(GraphNode* node, bool recurse) {
-	if(recurse) {
-		for(auto &nod : node->getChildren()) {
+	if (recurse) {
+		for (auto &nod : node->getChildren()) {
 			removeNode(nod, true);
 		}
 	}
@@ -152,12 +152,14 @@ void Scene::addToRenderMap(Renderable* renderable) {
 
 void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 	bool found = false;
+	ShaderType foundType = STNone;
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			auto vec = *renderMap[type];
 			for (auto i = vec.begin(); i != vec.end();) {
 				if (*i == renderable) {
 					found = true;
+					foundType = type;
 					break;
 				}
 				++i;
@@ -167,12 +169,21 @@ void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 			break;
 		}
 	}
-	if (found || addIfNotFound && !found) {
+	if (found || addIfNotFound) {
+		if(found) {
+			for(auto i=renderMap[foundType]->begin();i!=renderMap[foundType]->end();) {
+				if(*i == renderable) {
+					renderMap[foundType]->erase(i);
+					break;
+				}
+				++i;
+			}
+		}
 		addToRenderMap(renderable, false);
 	}
 	GraphNode *node = dynamic_cast<GraphNode*>(renderable);
-	if(node != nullptr) {
-		for(auto &rend : node->getRenderableComponents()) {
+	if (node != nullptr) {
+		for (auto &rend : node->getRenderableComponents()) {
 			updateRenderable(rend, addIfNotFound);
 		}
 	}
@@ -248,8 +259,7 @@ void Scene::update(double deltaTime) {
 	}
 	mouseMovementX = 0.0f;
 	mouseMovementY = 0.0f;
-	if(!rootNode->getChildren().empty())
-	{
+	if (!rootNode->getChildren().empty()) {
 		OctreeNode::getInstance().RebuildTree(50.0f);
 		OctreeNode::getInstance().Calculate();
 		OctreeNode::getInstance().CollisionTests();

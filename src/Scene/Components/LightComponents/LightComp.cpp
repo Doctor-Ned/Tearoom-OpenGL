@@ -45,6 +45,7 @@ void LightComp::setMeshColor(glm::vec4 color) {
 	MeshSimple *mesh = dynamic_cast<MeshSimple*>(gameObject->getMesh());
 	if (mesh) {
 		mesh->setColor(color);
+		mesh->setEmissive(color);
 	}
 }
 

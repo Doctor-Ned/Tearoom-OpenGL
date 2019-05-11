@@ -249,6 +249,25 @@ PointLight* LightManager::addPointLight() {
 	return pointLights[pointLightAmount++].light;
 }
 
+LightShadowData LightManager::getLightData(void* light) {
+	for(int i=0;i<dirLightAmount;i++) {
+		if(static_cast<void*>(dirLights[i].light) == light) {
+			return dirLights[i].data;
+		}
+	}
+	for (int i = 0; i < spotLightAmount; i++) {
+		if (static_cast<void*>(spotLights[i].light) == light) {
+			return spotLights[i].data;
+		}
+	}
+	for (int i = 0; i < pointLightAmount; i++) {
+		if (static_cast<void*>(pointLights[i].light) == light) {
+			return pointLights[i].data;
+		}
+	}
+	return LightShadowData();
+}
+
 void LightManager::addSpotLight(SpotLight* light) {
 	for (int i = 0; i < spotLightAmount; i++) {
 		if (spotLights[i].light == light) {
@@ -458,6 +477,8 @@ LightShadowData LightManager::createPointShadowData() {
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, result.texture, 0);
 	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
 }

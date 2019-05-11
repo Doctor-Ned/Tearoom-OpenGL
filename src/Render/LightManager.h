@@ -168,6 +168,7 @@ public:
 	SpotLight *addSpotLight();
 	DirLight *addDirLight();
 	PointLight *addPointLight();
+	LightShadowData getLightData(void* light);
 	void addSpotLight(SpotLight *light);
 	void addDirLight(DirLight *light);
 	void addPointLight(PointLight *light);
