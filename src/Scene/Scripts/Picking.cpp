@@ -11,27 +11,32 @@
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/AnimationController.h"
 
-Picking::Picking(GraphNode* _gameObject, Camera* cam, Scene* scene, const std::string& name)
-	: Component(_gameObject, name), camera(cam), scene(scene) {
+Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const std::string& name )
+	: Component(_gameObject, name), scene(scene){
 	UiElement *root = scene->getUiRoot();
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
 
-	UiText *inventoryText = new UiText(glm::vec2(1135.0f, 280.0f), glm::vec2(60.0f, 30.0f), "Inventory", glm::vec4(0.39f, 0.3f, 0.25f, 1.0f), MatchHeight);
-	UiPlane *inventoryBackground = new UiPlane("res/textures/inventory.jpg", glm::vec2(1285.0f, 500.0f), glm::vec2(300.0f, 500.0f), Right);
+	UiText *inventoryText = new UiText(glm::vec2(1135.0f, 280.0f), glm::vec2(60.0f, 30.0f), "Inventory",
+									   glm::vec4(0.39f, 0.3f, 0.25f, 1.0f), MatchHeight);
+	UiPlane *inventoryBackground = new UiPlane("res/textures/inventory.jpg", glm::vec2(1285.0f, 500.0f),
+											   glm::vec2(300.0f, 500.0f), Right);
 	//UiPlane* hud = new UiPlane("res/textures/inventory.png", glm::vec2(500.0f, 500.0f), glm::vec2(400.0f, 400.0f), Center);
 	//inventoryCanvas->addChild(hud);
 	inventoryCanvas->addChild(inventoryBackground);
 	inventoryCanvas->addChild(inventoryText);
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
-	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f),glm::vec2(720.0f, 260.0f), glm::vec2(200.0f,30.0f),Center);
-    encouragement = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f,30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f),
+											   glm::vec2(200.0f, 30.0f), Center);
+	encouragement = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact",
+							   glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragement);
 }
+
 
 void Picking::hideInventoryUi() {
 	inventoryCanvas->setActive(false);
@@ -42,7 +47,7 @@ void Picking::hideInventoryUi() {
 
 void Picking::showInventoryUi() {
 	int i = 0;
-	inventoryCanvas->setActive(true);
+	Picking::inventoryCanvas->setActive(true);
 
 	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
 		if (i >= inventory.size()) {
@@ -66,13 +71,13 @@ void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 
 	Collider* coll = gameObject->getComponent<Collider>();
+	GraphNode * object = CollisionSystem::getInstance()->castRay(gameManager->getCamera()->getPos(), gameManager->getCamera()->getFront(), 2.0f, coll);
 
-	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getPos(), camera->getFront(), 2.0f, coll);
 	if (object) {
-		encouragementCanvas->setActive(true);
+
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
-
+            encouragementCanvas->setActive(true);
 			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
 				inventory.push_back(object);
 				collectable->takeObject();
@@ -86,6 +91,7 @@ void Picking::update(float msec) {
 		Animation* anim = object->getComponent<Animation>();
 		if(anim)
 		{
+            encouragementCanvas->setActive(true);
 			if (gameManager->getKeyState(GLFW_KEY_F)) {
 				anim->play();
 			}
@@ -93,6 +99,7 @@ void Picking::update(float msec) {
 		AnimationController* animController = object->getComponent<AnimationController>();
 		if(animController)
 		{
+            encouragementCanvas->setActive(true);
 			if (gameManager->getKeyState(GLFW_KEY_F))
 			{
 				animController->startAnimation();
@@ -116,15 +123,7 @@ void Picking::update(float msec) {
 			}
 		}
 	}
-
-	if(inventoryUI)
-	{
-		showInventoryUi();
-	}
-	else
-	{
-		hideInventoryUi();
-	}
+	//gameManager->addKeyCallback(GLFW_KEY_I, true, &showInventoryUi);
 
 }
 
@@ -144,3 +143,9 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 }
+	Scene *Picking::getScene() const {
+		return scene;
+	}
+	UiCanvas *Picking::getInventoryCanvas() const {
+		return inventoryCanvas;
+	}

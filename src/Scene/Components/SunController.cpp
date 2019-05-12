@@ -8,7 +8,9 @@ SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::st
 :Component(_gameObject, name), scene(scene){
     clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
     clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize()/2.0f, glm::vec2(60.0f,130.0f), Center);
+    clockBack = new UiPlane("res/textures/clockBack.png",  glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f,350.0f), Left);
     clockHand->setRotationAnchor(Center);
+    scene->getUiRoot()->addChild(clockBack);
     scene->getUiRoot()->addChild(clockFace);
     scene->getUiRoot()->addChild(clockHand);
 }

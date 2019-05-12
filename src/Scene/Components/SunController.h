@@ -26,6 +26,7 @@ private:
     bool clockUI = false;
     UiPlane* clockHand;
     UiPlane* clockFace;
+    UiPlane* clockBack;
     friend class Serializer;
 
 };

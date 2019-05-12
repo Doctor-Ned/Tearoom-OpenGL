@@ -10,7 +10,7 @@ class Camera;
 class Picking : public Component
 {
 public:
-	Picking(GraphNode* _gameObject, Camera* cam, Scene* scene, const std::string& name = "Picking");
+	Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std::string& name = "Picking");
 	void update(float msec) override;
 	 ~Picking() override;
 	 SerializableType getSerializableType() override;
@@ -20,11 +20,14 @@ public:
 	 void hideInventoryUi();
 	 bool getSwitch();
 	 void setSwitch(bool ifShown);
+     Scene *getScene() const;
+     UiCanvas *getInventoryCanvas() const;
+
 private:
 	Scene* scene;
     bool inventoryUI = false;
 	UiCanvas *inventoryCanvas, *encouragementCanvas;
-	Camera* camera;
+    Camera* camera;
 	std::vector<GraphNode*> inventory;
 	Picking(){}
 	friend class Serializer;
