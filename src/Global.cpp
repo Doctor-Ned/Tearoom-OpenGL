@@ -200,6 +200,7 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
 	}
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 }
 
