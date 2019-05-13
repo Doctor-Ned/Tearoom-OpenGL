@@ -1,4 +1,4 @@
-#version 330 core
+#version 430
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec4 BrightColor;
 
@@ -14,7 +14,7 @@ in VS_OUT {
 	vec2 texCoords;
 	vec3 normal;
 	vec3 viewPosition;
-	vec4 fragDirSpaces[MAX_LIGHTS_OF_TYPE];
+	vec4 fragDirSpaces[MAX_LIGHTS_OF_TYPE][LIGHT_SPLITS];
 	vec4 fragSpotSpaces[MAX_LIGHTS_OF_TYPE];
 	mat3 TBN;
 } fs_in;

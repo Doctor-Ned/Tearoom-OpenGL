@@ -1,4 +1,4 @@
-#version 330 core
+#version 430
 layout(location = 0) in vec2 vertex;
 uniform mat4 projection;
 uniform mat4 view;

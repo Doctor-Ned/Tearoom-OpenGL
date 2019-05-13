@@ -20,7 +20,19 @@ void LightManager::setup() {
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
+	float dirCascadeSplits[LIGHT_SPLITS];
 	if (enableLights) {
+		const float lambda = 1.0f;
+		const float range = dirFar - dirNear;
+		for (auto i = 0; i < LIGHT_SPLITS; i++) {
+			float p = (i + 1) / static_cast<float>(LIGHT_SPLITS);
+			float log = dirNear * glm::pow(dirFar / dirNear, p);
+			float uniform = dirNear + range * p;
+			float d = lambda * (log - uniform) + uniform;
+			dirCascadeSplits[i] = (d - dirNear) / range;
+		}
+
+		float prevSplit = dirNear;
 
 		int oldFbo;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
@@ -34,14 +46,21 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 			glViewport(0, 0, data.data.width, data.data.height);
 			glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
-			glClear(GL_DEPTH_BUFFER_BIT);
 			glm::vec3 position = glm::vec3(data.light->model[3]);
-			glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
 			glm::mat4 directionWorld = data.light->model;
 			directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			data.light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
-			depthShader->setLightSpace(data.light->lightSpace);
-			renderCallback(depthShader);
+			glm::mat4 view = lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
+			data.light->fullLightSpace = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar) * view;
+			for (GLuint i = 0; i < LIGHT_SPLITS; i++) {
+				glClear(GL_DEPTH_BUFFER_BIT);
+				float split = dirNear + dirCascadeSplits[i] * range;
+				glm::mat4 lightSpace = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, prevSplit, split) * view;
+				data.light->lightSpaces[i] = lightSpace;
+				depthShader->setLightSpace(lightSpace);
+				glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, data.data.texture, 0, i);
+				renderCallback(depthShader);
+				prevSplit = split;
+			}
 		}
 
 		glm::mat4 spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, spotNear, spotFar);
@@ -123,7 +142,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	}
 
 	bool noLights = dirLightAmount == 0 && spotLightAmount == 0 && pointLightAmount == 0;
-	uboLights->inject(noLights ? 1.0f : initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirs, spots, points);
+	uboLights->inject(noLights ? 1.0f : initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirs, spots, points, dirCascadeSplits);
 
 	delete[] dirs;
 	delete[] spots;
@@ -180,13 +199,13 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to create too many lights!";
 	}
-	for(int i=0;i<dirs;i++) {
+	for (int i = 0; i < dirs; i++) {
 		addDirLight();
 	}
-	for(int i=0;i<spots;i++) {
+	for (int i = 0; i < spots; i++) {
 		addSpotLight();
 	}
-	for(int i=0;i<points;i++) {
+	for (int i = 0; i < points; i++) {
 		addPointLight();
 	}
 	return getLights();
@@ -250,8 +269,8 @@ PointLight* LightManager::addPointLight() {
 }
 
 LightShadowData LightManager::getLightData(void* light) {
-	for(int i=0;i<dirLightAmount;i++) {
-		if(static_cast<void*>(dirLights[i].light) == light) {
+	for (int i = 0; i < dirLightAmount; i++) {
+		if (static_cast<void*>(dirLights[i].light) == light) {
 			return dirLights[i].data;
 		}
 	}
@@ -393,20 +412,20 @@ void LightManager::renderGui() {
 	ImGui::DragFloat("Dir near", &dirNear, 0.01f);
 	ImGui::DragFloat("Dir far", &dirFar, 0.01f);
 	ImGui::DragFloat("Dir proj size", &dirProjSize, 0.01f);
-	if (spotNear < 0.0f) {
-		spotNear = 0.0f;
+	if (spotNear < 0.01f) {
+		spotNear = 0.01f;
 	}
-	if (spotFar < 0.0f) {
-		spotFar = 0.0f;
+	if (spotFar < 0.01f) {
+		spotFar = 0.01f;
 	}
-	if (dirNear < 0.0f) {
-		dirNear = 0.0f;
+	if (dirNear < 0.01f) {
+		dirNear = 0.01f;
 	}
-	if (dirFar < 0.0f) {
-		dirFar = 0.0f;
+	if (dirFar < 0.01f) {
+		dirFar = 0.01f;
 	}
-	if (dirProjSize < 0.0f) {
-		dirProjSize = 0.0f;
+	if (dirProjSize < 0.01f) {
+		dirProjSize = 0.01f;
 	}
 }
 
@@ -447,15 +466,36 @@ LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
 	result.width = shadowSize;
 	result.height = shadowSize;
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	glGenFramebuffers(1, &result.fbo);
+	glGenTextures(1, &result.texture);
+	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, result.texture);
+	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F, shadowSize, shadowSize, LIGHT_SPLITS, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, result.texture, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	return result;
+}
+
+LightShadowData LightManager::createSpotShadowData() {
+	LightShadowData result;
+	result.width = shadowSize;
+	result.height = shadowSize;
 	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16, shadowSize, shadowSize, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT);
 	result.fbo = fb.fbo;
 	result.texture = fb.texture;
 	result.rbo = fb.rbo;
 	return result;
-}
-
-LightShadowData LightManager::createSpotShadowData() {
-	return createDirShadowData();
 }
 
 LightShadowData LightManager::createPointShadowData() {

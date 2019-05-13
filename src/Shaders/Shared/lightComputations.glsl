@@ -1,6 +1,6 @@
 uniform int useLight;
 uniform int castShadows;
-uniform sampler2D dir_shadows[MAX_LIGHTS_OF_TYPE];
+uniform sampler2DArrayShadow dir_shadows[MAX_LIGHTS_OF_TYPE];
 uniform sampler2D spot_shadows[MAX_LIGHTS_OF_TYPE];
 uniform samplerCube point_shadows[MAX_LIGHTS_OF_TYPE];
 
@@ -37,9 +37,16 @@ float geometrySchlickGGX(float NdotV, float roughness) {
 	return num / denom;
 }
 
-vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
+vec3 calcDirLight(DirLight light, sampler2DArrayShadow tex, vec4 space[LIGHT_SPLITS], vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
+		uint cascadeIndex = 0;
+		float fullDepth = (dir.fullLightSpace.xyz / dir.fullLightSpace.w).z * 0.5 + 0.5;
+		for (int i = 0; i < LIGHT_SPLITS; i++) {
+			if (fullDepth > dirCascadeSplits[i]) {
+				cascadeIndex = i;
+			}
+		}
 		vec3 projCoords = space.xyz / space.w;
 		projCoords = projCoords * 0.5 + 0.5;
 		float closestDepth = texture(tex, projCoords.xy).r;
@@ -49,7 +56,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 		if (spotDirShadowTexelResolution <= 1) {
 			shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 		} else {
-			vec2 texelSize = 1.0 / textureSize(tex, 0);
+			vec2 texelSize = 1.0 / textureSize(tex, 0).xy;
 			int offset = (spotDirShadowTexelResolution - 1) / 2;
 			for (int x = -offset; x <= offset; ++x) {
 				for (int y = -offset; y <= offset; ++y) {

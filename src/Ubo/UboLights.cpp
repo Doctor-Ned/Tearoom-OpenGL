@@ -1,12 +1,12 @@
 #include "UboLights.h"
 #include "Render/LightManager.h"
 
-UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight * dirLight, SpotLight * spotLight, PointLight * pointLight) :
-	Ubo(sizeof(float) + 7 * sizeof(int) + MAX_LIGHTS_OF_TYPE * (sizeof(DirLight) - sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(SpotLight) - sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(PointLight) - sizeof(void*)), "Lights", 5) {
-	inject(ambient, dirLights, spotLights, pointLights, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirLight, spotLight, pointLight);
+UboLights::UboLights(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight * dirLight, SpotLight * spotLight, PointLight * pointLight, float *dirCascadeSplits) :
+	Ubo(sizeof(float) + 7 * sizeof(int) + MAX_LIGHTS_OF_TYPE * (sizeof(DirLight) - sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(SpotLight) - sizeof(void*)) + MAX_LIGHTS_OF_TYPE * (sizeof(PointLight) - sizeof(void*)) + sizeof(float) * LIGHT_SPLITS, "Lights", 5) {
+	inject(ambient, dirLights, spotLights, pointLights, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirLight, spotLight, pointLight, dirCascadeSplits);
 }
 
-void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight* dirLight, SpotLight* spotLight, PointLight* pointLight) {
+void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLights, bool enableLights, bool enableShadowCasting, int spotDirShadowTexelResolution, int pointShadowSamples, DirLight* dirLight, SpotLight* spotLight, PointLight* pointLight, float *dirCascadeSplits) {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	size_t offset = 0;
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &ambient);
@@ -44,4 +44,6 @@ void UboLights::inject(float ambient, int dirLights, int spotLights, int pointLi
 		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(PointLight) - sizeof(void*), reinterpret_cast<char*>(&pointLight[i]) + sizeof(void*));
 		offset += sizeof(PointLight) - sizeof(void*);
 	}
+	offset += (sizeof(PointLight) - sizeof(void*)) * (MAX_LIGHTS_OF_TYPE - amount);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float) * LIGHT_SPLITS, dirCascadeSplits);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #define MAX_LIGHTS_OF_TYPE 4    // this MUST be identical to the value from the shader
+#define LIGHT_SPLITS 4          // same with this one. also i think it should be a multiple of 4 unless we want to adjust the shaders along with it
 
 #include "Global.h"
 #include "Serialization/Serializable.h"
@@ -14,7 +15,8 @@ class Shader;
 
 struct DirLight : Serializable {
 	DirLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1), strength(1.0f) {}
-	glm::mat4 lightSpace;
+	glm::mat4 lightSpaces[LIGHT_SPLITS];
+	glm::mat4 fullLightSpace;
 	glm::vec4 color;
 	glm::mat4 model;
 	glm::vec2 padding;
@@ -25,7 +27,6 @@ struct DirLight : Serializable {
 	}
 	Json::Value serialize(Serializer* serializer) override {
 		Json::Value root;
-		root["lightSpace"] = DataSerializer::serializeMat4(lightSpace);
 		root["color"] = DataSerializer::serializeVec4(color);
 		root["model"] = DataSerializer::serializeMat4(model);
 		root["strength"] = strength;
@@ -33,7 +34,6 @@ struct DirLight : Serializable {
 		return root;
 	}
 	void deserialize(Json::Value& root, Serializer* serializer) override {
-		lightSpace = DataSerializer::deserializeMat4(root["lightSpace"]);
 		color = DataSerializer::deserializeVec4(root["color"]);
 		model = DataSerializer::deserializeMat4(root["model"]);
 		strength = root.get("strength", strength).asFloat();
@@ -125,7 +125,7 @@ struct SpotLight : Serializable {
 struct LightShadowData {
 	GLuint fbo = 0;
 	GLuint rbo = 0;
-	GLuint texture = 0;
+	GLuint texture;
 	GLsizei width = 0;
 	GLsizei height = 0;
 };

@@ -1,5 +1,9 @@
+#define MAX_LIGHTS_OF_TYPE 4
+#define LIGHT_SPLITS 4
+
 struct DirLight {
-	mat4 lightSpace;
+	mat4 lightSpaces[LIGHT_SPLITS];
+	mat4 fullLightSpace;
 	vec4 color;
 	mat4 model;
 	vec2 padding;
@@ -32,8 +36,6 @@ struct SpotLight {
 	bool enabled;
 };
 
-#define MAX_LIGHTS_OF_TYPE 4
-
 layout (std140) uniform Lights {
 	float initialAmbient;
 	int dirLights;
@@ -46,4 +48,5 @@ layout (std140) uniform Lights {
 	DirLight dirLight[MAX_LIGHTS_OF_TYPE];
 	SpotLight spotLight[MAX_LIGHTS_OF_TYPE];
 	PointLight pointLight[MAX_LIGHTS_OF_TYPE];
+	float dirCascadeSplits[LIGHT_SPLITS];
 };
