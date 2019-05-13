@@ -36,7 +36,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glm::vec3 position = glm::vec3(data.light->model[3]);
-			glm::mat4 projection = glm::ortho(-dirProjSize, dirProjSize, -dirProjSize, dirProjSize, dirNear, dirFar);
+			glm::mat4 projection = glm::ortho(-data.light->proj_size, data.light->proj_size, -data.light->proj_size, data.light->proj_size, data.light->near_plane, data.light->far_plane);
 			glm::mat4 directionWorld = data.light->model;
 			directionWorld[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			data.light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -44,10 +44,10 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			renderCallback(depthShader);
 		}
 
-		glm::mat4 spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, spotNear, spotFar);
 
 		for (int i = 0; i < spotLightAmount; i++) {
 			SpotLightData data = spotLights[i];
+			glm::mat4 spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, data.light->near_plane, data.light->far_plane);
 			if (!data.light->enabled) {
 				continue;
 			}
@@ -180,13 +180,13 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		throw "Attempted to create too many lights!";
 	}
-	for(int i=0;i<dirs;i++) {
+	for (int i = 0; i < dirs; i++) {
 		addDirLight();
 	}
-	for(int i=0;i<spots;i++) {
+	for (int i = 0; i < spots; i++) {
 		addSpotLight();
 	}
-	for(int i=0;i<points;i++) {
+	for (int i = 0; i < points; i++) {
 		addPointLight();
 	}
 	return getLights();
@@ -250,8 +250,8 @@ PointLight* LightManager::addPointLight() {
 }
 
 LightShadowData LightManager::getLightData(void* light) {
-	for(int i=0;i<dirLightAmount;i++) {
-		if(static_cast<void*>(dirLights[i].light) == light) {
+	for (int i = 0; i < dirLightAmount; i++) {
+		if (static_cast<void*>(dirLights[i].light) == light) {
 			return dirLights[i].data;
 		}
 	}
@@ -387,27 +387,15 @@ LightManager::~LightManager() {
 }
 
 void LightManager::renderGui() {
-	ImGui::SliderFloat("Initial ambient", &initialAmbient, 0.0f, 1.0f);
-	ImGui::DragFloat("Spot near", &spotNear, 0.01f);
-	ImGui::DragFloat("Spot far", &spotFar, 0.01f);
-	ImGui::DragFloat("Dir near", &dirNear, 0.01f);
-	ImGui::DragFloat("Dir far", &dirFar, 0.01f);
-	ImGui::DragFloat("Dir proj size", &dirProjSize, 0.01f);
-	if (spotNear < 0.0f) {
-		spotNear = 0.0f;
-	}
-	if (spotFar < 0.0f) {
-		spotFar = 0.0f;
-	}
-	if (dirNear < 0.0f) {
-		dirNear = 0.0f;
-	}
-	if (dirFar < 0.0f) {
-		dirFar = 0.0f;
-	}
-	if (dirProjSize < 0.0f) {
-		dirProjSize = 0.0f;
-	}
+	ImGui::DragFloat("Initial ambient", &initialAmbient, 0.001f, 0.0f, 1.0f);
+	std::string dirText, spotText, pointText;
+	dirText = std::to_string(dirLightAmount) + " directional lights";
+	spotText = std::to_string(spotLightAmount) + " spot lights";
+	pointText = std::to_string(pointLightAmount) + " point lights";
+
+	ImGui::Text(dirText.c_str());
+	ImGui::Text(spotText.c_str());
+	ImGui::Text(pointText.c_str());
 }
 
 void LightManager::disposeLights() {

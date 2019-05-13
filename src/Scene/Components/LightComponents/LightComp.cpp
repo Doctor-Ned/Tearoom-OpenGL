@@ -55,6 +55,19 @@ void LightComp::renderGui() {
 		glm::vec4 color = getColor();
 		ImGui::ColorEdit4("Color", &color[0]);
 		bool overrideColor = getOverrideMeshColor();
+		float n = getNearPlane(), f = getFarPlane();
+		ImGui::DragFloat("Near plane", &n, 0.01f);
+		ImGui::DragFloat("Far plane", &f, 0.01f);
+		if (n < 0.0f) {
+			n = 0.0f;
+		} else if(n > f) {
+			n = f;
+		}
+		if (f < n) {
+			f = n;
+		}
+		setNearPlane(n);
+		setFarPlane(f);
 		ImGui::Checkbox("Override mesh color", &overrideColor);
 		if(overrideColor != getOverrideMeshColor()) {
 			setOverrideMeshColor(overrideColor);

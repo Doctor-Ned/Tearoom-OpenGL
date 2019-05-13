@@ -22,6 +22,14 @@ float SpotLightComp::getQuadratic() {
 	return light->quadratic;
 }
 
+float SpotLightComp::getNearPlane() {
+	return light->near_plane;
+}
+
+float SpotLightComp::getFarPlane() {
+	return light->far_plane;
+}
+
 float SpotLightComp::getCutoff() {
 	return light->cutOff;
 }
@@ -45,6 +53,14 @@ void SpotLightComp::setLinear(float linear) {
 
 void SpotLightComp::setQuadratic(float quadratic) {
 	light->quadratic = quadratic;
+}
+
+void SpotLightComp::setNearPlane(float nearPlane) {
+	light->near_plane = nearPlane;
+}
+
+void SpotLightComp::setFarPlane(float farPlane) {
+	light->far_plane = farPlane;
 }
 
 void SpotLightComp::setCutoff(float cutoff) {

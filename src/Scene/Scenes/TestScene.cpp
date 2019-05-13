@@ -63,11 +63,6 @@ void TestScene::renderUi() {
 	spotLightComps[0]->drawGui();
 	pointLightComps[0]->drawGui();
 
-	ImGui::SliderFloat("Dir near plane", &lightManager->dirNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir far plane", &lightManager->dirFar, 0.01f, 100.0f);
-	ImGui::SliderFloat("Dir proj size", &lightManager->dirProjSize, 0.01f, 50.0f);
-	ImGui::SliderFloat("Spot near plane", &lightManager->spotNear, 0.01f, 100.0f);
-	ImGui::SliderFloat("Spot far plane", &lightManager->spotFar, 0.01f, 100.0f);
 	ImGui::NewLine();
 	if (ImGui::Button("SAVE TO FILE")) {
 		Serializer::getInstance()->saveScene(this, "test");

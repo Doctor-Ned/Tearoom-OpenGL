@@ -10,11 +10,15 @@ public:
 	float getConstant() override;
 	float getLinear() override;
 	float getQuadratic() override;
+	float getNearPlane() override;
+	float getFarPlane() override;
 	float getCutoff();
 	float getOuterCutoff();
 	void setConstant(float constant) override;
 	void setLinear(float linear) override;
 	void setQuadratic(float quadratic) override;
+	void setNearPlane(float nearPlane) override;
+	void setFarPlane(float farPlane) override;
 	void setCutoff(float cutoff);
 	void setOuterCutoff(float outerCutoff);
 	glm::vec4 getColor() override;

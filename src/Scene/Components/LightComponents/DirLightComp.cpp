@@ -10,8 +10,20 @@ glm::vec4 DirLightComp::getColor() {
 	return light->color;
 }
 
+float DirLightComp::getNearPlane() {
+	return light->near_plane;
+}
+
+float DirLightComp::getFarPlane() {
+	return light->far_plane;
+}
+
 float DirLightComp::getStrength() {
 	return light->strength;
+}
+
+float DirLightComp::getProjSize() {
+	return light->proj_size;
 }
 
 void DirLightComp::setColor(glm::vec4 color) {
@@ -44,6 +56,9 @@ void DirLightComp::renderGui() {
 		float strength = getStrength();
 		ImGui::DragFloat("Strength", &strength, 0.001f, 0.0f);
 		setStrength(strength);
+		float projSize = getProjSize();
+		ImGui::DragFloat("Projection size", &projSize, 0.01f, 0.01f, 20.0f);
+		setProjSize(projSize);
 	}
 }
 
@@ -59,6 +74,18 @@ void DirLightComp::setModel(glm::mat4 model) {
 	light->model = model;
 }
 
+void DirLightComp::setNearPlane(float nearPlane) {
+	light->near_plane = nearPlane;
+}
+
+void DirLightComp::setFarPlane(float farPlane) {
+	light->far_plane = farPlane;
+}
+
 void DirLightComp::setStrength(float strength) {
 	light->strength = strength;
+}
+
+void DirLightComp::setProjSize(float projSize) {
+	light->proj_size = projSize;
 }

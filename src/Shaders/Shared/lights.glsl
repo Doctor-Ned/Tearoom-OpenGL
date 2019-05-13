@@ -2,9 +2,12 @@ struct DirLight {
 	mat4 lightSpace;
 	vec4 color;
 	mat4 model;
-	vec2 padding;
+	float near_plane;
+	float far_plane;
 	float strength;
 	bool enabled;
+	vec3 padding;
+	float proj_size;
 };
 
 struct PointLight {
@@ -27,7 +30,8 @@ struct SpotLight {
 	float linear;
 	float quadratic;
 	float cutOff;
-	vec2 padding;
+	float near_plane;
+	float far_plane;
 	float outerCutOff;
 	bool enabled;
 };

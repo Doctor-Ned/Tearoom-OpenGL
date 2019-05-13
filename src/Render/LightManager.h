@@ -13,13 +13,16 @@ class UboLights;
 class Shader;
 
 struct DirLight : Serializable {
-	DirLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1), strength(1.0f) {}
+	DirLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), enabled(1), strength(1.0f), near_plane(0.01f), far_plane(10.0f), proj_size(10.0f) {}
 	glm::mat4 lightSpace;
 	glm::vec4 color;
 	glm::mat4 model;
-	glm::vec2 padding;
+	float near_plane;
+	float far_plane;
 	float strength;
 	int enabled;
+	glm::vec3 padding;
+	float proj_size;
 	SerializableType getSerializableType() override {
 		return SDirLight;
 	}
@@ -28,16 +31,22 @@ struct DirLight : Serializable {
 		root["lightSpace"] = DataSerializer::serializeMat4(lightSpace);
 		root["color"] = DataSerializer::serializeVec4(color);
 		root["model"] = DataSerializer::serializeMat4(model);
+		root["near_plane"] = near_plane;
+		root["far_plane"] = far_plane;
 		root["strength"] = strength;
 		root["enabled"] = enabled;
+		root["proj_size"] = proj_size;
 		return root;
 	}
 	void deserialize(Json::Value& root, Serializer* serializer) override {
 		lightSpace = DataSerializer::deserializeMat4(root["lightSpace"]);
 		color = DataSerializer::deserializeVec4(root["color"]);
 		model = DataSerializer::deserializeMat4(root["model"]);
+		near_plane = root.get("near_plane", near_plane).asFloat();
+		far_plane = root.get("far_plane", far_plane).asFloat();
 		strength = root.get("strength", strength).asFloat();
 		enabled = root["enabled"].asInt();
+		proj_size = root.get("proj_size", proj_size).asFloat();
 	}
 };
 
@@ -72,8 +81,8 @@ struct PointLight : Serializable {
 		constant = root["constant"].asFloat();
 		linear = root["linear"].asFloat();
 		quadratic = root["quadratic"].asFloat();
-		near_plane = root["near_plane"].asFloat();
-		far_plane = root["far_plane"].asFloat();
+		near_plane = root.get("near_plane", near_plane).asFloat();
+		far_plane = root.get("far_plane", far_plane).asFloat();
 		enabled = root["enabled"].asInt();
 		color = DataSerializer::deserializeVec4(root["color"]);
 		model = DataSerializer::deserializeMat4(root["model"]);
@@ -82,7 +91,7 @@ struct PointLight : Serializable {
 
 struct SpotLight : Serializable {
 	SpotLight() : color(glm::vec4(1.0f)), model(glm::mat4(1.0f)), constant(1.0f), linear(1.0f), quadratic(1.0f),
-		cutOff(M_PI / 12.0f), outerCutOff(M_PI / 4.0f), enabled(1) {}
+		cutOff(M_PI / 12.0f), outerCutOff(M_PI / 4.0f), enabled(1), near_plane(0.01f), far_plane(10.0f) {}
 	glm::mat4 lightSpace;
 	glm::vec4 color;
 	glm::mat4 model;
@@ -90,7 +99,8 @@ struct SpotLight : Serializable {
 	float linear;
 	float quadratic;
 	float cutOff;
-	glm::vec2 padding;
+	float near_plane;
+	float far_plane;
 	float outerCutOff;
 	int enabled;
 	SerializableType getSerializableType() override {
@@ -104,6 +114,8 @@ struct SpotLight : Serializable {
 		root["constant"] = constant;
 		root["linear"] = linear;
 		root["quadratic"] = quadratic;
+		root["near_plane"] = near_plane;
+		root["far_plane"] = far_plane;
 		root["cutOff"] = cutOff;
 		root["outerCutOff"] = outerCutOff;
 		root["enabled"] = enabled;
@@ -116,6 +128,8 @@ struct SpotLight : Serializable {
 		constant = root["constant"].asFloat();
 		linear = root["linear"].asFloat();
 		quadratic = root["quadratic"].asFloat();
+		near_plane = root.get("near_plane", near_plane).asFloat();
+		far_plane = root.get("far_plane", far_plane).asFloat();
 		cutOff = root["cutOff"].asFloat();
 		outerCutOff = root["outerCutOff"].asFloat();
 		enabled = root["enabled"].asInt();
@@ -159,7 +173,6 @@ public:
 	void operator=(LightManager const&) = delete;
 	void renderAndUpdate(std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders);
 	void clearLights();
-	float spotNear = 0.4f, spotFar = 15.0f, dirNear = 0.01f, dirFar = 10.0f, dirProjSize = 10.0f;
 	bool enableLights = true, enableShadowCasting = true;
 	Lights getLights();
 	Lights recreateLights(int dirs, int spots, int points);
