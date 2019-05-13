@@ -33,6 +33,11 @@ bool CollisionSystem::checkCollision(Collider* collider1, Collider* collider2)
 		return collision;
 	}
 
+	if(!collider1->isComponentActive() || !collider2->isComponentActive())
+	{
+		return collision;
+	}
+
 	if (collider1->getType() == SphereCol && collider2->getType() == SphereCol)
 	{
 		collision = SphereToSphere(collider1, collider2);

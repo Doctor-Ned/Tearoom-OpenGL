@@ -32,6 +32,11 @@ irrklang::ISoundEngine* SoundSystem::getEngine()
 	return getInstance()->irrKlangEngine;
 }
 
+irrklang::ISoundSource* SoundSystem::getSound(std::string name)
+{
+	return getInstance()->soundsMap.at(name);
+}
+
 void SoundSystem::loadSounds()
 {
 	fs::path currentPath = fs::current_path();
@@ -53,7 +58,7 @@ void SoundSystem::loadSounds()
 
 
 	std::cout << getEngine()->getSoundSourceCount() << std::endl;
-	auto sound = getInstance()->soundsMap.at("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
+	auto sound = getSound("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
 	sound->setDefaultVolume(0.03f);
 	getEngine()->play2D(sound);
 }

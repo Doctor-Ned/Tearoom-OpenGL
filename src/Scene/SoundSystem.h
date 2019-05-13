@@ -14,6 +14,7 @@ private:
 public:
 	static SoundSystem* getInstance();
 	static irrklang::ISoundEngine* getEngine();
+	static irrklang::ISoundSource* getSound(std::string name);
 	static void loadSounds();
 };
 

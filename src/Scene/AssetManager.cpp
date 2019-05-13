@@ -254,7 +254,7 @@ void AssetManager::loadNextPendingResource() {
 				}
 				if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
 					textures.push_back(path);
-				} else if (endsWith(path, ".obj")) {
+				} else if (endsWith(path, ".obj") || endsWith(path, ".fbx")) {
 					models.push_back(path);
 				} else if(endsWith(path, ".mp3")) {
 					//might want to move the sound preloading here. not sure if that's needed for now though
@@ -302,7 +302,7 @@ void AssetManager::loadResource(std::string path, bool verify) {
 		if (add) {
 			textures.emplace_back(createTexture(path.c_str()));
 		}
-	} else if (endsWith(path, ".obj")) {
+	} else if (endsWith(path, ".obj") || endsWith(path, ".fbx")) {
 		if (verify) {
 			for (auto &pair : models) {
 				if (pair.first == path) {
