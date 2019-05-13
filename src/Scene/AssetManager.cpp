@@ -64,7 +64,7 @@ Texture AssetManager::createTexture(const char* textureFile) {
 		exit(1);
 	}
 	GLenum format;
-	switch(imgChannels) {
+	switch (imgChannels) {
 		case 1:
 			format = GL_RED;
 			break;
@@ -174,12 +174,18 @@ void AssetManager::setup() {
 	getShader(STReflect)->bind(uboViewProjection);
 	getShader(STRefract)->bind(uboViewProjection);
 
-	for (int i = 0; i < shaders.size(); i++) {
-		for (int j = 0; j < ubos.size(); j++) {
-			shaders[i]->bind(ubos[j]);
+	for (auto& shader : shaders) {
+		for (auto& ubo : ubos) {
+			shader->bind(ubo);
 		}
 	}
 
+	resourceExtensionMap.emplace("fbx", ModelResource);
+	resourceExtensionMap.emplace("obj", ModelResource);
+	resourceExtensionMap.emplace("jpg", TextureResource);
+	resourceExtensionMap.emplace("jpeg", TextureResource);
+	resourceExtensionMap.emplace("png", TextureResource);
+	resourceExtensionMap.emplace("tga", TextureResource);
 }
 
 AssetManager::~AssetManager() {
@@ -241,8 +247,8 @@ void AssetManager::reloadResources() {
 }
 
 void AssetManager::loadNextPendingResource() {
-	if(!loaded) {
-		if(!loadingStarted) {
+	if (!loaded) {
+		if (!loadingStarted) {
 			std::vector<std::string> textures;
 			std::vector<std::string> models;
 			for (const auto & entry : fs::recursive_directory_iterator("res")) {
@@ -252,18 +258,22 @@ void AssetManager::loadNextPendingResource() {
 						*i = '/';
 					}
 				}
-				if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
-					textures.push_back(path);
-				} else if (endsWith(path, ".obj")) {
-					models.push_back(path);
-				} else if(endsWith(path, ".mp3")) {
-					//might want to move the sound preloading here. not sure if that's needed for now though
+				switch(getResourceTypeByExtension(Global::getExtension(path))) {
+					default:
+					case NoneResource:
+						continue;
+					case TextureResource:
+						textures.push_back(path);
+						break;
+					case ModelResource:
+						models.push_back(path);
+						break;
 				}
 			}
-			for(auto &str : textures) {
+			for (auto &str : textures) {
 				resourcesToLoad.push_back(str);
 			}
-			for(auto &str : models) {
+			for (auto &str : models) {
 				resourcesToLoad.push_back(str);
 			}
 			loadableResources = resourcesToLoad.size();
@@ -273,7 +283,7 @@ void AssetManager::loadNextPendingResource() {
 			loadResource(resourcesToLoad.front(), false);
 			resourcesToLoad.erase(resourcesToLoad.begin());
 			loadedResources++;
-			if(resourcesToLoad.empty()) {
+			if (resourcesToLoad.empty()) {
 				loaded = true;
 			}
 		}
@@ -288,34 +298,53 @@ float AssetManager::getLoadingProgress() {
 	return static_cast<float>(loadedResources) / static_cast<float>(loadableResources);
 }
 
-void AssetManager::loadResource(std::string path, bool verify) {
-	bool add = true;
-	if (endsWith(path, ".png") || endsWith(path, ".jpg") || endsWith(path, ".tga")) {
-		if (verify) {
-			for (auto &texture : textures) {
-				if (texture.path == path) {
-					add = false;
-					break;
-				}
-			}
-		}
-		if (add) {
-			textures.emplace_back(createTexture(path.c_str()));
-		}
-	} else if (endsWith(path, ".obj")) {
-		if (verify) {
-			for (auto &pair : models) {
-				if (pair.first == path) {
-					add = false;
-					break;
-				}
-			}
-		}
-		if (add) {
-			models.emplace(path, Model::createModelData(path));
+ResourceType AssetManager::getResourceTypeByExtension(const std::string& extension) {
+	if(extension.length() == 0) {
+		return NoneResource;
+	}
+	for(auto &str : resourceExtensionMap) {
+		if(str.first == extension) {
+			return str.second;
 		}
 	}
+	return NoneResource;
 }
+
+void AssetManager::loadResource(std::string path, bool verify) {
+	bool add = true;
+	switch(getResourceTypeByExtension(Global::getExtension(path))) {
+		default:
+		case NoneResource:
+			throw std::exception("Attempted to load an invalid resource file!");
+		case ModelResource:
+			if (verify) {
+				for (auto &pair : models) {
+					if (pair.first == path) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				models.emplace(path, Model::createModelData(path));
+			}
+			break;
+		case TextureResource:
+			if (verify) {
+				for (auto &texture : textures) {
+					if (texture.path == path) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				textures.emplace_back(createTexture(path.c_str()));
+			}
+			break;
+	}
+}
+
 TextRenderer* AssetManager::getTextRenderer() {
 	return textRenderer;
 }
