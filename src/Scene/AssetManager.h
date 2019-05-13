@@ -107,7 +107,7 @@ public:
 	float getLoadingProgress();
 private:
 	ResourceType getResourceTypeByExtension(const std::string& extension);
-	int loadableResources, loadedResources;
+	int loadableResources = 1, loadedResources = 0;
 	void loadResource(std::string path, bool verify);
 	bool loaded = false, loadingStarted=false;
 	std::vector<std::string> resourcesToLoad;
