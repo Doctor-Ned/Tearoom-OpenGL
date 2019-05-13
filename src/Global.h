@@ -56,6 +56,7 @@ static const float BASE_LONG_BTN_WIDTH = 0.3f, BASE_LONG_BTN_HEIGHT = 0.1f, BASE
 
 class Global {
 public:
+	static std::string getExtension(const std::string &path);
 	static std::string ltrim(const std::string &s);
 	static std::string rtrim(const std::string &s);
 	static std::string trim(const std::string &s);

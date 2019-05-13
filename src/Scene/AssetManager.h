@@ -73,6 +73,12 @@ static const std::string ShaderTypeNames[] = {
 	"STText"
 };
 
+enum ResourceType {
+	NoneResource,
+	TextureResource,
+	ModelResource
+};
+
 
 class AssetManager {
 public:
@@ -100,6 +106,7 @@ public:
 	Texture getDefaultTexture();
 	float getLoadingProgress();
 private:
+	ResourceType getResourceTypeByExtension(const std::string& extension);
 	int loadableResources, loadedResources;
 	void loadResource(std::string path, bool verify);
 	bool loaded = false, loadingStarted=false;
@@ -108,6 +115,7 @@ private:
 	std::vector<Ubo*> ubos;
 	Texture defaultTexture;
 	Texture createTexture(const char * textureFile);
+	std::map <std::string, ResourceType> resourceExtensionMap;
 	std::map <std::string, ModelData*> models;
 	std::map<ShaderType, Shader*> shaders;
 	std::vector<Texture> textures;

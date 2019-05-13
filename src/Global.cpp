@@ -3,6 +3,16 @@
 
 const std::string Global::WHITESPACE = " \n\r\t\f\v";
 
+std::string Global::getExtension(const std::string& path) {
+	auto ind = path.find_last_of('.');
+	if (ind != std::string::npos) {
+		std::string extension = path.substr(ind + 1);
+		std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+		return extension;
+	}
+	return "";
+}
+
 std::string Global::ltrim(const std::string& s) {
 	size_t start = s.find_first_not_of(WHITESPACE);
 	return start == std::string::npos ? "" : s.substr(start);
