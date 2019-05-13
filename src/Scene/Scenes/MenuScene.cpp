@@ -5,26 +5,44 @@
 #include "Ui/UiPlane.h"
 #include "Serialization/Serializer.h"
 #include "EditorScene.h"
+#include "Scene/SoundSystem.h"
 
 class UiTextButton;
 
 MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(windowCenterX, 3 * windowHeight / 9.0f), "Miszuk scene");
-	miszukScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new MiszukScene()); });
+	miszukScene->setButtonCallback([]()
+	{	SoundSystem::getSound("bow")->setDefaultVolume(0.05f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		GameManager::getInstance()->setCurrentScene(new MiszukScene());
+	});
 	UiTextButton *newTestScene = new UiTextButton(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), "New test scene");
-	newTestScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new TestScene()); });
+	newTestScene->setButtonCallback([]()
+	{
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		GameManager::getInstance()->setCurrentScene(new TestScene());
+	});
 	UiTextButton *loadTestScene = new UiTextButton(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), "Load test scene");
 	loadTestScene->setButtonCallback([this]() {
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 		Scene *scene = Serializer::getInstance()->loadScene("test");
 		if(scene != nullptr) {
 			gameManager->setCurrentScene(scene);
 		}
 	});
 	UiTextButton *editorScene = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Editor scene");
-	editorScene->setButtonCallback([]() {GameManager::getInstance()->setCurrentScene(new EditorScene()); });
+	editorScene->setButtonCallback([]()
+	{
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		GameManager::getInstance()->setCurrentScene(new EditorScene());
+	});
 	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), "Options");
-	options->setButtonCallback([this]() {showOptions(); });
+	options->setButtonCallback([this]()
+	{
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow")); 
+		showOptions();
+	});
 	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 8 * windowHeight / 9.0f), "Quit");
 	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
 	rootUiElement->addChild(miszukScene);

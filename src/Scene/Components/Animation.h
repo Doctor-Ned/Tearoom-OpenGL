@@ -54,7 +54,6 @@ private:
 	void setSpeed(float _speed);
 	void setLooped(bool);
 	void takeObjectsToAnimate(GraphNode* objectToAnimate);
-	//#TODO: std::map serialization
 	void setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map);
 
 	friend class Serializer;
@@ -73,7 +72,6 @@ public:
 	void stopPlaying();
 	bool addKeyFrame(std::string&& gameObjectName, anim::Animated type, float time, glm::vec3 values);
 	bool deleteKeyFrame(std::string&& gameObjectName, anim::Animated type, float time);
-	std::string getName();
 };
 
 #endif

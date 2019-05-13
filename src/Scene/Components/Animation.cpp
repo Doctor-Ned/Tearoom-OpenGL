@@ -8,6 +8,7 @@ using anim::Animated;
 using anim::animMap;
 using anim::ObjectAnimation;
 using keyFramePair = std::pair<anim::animMap::iterator, anim::animMap::iterator>;
+
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
 	takeObjectsToAnimate(gameObject);
@@ -351,17 +352,15 @@ void Animation::setLooped(bool val)
 	looped = val;
 }
 
-std::string Animation::getName()
-{
-	return name;
-}
-
 void Animation::takeObjectsToAnimate(GraphNode* objectToAnimate)
 {
-	objectsToAnimate.push_back(objectToAnimate);
-	for(GraphNode* node : objectToAnimate->getChildren())
+	if(objectToAnimate)
 	{
-		takeObjectsToAnimate(node);
+		objectsToAnimate.push_back(objectToAnimate);
+		for (GraphNode* node : objectToAnimate->getChildren())
+		{
+			takeObjectsToAnimate(node);
+		}
 	}
 }
 
