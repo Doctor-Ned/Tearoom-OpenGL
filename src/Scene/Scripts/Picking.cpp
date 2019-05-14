@@ -29,13 +29,14 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
-	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f),
-											   glm::vec2(200.0f, 30.0f), Center);
-	encouragement = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact",
-							   glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
+	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
-	encouragementCanvas->addChild(encouragement);
+	encouragementCanvas->addChild(encouragementPick);
+	encouragementCanvas->addChild(encouragementActivate);
+
 }
 
 
@@ -50,13 +51,12 @@ void Picking::showInventoryUi() {
 	int i = 0;
 	Picking::inventoryCanvas->setActive(true);
 
-	for (UiPlane *obj : *(scene->getObjectRepresentations())) {
-		if (i >= inventory.size()) {
-			break;
+	if(letterInventory->isActive()) {
+		for (GraphNode* obj : inventory) {
+            std::cout<<"HALO"<<std::endl;
+			inventoryCanvas->addChild(obj->getComponent<CollectableObject>()->getIcon());
+			i++;
 		}
-		//obj->setPosition(glm::vec2(400.0f, 400.0f)); //TODO: doesn't work :(
-		inventoryCanvas->addChild(obj);
-		i++;
 	}
 }
 
@@ -78,7 +78,10 @@ void Picking::update(float msec) {
 
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
 		if (collectable) {
-            encouragementCanvas->setActive(true);
+			encouragementCanvas->setActive(true);
+			encouragementActivate->setActive(false);
+			encouragementPick->setActive(true);
+
 			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
 				inventory.push_back(object);
 				collectable->takeObject();
@@ -99,6 +102,9 @@ void Picking::update(float msec) {
 		if(anim)
 		{
             encouragementCanvas->setActive(true);
+            encouragementActivate->setActive(true);
+            encouragementPick->setActive(false);
+
 			if (gameManager->getKeyState(GLFW_KEY_F)) {
 				anim->play();
 			}
@@ -107,9 +113,16 @@ void Picking::update(float msec) {
 		if(animController)
 		{
             encouragementCanvas->setActive(true);
+			encouragementActivate->setActive(true);
+			encouragementPick->setActive(false);
+
 			if (gameManager->getKeyState(GLFW_KEY_F))
 			{
-				animController->startAnimation();
+			    if(animController->getType() == DoorOpeningX
+			    || animController->getType() == DoorOpeningY) {
+                    inventoryCanvas->setActive(true);
+                    animController->startAnimation();
+                }
 			}
 		}
 
@@ -130,7 +143,22 @@ void Picking::update(float msec) {
 			}
 		}
 	}
-	//gameManager->addKeyCallback(GLFW_KEY_I, true, &showInventoryUi);
+	//TEMPORARY______________________________
+	if(gameManager->getKeyState(GLFW_KEY_P)) {
+		letterInventory->setActive(false);
+		itemsInventory->setActive(false);
+		photosInventory->setActive(true);
+	}
+	if(gameManager->getKeyState(GLFW_KEY_O)) {
+		letterInventory->setActive(true);
+		itemsInventory->setActive(false);
+		photosInventory->setActive(false);
+	}
+	if(gameManager->getKeyState(GLFW_KEY_I)) {
+		letterInventory->setActive(false);
+		itemsInventory->setActive(true);
+		photosInventory->setActive(false);
+	}
 
 }
 

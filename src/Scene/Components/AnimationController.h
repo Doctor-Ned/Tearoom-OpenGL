@@ -42,6 +42,10 @@ protected:
 	AnimationController() {}
 	bool animating = false;
 	AnimationType type;
+public:
+	AnimationType getType() const;
+
+protected:
 	glm::float32 elapsed = 0.0f;
 
 public:

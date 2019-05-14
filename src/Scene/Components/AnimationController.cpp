@@ -78,3 +78,7 @@ AnimationController::~AnimationController()
 
 }
 
+AnimationType AnimationController::getType() const {
+    return type;
+}
+

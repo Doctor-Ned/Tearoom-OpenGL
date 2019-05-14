@@ -4,6 +4,8 @@
 
 #ifndef TEAROOM_COLLECTABLEOBJECT_H
 #define TEAROOM_COLLECTABLEOBJECT_H
+
+#include <Ui/UiPlane.h>
 #include "Scene/Components/Component.h"
 #include "Render/Renderable.h"
 #include "Mesh/Mesh.h"
@@ -19,7 +21,7 @@ class CollectableObject : public Component {
 public:
 	virtual ~CollectableObject();
 	CollectableObject(GraphNode* _gameObject, Camera* camera);
-	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type);
+	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon);
 	void takeObject();
 	void leaveObject();
 	void update(float msec) override;
@@ -30,7 +32,16 @@ public:
 
 protected:
 	ItemType i_type;
-	bool isTaken = false;
+public:
+    ItemType getI_type() const;
+
+protected:
+    UiPlane* icon;
+public:
+    UiPlane *getIcon() const;
+
+protected:
+    bool isTaken = false;
     Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;

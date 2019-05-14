@@ -33,7 +33,8 @@ private:
 	Picking(){}
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
-	UiText* encouragement;
+	UiText* encouragementPick;
+	UiText* encouragementActivate;
 
 	UiPlane* photosInventory;
 	UiPlane* itemsInventory;

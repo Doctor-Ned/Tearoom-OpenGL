@@ -12,8 +12,8 @@
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type):Component(_gameObject), camera(camera) {
-    this->i_type = i_type;
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon)
+:Component(_gameObject), camera(camera), i_type(i_type), icon(icon) {
 }
 
 void CollectableObject::takeObject()
@@ -65,4 +65,12 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 
 
 CollectableObject::~CollectableObject() {}
+
+ItemType CollectableObject::getI_type() const {
+    return i_type;
+}
+
+UiPlane *CollectableObject::getIcon() const {
+    return icon;
+}
 

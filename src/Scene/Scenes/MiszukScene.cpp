@@ -51,20 +51,19 @@ MiszukScene::MiszukScene() {
     //INVENTORY UI
 	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f),glm::vec2(60.0f, 60.0f), Right);
 	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(1076.0f, 530.0f),glm::vec2(60.0f, 60.0f), Right);
-    objectRepresentasions.push_back(boxRepresentation);
-    objectRepresentasions.push_back(boxRepresentation2);
+
 
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
-	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera, Letter));
+	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera, Letter, boxRepresentation));
 	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
     MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
     GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
 	tinyItemNode2->addComponent(new PhysicalObject(tinyItemNode2));
-    tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2,camera, Letter));
+    tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2,camera, Letter, boxRepresentation2));
     tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
     tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 	//-----------------
