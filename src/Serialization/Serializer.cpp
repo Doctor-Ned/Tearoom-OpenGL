@@ -34,6 +34,8 @@
 #include "Scene/Scripts/CollisionTest.h"
 #include "Scene/Scenes/TestScene.h"
 #include "Scene/Components/Animation.h"
+#include "Scene/Components/KeyFrameAnimation.h"
+#include "Scene/Components/SkeletalAnimation.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -283,11 +285,13 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 		case STestScene:
 			deserializeAndIdentify(pointer, data, new TestScene(true));
 			break;
-		case SAnimation:
-			deserializeAndIdentify(pointer, data, new Animation());
+		case SKeyFrameAnimation:
+			deserializeAndIdentify(pointer, data, new KeyFrameAnimation());
 			break;
 		case SSkybox:
 			deserializeAndIdentify(pointer, data, new Skybox());
+		case SSkeletalAnimation:
+			deserializeAndIdentify(pointer, data, new SkeletalAnimation());
 			break;
 	}
 	return pointer;

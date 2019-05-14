@@ -130,6 +130,34 @@ ModelData* AssetManager::getModelData(std::string path) {
 	throw "Critical error! An object tried to access an unknown model: " + path;
 }
 
+std::shared_ptr<Bone> AssetManager::getBoneHierarchy(std::string path)
+{
+	for (auto &pair : boneHierarchies) {
+		if (pair.first.compare(path) == 0) {
+			return pair.second;
+		}
+	}
+}
+
+SkeletalAnimation AssetManager::getAnimation(std::string path)
+{
+	for (auto &pair : animations) {
+		if (pair.first.compare(path) == 0) {
+			return pair.second;
+		}
+	}
+}
+
+void AssetManager::addBoneHierarchy(std::string path, std::shared_ptr<Bone> boneHierarchy)
+{
+	boneHierarchies.emplace(path, boneHierarchy);
+}
+
+void AssetManager::addAnimation(std::string path, SkeletalAnimation anim)
+{
+	animations.emplace(path, anim);
+}
+
 bool AssetManager::endsWith(std::string const &fullString, std::string const &ending) {
 	if (fullString.length() >= ending.length()) {
 		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));

@@ -56,9 +56,7 @@ void SoundSystem::loadSounds()
 		getInstance()->soundsMap.emplace(it.path().filename().stem().string(), getEngine()->getSoundSource(it.path().u8string().c_str()));
 	}
 
-
-	std::cout << getEngine()->getSoundSourceCount() << std::endl;
-	auto sound = getSound("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
+	/*auto sound = getSound("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
 	sound->setDefaultVolume(0.03f);
-	getEngine()->play2D(sound);
+	getEngine()->play2D(sound);*/
 }

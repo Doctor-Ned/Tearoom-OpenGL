@@ -20,6 +20,8 @@
 #include "Ui/UiMesh.h"
 #include "Scene/Components/SunController.h"
 #include <ctime>
+#include "Mesh/AnimatedModel.h"
+#include "Scene/Components/KeyFrameAnimation.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -77,10 +79,11 @@ MiszukScene::MiszukScene() {
 	handle->setName("handle");
 
 	door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
-	Animation* anim = new Animation(door, "doorOpening");
+	Animation* anim = new KeyFrameAnimation(door, "doorOpening");
 	anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
 	anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
 	anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	anim->addKeyFrame("door", anim::TRANSLATION, 4.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 	door->addComponent(anim);
 	doorPivot->localTransform.setPosition(-4.0f, -1.0f, -2.0f);
 	doorPivot->localTransform.rotateYDegrees(180.0f);
@@ -106,12 +109,10 @@ MiszukScene::MiszukScene() {
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* floorMesh = new MeshColorBox(glm::vec3(-10.0f, -0.5f, -10.5f), glm::vec3(10.0f, 0.5f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	Model* sphere2 = new Model("res/models/sphere/sphere.obj");
 	MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	MeshColorBox* meshBox1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	GraphNode* boxNode = new GraphNode(box, rootNode);
 	GraphNode* boxNode2 = new GraphNode(box1, rootNode);
-	GraphNode* sphereNode2 = new GraphNode(sphere2, rootNode);
 	GraphNode* simpleBox1 = new GraphNode(meshBox, rootNode);
 	GraphNode* simpleBox2 = new GraphNode(meshBox1, rootNode);
 	GraphNode* pivot = new GraphNode(nullptr, rootNode);
@@ -133,7 +134,6 @@ MiszukScene::MiszukScene() {
 	boxNode->localTransform.rotateYDegrees(130.0f);
 	//boxNode->localTransform.rotate(130.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
-	sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 	simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
 	planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 	simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);
@@ -156,17 +156,27 @@ MiszukScene::MiszukScene() {
 
 	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-	srand(time(NULL));
-	for (int i = 0; i < 1000; i++)
-	{
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
-		GraphNode* node = new GraphNode(nullptr, rootNode);
-		node->localTransform.setPosition(x, y, z);
-		node->addComponent(new BoxCollider(node, DYNAMIC, true));
-	}
 	
+	auto* robot = AnimatedModel::createModelData("res/models/zabijaka/Pointing.fbx");
+	srand(time(NULL));
+	AnimatedModel* robo = new AnimatedModel("res/models/zabijaka/Pointing.fbx");
+	for (int i = 0; i < 1; i++)
+	{
+		
+		int x = (rand() % 50);
+		int y = (rand() % 50);
+		int z = (rand() % 50);
+		GraphNode* node = new GraphNode(robo, rootNode);
+		node->localTransform.setPosition(1, -3.0f, 1);
+		//node->localTransform.rotateXDegrees(-90);
+		node->localTransform.setScale(0.01f);
+		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.35f, 2.0f, 0.35f)));
+//#todo find out if animation works 
+		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
+		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
+		node->getComponent<SkeletalAnimation>()->play();
+	}
+
 	rootNode->updateDrawData();
 	rootUiElement->updateDrawData();
 	reinitializeRenderMap();
@@ -178,7 +188,6 @@ MiszukScene::~MiszukScene() {
 
 void MiszukScene::render() {
 	Scene::render();
-	//OctreeNode::getInstance()->draw();
 }
 
 void MiszukScene::renderUi() {
@@ -189,22 +198,6 @@ void MiszukScene::renderUi() {
 
 void MiszukScene::update(double deltaTime) {
 	Scene::update(deltaTime);
-
-	/*if (getKeyState(KEY_FORWARD)) {
-		camera->moveForward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_BACKWARD)) {
-		camera->moveBackward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_LEFT)) {
-		camera->moveLeft(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_RIGHT)) {
-		camera->moveRight(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_UP)) {
-		camera->moveUp(deltaTime * movementSpeed);
-	}*/
 	if (getKeyState(KEY_DOWN)) {
 		camera->moveDown(deltaTime * movementSpeed);
 	}
@@ -220,18 +213,7 @@ void MiszukScene::update(double deltaTime) {
 	if (getKeyState(KEY_MOUSE_DOWN)) {
 		camera->rotateY(-movementSpeed * deltaTime);
 	}
-
-	rootNode->update(deltaTime);
-	//GraphNode* node = camera->castRayFromCamera(camera->getFront(), 3.0f);
-	//if(node != nullptr)
-	//{
-	//	//std::cout << "Game object hit" << std::endl;
-	//}
-	//else
-	//{
-	//	//std::cout << "ray casted" << std::endl;
-	//}
-	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
+	
 }
 
 void MiszukScene::keyEvent(int key, bool pressed) {

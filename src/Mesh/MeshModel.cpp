@@ -56,5 +56,14 @@ void MeshModel::setupMesh() {
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, Bitangent)));
 
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, bonesIDs)));
+
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, bonesWages)));
+
+	glEnableVertexAttribArray(7);
+	glVertexAttribPointer(7, 1, GL_INT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, boneCounter)));
+
 	glBindVertexArray(0);
 }

@@ -14,6 +14,7 @@
 #include "Scene/Components/LightComponents/PointLightComp.h"
 #include "Serialization/Serializer.h"
 #include "Scene/Components/Animation.h"
+#include "Scene/Components/KeyFrameAnimation.h"
 
 TestScene::TestScene() : TestScene(false) {}
 
@@ -236,7 +237,7 @@ TestScene::TestScene(bool serialized) {
 		handle->setName("handle");
 
 		door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
-		Animation* anim = new Animation(door, "doorOpening");
+		Animation* anim = new KeyFrameAnimation(door, "doorOpening");
 		anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
 		anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
 		anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));

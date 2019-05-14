@@ -12,6 +12,14 @@ struct ModelVertex {
 	glm::vec2 TexCoords;
 	glm::vec3 Tangent;
 	glm::vec3 Bitangent;
+	int bonesIDs[4] = {0};
+	float bonesWages[4] = {0.0f};
+	int boneCounter = 0;
+};
+
+struct AnimModelVertex : ModelVertex
+{
+	
 };
 
 struct ModelTexture {

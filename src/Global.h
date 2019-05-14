@@ -34,6 +34,7 @@
 #include <functional>
 #include "json/json.h"
 #include <xmmintrin.h>
+#include "assimp/matrix4x4.h"
 
 union SSEfloat4
 {
@@ -67,6 +68,7 @@ public:
 	static glm::vec3 degreesToRadians(glm::vec3 rotation);
 	static glm::vec3 radiansToDegrees(glm::vec3 rotation);
 	static glm::vec3 getScale(glm::mat4 matrix);
+	static glm::mat4 aiMatrix4x4ToGlm(const aiMatrix4x4 &from);
 	static bool endsWith(std::string text, std::string end);
 	static bool startsWith(std::string text, std::string start);
 	static std::string jsonValueToString(Json::Value value);

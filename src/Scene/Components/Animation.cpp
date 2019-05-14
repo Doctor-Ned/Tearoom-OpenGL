@@ -7,16 +7,10 @@
 using anim::Animated;
 using anim::animMap;
 using anim::ObjectAnimation;
-using keyFramePair = std::pair<anim::animMap::iterator, anim::animMap::iterator>;
 
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
-	takeObjectsToAnimate(gameObject);
-}
-
-SerializableType Animation::getSerializableType()
-{
-	return SAnimation;
+	
 }
 
 Json::Value Animation::serialize(Serializer* serializer)
@@ -41,63 +35,6 @@ void Animation::deserialize(Json::Value& root, Serializer* serializer)
 	setLooped(root["looped"].asBool());
 	setSpeed(root["speed"].asFloat());
 	setObjectAnimations(DataSerializer::deserializeObjectAnimationsMap(root["objectAnimations"]));
-	takeObjectsToAnimate(gameObject);
-}
-
-void Animation::update(float msec)
-{
-	if(isPlaying)
-	{
-		for(GraphNode* gameObject: objectsToAnimate)
-		{
-			auto animForGameObject = objectAnimations.find(gameObject->getName());
-			if(animForGameObject != objectAnimations.end())
-			{
-				interpolateValues(currentTime, gameObject, Animated::TRANSLATION, animForGameObject->second.translation);
-				interpolateValues(currentTime, gameObject, Animated::SCALE, animForGameObject->second.scale);
-				interpolateValues(currentTime, gameObject, Animated::ROTATION, animForGameObject->second.rotation);
-			}
-		}
-		currentTime += msec * speed;
-	}
-	
-	if(currentTime >= endTime)
-	{
-		if(!looped)
-		{
-			isPlaying = false;
-		}
-		currentTime = 0.0f;
-	}
-}
-
-void Animation::interpolateValues(float currentTime, GraphNode* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate)
-{
-	if (mapToInterpolate.size() < 2)
-		return;
-	keyFramePair itPair = getProperIterators(currentTime, mapToInterpolate);
-	anim::animMap::iterator leftKeyFrame = itPair.first;
-	anim::animMap::iterator rightKeyFrame = itPair.second;
-
-	if (rightKeyFrame == mapToInterpolate.end())
-		return;
-
-	float time = rightKeyFrame->first - leftKeyFrame->first;
-	currentTime = currentTime - leftKeyFrame->first;
-	glm::vec3 mix = glm::mix(leftKeyFrame->second, rightKeyFrame->second, currentTime / time);
-
-	if (type == Animated::TRANSLATION)
-	{
-		animatedObject->localTransform.setPosition(mix);
-	}
-	else if (type == Animated::SCALE)
-	{
-		animatedObject->localTransform.setScale(mix);
-	}
-	else if (type == Animated::ROTATION)
-	{
-		animatedObject->localTransform.setRotationDegrees(mix);
-	}
 }
 
 keyFramePair Animation::getProperIterators(float currentTime, animMap& map)
@@ -114,6 +51,17 @@ keyFramePair Animation::getProperIterators(float currentTime, animMap& map)
 			return { leftKeyFrame, rightKeyFrame };
 		}
 	}
+}
+
+std::map<std::string, anim::ObjectAnimation> Animation::getObjectAnimations()
+{
+	return objectAnimations;
+}
+
+void Animation::setObjectAnimation(std::map<std::string, anim::ObjectAnimation> map)
+{
+	objectAnimations = map;
+	setEndTime();
 }
 
 Animation::~Animation()
@@ -136,11 +84,6 @@ void Animation::renderGui()
 	if(ImGui::Button("Stop"))
 	{
 		stopPlaying();
-	}
-	ImGui::Text("If anim doesn't work, try reload.");
-	if(ImGui::Button("Reload"))
-	{
-		takeObjectsToAnimate(gameObject);
 	}
 	ImGui::Text("Edition");
 	static float time = 0.0f;
@@ -352,17 +295,7 @@ void Animation::setLooped(bool val)
 	looped = val;
 }
 
-void Animation::takeObjectsToAnimate(GraphNode* objectToAnimate)
-{
-	if(objectToAnimate)
-	{
-		objectsToAnimate.push_back(objectToAnimate);
-		for (GraphNode* node : objectToAnimate->getChildren())
-		{
-			takeObjectsToAnimate(node);
-		}
-	}
-}
+
 
 void Animation::setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map)
 {

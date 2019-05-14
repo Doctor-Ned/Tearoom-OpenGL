@@ -29,6 +29,7 @@
 #include "Scene/Scripts/PlayerMovement.h"
 #include "Scene/Components/LightComponents/SpotLightComp.h"
 #include "Scene/Components/LightComponents/PointLightComp.h"
+#include "Scene/Components/KeyFrameAnimation.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -588,9 +589,9 @@ void EditorScene::renderUi() {
 				}
 			}
 			break;
-			case SAnimation:
+			case SKeyFrameAnimation:
 			{
-				typeCreation->creationCallback(new Animation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreation->creationCallback(new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;

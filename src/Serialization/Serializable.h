@@ -38,7 +38,7 @@ enum SerializableType {
 	SPhysicalObject,
 	SPicking,
 	SPlayerMovement,
-	SAnimation,
+	SKeyFrameAnimation,
 	SRotatingObject,
 	SDirLightComp,
 	SLightComp,
@@ -52,7 +52,8 @@ enum SerializableType {
 	SPointLight,
 	STestScene,
 	SSkybox,
-	SMeshProperty
+	SMeshProperty,
+	SSkeletalAnimation
 };
 
 const std::string SerializableTypeNames[] = {
@@ -104,7 +105,8 @@ const std::string SerializableTypeNames[] = {
 	"SPointLight",
 	"STestScene",
 	"SSkybox",
-	"SMeshProperty"
+	"SMeshProperty",
+	"SSkeletalAnimation"
 };
 
 class Serializable {
