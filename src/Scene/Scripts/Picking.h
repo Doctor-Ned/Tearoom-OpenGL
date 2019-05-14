@@ -5,6 +5,7 @@
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 #include "Ui/UiCanvas.h"
+#include <cstring>
 
 class Camera;
 class Picking : public Component
@@ -33,6 +34,10 @@ private:
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
 	UiText* encouragement;
+
+	UiPlane* photosInventory;
+	UiPlane* itemsInventory;
+	UiPlane* letterInventory;
 
 };
 

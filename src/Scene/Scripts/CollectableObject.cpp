@@ -12,6 +12,10 @@
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type):Component(_gameObject), camera(camera) {
+    this->i_type = i_type;
+}
+
 void CollectableObject::takeObject()
 {
     isTaken = true;

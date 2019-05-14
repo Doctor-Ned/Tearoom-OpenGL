@@ -18,14 +18,15 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
 
-	UiText *inventoryText = new UiText(glm::vec2(1135.0f, 280.0f), glm::vec2(60.0f, 30.0f), "Inventory",
-									   glm::vec4(0.39f, 0.3f, 0.25f, 1.0f), MatchHeight);
-	UiPlane *inventoryBackground = new UiPlane("res/textures/inventory.jpg", glm::vec2(1285.0f, 500.0f),
-											   glm::vec2(300.0f, 500.0f), Right);
-	//UiPlane* hud = new UiPlane("res/textures/inventory.png", glm::vec2(500.0f, 500.0f), glm::vec2(400.0f, 400.0f), Center);
+	photosInventory = new UiPlane("res/textures/photosChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+	itemsInventory = new UiPlane("res/textures/itemsChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+	letterInventory = new UiPlane("res/textures/lettersChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+
 	//inventoryCanvas->addChild(hud);
-	inventoryCanvas->addChild(inventoryBackground);
-	inventoryCanvas->addChild(inventoryText);
+	inventoryCanvas->addChild(photosInventory);
+	inventoryCanvas->addChild(itemsInventory);
+	inventoryCanvas->addChild(letterInventory);
+
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f),
@@ -84,7 +85,13 @@ void Picking::update(float msec) {
 
 				if(inventoryUI) //TODO: getting proper item icon to render
 				{
-					inventoryCanvas->addChild(scene->getObjectRepresentations()->front());
+					int i = 0;
+					for(UiPlane* icon : *scene->getObjectRepresentations())
+					{
+						icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
+						inventoryCanvas->addChild(icon);
+						i++;
+					}
 				}
 			}
 		}

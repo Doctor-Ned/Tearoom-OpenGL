@@ -8,11 +8,18 @@
 #include "Render/Renderable.h"
 #include "Mesh/Mesh.h"
 
+enum ItemType {
+	Letter,
+	NormalItem,
+	Photo
+};
+
 class CollectableObject : public Component {
 
 public:
 	virtual ~CollectableObject();
 	CollectableObject(GraphNode* _gameObject, Camera* camera);
+	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type);
 	void takeObject();
 	void leaveObject();
 	void update(float msec) override;
@@ -22,6 +29,7 @@ public:
     bool getIsTaken() const;
 
 protected:
+	ItemType i_type;
 	bool isTaken = false;
     Camera* camera;
     bool isHitByRay = false;
