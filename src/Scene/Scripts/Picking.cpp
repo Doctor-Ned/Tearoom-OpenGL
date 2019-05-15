@@ -26,25 +26,36 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
     letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f,40.0f), Right);
     photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f,40.0f), Right);
 
-    itemsButton->setButtonCallback([]()
+
+    itemsButton->setButtonCallback([this]()
     {
-       std::cout<<"CLICK 1"<<std::endl;
+		letterInventory->setActive(false);
+		itemsInventory->setActive(true);
+		photosInventory->setActive(false);
+		showInventoryUi();
        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
-    itemsButton->setHooverCallback([]()
+    itemsButton->setHooverCallback([this]()
     {
+    	itemDesc->setActive(true);
         std::cout<<"HOOVER"<<std::endl;
     });
-    letterButton->setButtonCallback([]()
+    letterButton->setButtonCallback([this]()
     {
-        std::cout<<"CLICK 2"<<std::endl;
-        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+		letterInventory->setActive(true);
+		itemsInventory->setActive(false);
+		photosInventory->setActive(false);
+		showInventoryUi();
+		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
         SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
-    photoButton->setButtonCallback([]()
+    photoButton->setButtonCallback([this]()
     {
-        std::cout<<"CLICK 3"<<std::endl;
+    	letterInventory->setActive(false);
+		itemsInventory->setActive(false);
+		photosInventory->setActive(true);
+		showInventoryUi();
         SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
         SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
@@ -61,10 +72,13 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	encouragementCanvas->setActive(false);
+    itemDesc = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Letter from uncle Yoshiro", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	itemDesc->setActive(false);
+    encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
+	inventoryCanvas->addChild(itemDesc);
 
 }
 
@@ -190,28 +204,7 @@ void Picking::update(float msec) {
 			inventoryCanvas->removeChild(collectable->getIcon());
 		}
 	}
-	//TEMPORARY______________________________
-	if(gameManager->getKeyState(GLFW_KEY_P)) {
-		letterInventory->setActive(false);
-		itemsInventory->setActive(false);
-		photosInventory->setActive(true);
-        showInventoryUi();
 
-    }
-	if(gameManager->getKeyState(GLFW_KEY_O)) {
-		letterInventory->setActive(true);
-		itemsInventory->setActive(false);
-		photosInventory->setActive(false);
-		showInventoryUi();
-	}
-	if(gameManager->getKeyState(GLFW_KEY_I)) {
-		letterInventory->setActive(false);
-		itemsInventory->setActive(true);
-		photosInventory->setActive(false);
-        showInventoryUi();
-    }
-
-	//if(gameManager->)
 }
 
 Picking::~Picking() {}

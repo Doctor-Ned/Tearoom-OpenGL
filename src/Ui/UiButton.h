@@ -3,6 +3,8 @@
 
 #include <functional>
 #include "UiPlane.h"
+#include "UiCanvas.h"
+#include "UiText.h"
 
 enum UiButtonState {
 	Idle,

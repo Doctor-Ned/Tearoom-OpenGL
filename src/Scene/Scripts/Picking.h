@@ -43,6 +43,8 @@ private:
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
 
+	UiText* itemDesc;
+
 };
 
 #endif
