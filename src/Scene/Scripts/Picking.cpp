@@ -42,8 +42,8 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 
 void Picking::hideInventoryUi() {
 	inventoryCanvas->setActive(false);
-	for(auto &obj : *(scene->getObjectRepresentations())) {
-		inventoryCanvas->removeChild(obj);
+	for(GraphNode* obj : inventory) {
+		inventoryCanvas->removeChild(obj->getComponent<CollectableObject>()->getIcon());
 	}
 }
 
@@ -52,11 +52,28 @@ void Picking::showInventoryUi() {
 	Picking::inventoryCanvas->setActive(true);
 
 	if(letterInventory->isActive()) {
-		for (GraphNode* obj : inventory) {
-            std::cout<<"HALO"<<std::endl;
-			inventoryCanvas->addChild(obj->getComponent<CollectableObject>()->getIcon());
-			i++;
+        for (GraphNode* obj : inventory) {
+            CollectableObject* col = obj->getComponent<CollectableObject>();
+            if(col->getI_type() == Letter) {inventoryCanvas->addChild(col->getIcon());}
+            else {inventoryCanvas->removeChild(col->getIcon());}
 		}
+	}
+	if(itemsInventory->isActive()) {
+        for (GraphNode* obj : inventory) {
+            CollectableObject* col = obj->getComponent<CollectableObject>();
+            if(col->getI_type() == NormalItem) {inventoryCanvas->addChild(col->getIcon());
+            }
+            else {inventoryCanvas->removeChild(col->getIcon());}
+        }
+	}
+	if(photosInventory->isActive()) {
+        for (GraphNode* obj : inventory) {
+            CollectableObject* col = obj->getComponent<CollectableObject>();
+            if(col->getI_type() == Photo) {
+                inventoryCanvas->addChild(obj->getComponent<CollectableObject>()->getIcon());
+            }
+            else {inventoryCanvas->removeChild(col->getIcon());}
+        }
 	}
 }
 
@@ -82,19 +99,16 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(false);
 			encouragementPick->setActive(true);
 
-			if (gameManager->getKeyState(GLFW_KEY_F) && collectable->getIsTaken() == false) {
+			if (gameManager->getKeyState(GLFW_KEY_F) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
 				collectable->takeObject();
 
 				if(inventoryUI) //TODO: getting proper item icon to render
 				{
-					int i = 0;
-					for(UiPlane* icon : *scene->getObjectRepresentations())
-					{
-						icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
-						inventoryCanvas->addChild(icon);
-						i++;
-					}
+
+						//icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
+						inventoryCanvas->addChild(collectable->getIcon());
+					
 				}
 			}
 		}
@@ -135,12 +149,10 @@ void Picking::update(float msec) {
 	{
 		CollectableObject *collectable = inventory[i]->getComponent<CollectableObject>();
 
-		if (gameManager->getKeyState(GLFW_KEY_G) && collectable->getIsTaken()) {
+		if (gameManager->getKeyState(GLFW_KEY_G)) {
+		    collectable->leaveObject();
 			inventory.erase(inventory.begin() + i);
-			collectable->leaveObject();
-			for(UiPlane* obj : *(scene->getObjectRepresentations())) {
-				inventoryCanvas->removeChild(obj);
-			}
+			inventoryCanvas->removeChild(collectable->getIcon());
 		}
 	}
 	//TEMPORARY______________________________
@@ -148,17 +160,22 @@ void Picking::update(float msec) {
 		letterInventory->setActive(false);
 		itemsInventory->setActive(false);
 		photosInventory->setActive(true);
-	}
+        showInventoryUi();
+
+    }
 	if(gameManager->getKeyState(GLFW_KEY_O)) {
 		letterInventory->setActive(true);
 		itemsInventory->setActive(false);
 		photosInventory->setActive(false);
+		showInventoryUi();
 	}
 	if(gameManager->getKeyState(GLFW_KEY_I)) {
 		letterInventory->setActive(false);
 		itemsInventory->setActive(true);
 		photosInventory->setActive(false);
-	}
+        showInventoryUi();
+
+    }
 
 }
 
