@@ -244,7 +244,9 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 			Picking *temp = player->getComponent<Picking>();
 
 			if (pressed) {
-				if (temp->getSwitch() == false) temp->setSwitch(true);
+                setCursorLocked(!getCursorLocked());
+
+                if (temp->getSwitch() == false) temp->setSwitch(true);
 				else temp->setSwitch(false);
 			} else {
 				if (temp->getSwitch() == true) {

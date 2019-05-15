@@ -10,6 +10,8 @@
 #include "Ui/UiPlane.h"
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/AnimationController.h"
+#include "Scene/SoundSystem.h"
+
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const std::string& name )
 	: Component(_gameObject, name), scene(scene){
@@ -17,13 +19,40 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
-
 	photosInventory = new UiPlane("res/textures/photosChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	itemsInventory = new UiPlane("res/textures/itemsChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	letterInventory = new UiPlane("res/textures/lettersChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+    itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f,40.0f), Right);
+    letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f,40.0f), Right);
+    photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f,40.0f), Right);
 
-	//inventoryCanvas->addChild(hud);
-	inventoryCanvas->addChild(photosInventory);
+    itemsButton->setButtonCallback([]()
+    {
+       std::cout<<"CLICK 1"<<std::endl;
+       SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+       SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+    });
+    itemsButton->setHooverCallback([]()
+    {
+        std::cout<<"HOOVER"<<std::endl;
+    });
+    letterButton->setButtonCallback([]()
+    {
+        std::cout<<"CLICK 2"<<std::endl;
+        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+    });
+    photoButton->setButtonCallback([]()
+    {
+        std::cout<<"CLICK 3"<<std::endl;
+        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+    });
+
+    inventoryCanvas->addChild(itemsButton);
+    inventoryCanvas->addChild(letterButton);
+    inventoryCanvas->addChild(photoButton);
+    inventoryCanvas->addChild(photosInventory);
 	inventoryCanvas->addChild(itemsInventory);
 	inventoryCanvas->addChild(letterInventory);
 
@@ -105,10 +134,16 @@ void Picking::update(float msec) {
 
 				if(inventoryUI) //TODO: getting proper item icon to render
 				{
-
-						//icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
-						inventoryCanvas->addChild(collectable->getIcon());
-					
+				    //icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
+				    if(itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
+                        inventoryCanvas->addChild(collectable->getIcon());
+                    }
+				    if(letterInventory->isActive() && collectable->getI_type() == Letter) {
+                        inventoryCanvas->addChild(collectable->getIcon());
+                    }
+				    if(photosInventory->isActive() && collectable->getI_type() == Photo) {
+                        inventoryCanvas->addChild(collectable->getIcon());
+                    }
 				}
 			}
 		}
@@ -174,9 +209,9 @@ void Picking::update(float msec) {
 		itemsInventory->setActive(true);
 		photosInventory->setActive(false);
         showInventoryUi();
-
     }
 
+	//if(gameManager->)
 }
 
 Picking::~Picking() {}

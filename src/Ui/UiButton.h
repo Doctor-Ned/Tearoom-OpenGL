@@ -21,6 +21,7 @@ public:
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	void setButtonCallback(std::function<void()> callback);
+	void setHooverCallback(std::function<void()> hooverCallback);
 	using UiElement::setPosition;
 	UiButtonState getState();
 protected:
@@ -28,6 +29,7 @@ protected:
 	UiButtonState state = Idle;
 	bool clicked = false, hover = false;
 	std::function<void()> callback = []() {};
+	std::function<void()> hooverCallback = []() {};
 };
 
 #endif

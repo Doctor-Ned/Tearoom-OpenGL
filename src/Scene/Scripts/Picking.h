@@ -6,6 +6,7 @@
 #include "Scene/Scenes/Scene.h"
 #include "Ui/UiCanvas.h"
 #include <cstring>
+#include <Ui/UiButton.h>
 
 class Camera;
 class Picking : public Component
@@ -35,7 +36,9 @@ private:
 	UiColorPlane* encouragementBackground;
 	UiText* encouragementPick;
 	UiText* encouragementActivate;
-
+    UiButton* itemsButton;
+    UiButton* letterButton;
+    UiButton* photoButton;
 	UiPlane* photosInventory;
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
