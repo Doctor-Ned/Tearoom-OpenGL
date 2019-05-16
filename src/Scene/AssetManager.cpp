@@ -199,6 +199,7 @@ void AssetManager::setup() {
 	ubos.push_back(uboViewProjection);
 	std::vector<Shader*> shaders;
 	shaders.push_back(getShader(STModel));
+	shaders.push_back(getShader(STAnimatedModel));
 	shaders.push_back(getShader(STModelInstanced));
 	shaders.push_back(getShader(STTexture));
 	shaders.push_back(getShader(STColor));

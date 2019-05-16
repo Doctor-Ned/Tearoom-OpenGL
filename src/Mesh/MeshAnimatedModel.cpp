@@ -57,13 +57,13 @@ void MeshAnimatedModel::setupMesh() {
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, Bitangent)));
 
 	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneIDs)));
+	glVertexAttribIPointer(5, 4, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneIDs)));
 
 	glEnableVertexAttribArray(6);
 	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneWages)));
 
 	glEnableVertexAttribArray(7);
-	glVertexAttribPointer(7, 1, GL_INT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneCounter)));
+	glVertexAttribIPointer(7, 1, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneCounter)));
 
 	glBindVertexArray(0);
 }

@@ -312,6 +312,7 @@ Scene::Scene() {
 	rootNode->setName("Root");
 	rootUiElement = new UiCanvas(glm::vec2(0.0f, 0.0f), glm::vec2(windowWidth, windowHeight));
 	updatableShaders.push_back(assetManager->getShader(STModel));
+	updatableShaders.push_back(assetManager->getShader(STAnimatedModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));
 	updatableShaders.push_back(assetManager->getShader(STTexture));
 	updatableShaders.push_back(assetManager->getShader(STColor));

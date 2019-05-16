@@ -6,74 +6,60 @@ using anim::Animated;
 using anim::animMap;
 using anim::ObjectAnimation;
 
-void SkeletalAnimation::interpolate(Bone* animatedObject)
-{
+void SkeletalAnimation::interpolate(Bone* animatedObject) {
 	auto animForGameObject = objectAnimations.find(animatedObject->name);
-	if (animForGameObject != objectAnimations.end())
-	{
+	if (animForGameObject != objectAnimations.end()) {
 		interpolateValues(currentTime, animatedObject, Animated::TRANSLATION, animForGameObject->second.translation);
 		interpolateValues(currentTime, animatedObject, Animated::SCALE, animForGameObject->second.scale);
 		interpolateValues(currentTime, animatedObject, Animated::ROTATION, animForGameObject->second.rotation);
 	}
 
-	for (auto& child : animatedObject->children)
-	{
+	for (auto& child : animatedObject->children) {
 		interpolate(child);
 	}
 }
 
-SkeletalAnimation::SkeletalAnimation(GraphNode* gameObject, std::string&& name) : Animation(gameObject, std::move(name))
-{
+SkeletalAnimation::SkeletalAnimation(GraphNode* gameObject, std::string&& name) : Animation(gameObject, std::move(name)) {
 	takeObjectsToAnimate(gameObject);
 }
 
-void SkeletalAnimation::update(float msec)
-{
-	if (isPlaying)
-	{
+void SkeletalAnimation::update(float msec) {
+	if (isPlaying && animatedBone != nullptr) {
 		interpolate(animatedBone);
 		animatedBone->updateWorld();
 		currentTime += msec * speed;
 	}
 
-	if (currentTime >= endTime)
-	{
-		if (!looped)
-		{
+	if (currentTime >= endTime) {
+		if (!looped) {
 			isPlaying = false;
 		}
 		currentTime = 0.0f;
 	}
 }
 
-SerializableType SkeletalAnimation::getSerializableType()
-{
+SerializableType SkeletalAnimation::getSerializableType() {
 	return SSkeletalAnimation;
 }
 
-void SkeletalAnimation::deserialize(Json::Value& root, Serializer* serializer)
-{
+void SkeletalAnimation::deserialize(Json::Value& root, Serializer* serializer) {
 	Animation::deserialize(root, serializer);
 	takeObjectsToAnimate(gameObject);
 }
 
-void SkeletalAnimation::renderGui()
-{
+void SkeletalAnimation::renderGui() {
 	Animation::renderGui();
 	ImGui::Text("If anim doesn't work, try reload.");
-	if (ImGui::Button("Reload"))
-	{
+	if (ImGui::Button("Reload")) {
 		takeObjectsToAnimate(gameObject);
 	}
 }
 
-void SkeletalAnimation::setRootBone(Bone* animatedObject)
-{
+void SkeletalAnimation::setRootBone(Bone* animatedObject) {
 	animatedBone = animatedObject;
 }
 
-void SkeletalAnimation::interpolateValues(float currentTime, Bone* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate)
-{
+void SkeletalAnimation::interpolateValues(float currentTime, Bone* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate) {
 	if (mapToInterpolate.size() < 2)
 		return;
 	keyFramePair itPair = getProperIterators(currentTime, mapToInterpolate);
@@ -87,26 +73,20 @@ void SkeletalAnimation::interpolateValues(float currentTime, Bone* animatedObjec
 	currentTime = currentTime - leftKeyFrame->first;
 	glm::vec3 mix = glm::mix(leftKeyFrame->second, rightKeyFrame->second, currentTime / time);
 
-	if (type == Animated::TRANSLATION)
-	{
+	if (type == Animated::TRANSLATION) {
 		animatedObject->localTransform.setPosition(mix);
-	}
-	else if (type == Animated::SCALE)
-	{
+	} else if (type == Animated::SCALE) {
 		animatedObject->localTransform.setScale(mix);
-	}
-	else if (type == Animated::ROTATION)
-	{
+	} else if (type == Animated::ROTATION) {
 		animatedObject->localTransform.setRotationDegrees(mix);
 	}
 }
 
-void SkeletalAnimation::takeObjectsToAnimate(GraphNode* objectToAnimate)
-{
-	if (objectToAnimate)
-	{
-		AnimatedModel* model = static_cast<AnimatedModel*>(gameObject->getMesh());
-		if (model)
-			animatedBone = model->getBoneRoot();
+void SkeletalAnimation::takeObjectsToAnimate(GraphNode* objectToAnimate) {
+	if (objectToAnimate) {
+		AnimatedModel* model = dynamic_cast<AnimatedModel*>(gameObject->getMesh());
+		if (model) {
+			setRootBone(model->getBoneRoot());
+		}
 	}
 }

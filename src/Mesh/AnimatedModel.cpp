@@ -260,7 +260,7 @@ void AnimatedModel::initialize(AnimatedModelData* data, Bone *boneHierarchy) {
 	for (auto &modelNodeData : data->nodeData) {
 		meshes.push_back(new MeshAnimatedModel(modelNodeData->vertices, modelNodeData->indices, data->textures));
 	}
-	if (boneHierarchy == nullptr) {
+	if (boneHierarchy != nullptr) {
 		rootBone = new Bone(boneHierarchy);
 		rootBone->setParentsForChildren();
 	} else {
