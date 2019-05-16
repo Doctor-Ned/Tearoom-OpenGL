@@ -33,25 +33,24 @@ out VS_OUT{
 } vs_out;
 
 void main() {
+
 	vec4 vertex = vec4(inPosition, 1.0f);
 
 	vec4 newPosition = vec4(0.0f);
 	vec4 newNormal = vec4(0.0f);
-	vec4 norm = vec4(inNormal, 0.0f);
 
 	if (inBoneCounter == 0) {
 		newPosition = vertex;
 		newNormal = vec4(inNormal, 0.0f);
 	} else {
-		for (int i = 0; i < inBoneCounter; i++) {
-			int id = inBoneIDs[i];
-			float weight = inBoneWages[i];
-			newPosition = (boneTransforms[id] * vertex) * weight + newPosition;
-			newNormal = (boneTransforms[id] * norm) * weight + newNormal;
+		mat4 boneTransform = boneTransforms[inBoneIDs[0]] * inBoneWages[0];
+		for (int i = 1; i < inBoneCounter; i++) {
+			boneTransform += boneTransforms[inBoneIDs[i]] * inBoneWages[i];
 		}
+		newPosition = boneTransform * vertex;
+		newNormal = boneTransform * vec4(inNormal, 0.0f);
+		newPosition.w = 1.0f;
 	}
-	newPosition.w = 1.0f;
-	newNormal.w = 0.0f;
 
 	vs_out.texCoords = inTexCoord;
 	vs_out.pos = vec3(model * newPosition);
