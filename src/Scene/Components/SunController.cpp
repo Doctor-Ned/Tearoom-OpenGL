@@ -3,6 +3,7 @@
 //
 
 #include "SunController.h"
+#include "Ui/UiPlane.h"
 
 SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::string& name)
 :Component(_gameObject, name), scene(scene){

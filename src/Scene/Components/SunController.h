@@ -8,6 +8,7 @@
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 #include "Ui/UiCanvas.h"
+#include "Ui/UiColorPlane.h"
 
 class SunController: public Component{
 public:

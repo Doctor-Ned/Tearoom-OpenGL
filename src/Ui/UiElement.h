@@ -57,7 +57,7 @@ public:
 	UiElement *getChild(int index);
 	std::vector<UiElement*> getChildren();
 	void updateDrawData();
-	static void updateProjection(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
+	static void updateProjection();
 	virtual ~UiElement();
 	virtual ShaderType getShaderType() = 0;
 	static glm::mat4 getProjection();
@@ -66,24 +66,21 @@ public:
 	void setActive(bool active);
 	bool isActive();
 	void setRotationAnchor(UiAnchor anchor);
+	static glm::vec3 referenceRescaler;
 protected:
 	UiElement *parent = nullptr;
 	std::vector<UiElement*> children;
 	virtual void updateWorld();
 	bool active = true;
-	static float windowWidth;
-	static float windowHeight;
-	static float screenWidth;
-	static float screenHeight;
 	static glm::mat4 projection;
 	static glm::mat4 view;
 	static glm::vec2 createScaledSize(float width, float height);
 	glm::vec2 createSizeScaledByWidth(float size);
 	glm::vec2 createSizeScaledByHeight(float size);
-	glm::vec2 getRescaledPosition();
 	glm::vec2 getRescaledSize();
-	glm::vec2 getRescaledModeledPosition();
+	glm::vec2 getRescaledPosition();
 	glm::vec2 getRescaledModeledSize();
+	glm::vec2 getRescaledModeledPosition();
 	float opacity = 1.0f;
 	virtual void setup();
 	bool dirty = true;

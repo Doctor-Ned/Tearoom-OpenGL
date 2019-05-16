@@ -18,6 +18,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define UI_REF_WIDTH 1280
+#define UI_REF_HEIGHT 720
+
 #include <vector>
 #include <string>
 

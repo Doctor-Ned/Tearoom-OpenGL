@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 class UiText;
+class UiColorPlane;
 
 class LoadingScene : public Scene {
 public:

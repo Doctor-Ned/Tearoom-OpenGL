@@ -45,7 +45,7 @@ void UiCheckbox::render(Shader *shader) {
 
 void UiCheckbox::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	UiElement::mouse_callback(window, xpos, ypos);
-	glm::vec2 resPosition = getRescaledPosition(), resSize = getRescaledSize();
+	glm::vec2 resPosition = getRescaledModeledPosition(), resSize = getRescaledModeledSize();
 	double minX = resPosition.x, maxX = resPosition.x + resSize.x, minY = resPosition.y, maxY = resPosition.y + resSize.y;
 	if (hover != (xpos > minX && xpos < maxX && ypos > minY && ypos < maxY)) {
 		hover = !hover;

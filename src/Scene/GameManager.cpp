@@ -102,7 +102,7 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
 	if (updateUiProjection) {
-		UiElement::updateProjection(windowWidth, windowHeight, screenWidth, screenHeight);
+		UiElement::updateProjection();
 	}
 }
 

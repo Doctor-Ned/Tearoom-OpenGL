@@ -310,7 +310,8 @@ Scene::Scene() {
 	shaders = assetManager->getShaders();
 	rootNode = new GraphNode();
 	rootNode->setName("Root");
-	rootUiElement = new UiCanvas(glm::vec2(0.0f, 0.0f), glm::vec2(windowWidth, windowHeight));
+	rootUiElement = new UiCanvas(glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT));
+	rootUiElement->setRoot();
 	updatableShaders.push_back(assetManager->getShader(STModel));
 	updatableShaders.push_back(assetManager->getShader(STAnimatedModel));
 	updatableShaders.push_back(assetManager->getShader(STModelInstanced));

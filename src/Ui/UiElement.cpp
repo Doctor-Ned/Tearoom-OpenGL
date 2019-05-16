@@ -3,10 +3,7 @@
 #include "Scene/AssetManager.h"
 #include "Serialization/DataSerializer.h"
 
-float UiElement::windowWidth = 0.0f;
-float UiElement::windowHeight = 0.0f;
-float UiElement::screenWidth = 0.0f;
-float UiElement::screenHeight = 0.0f;
+glm::vec3 UiElement::referenceRescaler = glm::vec3(1.0f, 1.0f, 0.0f);
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
 glm::mat4 UiElement::view = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -172,13 +169,10 @@ void UiElement::updateDrawData() {
 	dirty = false;
 }
 
-void UiElement::updateProjection(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	UiElement::windowWidth = windowWidth;
-	UiElement::windowHeight = windowHeight;
-	UiElement::screenWidth = screenWidth;
-	UiElement::screenHeight = screenHeight;
-
-	projection = glm::ortho(0.0f, static_cast<GLfloat>(windowWidth), static_cast<GLfloat>(windowHeight), 0.0f);
+void UiElement::updateProjection() {
+	//referenceRescaler = glm::vec3(GameManager::getInstance()->getWindowWidth() / UI_REF_WIDTH, GameManager::getInstance()->getWindowHeight() / UI_REF_HEIGHT, 0.0f);
+	referenceRescaler = glm::vec3(UI_REF_WIDTH / GameManager::getInstance()->getWindowWidth(), UI_REF_HEIGHT / GameManager::getInstance()->getWindowHeight(), 0.0f);
+	projection = glm::ortho(0.0f, static_cast<GLfloat>(UI_REF_WIDTH), static_cast<GLfloat>(UI_REF_HEIGHT), 0.0f);
 	for (auto &pair : AssetManager::getInstance()->getShaders()) {
 		switch (pair.first) {
 			case STUiTexture:
@@ -236,33 +230,37 @@ void UiElement::updateWorld() {
 }
 
 glm::vec2 UiElement::createScaledSize(float width, float height) {
-	return glm::vec2(GameManager::getInstance()->getWindowWidth()*width, GameManager::getInstance()->getWindowHeight()*height);
+	return glm::vec2(UI_REF_WIDTH*width, UI_REF_HEIGHT*height);
 }
 
 glm::vec2 UiElement::createSizeScaledByWidth(float size) {
-	float value = GameManager::getInstance()->getWindowWidth()*size;
+	float value = UI_REF_WIDTH * size;
 	return glm::vec2(value, value);
 }
 
 glm::vec2 UiElement::createSizeScaledByHeight(float size) {
-	float value = GameManager::getInstance()->getWindowHeight()*size;
+	float value = UI_REF_HEIGHT * size;
 	return glm::vec2(value, value);
 }
 
-glm::vec2 UiElement::getRescaledPosition() {
-	return glm::vec2(localTransform.getMatrix()[3].x * screenWidth / windowWidth, localTransform.getMatrix()[3].y * screenHeight / windowHeight);
-}
-
 glm::vec2 UiElement::getRescaledSize() {
-	return glm::vec2(size.x * screenWidth / windowWidth, size.y * screenHeight / windowHeight);
+	GameManager *gm = GameManager::getInstance();
+	return glm::vec2(size.x * (gm->getScreenWidth() / gm->getWindowWidth()), size.y * (gm->getScreenHeight() / gm->getWindowHeight()));
 }
 
-glm::vec2 UiElement::getRescaledModeledPosition() {
-	return glm::vec2(modeledPosition.x * screenWidth / windowWidth, modeledPosition.y * screenHeight / windowHeight);
+glm::vec2 UiElement::getRescaledPosition() {
+	GameManager *gm = GameManager::getInstance();
+	return glm::vec2(localTransform.getPosition().x *(gm->getScreenWidth() / gm->getWindowWidth()), localTransform.getPosition().y * (gm->getScreenHeight() / gm->getWindowHeight()));
 }
 
 glm::vec2 UiElement::getRescaledModeledSize() {
-	return glm::vec2(modeledSize.x * screenWidth / windowWidth, modeledSize.y * screenHeight / windowHeight);
+	GameManager *gm = GameManager::getInstance();
+	return glm::vec2(modeledSize.x * (gm->getWindowWidth() / UI_REF_WIDTH) * (gm->getScreenWidth() / gm->getWindowWidth()), modeledSize.y * (gm->getWindowHeight() / UI_REF_HEIGHT) * (gm->getScreenHeight() / gm->getWindowHeight()));
+}
+
+glm::vec2 UiElement::getRescaledModeledPosition() {
+	GameManager *gm = GameManager::getInstance();
+	return glm::vec2(modeledPosition.x * (gm->getWindowWidth() / UI_REF_WIDTH) * (gm->getScreenWidth() / gm->getWindowWidth()), modeledPosition.y * (gm->getWindowHeight() / UI_REF_HEIGHT) * (gm->getScreenHeight() / gm->getWindowHeight()));
 }
 
 void UiElement::setup() {}

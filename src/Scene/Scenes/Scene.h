@@ -7,13 +7,12 @@
 #include "Scene/OctreeNode.h"
 #include "Render/LightManager.h"
 #include "Render/Skybox.h"
-#include "Ui/UiText.h"
-#include "Ui/UiColorPlane.h"
-#include "Ui/UiPlane.h"
 
 #define ENABLE_FRUSTUM_CULLING
 
 class LightManager;
+class UiPlane;
+class UiCanvas;
 struct GameFramebuffers;
 class AssetManager;
 class GameManager;
@@ -80,7 +79,7 @@ protected:
 	GameManager *gameManager;
 	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
-	UiElement *rootUiElement;
+	UiCanvas *rootUiElement;
 
 	//inventory
 	std::vector<UiPlane*> objectRepresentasions;

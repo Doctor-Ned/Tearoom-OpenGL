@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 	bool fullscreen = false;
 	bool windowSizeDefined = false;
 
-	float windowWidth = 1280.0f, windowHeight = 720.0f;
+	float windowWidth = 800.0f, windowHeight = 720.0f;
 
 	bool expectedWidth = false, expectedHeight = false;
 

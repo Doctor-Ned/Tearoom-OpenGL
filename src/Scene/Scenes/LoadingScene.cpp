@@ -1,6 +1,7 @@
 #include "LoadingScene.h"
 #include "Ui/UiText.h"
 #include "Ui/UiColorPlane.h"
+#include "Ui/UiCanvas.h"
 
 LoadingScene::LoadingScene() {
 	UiColorPlane *background = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0, 0), glm::vec2(windowWidth, windowHeight), TopLeft);
