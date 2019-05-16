@@ -20,6 +20,8 @@
 
 #define UI_REF_WIDTH 1280
 #define UI_REF_HEIGHT 720
+#define UI_REF_CEN_X UI_REF_WIDTH/2
+#define UI_REF_CEN_Y UI_REF_HEIGHT/2
 
 #include <vector>
 #include <string>

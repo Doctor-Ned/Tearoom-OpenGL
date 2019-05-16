@@ -29,6 +29,8 @@ MiszukScene::MiszukScene() {
 	lightManager->recreateLights(0, 0, 0);
 	camera = new Camera();
 
+	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, UI_REF_CEN_Y), "+", 1.0f));
+
 	// for basic animation testing
 	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
@@ -187,12 +189,6 @@ MiszukScene::~MiszukScene() {
 
 void MiszukScene::render() {
 	Scene::render();
-}
-
-void MiszukScene::renderUi() {
-	Scene::renderUi();
-	assetManager->getShader(STText)->use();
-	assetManager->getTextRenderer()->renderText(assetManager->getShader(STText), "+", gameManager->getScreenWidth() / 2.0f, gameManager->getScreenHeight() / 2.0f, 1.0f);
 }
 
 void MiszukScene::update(double deltaTime) {

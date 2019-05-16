@@ -35,7 +35,7 @@
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
 	serializer = Serializer::getInstance();
-	cameraText = new UiText(glm::vec2(0.0f, windowHeight), glm::vec2(windowWidth, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
+	cameraText = new UiText(glm::vec2(0.0f, UI_REF_HEIGHT), glm::vec2(UI_REF_WIDTH, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
 	setEditorCamera(useEditorCamera);
 	loadTexturesModels();
@@ -55,7 +55,7 @@ void EditorScene::renderUi() {
 	Scene::renderUi();
 	idCounter = 0;
 	ImGui::Begin("Editor manager", nullptr, 64);
-	if (componentSelectionCallback != nullptr && ImGui::Button("Stop selectin component")) {
+	if (componentSelectionCallback != nullptr && ImGui::Button("Stop selecting component")) {
 		componentSelectionCallback = nullptr;
 	}
 	if (meshSelectionCallback != nullptr && ImGui::Button("Stop selecting mesh")) {

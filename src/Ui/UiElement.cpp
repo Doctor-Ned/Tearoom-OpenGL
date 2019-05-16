@@ -170,8 +170,9 @@ void UiElement::updateDrawData() {
 }
 
 void UiElement::updateProjection() {
-	//referenceRescaler = glm::vec3(GameManager::getInstance()->getWindowWidth() / UI_REF_WIDTH, GameManager::getInstance()->getWindowHeight() / UI_REF_HEIGHT, 0.0f);
-	referenceRescaler = glm::vec3(UI_REF_WIDTH / GameManager::getInstance()->getWindowWidth(), UI_REF_HEIGHT / GameManager::getInstance()->getWindowHeight(), 0.0f);
+	GameManager *gm = GameManager::getInstance();
+	referenceRescaler = glm::vec3((gm->getWindowWidth() / UI_REF_WIDTH) * (gm->getScreenWidth() / gm->getWindowWidth()), (gm->getWindowHeight() / UI_REF_HEIGHT) * (gm->getScreenHeight() / gm->getWindowHeight()), 0.0f);
+	//referenceRescaler = glm::vec3(UI_REF_WIDTH / GameManager::getInstance()->getWindowWidth(), UI_REF_HEIGHT / GameManager::getInstance()->getWindowHeight(), 0.0f);
 	projection = glm::ortho(0.0f, static_cast<GLfloat>(UI_REF_WIDTH), static_cast<GLfloat>(UI_REF_HEIGHT), 0.0f);
 	for (auto &pair : AssetManager::getInstance()->getShaders()) {
 		switch (pair.first) {
@@ -255,12 +256,12 @@ glm::vec2 UiElement::getRescaledPosition() {
 
 glm::vec2 UiElement::getRescaledModeledSize() {
 	GameManager *gm = GameManager::getInstance();
-	return glm::vec2(modeledSize.x * (gm->getWindowWidth() / UI_REF_WIDTH) * (gm->getScreenWidth() / gm->getWindowWidth()), modeledSize.y * (gm->getWindowHeight() / UI_REF_HEIGHT) * (gm->getScreenHeight() / gm->getWindowHeight()));
+	return glm::vec2(modeledSize.x * referenceRescaler.x, modeledSize.y * referenceRescaler.y);
 }
 
 glm::vec2 UiElement::getRescaledModeledPosition() {
 	GameManager *gm = GameManager::getInstance();
-	return glm::vec2(modeledPosition.x * (gm->getWindowWidth() / UI_REF_WIDTH) * (gm->getScreenWidth() / gm->getWindowWidth()), modeledPosition.y * (gm->getWindowHeight() / UI_REF_HEIGHT) * (gm->getScreenHeight() / gm->getWindowHeight()));
+	return glm::vec2(modeledPosition.x * referenceRescaler.x, modeledPosition.y * referenceRescaler.y);
 }
 
 void UiElement::setup() {}
