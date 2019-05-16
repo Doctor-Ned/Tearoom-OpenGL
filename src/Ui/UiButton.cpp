@@ -70,7 +70,7 @@ void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action,
 					runCallbacks(Clicked);
 				} else {
 					state = Idle;
-					//runCallbacks(Idle);
+					runCallbacks(Idle);
 				}
 			}
 		}
