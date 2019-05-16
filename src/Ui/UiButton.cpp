@@ -4,7 +4,7 @@
 #include "Scene/AssetManager.h"
 
 UiButton::UiButton(const char* textureIdle, const char* textureHover, const char* textureClicked,
-	glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiPlane(textureIdle, position, size, anchor) {
+				   glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiPlane(textureIdle, position, size, anchor) {
 	this->textureHover = AssetManager::getInstance()->getTexture(textureHover);
 	this->textureClicked = AssetManager::getInstance()->getTexture(textureClicked);
 	setup();
@@ -12,7 +12,7 @@ UiButton::UiButton(const char* textureIdle, const char* textureHover, const char
 
 UiButton::UiButton(glm::vec2 position, UiAnchor anchor) : UiButton(position, createScaledSize(BASE_LONG_BTN_WIDTH, BASE_LONG_BTN_HEIGHT), anchor) {}
 
-UiButton::UiButton(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position,size, anchor) {}
+UiButton::UiButton(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position, size, anchor) {}
 
 void UiButton::render(Shader *shader) {
 	UiTexturedElement::render(shader);
@@ -34,7 +34,7 @@ void UiButton::render(Shader *shader) {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-	
+
 }
 
 void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -45,20 +45,15 @@ void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		hover = !hover;
 		if (hover) {
 			state = clicked ? Clicked : Hover;
-			if(hooverCallback != nullptr) {
-				hooverCallback();
+			if (!clicked) {
+				runCallbacks(Hover);
 			}
-
 		} else if (!clicked) {
 			state = Idle;
-			hooverDefaultState();
+			runCallbacks(Idle);
 		}
 	}
 
-}
-
-void UiButton::setHooverDefaultState(std::function<void()> hooverDefaultState) {
-	this->hooverDefaultState = hooverDefaultState;
 }
 
 void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
@@ -72,25 +67,76 @@ void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action,
 				clicked = false;
 				if (hover) {
 					state = Hover;
-					if (callback != nullptr) {
-						callback();
-					}
+					runCallbacks(Clicked);
 				} else {
 					state = Idle;
+					//runCallbacks(Idle);
 				}
 			}
 		}
 	}
 }
 
-void UiButton::setHooverCallback(std::function<void()> hooverCallback) {
-	this->hooverCallback = hooverCallback;
+void UiButton::addClickCallback(std::function<void()> callback) {
+	addCallback(Clicked, callback);
 }
 
-void UiButton::setButtonCallback(std::function<void()> callback) {
-	this->callback = callback;
+void UiButton::addHoverCallback(std::function<void()> callback) {
+	addCallback(Hover, callback);
+}
+
+void UiButton::addLeaveCallback(std::function<void()> callback) {
+	addCallback(Idle, callback);
+}
+
+void UiButton::clearClickCallbacks() {
+	clearCallbacks(Clicked);
+}
+
+void UiButton::clearHoverCallbacks() {
+	clearCallbacks(Hover);
+}
+
+void UiButton::clearLeaveCallbacks() {
+	clearCallbacks(Idle);
+}
+
+void UiButton::clearCallbacks() {
+	clearCallbacks(Clicked);
+	clearCallbacks(Hover);
+	clearCallbacks(Idle);
 }
 
 UiButtonState UiButton::getState() {
 	return state;
+}
+
+void UiButton::runCallbacks(UiButtonState state) {
+	for (auto &pair : callbacks) {
+		if (pair.first == state) {
+			for (auto &callback : pair.second) {
+				callback();
+			}
+			break;
+		}
+	}
+}
+
+void UiButton::addCallback(UiButtonState state, std::function<void()> callback) {
+	for (auto &pair : callbacks) {
+		if (pair.first == state) {
+			pair.second.push_back(callback);
+			return;
+		}
+	}
+	callbacks.emplace(state, std::vector <std::function<void()>> {callback});
+}
+
+void UiButton::clearCallbacks(UiButtonState state) {
+	for (auto &pair : callbacks) {
+		if (pair.first == state) {
+			pair.second.clear();
+			break;
+		}
+	}
 }

@@ -12,19 +12,19 @@ class UiTextButton;
 MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(windowCenterX, 3 * windowHeight / 9.0f), "Miszuk scene");
-	miszukScene->setButtonCallback([]()
+	miszukScene->addClickCallback([]()
 	{	SoundSystem::getSound("bow")->setDefaultVolume(0.05f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 		GameManager::getInstance()->setCurrentScene(new MiszukScene());
 	});
 	UiTextButton *newTestScene = new UiTextButton(glm::vec2(windowCenterX, 4 * windowHeight / 9.0f), "New test scene");
-	newTestScene->setButtonCallback([]()
+	newTestScene->addClickCallback([]()
 	{
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 		GameManager::getInstance()->setCurrentScene(new TestScene());
 	});
 	UiTextButton *loadTestScene = new UiTextButton(glm::vec2(windowCenterX, 5 * windowHeight / 9.0f), "Load test scene");
-	loadTestScene->setButtonCallback([this]() {
+	loadTestScene->addClickCallback([this]() {
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 		Scene *scene = Serializer::getInstance()->loadScene("test");
 		if(scene != nullptr) {
@@ -32,19 +32,19 @@ MenuScene::MenuScene() {
 		}
 	});
 	UiTextButton *editorScene = new UiTextButton(glm::vec2(windowCenterX, 6 * windowHeight / 9.0f), "Editor scene");
-	editorScene->setButtonCallback([]()
+	editorScene->addClickCallback([]()
 	{
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 		GameManager::getInstance()->setCurrentScene(new EditorScene());
 	});
 	UiTextButton *options = new UiTextButton(glm::vec2(windowCenterX, 7 * windowHeight / 9.0f), "Options");
-	options->setButtonCallback([this]()
+	options->addClickCallback([this]()
 	{
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow")); 
 		showOptions();
 	});
 	UiTextButton *quit = new UiTextButton(glm::vec2(windowCenterX, 8 * windowHeight / 9.0f), "Quit");
-	quit->setButtonCallback([]() {GameManager::getInstance()->quit(); });
+	quit->addClickCallback([]() {GameManager::getInstance()->quit(); });
 	rootUiElement->addChild(miszukScene);
 	rootUiElement->addChild(newTestScene);
 	rootUiElement->addChild(loadTestScene);

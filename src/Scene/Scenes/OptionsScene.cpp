@@ -79,7 +79,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	});
 
 	UiTextButton *back = new UiTextButton(glm::vec2(windowCenterX, 17 * heightSeg), "Back to menu");
-	back->setButtonCallback([menuScene]() { menuScene->hideOptions(); });
+	back->addClickCallback([menuScene]() { menuScene->hideOptions(); });
 	rootUiElement->addChild(back);
 	rootUiElement->addChild(enableLights);
 	rootUiElement->addChild(enableShadowCasting);

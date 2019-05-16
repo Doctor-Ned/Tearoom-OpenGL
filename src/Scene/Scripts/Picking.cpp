@@ -27,7 +27,7 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
     photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f,40.0f), Right);
 	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
-    itemsButton->setButtonCallback([this]()
+    itemsButton->addClickCallback([this]()
     {
 		letterInventory->setActive(false);
 		itemsInventory->setActive(true);
@@ -37,19 +37,19 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
 
-    itemsButton->setHooverCallback([this]()
+    itemsButton->addHoverCallback([this]()
     {
     	itemDesc->setActive(true);
 		descBackground->setActive(true);
     });
 
-    itemsButton->setHooverDefaultState([this]()
+    itemsButton->addLeaveCallback([this]()
     {
     	itemDesc->setActive(false);
     	descBackground->setActive(false);
     });
 
-    letterButton->setButtonCallback([this]()
+    letterButton->addClickCallback([this]()
     {
 		letterInventory->setActive(true);
 		itemsInventory->setActive(false);
@@ -58,7 +58,7 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
         SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
-    photoButton->setButtonCallback([this]()
+    photoButton->addClickCallback([this]()
     {
     	letterInventory->setActive(false);
 		itemsInventory->setActive(false);
