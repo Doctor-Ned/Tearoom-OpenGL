@@ -3,6 +3,8 @@
 
 #include <functional>
 #include "UiPlane.h"
+#include "UiCanvas.h"
+#include "UiText.h"
 
 enum UiButtonState {
 	Idle,
@@ -22,6 +24,7 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) override;
 	void setButtonCallback(std::function<void()> callback);
 	void setHooverCallback(std::function<void()> hooverCallback);
+	void setHooverDefaultState(std::function<void()> hooverDefaultState);
 	using UiElement::setPosition;
 	UiButtonState getState();
 protected:
@@ -30,6 +33,7 @@ protected:
 	bool clicked = false, hover = false;
 	std::function<void()> callback = []() {};
 	std::function<void()> hooverCallback = []() {};
+	std::function<void()> hooverDefaultState = []() {};
 };
 
 #endif
