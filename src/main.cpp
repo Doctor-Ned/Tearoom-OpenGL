@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 		screenHeight = mode->height;
 	}
 
-	if (fullscreen && !windowSizeDefined || fullscreen_borderless) {
+	if ((fullscreen_borderless || fullscreen) && !windowSizeDefined) {
 		windowWidth = screenWidth;
 		windowHeight = screenHeight;
 	}
@@ -262,7 +262,7 @@ int main(int argc, char** argv) {
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-		reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
+						  reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
 	data.clear();
 	glBindVertexArray(0);
@@ -312,7 +312,7 @@ int main(int argc, char** argv) {
 		lastFps = static_cast<int>(1.0 / timeDelta);
 		deltaSum += timeDelta;
 		if (deltaSum >= 0.5f) {   //update FPS text every second
-			fpsText->setText("FPS: "+std::to_string(lastFps));
+			fpsText->setText("FPS: " + std::to_string(lastFps));
 			deltaSum = 0.0f;
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
@@ -395,7 +395,7 @@ int main(int argc, char** argv) {
 		if (loading) {
 			assetManager->loadNextPendingResource();
 		}
-		if(loading && assetManager->isLoaded()) {
+		if (loading && assetManager->isLoaded()) {
 			gameManager->goToMenu();
 		}
 	}
