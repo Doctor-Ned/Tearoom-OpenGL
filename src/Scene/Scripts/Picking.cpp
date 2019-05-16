@@ -25,7 +25,7 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
     itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f,40.0f), Right);
     letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f,40.0f), Right);
     photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f,40.0f), Right);
-
+	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
     itemsButton->setButtonCallback([this]()
     {
@@ -36,11 +36,19 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
+
     itemsButton->setHooverCallback([this]()
     {
     	itemDesc->setActive(true);
-        std::cout<<"HOOVER"<<std::endl;
+		descBackground->setActive(true);
     });
+
+    itemsButton->setHooverDefaultState([this]()
+    {
+    	itemDesc->setActive(false);
+    	descBackground->setActive(false);
+    });
+
     letterButton->setButtonCallback([this]()
     {
 		letterInventory->setActive(true);
@@ -72,12 +80,14 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-    itemDesc = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Letter from uncle Yoshiro", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+    itemDesc = new UiText(glm::vec2(1010.0f, 360.0f), glm::vec2(60.0f, 30.0f), "Letter from uncle Yoshiro", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	itemDesc->setActive(false);
+	descBackground->setActive(false);
     encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
+	inventoryCanvas->addChild(descBackground);
 	inventoryCanvas->addChild(itemDesc);
 
 }

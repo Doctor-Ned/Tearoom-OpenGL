@@ -42,7 +42,7 @@ private:
 	UiPlane* photosInventory;
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
-
+	UiColorPlane* descBackground;
 	UiText* itemDesc;
 
 };

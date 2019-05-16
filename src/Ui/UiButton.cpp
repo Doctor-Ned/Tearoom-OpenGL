@@ -48,10 +48,17 @@ void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 			if(hooverCallback != nullptr) {
 				hooverCallback();
 			}
+
 		} else if (!clicked) {
 			state = Idle;
+			hooverDefaultState();
 		}
 	}
+
+}
+
+void UiButton::setHooverDefaultState(std::function<void()> hooverDefaultState) {
+	this->hooverDefaultState = hooverDefaultState;
 }
 
 void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
