@@ -37,6 +37,7 @@ void main() {
 
 	vec4 newPosition = vec4(0.0f);
 	vec4 newNormal = vec4(0.0f);
+	vec4 norm = vec4(inNormal, 0.0f);
 
 	if (inBoneCounter == 0) {
 		newPosition = vertex;
@@ -46,7 +47,7 @@ void main() {
 			int id = inBoneIDs[i];
 			float weight = inBoneWages[i];
 			newPosition = (boneTransforms[id] * vertex) * weight + newPosition;
-			newNormal = (boneTransforms[id] * vec4(inNormal, 0.0f)) * weight + newNormal;
+			newNormal = (boneTransforms[id] * norm) * weight + newNormal;
 		}
 	}
 	newPosition.w = 1.0f;
