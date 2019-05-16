@@ -1,14 +1,12 @@
 #include "AssetManager.h"
-#include "GLFW/glfw3.h"
 #include "Render/GeometryShader.h"
 #include <filesystem>
-#include <fstream>
 #include "Scenes/LoadingScene.h"
 #include <thread>
 #include "Mesh/Model.h"
 #include "Render/PostProcessingShader.h"
 #include "Render/LightManager.h"
-#include "Mesh/MeshModelInstanced.h"
+#include "Mesh/AnimatedModel.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -123,15 +121,24 @@ Model * AssetManager::getModel(std::string path) {
 ModelData* AssetManager::getModelData(std::string path) {
 	for (auto &pair : models) {
 		if (pair.first.compare(path) == 0) {
-			return pair.second;
+			return &pair.second->simpleData;
 		}
 	}
 
 	throw "Critical error! An object tried to access an unknown model: " + path;
 }
 
-std::shared_ptr<Bone> AssetManager::getBoneHierarchy(std::string path)
-{
+AnimatedModelData* AssetManager::getAnimatedModelData(std::string path) {
+	for (auto &pair : models) {
+		if (pair.first.compare(path) == 0) {
+			return &pair.second->animatedData;
+		}
+	}
+
+	throw "Critical error! An object tried to access an unknown model : " + path;
+}
+
+Bone *AssetManager::getBoneHierarchy(std::string path) {
 	for (auto &pair : boneHierarchies) {
 		if (pair.first.compare(path) == 0) {
 			return pair.second;
@@ -139,8 +146,7 @@ std::shared_ptr<Bone> AssetManager::getBoneHierarchy(std::string path)
 	}
 }
 
-SkeletalAnimation AssetManager::getAnimation(std::string path)
-{
+SkeletalAnimation AssetManager::getAnimation(std::string path) {
 	for (auto &pair : animations) {
 		if (pair.first.compare(path) == 0) {
 			return pair.second;
@@ -148,13 +154,11 @@ SkeletalAnimation AssetManager::getAnimation(std::string path)
 	}
 }
 
-void AssetManager::addBoneHierarchy(std::string path, std::shared_ptr<Bone> boneHierarchy)
-{
+void AssetManager::addBoneHierarchy(std::string path, Bone *boneHierarchy) {
 	boneHierarchies.emplace(path, boneHierarchy);
 }
 
-void AssetManager::addAnimation(std::string path, SkeletalAnimation anim)
-{
+void AssetManager::addAnimation(std::string path, SkeletalAnimation anim) {
 	animations.emplace(path, anim);
 }
 
@@ -173,6 +177,7 @@ void AssetManager::setup() {
 	shaders.emplace(STUiColor, new Shader("Ui/uiColorVS.glsl", "Ui/uiColorFS.glsl"));
 	shaders.emplace(STSkybox, new Shader("skyboxVS.glsl", "skyboxFS.glsl"));
 	shaders.emplace(STModel, new Shader("modelVS.glsl", "modelFS.glsl"));
+	shaders.emplace(STAnimatedModel, new Shader("animatedModelVS.glsl", "modelFS.glsl"));
 	shaders.emplace(STModelInstanced, new Shader("instanceModelVS.glsl", "modelFS.glsl"));
 	shaders.emplace(STTexture, new Shader("textureVS.glsl", "textureFS.glsl"));
 	shaders.emplace(STColor, new Shader("colorVS.glsl", "colorFS.glsl"));
@@ -266,10 +271,13 @@ void AssetManager::reloadResources() {
 		defaultTexture = getTexture("res/textures/default.png");
 		Shader *shader = getShader(STModel);
 		Shader *shader2 = getShader(STModelInstanced);
+		Shader *shader3 = getShader(STAnimatedModel);
 		shader->use();
 		shader->setInt("default_texture", defaultTexture.id);
 		shader2->use();
 		shader2->setInt("default_texture", defaultTexture.id);
+		shader3->use();
+		shader3->setInt("default_texture", defaultTexture.id);
 		loaded = true;
 	}
 }
@@ -286,7 +294,7 @@ void AssetManager::loadNextPendingResource() {
 						*i = '/';
 					}
 				}
-				switch(getResourceTypeByExtension(Global::getExtension(path))) {
+				switch (getResourceTypeByExtension(Global::getExtension(path))) {
 					default:
 					case NoneResource:
 						continue;
@@ -327,11 +335,11 @@ float AssetManager::getLoadingProgress() {
 }
 
 ResourceType AssetManager::getResourceTypeByExtension(const std::string& extension) {
-	if(extension.length() == 0) {
+	if (extension.length() == 0) {
 		return NoneResource;
 	}
-	for(auto &str : resourceExtensionMap) {
-		if(str.first == extension) {
+	for (auto &str : resourceExtensionMap) {
+		if (str.first == extension) {
 			return str.second;
 		}
 	}
@@ -340,7 +348,7 @@ ResourceType AssetManager::getResourceTypeByExtension(const std::string& extensi
 
 void AssetManager::loadResource(std::string path, bool verify) {
 	bool add = true;
-	switch(getResourceTypeByExtension(Global::getExtension(path))) {
+	switch (getResourceTypeByExtension(Global::getExtension(path))) {
 		default:
 		case NoneResource:
 			throw std::exception("Attempted to load an invalid resource file!");
@@ -354,7 +362,7 @@ void AssetManager::loadResource(std::string path, bool verify) {
 				}
 			}
 			if (add) {
-				models.emplace(path, Model::createModelData(path));
+				models.emplace(path, AnimatedModel::createModelData(path));
 			}
 			break;
 		case TextureResource:

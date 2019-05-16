@@ -6,10 +6,12 @@
 #include "Render/TextRenderer.h"
 #include "GameManager.h"
 #include "Global.h"
-#include "Mesh/Bone.h"
 #include "Components/SkeletalAnimation.h"
 
 struct ModelData;
+struct AnimatedModelData;
+struct FullModelData;
+class Bone;
 class Model;
 
 enum ShaderType {
@@ -29,7 +31,8 @@ enum ShaderType {
 	STPostProcessing,
 	STLight,
 	STBlur,
-	STText
+	STText,
+	STAnimatedModel
 };
 
 
@@ -51,7 +54,8 @@ static const ShaderType ShaderTypes[] = {
 	STPostProcessing,
 	STLight,
 	STBlur,
-	STText
+	STText,
+	STAnimatedModel
 };
 
 // haven't had enough lol
@@ -72,7 +76,8 @@ static const std::string ShaderTypeNames[] = {
 	"STPostProcessing",
 	"STLight",
 	"STBlur",
-	"STText"
+	"STText",
+	"STAnimatedModel"
 };
 
 enum ResourceType {
@@ -95,9 +100,10 @@ public:
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
 	ModelData* getModelData(std::string path);
-	std::shared_ptr<Bone> getBoneHierarchy(std::string path);
+	AnimatedModelData* getAnimatedModelData(std::string path);
+	Bone *getBoneHierarchy(std::string path);
 	SkeletalAnimation getAnimation(std::string path);
-	void addBoneHierarchy(std::string path, std::shared_ptr<Bone> boneHierarchy);
+	void addBoneHierarchy(std::string path, Bone *boneHierarchy);
 	void addAnimation(std::string path, SkeletalAnimation anim);
 	static bool endsWith(std::string const& fullString, std::string const& ending);
 	AssetManager(AssetManager const&) = delete;
@@ -122,8 +128,8 @@ private:
 	Texture defaultTexture;
 	Texture createTexture(const char * textureFile);
 	std::map <std::string, ResourceType> resourceExtensionMap;
-	std::map <std::string, ModelData*> models;
-	std::map < std::string, std::shared_ptr<Bone> > boneHierarchies;
+	std::map <std::string, FullModelData*> models;
+	std::map < std::string, Bone*> boneHierarchies;
 	std::map < std::string, SkeletalAnimation> animations;
 	std::map<ShaderType, Shader*> shaders;
 	std::vector<Texture> textures;

@@ -55,9 +55,9 @@ public:
 	Camera *editorCamera, *playerCamera = nullptr;
 	UiText *cameraText;
 	SerializableType creatableTypes[2] = { SGraphNode, SSkybox };
-	SerializableType creatableComponents[14] = { SKeyFrameAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
+	SerializableType creatableComponents[15] = { SKeyFrameAnimation, SSkeletalAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
 		SDirLightComp, SSpotLightComp, SPointLightComp, SSun};
-	SerializableType creatableMeshes[15] = { SModel, SMeshBox, SMeshColorBox, SMeshColorCone, SMeshColorCylinder, SMeshColorPlane, SMeshColorSphere, SMeshColorTorus, SMeshCone, SMeshCylinder, SMeshPlane, SMeshRefBox, SMeshRefSphere,
+	SerializableType creatableMeshes[16] = { SModel, SAnimatedModel, SMeshBox, SMeshColorBox, SMeshColorCone, SMeshColorCylinder, SMeshColorPlane, SMeshColorSphere, SMeshColorTorus, SMeshCone, SMeshCylinder, SMeshPlane, SMeshRefBox, SMeshRefSphere,
 	SMeshSphere, SMeshTorus};
 	bool showSaveDialog = false, showLoadDialog = false;
 	std::function<void()> confirmationDialogCallback = nullptr;

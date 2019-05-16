@@ -2,9 +2,6 @@
 #define MODEL_H
 
 #include "MeshModel.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <vector>
 #include <string>
 
@@ -22,7 +19,6 @@ struct ModelData {
 class Model : public Mesh {
 public:
 	Model(std::string path);
-	static ModelData* createModelData(std::string path);
 	void setOpacity(float opacity) override;
 	void setCulled(bool culled) override;
 	void setUseLight(bool useLight) override;
@@ -40,9 +36,6 @@ private:
 	Model(ModelData* data);
 	void draw(Shader *shader, glm::mat4 world) override;
 	std::vector<MeshModel*> meshes;
-	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output);
-	static ModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
-	static Texture* loadModelTextures(const std::string& objPath);
 	friend class Serializer;
 };
 

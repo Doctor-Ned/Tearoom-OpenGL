@@ -30,6 +30,7 @@
 #include "Scene/Components/LightComponents/SpotLightComp.h"
 #include "Scene/Components/LightComponents/PointLightComp.h"
 #include "Scene/Components/KeyFrameAnimation.h"
+#include "Mesh/AnimatedModel.h"
 
 EditorScene::EditorScene() {
 	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
@@ -197,6 +198,7 @@ void EditorScene::renderUi() {
 			}
 			break;
 			case SModel:
+			case SAnimatedModel:
 			{
 				static std::string model;
 				if (typeCreation->typeCreationStarted) {
@@ -218,7 +220,7 @@ void EditorScene::renderUi() {
 					}
 				}
 				if (model.length() > 0 && ImGui::Button("Create")) {
-					Model *mdl = new Model(model);
+					void* mdl = typeCreation->typeToCreate == SModel ? static_cast<void*>(new Model(model)) : static_cast<void*>(new AnimatedModel(model));
 					typeCreation->creationCallback(mdl);
 					typeCreationsToDelete.push_back(typeCreation);
 				}
@@ -592,6 +594,12 @@ void EditorScene::renderUi() {
 			case SKeyFrameAnimation:
 			{
 				typeCreation->creationCallback(new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+			break;
+			case SSkeletalAnimation:
+			{
+				//todo
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;

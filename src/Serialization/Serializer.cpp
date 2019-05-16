@@ -36,6 +36,7 @@
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Scene/Components/SkeletalAnimation.h"
+#include "Mesh/AnimatedModel.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -290,8 +291,12 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SSkybox:
 			deserializeAndIdentify(pointer, data, new Skybox());
+			break;
 		case SSkeletalAnimation:
 			deserializeAndIdentify(pointer, data, new SkeletalAnimation());
+			break;
+		case SAnimatedModel:
+			deserializeAndIdentify(pointer, data, new AnimatedModel());
 			break;
 	}
 	return pointer;

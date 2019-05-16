@@ -10,54 +10,44 @@
 #include "Scene/Components/SkeletalAnimation.h"
 
 
-AnimatedModel::AnimatedModel(std::string path) : AnimatedModel(AssetManager::getInstance()->getModelData(path)) {
+AnimatedModel::AnimatedModel(std::string path) : AnimatedModel(AssetManager::getInstance()->getAnimatedModelData(path), AssetManager::getInstance()->getBoneHierarchy(path)) {
 	this->path = path;
-	rootBone = new Bone(*AssetManager::getInstance()->getBoneHierarchy(path));
-	rootBone->setParentsForChildren();
 }
 
-//#TODO: Need to write shader and change enum here
-AnimatedModel::AnimatedModel(ModelData* data) : Mesh(STModel) {
-	initialize(data);
+AnimatedModel::AnimatedModel(AnimatedModelData* data, Bone *boneHierarchy) : Mesh(STAnimatedModel) {
+	initialize(data, boneHierarchy);
 }
 
-Bone* AnimatedModel::getBoneRoot()
-{
+Bone* AnimatedModel::getBoneRoot() {
 	return rootBone;
 }
 
-std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims, int animCount)
-{
+std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims, int animCount) {
 	std::vector<SkeletalAnimation> animations;
-	for (int i = 0; i < animCount; i++)
-	{
+	for (int i = 0; i < animCount; i++) {
 		animations.emplace_back(SkeletalAnimation(nullptr, anims[i]->mName.C_Str()));
 		double ticksPerSecond = anims[i]->mTicksPerSecond;
 		double animationDuration = anims[i]->mDuration / ticksPerSecond;
 
-		for (unsigned int j = 0; j < anims[i]->mNumChannels; j++)
-		{
+		for (unsigned int j = 0; j < anims[i]->mNumChannels; j++) {
 			const char* nodeName = anims[i]->mChannels[j]->mNodeName.C_Str();
 			float keyTime;
 			//position
-			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumPositionKeys; k++)
-			{
+			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumPositionKeys; k++) {
 				keyTime = anims[i]->mChannels[j]->mPositionKeys[k].mTime / ticksPerSecond;
 				aiVector3D assimpPos = anims[i]->mChannels[j]->mPositionKeys[k].mValue;
 				glm::vec3 pos(assimpPos.x, assimpPos.y, assimpPos.z);
 				animations[i].addKeyFrame(nodeName, anim::TRANSLATION, keyTime, pos);
 			}
 			//scale
-			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumScalingKeys; k++)
-			{
+			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumScalingKeys; k++) {
 				keyTime = anims[i]->mChannels[j]->mScalingKeys[k].mTime / ticksPerSecond;
 				aiVector3D assimpScale = anims[i]->mChannels[j]->mScalingKeys[k].mValue;
 				glm::vec3 scale(assimpScale.x, assimpScale.y, assimpScale.z);
 				animations[i].addKeyFrame(nodeName, anim::SCALE, keyTime, scale);
 			}
 			//rotation
-			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumRotationKeys; k++)
-			{
+			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumRotationKeys; k++) {
 				keyTime = anims[i]->mChannels[j]->mRotationKeys[k].mTime / ticksPerSecond;
 				aiQuaternion q = anims[i]->mChannels[j]->mRotationKeys[k].mValue;
 				glm::quat q2 = glm::quat(q.w, q.x, q.y, q.z);
@@ -69,25 +59,21 @@ std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims
 	return animations;
 }
 
-Bone* AnimatedModel::loadBones(const aiScene* scene)
-{
-	
+Bone* AnimatedModel::loadBones(const aiScene* scene) {
+
 	int meshesCount = scene->mNumMeshes;
 	//bones vector through all the meshes
 	std::vector<Bone*> bones;
-	for (int i = 0; i < meshesCount; i++)
-	{
+	for (int i = 0; i < meshesCount; i++) {
 		aiMesh* mesh = scene->mMeshes[i];
 		int bonesCount = mesh->mNumBones;
-		for (int j = 0; j < bonesCount; j++)
-		{
+		for (int j = 0; j < bonesCount; j++) {
 			auto bone = new Bone();
 			aiBone* b = mesh->mBones[j];
 			bone->name = b->mName.C_Str();
 			bone->inverseBindPose = Global::aiMatrix4x4ToGlm(b->mOffsetMatrix);
 			bone->meshIndex = i;
-			for (int k = 0; k < b->mNumWeights; k++)
-			{
+			for (int k = 0; k < b->mNumWeights; k++) {
 				bone->verticesWages.emplace(b->mWeights[k].mVertexId, b->mWeights[k].mWeight);
 			}
 			bones.push_back(bone);
@@ -96,33 +82,27 @@ Bone* AnimatedModel::loadBones(const aiScene* scene)
 
 	aiNode* root = scene->mRootNode;
 	Bone* boneRoot = nullptr;
-	for (int i = 0; i < root->mNumChildren; i++)
-	{
+	for (int i = 0; i < root->mNumChildren; i++) {
 		auto it = std::find_if(bones.begin(), bones.end(), [i, root](const Bone* b) { return root->mChildren[i]->mName.C_Str() == b->name; });
-		if (it != bones.end())
-		{
+		if (it != bones.end()) {
 			boneRoot = *it;
 			boneRoot->transform = Global::aiMatrix4x4ToGlm(root->mChildren[i]->mTransformation);
 			recreateBonesHierarchy(boneRoot, root->mChildren[i], bones);
 			std::cout << root->mChildren[i]->mName.C_Str() << std::endl;
 		}
 	}
-	boneRoot->setID();
-	if (boneRoot)
-	{
+	if (boneRoot) {
+		boneRoot->setID();
 		boneRoot->toString(0);
 	}
 	return boneRoot;
 }
 
-void AnimatedModel::recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNode, std::vector<Bone*>& bones)
-{
-	for (int i = 0; i < currentSceneNode->mNumChildren; i++)
-	{
+void AnimatedModel::recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNode, std::vector<Bone*>& bones) {
+	for (int i = 0; i < currentSceneNode->mNumChildren; i++) {
 		aiNode* child = currentSceneNode->mChildren[i];
 		auto it = std::find_if(bones.begin(), bones.end(), [&child](const Bone* b) { return child->mName.C_Str() == b->name; });
-		if (it != bones.end())
-		{
+		if (it != bones.end()) {
 			Bone* bone = *it;
 			bone->parent = parent;
 			parent->children.push_back(bone);
@@ -132,31 +112,39 @@ void AnimatedModel::recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNod
 	}
 }
 
-void AnimatedModel::assignBonesToVertices(const Bone* root, ModelData* data)
-{
-	for(auto& it : root->verticesWages)
-	{
+void AnimatedModel::assignBonesToVertices(const Bone* root, AnimatedModelData* data) {
+	for (auto& it : root->verticesWages) {
 		int meshIndex = root->meshIndex;
-		int boneIndex = data->nodeData[meshIndex]->vertices[it.first].boneCounter;
-		data->nodeData[meshIndex]->vertices[it.first].bonesIDs[boneIndex] = root->ID;
-		data->nodeData[meshIndex]->vertices[it.first].bonesWages[boneIndex] = it.second;
-		data->nodeData[meshIndex]->vertices[it.first].boneCounter++;
+		int boneIndex = data->nodeData[meshIndex]->vertices[it.first].BoneCounter;
+		data->nodeData[meshIndex]->vertices[it.first].BoneIDs[boneIndex] = root->ID;
+		data->nodeData[meshIndex]->vertices[it.first].BoneWages[boneIndex] = it.second;
+		data->nodeData[meshIndex]->vertices[it.first].BoneCounter++;
 	}
 
-	for(auto& it : root->children)
-	{
+	for (auto& it : root->children) {
 		assignBonesToVertices(it, data);
 	}
 }
 
+void AnimatedModel::addToBoneTransformMatrix(Bone* bone, glm::mat4(&boneTransforms)[MAX_BONE_TRANSFORMS]) {
+	boneTransforms[bone->ID] = bone->worldTransform.getMatrix();
+	for (auto &b : bone->children) {
+		addToBoneTransformMatrix(b, boneTransforms);
+	}
+}
+
 void AnimatedModel::draw(Shader *shader, glm::mat4 world) {
+	if (rootBone) {
+		glm::mat4 boneTransforms[MAX_BONE_TRANSFORMS];
+		addToBoneTransformMatrix(rootBone, boneTransforms);
+		shader->setAnimatedModelBoneTransforms(boneTransforms);
+	}
 	for (auto& mesh : meshes) {
 		mesh->drawSelf(shader, world);
 	}
-	//todo: I think this is the right place to set Bone.WorldTransform into shader BoneTransform table uniform 
 }
 
-ModelData* AnimatedModel::createModelData(std::string path) {
+FullModelData* AnimatedModel::createModelData(std::string path) {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(
 		path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -165,26 +153,43 @@ ModelData* AnimatedModel::createModelData(std::string path) {
 		exit(1);
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
-	ModelData* result = new ModelData();
+	FullModelData* result = new FullModelData();
 	Texture *textures = loadModelTextures(path);
 	for (int i = 0; i < 6; i++) {
-		result->textures[i] = textures[i];
+		result->animatedData.textures[i] = textures[i];
+		result->simpleData.textures[i] = textures[i];
 	}
 	delete[] textures;
 	Bone* boneRoot = loadBones(scene);
 	auto anims = loadAnimations(scene->mAnimations, scene->mNumAnimations);
-	processNode(scene->mRootNode, scene, directory, result);
-	assignBonesToVertices(boneRoot, result);
+	processNode(scene->mRootNode, scene, directory, &result->animatedData);
+	if (boneRoot) {
+		assignBonesToVertices(boneRoot, &result->animatedData);
+	}
 
-	AssetManager::getInstance()->addBoneHierarchy(path, std::make_shared<Bone>(boneRoot));
-	for(auto& animation : anims)
-	{
+	for (auto &dat : result->animatedData.nodeData) {
+		ModelNodeData *data = new ModelNodeData();
+		data->indices = dat->indices;
+		for (auto &ver : dat->vertices) {
+			ModelVertex vertex;
+			vertex.Position = ver.Position;
+			vertex.Normal = ver.Normal;
+			vertex.TexCoords = ver.TexCoords;
+			vertex.Tangent = ver.Tangent;
+			vertex.Bitangent = ver.Bitangent;
+			data->vertices.push_back(vertex);
+		}
+		result->simpleData.nodeData.push_back(data);
+	}
+
+	AssetManager::getInstance()->addBoneHierarchy(path, boneRoot);
+	for (auto& animation : anims) {
 		AssetManager::getInstance()->addAnimation(path, animation);
 	}
 	/*anims[0].setRootBone(boneRoot);
 	anims[0].play();
 	anims[0].update(0.016f);*/
-	
+
 	return result;
 }
 
@@ -231,7 +236,7 @@ void AnimatedModel::setOpaque(bool opaque) {
 }
 
 SerializableType AnimatedModel::getSerializableType() {
-	return SModel;
+	return SAnimatedModel;
 }
 
 Json::Value AnimatedModel::serialize(Serializer* serializer) {
@@ -243,7 +248,7 @@ Json::Value AnimatedModel::serialize(Serializer* serializer) {
 void AnimatedModel::deserialize(Json::Value& root, Serializer* serializer) {
 	Mesh::deserialize(root, serializer);
 	this->path = root.get("model", "").asString();
-	initialize(AssetManager::getInstance()->getModelData(path));
+	initialize(AssetManager::getInstance()->getAnimatedModelData(path), AssetManager::getInstance()->getBoneHierarchy(path));
 }
 
 void AnimatedModel::renderGui() {
@@ -251,14 +256,19 @@ void AnimatedModel::renderGui() {
 	ImGui::Text(path.c_str());
 }
 
-void AnimatedModel::initialize(ModelData* data) {
+void AnimatedModel::initialize(AnimatedModelData* data, Bone *boneHierarchy) {
 	for (auto &modelNodeData : data->nodeData) {
-		meshes.push_back(new MeshModel(modelNodeData->vertices, modelNodeData->indices, data->textures));
+		meshes.push_back(new MeshAnimatedModel(modelNodeData->vertices, modelNodeData->indices, data->textures));
+	}
+	if (boneHierarchy == nullptr) {
+		rootBone = new Bone(boneHierarchy);
+		rootBone->setParentsForChildren();
+	} else {
+		rootBone = nullptr;
 	}
 }
 
-void AnimatedModel::processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output) {
-	std::vector<ModelTexture> textures_loaded;
+void AnimatedModel::processNode(aiNode* node, const aiScene* scene, const std::string& directory, AnimatedModelData* output) {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		output->nodeData.push_back(processMesh(mesh, scene, directory));
@@ -268,17 +278,16 @@ void AnimatedModel::processNode(aiNode* node, const aiScene* scene, const std::s
 	}
 }
 
-ModelNodeData *AnimatedModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory) {
-	ModelNodeData *result = new ModelNodeData();
+AnimatedModelNodeData *AnimatedModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory) {
+	AnimatedModelNodeData *result = new AnimatedModelNodeData();
 	// Walk through each of the mesh's vertices
-	union assimpToGlmVec
-	{
+	union assimpToGlmVec {
 		glm::vec3* vec3;
 		aiVector3D* vec;
 	};
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-		ModelVertex vertex;
+		AnimatedModelVertex vertex;
 		//glm::vec3 vector;
 		assimpToGlmVec u;
 		u.vec = mesh->mVertices + i;
@@ -294,8 +303,7 @@ ModelNodeData *AnimatedModel::processMesh(aiMesh* mesh, const aiScene* scene, co
 			vec.x = mesh->mTextureCoords[0][i].x;
 			vec.y = mesh->mTextureCoords[0][i].y;
 			vertex.TexCoords = vec;
-		}
-		else
+		} else
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 
 		u.vec = mesh->mTangents + i;
@@ -322,20 +330,15 @@ Texture *AnimatedModel::loadModelTextures(const std::string &objPath) {
 		if (Global::startsWith(text, dir)) {
 			if (Global::endsWith(text, "_AO.png")) {
 				textures[0] = assetManager->getTexture(text);
-			}
-			else if (Global::endsWith(text, "_BaseColor.png")) {
+			} else if (Global::endsWith(text, "_BaseColor.png")) {
 				textures[1] = assetManager->getTexture(text);
-			}
-			else if (Global::endsWith(text, "_Emissive.png")) {
+			} else if (Global::endsWith(text, "_Emissive.png")) {
 				textures[2] = assetManager->getTexture(text);
-			}
-			else if (Global::endsWith(text, "_Metallic.png")) {
+			} else if (Global::endsWith(text, "_Metallic.png")) {
 				textures[3] = assetManager->getTexture(text);
-			}
-			else if (Global::endsWith(text, "_Normal.png")) {
+			} else if (Global::endsWith(text, "_Normal.png")) {
 				textures[4] = assetManager->getTexture(text);
-			}
-			else if (Global::endsWith(text, "_Roughness.png")) {
+			} else if (Global::endsWith(text, "_Roughness.png")) {
 				textures[5] = assetManager->getTexture(text);
 			}
 		}

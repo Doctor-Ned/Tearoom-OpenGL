@@ -108,6 +108,12 @@ void Shader::setMetallic(float metallic) {
 	setFloat("metallic", metallic);
 }
 
+void Shader::setAnimatedModelBoneTransforms(glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]) {
+	for(int i=0;i< MAX_BONE_TRANSFORMS;i++) {
+		setMat4(("boneTransforms[" + std::to_string(i) + "]").c_str(), boneTransforms[i]);
+	}
+}
+
 void Shader::setInt(const char* name, int value) {
 	GLint location = getUniformLocation(name);
 	if (location != -1) {

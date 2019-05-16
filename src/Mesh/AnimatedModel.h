@@ -1,7 +1,5 @@
-#ifndef ANIMATED_MODEL_H
-#define ANIMATED_MODEL_H
+#pragma once
 
-#include "MeshModel.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/anim.h>
@@ -9,17 +7,29 @@
 #include <vector>
 #include <string>
 #include "Model.h"
+#include "MeshAnimatedModel.h"
 
-struct VertexForAnimation
-{
-	
+struct AnimatedModelNodeData {
+	std::vector<AnimatedModelVertex> vertices;
+	std::vector<unsigned int> indices;
 };
+
+struct AnimatedModelData {
+	std::vector<AnimatedModelNodeData*> nodeData;
+	Texture textures[6];
+};
+
+struct FullModelData {
+	ModelData simpleData;
+	AnimatedModelData animatedData;
+};
+
 class SkeletalAnimation;
 class Bone;
 class AnimatedModel : public Mesh {
 public:
 	AnimatedModel(std::string path);
-	static ModelData* createModelData(std::string path);
+	static FullModelData* createModelData(std::string path);
 	void setOpacity(float opacity) override;
 	void setCulled(bool culled) override;
 	void setUseLight(bool useLight) override;
@@ -32,21 +42,20 @@ public:
 	Bone* getBoneRoot();
 private:
 	AnimatedModel() {}
-	AnimatedModel(ModelData* data);
+	AnimatedModel(AnimatedModelData* data, Bone *boneHierarchy);
 	void renderGui() override;
-	void initialize(ModelData* data);
+	void initialize(AnimatedModelData* data, Bone *boneHierarchy);
 	std::string path;
 	Bone* rootBone;
 	static std::vector<SkeletalAnimation> loadAnimations(aiAnimation** anims, int animCount);
 	static Bone* loadBones(const aiScene* scene);
 	static void recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNode, std::vector<Bone*>& bones);
-	static void assignBonesToVertices(const Bone* root, ModelData* data);
+	static void assignBonesToVertices(const Bone* root, AnimatedModelData* data);
+	void addToBoneTransformMatrix(Bone* bone, glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]);
 	void draw(Shader *shader, glm::mat4 world) override;
-	std::vector<MeshModel*> meshes;
-	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, ModelData* output);
-	static ModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
+	std::vector<MeshAnimatedModel*> meshes;
+	static void processNode(aiNode* node, const aiScene* scene, const std::string& directory, AnimatedModelData* output);
+	static AnimatedModelNodeData *processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
 	static Texture* loadModelTextures(const std::string& objPath);
 	friend class Serializer;
 };
-
-#endif

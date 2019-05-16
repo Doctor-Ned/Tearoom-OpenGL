@@ -6,6 +6,8 @@
 #include <map>
 #include "LightManager.h"
 
+#define MAX_BONE_TRANSFORMS 80
+
 class Shader {
 public:
 	Shader(char* vertexPath, char* fragmentPath);
@@ -24,6 +26,7 @@ public:
 	void setEmissive(glm::vec3 &emissive);
 	void setRoughness(float roughness);
 	void setMetallic(float metallic);
+	void setAnimatedModelBoneTransforms(glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]);
 	void updateShadowData(std::vector<LightShadowData> dirs, std::vector<LightShadowData> spots, std::vector<LightShadowData> points);
 	virtual void bind(Ubo* ubo);
 	GLint getUniformLocation(const char* name);
