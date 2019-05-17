@@ -84,6 +84,7 @@ protected:
 	float opacity = 1.0f;
 	virtual void setup();
 	bool dirty = true;
+	glm::mat4 worldTransformWithoutRotationScale;
 	glm::vec2 modeledPosition{};
 	glm::vec2 size{};
 	glm::vec2 modeledSize{};

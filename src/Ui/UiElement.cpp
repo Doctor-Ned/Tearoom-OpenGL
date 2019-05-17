@@ -7,8 +7,9 @@ glm::vec3 UiElement::referenceRescaler = glm::vec3(1.0f, 1.0f, 0.0f);
 glm::mat4 UiElement::projection = glm::mat4(1.0f);
 glm::mat4 UiElement::view = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), rotationAnchor(Center), localTransform(InterfaceTransform(dirty, size, anchor)), worldTransform(Transform(dirty)) {
+UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size(size), localTransform(InterfaceTransform(dirty, size, anchor)), worldTransform(Transform(dirty)) {
 	glGenVertexArrays(1, &vao);
+	setRotationAnchor(Center);
 	UiElement::setPosition(position, anchor);
 }
 
@@ -219,10 +220,13 @@ void UiElement::updateWorld() {
 	if (dirty) {
 		if (parent != nullptr) {
 			worldTransform.setMatrix(parent->worldTransform.getMatrix()* localTransform.getMatrix());
+			worldTransformWithoutRotationScale = translate(parent->worldTransform.getMatrix(), localTransform.getPosition());
 		} else {
 			worldTransform.setMatrix(localTransform.getMatrix());
+			worldTransformWithoutRotationScale = translate(glm::mat4(1.0f), localTransform.getPosition());
 		}
-		modeledPosition = glm::vec2(worldTransform.getMatrix()[3]);
+		//modeledPosition = glm::vec2(worldTransform.getMatrix()[3]);
+		modeledPosition = glm::vec2(worldTransformWithoutRotationScale[3]);
 		glm::vec3 scale = Global::getScale(worldTransform.getMatrix());
 		modeledSize = size;
 		modeledSize.x *= scale.x;

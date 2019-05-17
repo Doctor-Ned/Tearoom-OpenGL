@@ -57,8 +57,18 @@ add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
 						   
 add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes
+						   ${CMAKE_SOURCE_DIR}/Scenes)
+						   
+add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+						   ${CMAKE_SOURCE_DIR}/Scenes
+						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes)
+						   
+add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
 						   ${CMAKE_SOURCE_DIR}/src/${SHADER_DIR}
-						   ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_DIR})
+						   ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_DIR})						   
 
 # Create virtual folders to make it look nicer in VS
 if(MSVC_IDE)

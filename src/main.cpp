@@ -20,6 +20,7 @@
 #include "Serialization/Serializer.h"
 #include "Scene/Node.h"
 #include "Scene/SoundSystem.h"
+#include "Scene/Scenes/OptionsScene.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -61,12 +62,9 @@ int main(int argc, char** argv) {
 	assetManager = AssetManager::getInstance();
 	serializer = Serializer::getInstance();
 
-	bool fullscreen_borderless = false;
-	bool borderless = false;
-	bool fullscreen = false;
-	bool windowSizeDefined = false;
+	VideoSettings videoSettings = OptionsScene::loadVideoSettings();
 
-	float windowWidth = 1280.0f, windowHeight = 720.0f;
+	bool windowSizeDefined = false;
 
 	bool expectedWidth = false, expectedHeight = false;
 
@@ -90,31 +88,33 @@ int main(int argc, char** argv) {
 					multiplier *= 10;
 				}
 				if (expectedWidth) {
-					windowWidth = target;
+					videoSettings.windowWidth = target;
 					windowSizeDefined = true;
 					expectedWidth = false;
 				} else {
-					windowHeight = target;
+					videoSettings.windowHeight = target;
 					windowSizeDefined = true;
 					expectedHeight = false;
 				}
 			}
 		} else {
 			if (strcmp("-fullscreen", arg) == 0) {
-				fullscreen = true;
+				videoSettings.windowType = Fullscreen;
 			} else if (strcmp("-windowed", arg) == 0) {
-				fullscreen = false;
+				videoSettings.windowType = Windowed;
 			} else if (strcmp("-borderless", arg) == 0) {
-				borderless = true;
+				videoSettings.windowType = WindowedBorderless;
 			} else if (strcmp("-width", arg) == 0) {
 				expectedWidth = true;
 			} else if (strcmp("-height", arg) == 0) {
 				expectedHeight = true;
 			} else if (strcmp("-fs_borderless", arg) == 0) {
-				fullscreen_borderless = true;
+				videoSettings.windowType = FullscreenBorderless;
 			}
 		}
 	}
+
+	OptionsScene::setVideoSettings(videoSettings);
 
 	// Setup window
 	glfwSetErrorCallback(glfw_error_callback);
@@ -141,29 +141,26 @@ int main(int argc, char** argv) {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // 3.0+ only
 #endif
 
-	float screenWidth = windowWidth, screenHeight = windowHeight;
+	float screenWidth = videoSettings.windowWidth, screenHeight = videoSettings.windowHeight;
 
-	if (fullscreen || fullscreen_borderless) {
+	if (videoSettings.windowType == ExclusiveFullscreen || videoSettings.windowType == Fullscreen || videoSettings.windowType == FullscreenBorderless) {
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		screenWidth = mode->width;
 		screenHeight = mode->height;
+		if (!windowSizeDefined) {
+			videoSettings.windowWidth = screenWidth;
+			videoSettings.windowHeight = screenHeight;
+		}
 	}
 
-	if ((fullscreen_borderless || fullscreen) && !windowSizeDefined) {
-		windowWidth = screenWidth;
-		windowHeight = screenHeight;
-	}
-
-	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, false);
+	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight, false);
 
 	// Create window with graphics context
 	GLFWwindow* window;
-	if (fullscreen_borderless) {
-		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
-	} else if (borderless) {
-		if (fullscreen) {
+	switch (videoSettings.windowType) {
+		case ExclusiveFullscreen:
+		{
 			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
@@ -171,14 +168,24 @@ int main(int argc, char** argv) {
 			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", monitor, nullptr);
-		} else {
+		}
+		break;
+		case FullscreenBorderless:
 			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
-		}
-	} else if (fullscreen) {
-		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", glfwGetPrimaryMonitor(), nullptr);
-	} else {
-		window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
+			break;
+		case Fullscreen:
+			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", glfwGetPrimaryMonitor(), nullptr);
+			break;
+		case WindowedBorderless:
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
+			break;
+		case Windowed:
+			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
+			break;
+		default:
+			throw std::exception("Unknown window type provided.");
 	}
 	if (window == nullptr) {
 		return 1;
@@ -273,14 +280,14 @@ int main(int argc, char** argv) {
 	gameManager->setup();
 	SoundSystem::loadSounds();
 
-	gameManager->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight);
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
 	postProcessingShader->use();
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
 	postProcessingShader->setInt("ui", 2);
-	postProcessingShader->setWindowSize(windowWidth, windowHeight);
+	postProcessingShader->setWindowSize(videoSettings.windowWidth, videoSettings.windowHeight);
 
 	Shader *blurShader = assetManager->getShader(STBlur);
 
@@ -322,7 +329,7 @@ int main(int argc, char** argv) {
 
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.main.fbo);
-		glViewport(0, 0, windowWidth, windowHeight);
+		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gameManager->render();
@@ -357,7 +364,7 @@ int main(int argc, char** argv) {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ui.fbo);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glViewport(0, 0, windowWidth, windowHeight);
+		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gameManager->renderUi();
 		fpsPlaneShader->use();

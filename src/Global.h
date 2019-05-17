@@ -41,6 +41,36 @@
 #include <xmmintrin.h>
 #include "assimp/matrix4x4.h"
 
+enum WindowType {
+	ExclusiveFullscreen,
+	Fullscreen,
+	FullscreenBorderless,
+	Windowed,
+	WindowedBorderless
+};
+
+static const WindowType WindowTypes[5]{
+	ExclusiveFullscreen,
+	Fullscreen,
+	FullscreenBorderless,
+	Windowed,
+	WindowedBorderless
+};
+
+static const std::string WindowTypeNames[5] = {
+	"Full screen (exclusive)",
+	"Full screen",
+	"Full screen (borderless)",
+	"Windowed",
+	"Windowed (borderless)"
+};
+
+struct VideoSettings {
+	WindowType windowType;
+	float windowWidth;
+	float windowHeight;
+};
+
 union SSEfloat4
 {
 	union __m128 f4;

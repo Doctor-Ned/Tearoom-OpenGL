@@ -10,6 +10,8 @@ struct TransformData;
 
 class DataSerializer {
 public:
+	static Json::Value serializeVideoSettings(VideoSettings videoSettings);
+	static VideoSettings deserializeVideoSettings(const Json::Value &root);
 	static Json::Value serializeVec2(glm::vec2 vec);
 	static glm::vec2 deserializeVec2(const Json::Value &root);
 	static Json::Value serializeVec3(glm::vec3 vec);
@@ -24,7 +26,6 @@ public:
 	static glm::mat4 deserializeMat4(const Json::Value &root);
 	static Json::Value serializeTransformData(TransformData data);
 	static TransformData deserializeTransformData(const Json::Value &root);
-
 	static Json::Value serializeObjectAnimationsMap(std::map<std::string, anim::ObjectAnimation>& map);
 	static std::map<std::string, anim::ObjectAnimation> deserializeObjectAnimationsMap(const Json::Value &root);
 	static Json::Value serializeObjectAnimation(anim::ObjectAnimation& objAnim);

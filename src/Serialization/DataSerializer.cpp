@@ -3,6 +3,22 @@
 #include "Scene/Components/Animation.h"
 
 
+Json::Value DataSerializer::serializeVideoSettings(VideoSettings videoSettings) {
+	Json::Value root;
+	root["windowWidth"] = videoSettings.windowWidth;
+	root["windowHeight"] = videoSettings.windowHeight;
+	root["windowType"] = static_cast<int>(videoSettings.windowType);
+	return root;
+}
+
+VideoSettings DataSerializer::deserializeVideoSettings(const Json::Value& root) {
+	VideoSettings result;
+	result.windowWidth = root.get("windowWidth", static_cast<float>(UI_REF_WIDTH)).asFloat();
+	result.windowHeight = root.get("windowHeight", static_cast<float>(UI_REF_HEIGHT)).asFloat();
+	result.windowType = static_cast<WindowType>(root.get("windowType", static_cast<int>(Windowed)).asInt());
+	return result;
+}
+
 Json::Value DataSerializer::serializeVec2(glm::vec2 vec) {
 	Json::Value root;
 	root[0] = vec.x;
