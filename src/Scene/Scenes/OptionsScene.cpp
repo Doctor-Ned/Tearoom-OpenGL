@@ -20,6 +20,31 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	const float heightSeg = UI_REF_HEIGHT / 18.0f;
 	const float checkboxShift = UI_REF_WIDTH / 8.0f;
 
+	static const std::pair<int, int> baseResolutions[]{
+		{640,480},
+		{800,600},
+		{1024,768},
+		{1280,720},
+		{1280,800},
+		{1440,810},
+		{1440,900},
+		{1600,900},
+		{1920,1080},
+		{2048,1080},
+		{3840,1600}
+	};
+
+	for (auto &res : baseResolutions) {
+		addResolution(res.first, res.second);
+	}
+
+	addResolution(videoSettings.windowWidth, videoSettings.windowHeight);
+	addResolution(windowWidth, windowHeight);
+	addResolution(screenWidth, screenHeight);
+	sortResolutions();
+
+	refreshCurrentResolution();
+
 	UiCanvas *screenTab = new UiCanvas(glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT));
 	UiCanvas *generalTab = new UiCanvas(glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT));
 
@@ -113,9 +138,10 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA"));
 	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "GENERAL SETTINGS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 
-	UiButton *prevWindowType = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 3 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiButton *nextWindowType = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 3 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiText *windowTypeText = new UiText(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, 2 * heightSeg), WindowTypeNames[videoSettings.windowType]);
+	UiText *windowType = new UiText(glm::vec2(UI_REF_CEN_X, 2.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Window type");
+	UiButton *prevWindowType = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 4 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiButton *nextWindowType = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 4 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiText *windowTypeText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), WindowTypeNames[videoSettings.windowType]);
 	prevWindowType->addClickCallback([windowTypeText]() {
 		if (static_cast<int>(videoSettings.windowType) == 0) {
 			videoSettings.windowType = WindowTypes[(sizeof(WindowTypes) / sizeof(*WindowTypes)) - 1];
@@ -134,14 +160,49 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		windowTypeText->setText(WindowTypeNames[videoSettings.windowType]);
 	});
 
+	UiText *resolution = new UiText(glm::vec2(UI_REF_CEN_X, 7.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Resolution");
+	UiButton *prevResolution = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 9 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiButton *nextResolution = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 9 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiText *resolutionText = new UiText(glm::vec2(UI_REF_CEN_X, 9 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), resolutionToString(resolutions[currResolution]));
+	prevResolution->addClickCallback([this, resolutionText]() {
+		if (currResolution == 0) {
+			currResolution = resolutions.size() - 1;
+		} else {
+			currResolution--;
+		}
+		auto res = resolutions[currResolution];
+		videoSettings.windowWidth = res.first;
+		videoSettings.windowHeight = res.second;
+		resolutionText->setText(resolutionToString(res).c_str());
+	});
+
+	nextResolution->addClickCallback([this, resolutionText]() {
+		if (currResolution == resolutions.size() - 1) {
+			currResolution = 0;
+		} else {
+			currResolution++;
+		}
+		auto res = resolutions[currResolution];
+		videoSettings.windowWidth = res.first;
+		videoSettings.windowHeight = res.second;
+		resolutionText->setText(resolutionToString(res).c_str());
+	});
+
 	UiButton *applyButton = new UiTextButton(glm::vec2(UI_REF_CEN_X, 15 * heightSeg), "Apply (restart needed)");
 	applyButton->addClickCallback([this]() {
 		saveVideoSettings();
 	});
 
+	screenTab->addChild(windowType);
 	screenTab->addChild(prevWindowType);
 	screenTab->addChild(nextWindowType);
 	screenTab->addChild(windowTypeText);
+
+	screenTab->addChild(resolution);
+	screenTab->addChild(prevResolution);
+	screenTab->addChild(nextResolution);
+	screenTab->addChild(resolutionText);
+
 	screenTab->addChild(applyButton);
 	screenTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "SCREEN SETTINGS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 
@@ -183,6 +244,14 @@ void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, 
 	}
 }
 
+void OptionsScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
+	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+	addResolution(windowWidth, windowHeight);
+	addResolution(screenWidth, screenHeight);
+	sortResolutions();
+	refreshCurrentResolution();
+}
+
 VideoSettings OptionsScene::loadVideoSettings() {
 	videoSettings = DataSerializer::deserializeVideoSettings(Global::readJsonFile(VIDEO_SETTINGS_FILE));
 	return videoSettings;
@@ -194,6 +263,69 @@ void OptionsScene::setVideoSettings(VideoSettings videoSettings) {
 
 void OptionsScene::saveVideoSettings() {
 	Global::saveToFile(VIDEO_SETTINGS_FILE, DataSerializer::serializeVideoSettings(videoSettings));
+}
+
+void OptionsScene::addResolution(int width, int height) {
+	for (auto &pair : resolutions) {
+		if (pair.first == width && pair.second == height) {
+			return;
+		}
+	}
+	resolutions.emplace_back(width, height);
+}
+
+void OptionsScene::sortResolutions() {
+	if (resolutions.size() < 2) {
+		return;
+	}
+	int size = resolutions.size();
+	auto *res = new std::pair<int, int>[size];
+	for (int i = 0; i < size; i++) {
+		res[i] = resolutions[i];
+	}
+	resolutions.clear();
+	for (int i = 0; i < size - 1; i++) {
+		for (int j = 0; j < size - 1 - i; j++) {
+			if (compareResolutions(res[j], res[j + 1])) {
+				swap(res[j], res[j + 1]);
+			}
+		}
+	}
+	for (int i = 0; i < size; i++) {
+		resolutions.push_back(res[i]);
+	}
+	delete[] res;
+}
+
+void OptionsScene::refreshCurrentResolution() {
+	for (int i = 0; i < resolutions.size(); i++) {
+		if (resolutions[i].first == windowWidth && resolutions[i].second == windowHeight) {
+			currResolution = i;
+			break;
+		}
+	}
+}
+
+std::string OptionsScene::resolutionToString(std::pair<int, int> res) {
+	return std::to_string(res.first) + "x" + std::to_string(res.second);
+}
+
+bool OptionsScene::compareResolutions(std::pair<int, int> a, std::pair<int, int> b) {
+	if (a.first > b.first) return true;
+	if (b.first > a.first) return false;
+
+	if (a.second > b.second) return true;
+	if (b.second > a.second) return false;
+
+	return false;
+}
+
+void OptionsScene::swap(std::pair<int, int>& a, std::pair<int, int>& b) {
+	int x = a.first, y = a.second;
+	a.first = b.first;
+	a.second = b.second;
+	b.first = x;
+	b.second = y;
 }
 
 void OptionsScene::load() {
