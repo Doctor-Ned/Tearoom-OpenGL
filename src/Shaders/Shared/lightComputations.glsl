@@ -37,23 +37,27 @@ float geometrySchlickGGX(float NdotV, float roughness) {
 	return num / denom;
 }
 
+float sampleVSM(vec4 space, sampler2D tex) {
+	vec3 projCoords = space.xyz / space.w;
+	projCoords = projCoords * 0.5f + 0.5f;
+	float compare = projCoords.z;
+	if (compare > 1.0f) {
+		return 1.0f;
+	}
+	vec3 moments = texture(tex, projCoords.xy).rgb;
+	float p = step(compare, moments.x);
+	float variance = max(moments.y - moments.x * moments.x, 0.002);
+
+	float d = compare - moments.x;
+	float pMax = variance / (variance + d * d);
+
+	return min(max(p, pMax), 1.0f);
+}
+
 vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	float shadow = 1.0f;
 	if (castShadows > 0 && enableShadowCasting) {
-		vec3 projCoords = space.xyz / space.w;
-		vec3 moments = texture(tex, projCoords.xy).rgb;
-		float compare = projCoords.z;
-		float p = step(compare, moments.x);
-		float variance = max(moments.y - moments.x * moments.x, 0.00002);
-
-		float d = compare - moments.x;
-		float pMax = variance / (variance + d * d);
-
-		shadow = min(max(p, pMax), 1.0f);
-
-		if (compare > 1.0) {
-			shadow = 1.0f;
-		}
+		shadow = sampleVSM(space, tex);
 	}
 
 	vec3 F0 = vec3(0.04f);
@@ -89,20 +93,7 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
-		vec3 projCoords = space.xyz / space.w;
-		vec3 moments = texture(tex, projCoords.xy).rgb;
-		float compare = projCoords.z;
-		float p = step(compare, moments.x);
-		float variance = max(moments.y - moments.x * moments.x, 0.00002);
-
-		float d = compare - moments.x;
-		float pMax = variance / (variance + d * d);
-
-		shadow = min(max(p, pMax), 1.0f);
-
-		if (compare > 1.0) {
-			shadow = 1.0;
-		}
+		shadow = sampleVSM(space, tex);
 	}
 	vec3 F0 = vec3(0.04f);
 	F0 = mix(F0, albedo, metallic);
