@@ -60,6 +60,11 @@ void Sun::renderGui() {
 	if (active) {
 		ImGui::SliderFloat("Time", &time, -24.0f, 24.0f);
 		ImGui::SliderAngle("Rotation angle", &rotationAngle);
+		float strength1 = light1Comp->getStrength(), strength2 = light2Comp->getStrength();
+		ImGui::DragFloat("Day strength", &strength1, 0.001f, 0.0f);
+		light1Comp->setStrength(strength1);
+		ImGui::DragFloat("Night strength", &strength2, 0.001f, 0.0f);
+		light2Comp->setStrength(strength2);
 		ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
 		ImGui::ColorEdit3("Dawn color", reinterpret_cast<float*>(&dawnColor));
 		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
