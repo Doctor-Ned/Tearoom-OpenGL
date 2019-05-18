@@ -109,6 +109,9 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 void GameManager::setup() {
 	setVsync(enableVsync);
 
+	AssetManager::getInstance()->setup();
+	LightManager::getInstance()->setup();
+
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
@@ -117,8 +120,6 @@ void GameManager::setup() {
 	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 
-	AssetManager::getInstance()->setup();
-	LightManager::getInstance()->setup();
 	//menuScene = new MenuScene();
 	//goToMenu();
 	setCurrentScene(new LoadingScene());
