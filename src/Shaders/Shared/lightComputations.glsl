@@ -37,6 +37,10 @@ float geometrySchlickGGX(float NdotV, float roughness) {
 	return num / denom;
 }
 
+float linstep(float low, float high, float v) {
+	return clamp((v - low) / (high - low), 0.0f, 1.0f);
+}
+
 float sampleVSM(vec4 space, sampler2D tex) {
 	vec3 projCoords = space.xyz / space.w;
 	projCoords = projCoords * 0.5f + 0.5f;
@@ -49,7 +53,7 @@ float sampleVSM(vec4 space, sampler2D tex) {
 	float variance = max(moments.y - moments.x * moments.x, 0.002);
 
 	float d = compare - moments.x;
-	float pMax = variance / (variance + d * d);
+	float pMax = linstep(0.2f, 1.0f, variance / (variance + d * d));
 
 	return min(max(p, pMax), 1.0f);
 }

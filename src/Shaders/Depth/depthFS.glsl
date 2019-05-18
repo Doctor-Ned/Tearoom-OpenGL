@@ -9,6 +9,5 @@ void main() {
 	float dx = dFdx(depth);
 	float dy = dFdy(depth);
 	float moment2 = depth * depth + 0.25f * (dx * dx + dy * dy);
-	//outColor = vec4(depth, moment2, opacity, 1.0f);
-	outColor = vec4(depth, depth*depth, opacity, 1.0f);
+	outColor = vec4(depth, moment2, opacity, 1.0f);
 }

@@ -435,7 +435,7 @@ LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
 	result.width = SHADOW_SIZE;
 	result.height = SHADOW_SIZE;
-	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_NEAREST, GL_RGB16F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RGB16F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
 	result.fbo = fb.fbo;
 	result.texture = fb.texture;
 	result.rbo = fb.rbo;
