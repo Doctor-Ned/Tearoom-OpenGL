@@ -228,6 +228,7 @@ int main(int argc, char** argv) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.01f);
+	glEnable(GL_DEPTH_CLAMP);
 
 	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
@@ -279,7 +280,7 @@ int main(int argc, char** argv) {
 	serializer->setup();
 	gameManager->setup();
 	SoundSystem::loadSounds();
-
+	
 	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight);
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
@@ -304,7 +305,7 @@ int main(int argc, char** argv) {
 	fpsPlane->updateDrawData();
 
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
-
+	
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGui_ImplOpenGL3_NewFrame();

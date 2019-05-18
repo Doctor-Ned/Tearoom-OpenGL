@@ -38,30 +38,21 @@ float geometrySchlickGGX(float NdotV, float roughness) {
 }
 
 vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
-	float shadow = 0.0;
+	float shadow = 1.0f;
 	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
-		projCoords = projCoords * 0.5 + 0.5;
-		float closestDepth = texture(tex, projCoords.xy).r;
-		float currentDepth = projCoords.z;
-		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
-		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
-		if (spotDirShadowTexelResolution <= 1) {
-			shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-		} else {
-			vec2 texelSize = 1.0 / textureSize(tex, 0);
-			int offset = (spotDirShadowTexelResolution - 1) / 2;
-			for (int x = -offset; x <= offset; ++x) {
-				for (int y = -offset; y <= offset; ++y) {
-					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r;
-					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-				}
-			}
-			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
-		}
+		vec3 moments = texture(tex, projCoords.xy).rgb;
+		float compare = projCoords.z;
+		float p = step(compare, moments.x);
+		float variance = max(moments.y - moments.x * moments.x, 0.00002);
 
-		if (projCoords.z > 1.0) {
-			shadow = 0.0;
+		float d = compare - moments.x;
+		float pMax = variance / (variance + d * d);
+
+		shadow = min(max(p, pMax), 1.0f);
+
+		if (compare > 1.0) {
+			shadow = 1.0f;
 		}
 	}
 
@@ -92,35 +83,25 @@ vec3 calcDirLight(DirLight light, sampler2D tex, vec4 space, vec3 albedo, float 
 
 	//vec3 color = initialAmbient * albedo * ao;
 	vec3 color = initialAmbient * albedo;
-	return color + Lo * (1.0f - shadow) * ao;
+	return color + Lo * shadow * ao;
 }
 
 vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, float roughness, float metallic, float ao, vec3 N, vec3 V) {
 	float shadow = 0.0;
 	if (castShadows > 0 && enableShadowCasting) {
 		vec3 projCoords = space.xyz / space.w;
-		projCoords = projCoords * 0.5 + 0.5;
-		float closestDepth = texture(tex, projCoords.xy).r;
-		float currentDepth = projCoords.z;
-		vec3 lightDir = normalize(vec3(light.model[3]) - fs_in.pos);
-		float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);
+		vec3 moments = texture(tex, projCoords.xy).rgb;
+		float compare = projCoords.z;
+		float p = step(compare, moments.x);
+		float variance = max(moments.y - moments.x * moments.x, 0.00002);
 
-		if (spotDirShadowTexelResolution <= 1) {
-			shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-		} else {
-			vec2 texelSize = 1.0 / textureSize(tex, 0);
-			int offset = (spotDirShadowTexelResolution - 1) / 2;
-			for (int x = -offset; x <= offset; ++x) {
-				for (int y = -offset; y <= offset; ++y) {
-					float pcfDepth = texture(tex, projCoords.xy + vec2(x, y) * texelSize).r;
-					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-				}
-			}
-			shadow /= float(spotDirShadowTexelResolution * spotDirShadowTexelResolution);
-		}
+		float d = compare - moments.x;
+		float pMax = variance / (variance + d * d);
 
-		if (projCoords.z > 1.0) {
-			shadow = 0.0;
+		shadow = min(max(p, pMax), 1.0f);
+
+		if (compare > 1.0) {
+			shadow = 1.0;
 		}
 	}
 	vec3 F0 = vec3(0.04f);
@@ -170,7 +151,7 @@ vec3 calcSpotLight(SpotLight light, sampler2D tex, vec4 space, vec3 albedo, floa
 	float epsilon = cutOff - outerCutOff;
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
 
-	return color + Lo * intensity * (1.0f - shadow) * ao;
+	return color + Lo * intensity * shadow * ao;
 }
 
 vec3 gridSamplingDisk[20] = vec3[]

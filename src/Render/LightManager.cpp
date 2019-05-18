@@ -34,7 +34,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 			glViewport(0, 0, data.data.width, data.data.height);
 			glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
-			glClear(GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glm::vec3 position = glm::vec3(data.light->model[3]);
 			glm::mat4 projection = glm::ortho(-data.light->proj_size, data.light->proj_size, -data.light->proj_size, data.light->proj_size, data.light->near_plane, data.light->far_plane);
 			glm::mat4 directionWorld = data.light->model;
@@ -54,7 +54,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 			glViewport(0, 0, data.data.width, data.data.height);
 			glBindFramebuffer(GL_FRAMEBUFFER, data.data.fbo);
-			glClear(GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glm::mat4 world = data.light->model;
 			glm::vec3 pos = world[3];
 			glm::mat4 directionWorld = world;
@@ -433,9 +433,9 @@ void LightManager::dispose(LightShadowData data) {
 
 LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
-	result.width = shadowSize;
-	result.height = shadowSize;
-	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16, shadowSize, shadowSize, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT);
+	result.width = SHADOW_SIZE;
+	result.height = SHADOW_SIZE;
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_NEAREST, GL_RGB16F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
 	result.fbo = fb.fbo;
 	result.texture = fb.texture;
 	result.rbo = fb.rbo;
@@ -448,15 +448,15 @@ LightShadowData LightManager::createSpotShadowData() {
 
 LightShadowData LightManager::createPointShadowData() {
 	LightShadowData result;
-	result.width = shadowSize;
-	result.height = shadowSize;
+	result.width = SHADOW_SIZE;
+	result.height = SHADOW_SIZE;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenFramebuffers(1, &result.fbo);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, result.texture);
 	for (unsigned int i = 0; i < 6; ++i)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, shadowSize, shadowSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_SIZE, SHADOW_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
