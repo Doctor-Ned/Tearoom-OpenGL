@@ -19,7 +19,7 @@ void Scene::render() {
 		rootNode->updateDrawData();
 		lightManager->renderAndUpdate([this](Shader *shader) {
 			renderNodesUsingRenderMap(shader, true);
-			renderNodesUsingTransparentRenderMap(shader, true);
+			//renderNodesUsingTransparentRenderMap(shader, true);
 		}, updatableShaders);
 		std::vector<GraphNode*> refNodes;
 		for (auto &rend : *renderMap[STReflect]) {

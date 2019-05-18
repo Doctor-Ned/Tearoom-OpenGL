@@ -48,12 +48,12 @@ float sampleVSM(vec4 space, sampler2D tex) {
 	if (compare > 1.0f) {
 		return 1.0f;
 	}
-	vec3 moments = texture(tex, projCoords.xy).rgb;
+	vec2 moments = texture(tex, projCoords.xy).rg;
 	float p = step(compare, moments.x);
 	float variance = max(moments.y - moments.x * moments.x, 0.002);
 
 	float d = compare - moments.x;
-	float pMax = linstep(0.2f, 1.0f, variance / (variance + d * d));
+	float pMax = linstep(0.35f, 1.0f, variance / (variance + d * d));
 
 	return min(max(p, pMax), 1.0f);
 }

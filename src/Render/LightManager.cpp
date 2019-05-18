@@ -20,7 +20,7 @@ void LightManager::setup() {
 	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 	uboLights = assetManager->getUboLights();
 	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
-	blurFbo = GameManager::createFramebuffer(GL_RGB32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE);
+	blurFbo = GameManager::createFramebuffer(GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
@@ -468,7 +468,7 @@ LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
 	result.width = SHADOW_SIZE;
 	result.height = SHADOW_SIZE;
-	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RGB16F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
 	result.fbo = fb.fbo;
 	result.texture = fb.texture;
 	result.rbo = fb.rbo;

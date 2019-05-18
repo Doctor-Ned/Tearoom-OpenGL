@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
 
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, screenWidth, screenHeight);
+		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		postProcessingShader->use();
 		ImGui::Render();
