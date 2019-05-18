@@ -215,7 +215,7 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 	return rbo;
 }
 
-Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode) {
+Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
@@ -228,7 +228,6 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampMode);
 		if (clampMode == GL_CLAMP_TO_BORDER) {
-			glm::vec4 border(0.0f, 0.0f, 0.0f, 0.0f);
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, reinterpret_cast<float*>(&border));
 		}
 	}
