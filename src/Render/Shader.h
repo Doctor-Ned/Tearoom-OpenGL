@@ -17,6 +17,7 @@ public:
 	void setModel(glm::mat4 &model);
 	void setViewPosition(glm::vec3 &viewPosition);
 	void setViewDirection(glm::vec3 &viewDirection);
+	void setGausBlurAmount(glm::vec3 &blurAmount);
 	void setUseLight(bool useLight);
 	void setView(glm::mat4 &view);
 	void setProjection(glm::mat4 &projection);

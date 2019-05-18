@@ -6,7 +6,9 @@
 #include "Serialization/Serializable.h"
 #include "Serialization/DataSerializer.h"
 #include "Scene/GuiConfigurable.h"
+#include "Scene/GameManager.h"
 
+struct QuadData;
 class GameManager;
 class GeometryShader;
 class UboLights;
@@ -194,6 +196,7 @@ public:
 	~LightManager();
 	int spotDirShadowTexelResolution = 3; // a non-negative power of 3. 
 	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.
+	float blurAmount = 0.5f;
 private:
 	LightManager() {}
 	void renderGui() override;
@@ -202,10 +205,12 @@ private:
 	void dispose(SpotLightData data);
 	void dispose(PointLightData data);
 	void dispose(LightShadowData data);
+	QuadData *fullscreenQuad;
 	LightShadowData createDirShadowData();
 	LightShadowData createSpotShadowData();
 	LightShadowData createPointShadowData();
-	Shader *depthShader;
+	Framebuffer blurFbo;
+	Shader *depthShader, *gausBlurShader;
 	GeometryShader *depthPointShader;
 	GameManager *gameManager;
 	UboLights *uboLights;

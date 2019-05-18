@@ -238,42 +238,7 @@ int main(int argc, char** argv) {
 	glfwSetScrollCallback(window, mouse_scroll_callback);
 	glfwSetCharCallback(window, char_callback);
 
-	GLuint vao, vbo;
-
-	UiTextureVertex vertices[4];
-	vertices[0].TexCoords = glm::vec2(0.0f, 1.0f);
-	vertices[1].TexCoords = glm::vec2(0.0f, 0.0f);
-	vertices[2].TexCoords = glm::vec2(1.0f, 0.0f);
-	vertices[3].TexCoords = glm::vec2(1.0f, 1.0f);
-
-	vertices[0].Position = glm::vec2(-1.0f, 1.0f);
-	vertices[1].Position = glm::vec2(-1.0f, -1.0f);
-	vertices[2].Position = glm::vec2(1.0f, -1.0f);
-	vertices[3].Position = glm::vec2(1.0f, 1.0f);
-
-	std::vector<UiTextureVertex> data;
-	data.push_back(vertices[0]);
-	data.push_back(vertices[1]);
-	data.push_back(vertices[2]);
-	data.push_back(vertices[0]);
-	data.push_back(vertices[2]);
-	data.push_back(vertices[3]);
-
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiTextureVertex), &data[0], GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
-						  reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
-
-	data.clear();
-	glBindVertexArray(0);
+	QuadData dat = UiTexturedElement::createFullscreenTexturedQuad();
 
 	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -348,10 +313,7 @@ int main(int argc, char** argv) {
 				}
 				blurShader->setBool("horizontal", horizontal);
 				glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
-				glBindVertexArray(vao);
-				glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
-				glDrawArrays(GL_TRIANGLES, 0, 6);
-				glBindVertexArray(0);
+				dat.render();
 				horizontal = !horizontal;
 				if (first_iteration) {
 					first_iteration = false;
@@ -390,10 +352,7 @@ int main(int argc, char** argv) {
 		}
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.ui.texture);
-		glBindVertexArray(vao);
-		glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
+		dat.render();
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -410,8 +369,7 @@ int main(int argc, char** argv) {
 	delete gameManager;
 	delete assetManager;
 	delete LightManager::getInstance();
-	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
+	dat.dispose();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 

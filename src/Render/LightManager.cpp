@@ -2,6 +2,7 @@
 #include "GeometryShader.h"
 #include "Scene/AssetManager.h"
 #include <cstdlib>
+#include "Ui/UiTexturedElement.h"
 
 LightManager *LightManager::getInstance() {
 	static LightManager* instance = nullptr;
@@ -15,8 +16,11 @@ void LightManager::setup() {
 	gameManager = GameManager::getInstance();
 	AssetManager *assetManager = AssetManager::getInstance();
 	depthShader = assetManager->getShader(STDepth);
+	gausBlurShader = assetManager->getShader(STGaussianBlur);
 	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 	uboLights = assetManager->getUboLights();
+	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
+	blurFbo = GameManager::createFramebuffer(GL_RGB32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
@@ -24,9 +28,10 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 		int oldFbo;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+		glm::vec3 xBlur(blurAmount / SHADOW_SIZE, 0.0f, 0.0f), yBlur(0.0f, blurAmount / SHADOW_SIZE, 0.0f);
 
-		depthShader->use();
 		for (int i = 0; i < dirLightAmount; i++) {
+			depthShader->use();
 			DirLightData data = dirLights[i];
 			if (!data.light->enabled) {
 				continue;
@@ -42,10 +47,22 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			data.light->lightSpace = projection * lookAt(position, position + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 			depthShader->setLightSpace(data.light->lightSpace);
 			renderCallback(depthShader);
+
+			gausBlurShader->use();
+			glBindFramebuffer(GL_FRAMEBUFFER, blurFbo.fbo);
+			glBindTexture(GL_TEXTURE_2D, data.data.texture);
+			gausBlurShader->setGausBlurAmount(xBlur);
+			fullscreenQuad->render();
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, data.data.texture, 0);
+			glBindTexture(GL_TEXTURE_2D, blurFbo.texture);
+			gausBlurShader->setGausBlurAmount(yBlur);
+			fullscreenQuad->render();
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurFbo.texture, 0);
 		}
 
 
 		for (int i = 0; i < spotLightAmount; i++) {
+			depthShader->use();
 			SpotLightData data = spotLights[i];
 			glm::mat4 spotLightProjection = glm::perspective(glm::radians(45.0f), 1.0f, data.light->near_plane, data.light->far_plane);
 			if (!data.light->enabled) {
@@ -62,6 +79,17 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			data.light->lightSpace = spotLightProjection * lookAt(pos, pos + normalize(glm::vec3(directionWorld * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f))), glm::vec3(0.0f, 1.0f, 0.0f));
 			depthShader->setLightSpace(data.light->lightSpace);
 			renderCallback(depthShader);
+
+			gausBlurShader->use();
+			glBindFramebuffer(GL_FRAMEBUFFER, blurFbo.fbo);
+			glBindTexture(GL_TEXTURE_2D, data.data.texture);
+			gausBlurShader->setGausBlurAmount(xBlur);
+			fullscreenQuad->render();
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, data.data.texture, 0);
+			glBindTexture(GL_TEXTURE_2D, blurFbo.texture);
+			gausBlurShader->setGausBlurAmount(yBlur);
+			fullscreenQuad->render();
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurFbo.texture, 0);
 		}
 
 		depthPointShader->use();
@@ -384,10 +412,15 @@ int LightManager::getPointAmount() {
 
 LightManager::~LightManager() {
 	disposeLights();
+	fullscreenQuad->dispose();
+	delete fullscreenQuad;
+	glDeleteBuffers(1, &blurFbo.texture);
+	glDeleteFramebuffers(1, &blurFbo.fbo);
 }
 
 void LightManager::renderGui() {
 	ImGui::DragFloat("Initial ambient", &initialAmbient, 0.001f, 0.0f, 1.0f);
+	ImGui::DragFloat("Blur amount", &blurAmount, 0.01f, 0.0f, 10.0f);
 	std::string dirText, spotText, pointText;
 	dirText = std::to_string(dirLightAmount) + " directional lights";
 	spotText = std::to_string(spotLightAmount) + " spot lights";

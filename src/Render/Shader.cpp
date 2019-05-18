@@ -72,6 +72,10 @@ void Shader::setViewDirection(glm::vec3 &viewDirection) {
 	setVec3("viewDirection", viewDirection);
 }
 
+void Shader::setGausBlurAmount(glm::vec3& blurAmount) {
+	setVec3("blurScale", blurAmount);
+}
+
 void Shader::setUseLight(bool useLight) {
 	setBool("useLight", useLight);
 }

@@ -183,6 +183,7 @@ void AssetManager::setup() {
 	shaders.emplace(STColor, new Shader("colorVS.glsl", "colorFS.glsl"));
 	shaders.emplace(STReflect, new Shader("Ref/reflectVS.glsl", "Ref/reflectFS.glsl"));
 	shaders.emplace(STRefract, new Shader("Ref/refractVS.glsl", "Ref/refractFS.glsl"));
+	shaders.emplace(STGaussianBlur, new Shader("Post/gaussianBlurVS.glsl", "Post/gaussianBlurFS.glsl"));
 	shaders.emplace(STDepth, new Shader("Depth/depthVS.glsl", "Depth/depthFS.glsl"));
 	shaders.emplace(STDepthPoint, new GeometryShader("Depth/depthPointVS.glsl", "Depth/depthPointGS.glsl", "Depth/depthPointFS.glsl"));
 	shaders.emplace(STDepthDebug, new Shader("Depth/depthDebugVS.glsl", "Depth/depthDebugFS.glsl"));
