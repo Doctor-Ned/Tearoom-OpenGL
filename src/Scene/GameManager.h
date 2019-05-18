@@ -78,7 +78,7 @@ public:
 	Scene* getCurrentScene();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
 	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type);
-	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment);
+	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod = GL_CLAMP_TO_EDGE);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 protected:
 	void setKeyState(int key, bool pressed);

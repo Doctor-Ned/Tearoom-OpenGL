@@ -243,7 +243,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 }
 
 SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,
-	GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment) {
+	GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod) {
 	SpecialFramebuffer result;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
@@ -252,8 +252,8 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
 	if (clamp) {
-		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, clampMethod);
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, clampMethod);
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
