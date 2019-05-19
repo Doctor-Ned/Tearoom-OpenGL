@@ -151,7 +151,7 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 	}
 
 	bool noLights = dirLightAmount == 0 && spotLightAmount == 0 && pointLightAmount == 0;
-	uboLights->inject(noLights ? 1.0f : initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, enableLights, enableShadowCasting, spotDirShadowTexelResolution, pointShadowSamples, dirs, spots, points);
+	uboLights->inject(noLights ? 1.0f : initialAmbient, dirLightAmount, spotLightAmount, pointLightAmount, enableLights, enableShadowCasting, lightBleedingReduction, minVariance, pointShadowSamples, dirs, spots, points);
 
 	delete[] dirs;
 	delete[] spots;
@@ -421,6 +421,8 @@ LightManager::~LightManager() {
 void LightManager::renderGui() {
 	ImGui::DragFloat("Initial ambient", &initialAmbient, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Blur amount", &blurAmount, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat("Light bleeding reduction", &lightBleedingReduction, 0.001f, 0.0f, 1.0f);
+	ImGui::DragFloat("Minimum variance", &minVariance, 0.0001f, 0.0f, 0.1f);
 	std::string dirText, spotText, pointText;
 	dirText = std::to_string(dirLightAmount) + " directional lights";
 	spotText = std::to_string(spotLightAmount) + " spot lights";

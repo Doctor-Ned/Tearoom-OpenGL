@@ -8,6 +8,7 @@
 #include "Render/PostProcessingShader.h"
 #include "Ui/UiSlider.h"
 #include "Render/LightManager.h"
+#include "Scene/Scripts/PlayerMovement.h"
 
 VideoSettings OptionsScene::videoSettings{};
 
@@ -59,13 +60,13 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	//enableLights->setRotationAnchor(TopLeft);
 	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 3 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
 	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
-	UiText *texelText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-								   "Texel resolution: " + std::to_string(lightManager->spotDirShadowTexelResolution));
-	UiSliderInt *texelSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
-											   lightManager->spotDirShadowTexelResolution / 3, 0, 3);
-	texelSlider->setCallback([&manager = lightManager, texelText](int power) {
-		manager->spotDirShadowTexelResolution = static_cast<int>(pow(3, power));
-		texelText->setText("Texel resolution: " + std::to_string(manager->spotDirShadowTexelResolution));
+	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
+								   "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
+	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+											   PlayerMovement::mouseSensitivity, 0.1f, 10.0f);
+	sensitivitySlider->setCallback([sensitivityText](float sensitivity) {
+		PlayerMovement::mouseSensitivity = sensitivity;
+		sensitivityText->setText("Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
 	});
 	UiText *samplesText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
 									 "Point shadow samples: " + std::to_string(lightManager->pointShadowSamples));
@@ -118,8 +119,8 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 
 	generalTab->addChild(enableLights);
 	generalTab->addChild(enableShadowCasting);
-	generalTab->addChild(texelSlider);
-	generalTab->addChild(texelText);
+	generalTab->addChild(sensitivitySlider);
+	generalTab->addChild(sensitivityText);
 	generalTab->addChild(samplesSlider);
 	generalTab->addChild(samplesText);
 	generalTab->addChild(useHdr);
@@ -331,7 +332,7 @@ void OptionsScene::swap(std::pair<int, int>& a, std::pair<int, int>& b) {
 void OptionsScene::load() {
 	Json::Value root = Global::readJsonFile(SETTINGS_FILE);
 	lightManager->pointShadowSamples = root.get("pointShadowSamples", lightManager->pointShadowSamples).asInt();
-	lightManager->spotDirShadowTexelResolution = root.get("spotDirShadowTexelResolution", lightManager->spotDirShadowTexelResolution).asInt();
+	PlayerMovement::mouseSensitivity = root.get("mouseSensitivity", PlayerMovement::mouseSensitivity).asFloat();
 	lightManager->enableLights = root.get("enableLights", lightManager->enableLights).asBool();
 	lightManager->enableShadowCasting = root.get("enableShadowCasting", lightManager->enableShadowCasting).asBool();
 	gameManager->setVsync(root.get("useVsync", gameManager->isVsyncEnabled()).asBool());
@@ -346,7 +347,7 @@ void OptionsScene::load() {
 void OptionsScene::save() {
 	Json::Value root;
 	root["pointShadowSamples"] = lightManager->pointShadowSamples;
-	root["spotDirShadowTexelResolution"] = lightManager->spotDirShadowTexelResolution;
+	root["mouseSensitivity"] = PlayerMovement::mouseSensitivity;
 	root["enableLights"] = lightManager->enableLights;
 	root["enableShadowCasting"] = lightManager->enableShadowCasting;
 	root["useVsync"] = gameManager->isVsyncEnabled();

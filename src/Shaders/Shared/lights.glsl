@@ -43,7 +43,9 @@ layout (std140) uniform Lights {
 	int dirLights;
 	int spotLights;
 	int pointLights;
-	int spotDirShadowTexelResolution; // this should be a power of 3. 3 is a nice base value btw. 1 should also be acceptable.
+	vec3 padding;
+	float lightBleedingReduction;
+	float minVariance;
 	int pointShadowSamples;           // 20 gives a nice result but i could probably experiment with some other values.
 	bool enableLights;
 	bool enableShadowCasting;
