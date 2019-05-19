@@ -160,10 +160,10 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		windowTypeText->setText(WindowTypeNames[videoSettings.windowType]);
 	});
 
-	UiText *resolution = new UiText(glm::vec2(UI_REF_CEN_X, 7.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Resolution");
-	UiButton *prevResolution = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 9 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiButton *nextResolution = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 9 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiText *resolutionText = new UiText(glm::vec2(UI_REF_CEN_X, 9 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), resolutionToString(resolutions[currResolution]));
+	UiText *resolution = new UiText(glm::vec2(UI_REF_CEN_X, 6.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Resolution");
+	UiButton *prevResolution = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 8 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiButton *nextResolution = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 8 * heightSeg), glm::vec2(heightSeg, heightSeg));
+	UiText *resolutionText = new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), resolutionToString(resolutions[currResolution]));
 	prevResolution->addClickCallback([this, resolutionText]() {
 		if (currResolution == 0) {
 			currResolution = resolutions.size() - 1;

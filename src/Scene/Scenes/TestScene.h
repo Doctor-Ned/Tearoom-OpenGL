@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include "Render/Camera.h"
 #include "GLFW/glfw3.h"
 #include "Ubo/UboLights.h"
 #include "Ubo/UboViewProjection.h"
@@ -36,7 +35,6 @@ public:
 	TestScene();
 	void render() override;
 	void renderUi() override;
-	void update(double deltaTime) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;

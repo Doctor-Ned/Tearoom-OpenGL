@@ -143,6 +143,72 @@ void GraphNode::addComponent(Component* component) {
 	}
 }
 
+void GraphNode::move(glm::vec3 direction) {
+	localTransform.translate(direction);
+}
+
+void GraphNode::moveRelative(float forward, float right, float up) {
+	moveForward(forward);
+	moveRight(right);
+	moveUp(up);
+}
+
+void GraphNode::moveForward(float distance, bool allowVertical) {
+	if (distance == 0.0f) return;
+	moveRelative(glm::vec3(0.0f, 0.0f, -distance), allowVertical);
+}
+
+void GraphNode::moveBackward(float distance, bool allowVertical) {
+	moveForward(-distance, allowVertical);
+}
+
+void GraphNode::moveLeft(float distance) {
+	moveRight(-distance);
+}
+
+void GraphNode::moveRight(float distance) {
+	if (distance == 0.0f) return;
+	moveRelative(glm::vec3(distance, 0.0f, 0.0f));
+}
+
+void GraphNode::moveUp(float distance) {
+	if (distance == 0.0f) return;
+	moveRelative(glm::vec3(0.0f, distance, 0.0f));
+}
+
+void GraphNode::moveDown(float distance) {
+	moveUp(-distance);
+}
+
+glm::vec3 GraphNode::getUpVector() {
+	return getRelative(glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+glm::vec3 GraphNode::getDownVector() {
+	return getRelative(glm::vec3(0.0f, -1.0f, 0.0f));
+}
+
+glm::vec3 GraphNode::getFrontVector() {
+	return getRelative(glm::vec3(0.0f, 0.0f, -1.0f));
+}
+
+glm::vec3 GraphNode::getBackVector() {
+	return getRelative(glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+glm::vec3 GraphNode::getRightVector() {
+	return getRelative(glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
+glm::vec3 GraphNode::getLeftVector() {
+	return getRelative(glm::vec3(-1.0f, 0.0f, 0.0f));
+}
+
+glm::vec3 GraphNode::getRelative(glm::vec3 base) {
+	glm::mat4 world = worldTransform.getUntranslatedMatrix();
+	return world * glm::vec4(base, 1.0f);
+}
+
 std::vector<Component*> GraphNode::getComponents() {
 	return getComponents<Component>();
 }
@@ -254,6 +320,18 @@ void GraphNode::setTempRenderMode(GLenum tempRenderMode) {
 
 void GraphNode::removeTempRenderMode() {
 	this->tempRenderMode = GL_NONE;
+}
+
+glm::vec3 GraphNode::getPosition() {
+	return worldTransform.getPosition();
+}
+
+void GraphNode::moveRelative(glm::vec3 direction, bool allowVertical) {
+	direction = getRelative(direction);
+	if(!allowVertical) {
+		direction.y = 0.0f;
+	}
+	move(direction);
 }
 
 void GraphNode::updateWorld() {

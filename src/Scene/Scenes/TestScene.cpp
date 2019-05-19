@@ -15,6 +15,10 @@
 #include "Serialization/Serializer.h"
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/KeyFrameAnimation.h"
+#include "Scene/Components/SphereCollider.h"
+#include "Scene/Components/BoxCollider.h"
+#include "Scene/Components/Camera.h"
+#include "Scene/Scripts/PlayerMovement.h"
 
 TestScene::TestScene() : TestScene(false) {}
 
@@ -33,7 +37,7 @@ void TestScene::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto &shader : updatableShaders) {
 		shader->use();
-		shader->setViewPosition(camera->getPos());
+		shader->setViewPosition(camera->getGameObject()->worldTransform.getPosition());
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
@@ -68,46 +72,6 @@ void TestScene::renderUi() {
 	if (ImGui::Button("SAVE TO FILE")) {
 		Serializer::getInstance()->saveScene(this, "test");
 	}
-}
-
-void TestScene::update(double deltaTime) {
-	Scene::update(deltaTime);
-
-	if (getKeyState(KEY_FORWARD)) {
-		camera->moveForward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_BACKWARD)) {
-		camera->moveBackward(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_LEFT)) {
-		camera->moveLeft(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_RIGHT)) {
-		camera->moveRight(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_UP)) {
-		camera->moveUp(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_DOWN)) {
-		camera->moveDown(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_MOUSE_LEFT)) {
-		camera->rotateX(-movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_RIGHT)) {
-		camera->rotateX(movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_UP)) {
-		camera->rotateY(movementSpeed * deltaTime * 5.0f);
-	}
-	if (getKeyState(KEY_MOUSE_DOWN)) {
-		camera->rotateY(-movementSpeed * deltaTime * 5.0f);
-	}
-
-	//sunNode->addTime(deltaTime);
-	//rootNode->update(deltaTime);
-
-	//std::cout << " Frustum: " << OctreeNode::frustumContainer.size() << " Octree: " << OctreeNode::toInsert2.size() << std::endl;
 }
 
 SerializableType TestScene::getSerializableType() {
@@ -160,7 +124,13 @@ TestScene::TestScene(bool serialized) {
 
 
 	if (!serialized) {
-		camera = new Camera();
+		GraphNode *camNode = new GraphNode(nullptr, rootNode);
+		camNode->localTransform.setPosition(0.0f, 1.0f, 0.0f);
+		PlayerMovement *mov = new PlayerMovement(camNode);
+		camNode->addComponent(mov);
+		mov->setFly(true);
+		mov->setGravity(false);
+		camera = camNode->getComponent<Camera>();
 
 		skybox = new Skybox(faces);
 		Model *model = new Model("res/models/muro/muro.obj");
@@ -194,12 +164,12 @@ TestScene::TestScene(bool serialized) {
 		MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 		MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		MeshColorBox* floorMesh = new MeshColorBox(glm::vec3(-10.0f, -0.5f, -10.5f), glm::vec3(10.0f, 0.5f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		Model* sphere2 = new Model("res/models/sphere/sphere.obj");
+		//Model* sphere2 = new Model("res/models/sphere/sphere.obj");
 		MeshColorBox* meshBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		MeshColorBox* meshBox1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 		GraphNode* boxNode = new GraphNode(box, rootNode);
 		GraphNode* boxNode2 = new GraphNode(box1, rootNode);
-		GraphNode* sphereNode2 = new GraphNode(sphere2, rootNode);
+		//GraphNode* sphereNode2 = new GraphNode(sphere2, rootNode);
 		GraphNode* simpleBox1 = new GraphNode(meshBox, rootNode);
 		GraphNode* simpleBox2 = new GraphNode(meshBox1, rootNode);
 		GraphNode* pivot = new GraphNode(nullptr, rootNode);
@@ -209,7 +179,7 @@ TestScene::TestScene(bool serialized) {
 		boxNode->localTransform.translate(glm::vec3(4.0f, 3.0f, 2.5f));
 		boxNode->localTransform.rotateYDegrees(130.0f);
 		boxNode2->localTransform.setPosition(7.0f, 3.0f, 3.0f);
-		sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
+		//sphereNode2->localTransform.translate(glm::vec3(-2.0f, 0.0f, 0.0f));
 		simpleBox1->localTransform.setPosition(0.0f, 2.0f, 0.0f);
 		planete->localTransform.setPosition(7.0f, 3.0f, 0.0f);
 		simpleBox2->localTransform.setPosition(0.0f, 0.0f, 1.0f);

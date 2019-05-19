@@ -76,6 +76,9 @@ public:
 	bool getMouseState(int key);
 	glm::vec2 getMousePosition() const;
 	Scene* getCurrentScene();
+	Scene* getCurrentNonEditorScene();
+	Camera* getCurrentCamera();
+	Camera *getCurrentNonEditorCamera();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
 	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f,0.0f,0.0f,0.0f));
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod = GL_CLAMP_TO_EDGE);

@@ -1,8 +1,15 @@
 #include "Component.h"
 #include "Serialization/Serializer.h"
 #include "Scene/GraphNode.h"
+#include "Scene/GameManager.h"
 
-Component::Component(GraphNode* _gameObject, std::string name) : gameObject(_gameObject), name(name) {}
+Component::Component() {
+	gameManager = GameManager::getInstance();
+}
+
+Component::Component(GraphNode* _gameObject, std::string name) : gameObject(_gameObject), name(name) {
+	gameManager = GameManager::getInstance();
+}
 
 SerializableType Component::getSerializableType() {
 	return SComponent;

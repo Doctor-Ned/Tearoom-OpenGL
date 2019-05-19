@@ -4,7 +4,6 @@
 #include "Render/LightManager.h"
 #include "Mesh/Mesh.h"
 #include "Serialization/Serializer.h"
-#include "Render/Camera.h"
 #include "Ui/UiCanvas.h"
 #include "Mesh/MeshRef.h"
 #include "Ui/UiPlane.h"
@@ -12,6 +11,8 @@
 #include "Scene/Components/LightComponents/DirLightComp.h"
 #include "Scene/Components/LightComponents/SpotLightComp.h"
 #include "Scene/Components/LightComponents/PointLightComp.h"
+#include "Scene/Components/Camera.h"
+#include "EditorScene.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -64,7 +65,7 @@ void Scene::render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (auto &shader : updatableShaders) {
 			shader->use();
-			shader->setViewPosition(camera->getPos());
+			shader->setViewPosition(camera->getGameObject()->worldTransform.getPosition());
 		}
 		uboViewProjection->inject(camera->getView(), projection);
 		renderNodesUsingRenderMap();
@@ -207,6 +208,17 @@ void Scene::removeComponent(GraphNode* node, Component* component) {
 			LightManager::getInstance()->remove(point->getLight());
 			setLights(LightManager::getInstance()->getLights());
 		}
+		Camera *cam = dynamic_cast<Camera*>(component);
+		if(cam) {
+			if(camera == cam) {
+				camera = nullptr;
+			}
+			EditorScene *editor = gameManager->getEditorScene();
+			if(editor && editor->playerCamera == cam) {
+				editor->playerCamera = nullptr;
+				editor->setEditorCamera(true);
+			}
+		}
 	}
 	Renderable *r = dynamic_cast<Renderable*>(component);
 	if (r) {
@@ -248,17 +260,6 @@ void Scene::reinitializeRenderMap() {
 }
 
 void Scene::update(double deltaTime) {
-	Camera *camera = getCamera();
-	if (getCursorLocked() && camera) {
-		if (abs(mouseMovementX) < 1000.0f) {
-			camera->rotateX(mouseMovementX * 0.06f);
-		}
-		if (abs(mouseMovementY) < 1000.0f) {
-			camera->rotateY(-mouseMovementY * 0.06f);
-		}
-	}
-	mouseMovementX = 0.0f;
-	mouseMovementY = 0.0f;
 	if (!rootNode->getChildren().empty()) {
 		OctreeNode::getInstance().RebuildTree(50.0f);
 		OctreeNode::getInstance().Calculate();

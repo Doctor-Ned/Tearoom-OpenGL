@@ -26,6 +26,22 @@ public:
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
 	void addComponent(Component* component);
+	void move(glm::vec3 direction);
+	void moveRelative(glm::vec3 direction, bool allowVertical = false);
+	void moveRelative(float forward, float right, float up);
+	void moveForward(float distance, bool allowVertical = false);
+	void moveBackward(float distance, bool allowVertical = false);
+	void moveLeft(float distance);
+	void moveRight(float distance);
+	void moveUp(float distance);
+	void moveDown(float distance);
+	glm::vec3 getUpVector();
+	glm::vec3 getDownVector();
+	glm::vec3 getFrontVector();
+	glm::vec3 getBackVector();
+	glm::vec3 getRightVector();
+	glm::vec3 getLeftVector();
+	glm::vec3 getRelative(glm::vec3 base);
 	template <class T> void removeComponent(T *component);
 	template <class T> void removeComponents();
 	template <class T> T* getComponent();
@@ -48,6 +64,7 @@ public:
 	SerializableType getSerializableType() override;
 	void setTempRenderMode(GLenum tempRenderMode);
 	void removeTempRenderMode();
+	glm::vec3 getPosition();
 protected:
 	GLenum tempRenderMode = GL_NONE;
 	void updateWorld();

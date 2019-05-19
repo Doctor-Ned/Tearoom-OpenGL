@@ -1,6 +1,5 @@
 #include "EditorScene.h"
 #include "Ui/UiText.h"
-#include "Render/Camera.h"
 #include "TestScene.h"
 #include "Scene/Node.h"
 #include "Serialization/Serializer.h"
@@ -31,9 +30,19 @@
 #include "Scene/Components/LightComponents/PointLightComp.h"
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Mesh/AnimatedModel.h"
+#include "Scene/Components/Camera.h"
 
 EditorScene::EditorScene() {
-	editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
+	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
+	baseData.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	baseData.eulerRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	GraphNode *camNode = new GraphNode();
+	PlayerMovement *mov = new PlayerMovement(camNode);
+	mov->setFly(true);
+	mov->setGravity(false);
+	camNode->addComponent(mov);
+	editorCamera = camNode->getComponent<Camera>();
+	camNode->localTransform.setData(baseData);
 	serializer = Serializer::getInstance();
 	cameraText = new UiText(glm::vec2(0.0f, UI_REF_HEIGHT), glm::vec2(UI_REF_WIDTH, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
@@ -43,6 +52,7 @@ EditorScene::EditorScene() {
 }
 
 void EditorScene::render() {
+	editorCamera->getGameObject()->updateDrawData();
 	if (editedScene != nullptr) {
 		editedScene->render();
 	}
@@ -55,6 +65,9 @@ void EditorScene::renderUi() {
 	Scene::renderUi();
 	idCounter = 0;
 	ImGui::Begin("Editor manager", nullptr, 64);
+	if (nodeSelectionCallback != nullptr && ImGui::Button("Stop selecting node")) {
+		nodeSelectionCallback = nullptr;
+	}
 	if (componentSelectionCallback != nullptr && ImGui::Button("Stop selecting component")) {
 		componentSelectionCallback = nullptr;
 	}
@@ -111,6 +124,13 @@ void EditorScene::renderUi() {
 			assetManager->reloadResources();
 			loadTexturesModels();
 		};
+	}
+	if (editedScene != nullptr) {
+		if (nodeSelectionCallback == nullptr && ImGui::Button("Choose scene camera")) {
+			nodeSelectionCallback = [this](GraphNode *node) {
+				editedScene->setCamera(node->getComponent<Camera>());
+			};
+		}
 	}
 	ImGui::End();
 	static std::vector<TypeCreation*> typeCreationsToDelete;
@@ -981,7 +1001,7 @@ void EditorScene::renderUi() {
 		static std::vector<GraphNode*> toDelete;
 		for (auto &node : editedNodes) {
 			ImGui::PushID(idCounter++);
-			ImGui::Begin(("Node '" + node->getName() + "'").c_str(), nullptr, 64);
+			ImGui::Begin(("Node '" + node->getName() + "' - " + std::to_string(idCounter - 1)).c_str(), nullptr, 64);
 			if (ImGui::Button("Close")) {
 				toDelete.push_back(node);
 				if (useWireframe) {
@@ -1003,6 +1023,7 @@ void EditorScene::renderUi() {
 
 Camera* EditorScene::getCamera() {
 	return useEditorCamera ? editorCamera : playerCamera;
+	//return playerCamera;
 }
 
 void EditorScene::update(double deltaTime) {
@@ -1024,39 +1045,9 @@ void EditorScene::update(double deltaTime) {
 	if (editedScene != nullptr && updateEditedScene) {
 		editedScene->update(deltaTime * timeScale);
 	}
+
+	editorCamera->getGameObject()->update(deltaTime);
 	Scene::update(deltaTime);
-	if (getCursorLocked()) {
-		if (getKeyState(KEY_FORWARD)) {
-			getCamera()->moveForward(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_BACKWARD)) {
-			getCamera()->moveBackward(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_LEFT)) {
-			getCamera()->moveLeft(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_RIGHT)) {
-			getCamera()->moveRight(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_UP)) {
-			getCamera()->moveUp(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_DOWN)) {
-			getCamera()->moveDown(deltaTime * movementSpeed);
-		}
-		if (getKeyState(KEY_MOUSE_LEFT)) {
-			getCamera()->rotateX(-movementSpeed * deltaTime * 5.0f);
-		}
-		if (getKeyState(KEY_MOUSE_RIGHT)) {
-			getCamera()->rotateX(movementSpeed * deltaTime * 5.0f);
-		}
-		if (getKeyState(KEY_MOUSE_UP)) {
-			getCamera()->rotateY(movementSpeed * deltaTime * 5.0f);
-		}
-		if (getKeyState(KEY_MOUSE_DOWN)) {
-			getCamera()->rotateY(-movementSpeed * deltaTime * 5.0f);
-		}
-	}
 }
 
 void EditorScene::deleteTypeCreation(TypeCreation* typeCreation) {
@@ -1220,20 +1211,26 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	showLoadDialog = false;
 	confirmationDialogCallback = nullptr;
 	nodeSelectionCallback = nullptr;
+	textureSelectionCallback = nullptr;
+	modelSelectionCallback = nullptr;
+	componentSelectionCallback = nullptr;
+	meshSelectionCallback = nullptr;
+	shaderTypeSelectionCallback = nullptr;
+
 	for (auto &tc : typeCreations) {
 		delete tc;
 	}
 	typeCreations.clear();
 
 	if (scene != nullptr) {
-		delete editorCamera;
-		editorCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
 		Camera *camera = scene->getCamera();
+		editorCamera->getGameObject()->localTransform.setData(baseData);
 		if (camera != nullptr) {
 			delete playerCamera;
 			playerCamera = camera;
 		} else {
-			playerCamera = new Camera(glm::vec3(0.0f, 1.0f, 1.0f));
+			playerCamera = nullptr;
+			setEditorCamera(true);
 		}
 		scene->setCamera(useEditorCamera ? editorCamera : playerCamera);
 		lightManager->replaceLights(scene->getLights());
@@ -1385,6 +1382,10 @@ void EditorScene::keyEvent(int key, bool pressed) {
 }
 
 void EditorScene::setEditorCamera(bool enabled) {
+	if (playerCamera == nullptr && !enabled) {
+		setEditorCamera(true);
+		return;
+	}
 	useEditorCamera = enabled;
 	if (editedScene != nullptr) {
 		editedScene->setCamera(useEditorCamera ? editorCamera : playerCamera);

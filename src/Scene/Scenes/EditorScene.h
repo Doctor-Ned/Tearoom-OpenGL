@@ -73,5 +73,6 @@ public:
 	friend class Serializer;
 	std::vector<std::string> textures;
 	std::vector<std::string> models;
+	TransformData baseData;
 };
 

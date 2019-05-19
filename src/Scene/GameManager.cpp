@@ -383,6 +383,32 @@ Scene* GameManager::getCurrentScene() {
 	return currentScene;
 }
 
+Scene* GameManager::getCurrentNonEditorScene() {
+	if(currentScene == nullptr) {
+		return nullptr;
+	}
+	EditorScene* sc = getEditorScene();
+	if(sc == nullptr) {
+		return currentScene;
+	}
+	return sc->editedScene;
+}
+
+Camera* GameManager::getCurrentCamera() {
+	return currentScene == nullptr ? nullptr : currentScene->getCamera();
+}
+
+Camera* GameManager::getCurrentNonEditorCamera() {
+	if(currentScene == nullptr) {
+		return nullptr;
+	}
+	EditorScene *sc = getEditorScene();
+	if(sc == nullptr) {
+		return currentScene->getCamera();
+	}
+	return sc->playerCamera;
+}
+
 void GameManager::setMouseState(int key, bool pressed) {
 	auto pair = mouseStates.find(key);
 	if (pair != mouseStates.end()) {

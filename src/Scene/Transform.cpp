@@ -7,6 +7,7 @@
 
 Transform::Transform(bool& _dirty) {
 	transform = glm::mat4(1.0f);
+	untranslatedTransform = glm::mat4(1.0f);
 	last = glm::mat4(1.0f);
 	dirty = &_dirty;
 }
@@ -15,8 +16,14 @@ glm::mat4 Transform::getMatrix() {
 	return transform;
 }
 
+glm::mat4 Transform::getUntranslatedMatrix() {
+	return untranslatedTransform;
+}
+
 void Transform::setMatrix(const glm::mat4& matrix) {
 	transform = matrix;
+	untranslatedTransform = matrix;
+	untranslatedTransform[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	*dirty = true;
 }
 

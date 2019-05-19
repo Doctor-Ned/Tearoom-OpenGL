@@ -7,12 +7,14 @@
 #include "Serialization/Serializable.h"
 #include "Global.h"
 
+class GameManager;
 class GraphNode;
 class Component abstract : public GuiConfigurable, public Serializable
 {
 protected:
 	friend class Serializer;
-	Component() {}
+	GameManager *gameManager;
+	Component();
 	GraphNode* gameObject;
 	Component(GraphNode* _gameObject, std::string name = "Component");
 	bool active = true;

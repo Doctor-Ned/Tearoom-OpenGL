@@ -18,7 +18,7 @@
 #include "Mesh/MeshCone.h"
 #include "Mesh/Model.h"
 #include "Scene/Scenes/Scene.h"
-#include "Render/Camera.h"
+#include "Scene/Components/Camera.h"
 #include "Scene/Components/AnimationController.h"
 #include "Scene/Components/Billboard.h"
 #include "Scene/Scripts/CollectableObject.h"

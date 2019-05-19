@@ -6,6 +6,7 @@ class Transform {
 public:
 	Transform(bool& dirty);
 	glm::mat4 getMatrix();
+	glm::mat4 getUntranslatedMatrix();
 	void setMatrix(const glm::mat4& matrix);
 	void rotate(const float& angle, const glm::vec3& axis);
 	void rotateByRadians(const float& angle, const glm::vec3& axis);
@@ -20,5 +21,6 @@ protected:
 	bool* dirty;
 	glm::mat4 last;
 	glm::mat4 transform;
+	glm::mat4 untranslatedTransform;
 };
 #endif

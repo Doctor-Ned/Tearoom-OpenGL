@@ -4,10 +4,11 @@
 
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
-#include "Render/Camera.h"
+#include "Scene/Components/Camera.h"
 #include "CollectableObject.h"
 #include "Scene/CollisionSystem.h"
 #include <iostream>
+#include "Serialization/Serializer.h"
 
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
@@ -26,8 +27,10 @@ void CollectableObject::takeObject()
 void CollectableObject::leaveObject()
 {
     float distance = 2.0f;
-    glm::vec2 cameraFront  =  glm::normalize(glm::vec2(camera->getFront().x, camera->getFront().z));
-    glm::vec3 itemNewPosition = glm::vec3(camera->getPos().x + cameraFront.x * distance, camera->getPos().y, camera->getPos().z + cameraFront.y * distance);
+	glm::vec3 front = camera->getGameObject()->getFrontVector();
+	glm::vec3 pos = camera->getGameObject()->getPosition();
+    glm::vec2 cameraFront  =  glm::normalize(glm::vec2(front.x, front.z));
+    glm::vec3 itemNewPosition = glm::vec3(pos.x + cameraFront.x * distance, pos.y, pos.z + cameraFront.y * distance);
     gameObject->localTransform.setPosition(itemNewPosition);
     isTaken = false;
     gameObject->setActive(true);
@@ -53,6 +56,7 @@ Json::Value CollectableObject::serialize(Serializer* serializer) {
 	root["isTaken"] = isTaken;
 	root["isHitByRay"] = isHitByRay;
 	root["fKeyState"] = fKeyState;
+	root["camera"] = serializer->serialize(camera);
 	return root;
 }
 
@@ -61,6 +65,7 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 	isTaken = root["isTaken"].asBool();
 	isHitByRay = root["isHitByRay"].asBool();
 	fKeyState = root["fKeyState"].asBool();
+	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 }
 
 

@@ -1,6 +1,6 @@
 #include "Billboard.h"
-#include "Render/Camera.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Components/Camera.h"
 
 Billboard::Billboard(Camera* camera, GraphNode* gameObject, bool rescale) : Component(gameObject, "Billboard") {
 	this->camera = camera;
@@ -62,15 +62,15 @@ void Billboard::recalculateMatrix() {
 	glm::vec3 pos = gameObject->worldTransform.getMatrix()[3] + gameObject->localTransform.getMatrix()[3];
 	glm::mat4 world = translate(glm::mat4(1.0f), pos);
 	if (rescale) {
-		glm::vec3 right = camera->getRight();
-		glm::vec3 up = camera->getActualUp();
+		glm::vec3 right = camera->getGameObject()->getRightVector();
+		glm::vec3 up = camera->getGameObject()->getUpVector();
 		glm::vec4 plane1 = Global::planeEquationOfPoints(pos, pos + right, pos + up);
-		glm::vec3 camPos = camera->getPos();
+		glm::vec3 camPos = camera->getGameObject()->getPosition();
 		glm::vec4 plane2 = Global::planeEquationOfPoints(camPos, camPos + right, camPos + up);
 		float scl = Global::distanceBetweenParallelPlanes(plane1, plane2);
 		world = scale(world, glm::vec3(scl, scl, scl));
 	}
-	glm::mat4 rotation = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), -camera->getFront(), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 rotation = lookAt(glm::vec3(0.0f, 0.0f, 0.0f), camera->getGameObject()->getBackVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 	rotation = inverse(rotation);
 	rotation[2][0] = -rotation[2][0];
 	rotation[2][1] = -rotation[2][1];

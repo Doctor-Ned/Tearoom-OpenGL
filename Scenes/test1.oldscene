@@ -2,51 +2,51 @@
    "id" : 0,
    "object" : {
       "camera" : {
-         "id" : 3,
+         "id" : 73,
          "type" : 23
       },
       "lightIgnoredObjects" : [
          {
-            "id" : 71,
+            "id" : 70,
             "type" : 1
          }
       ],
       "lights" : {
          "dirLights" : [
             {
-               "id" : 16,
+               "id" : 13,
                "type" : 43
             },
             {
-               "id" : 20,
+               "id" : 17,
                "type" : 43
             }
          ],
          "pointLights" : [
             {
-               "id" : 67,
+               "id" : 66,
                "type" : 45
             }
          ],
          "spotLights" : [
             {
-               "id" : 61,
+               "id" : 60,
                "type" : 44
             }
          ]
       },
       "modelNode" : {
-         "id" : 5,
+         "id" : 2,
          "type" : 1
       },
       "pointLightComps" : [
          {
-            "id" : 66,
+            "id" : 65,
             "type" : 39
          }
       ],
       "pointLightSphere" : {
-         "id" : 68,
+         "id" : 67,
          "type" : 8
       },
       "rootNode" : {
@@ -58,70 +58,6 @@
                   "id" : 2,
                   "object" : {
                      "active" : true,
-                     "components" : [
-                        {
-                           "id" : 3,
-                           "object" : {
-                              "active" : true,
-                              "gameObject" : {
-                                 "id" : 2,
-                                 "type" : 1
-                              },
-                              "name" : "Camera",
-                              "view" : [
-                                 [ 0.81971853971481323, 0.12684109807014465, -0.55854523181915283, 0.0 ],
-                                 [ -0.0, 0.97517096996307373, 0.22145342826843262, 0.0 ],
-                                 [ 0.57276648283004761, -0.18152947723865509, 0.79936575889587402, 0.0 ],
-                                 [ -0.47675824165344238, -1.0379378795623779, -4.5691714286804199, 1.0 ]
-                              ]
-                           },
-                           "type" : 23
-                        },
-                        {
-                           "id" : 4,
-                           "object" : {
-                              "active" : true,
-                              "camera" : {
-                                 "id" : 3,
-                                 "type" : 23
-                              },
-                              "fly" : true,
-                              "gameObject" : {
-                                 "id" : 2,
-                                 "type" : 1
-                              },
-                              "gravity" : false,
-                              "name" : "Player movement"
-                           },
-                           "type" : 33
-                        }
-                     ],
-                     "localLastTransformData" : {
-                        "eulerRotation" : [ -0.22330464422702789, -0.60987681150436401, 0.0 ],
-                        "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -2.0296282768249512, 2.0240254402160645, 3.7370939254760742 ]
-                     },
-                     "localTransformData" : {
-                        "eulerRotation" : [ -0.22330464422702789, -0.60987681150436401, 0.0 ],
-                        "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -2.0296282768249512, 2.0240254402160645, 3.7370939254760742 ]
-                     },
-                     "mesh" : {
-                        "id" : -1,
-                        "type" : 0
-                     },
-                     "name" : "Node",
-                     "parent" : {
-                        "id" : 1,
-                        "type" : 1
-                     }
-                  },
-                  "type" : 1
-               },
-               {
-                  "id" : 5,
-                  "object" : {
-                     "active" : true,
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                         "scale" : [ 0.0099999997764825821, 0.0099999997764825821, 0.0099999997764825821 ],
@@ -133,7 +69,7 @@
                         "translation" : [ -5.0, 0.0, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 6,
+                        "id" : 3,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -156,7 +92,7 @@
                   "type" : 1
                },
                {
-                  "id" : 7,
+                  "id" : 4,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -170,7 +106,7 @@
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 8,
+                        "id" : 5,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -193,7 +129,7 @@
                   "type" : 1
                },
                {
-                  "id" : 9,
+                  "id" : 6,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -207,7 +143,7 @@
                         "translation" : [ 0.0, -0.5, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 10,
+                        "id" : 7,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 0.10000000149011612, 1.0, 0.10000000149011612, 1.0 ],
@@ -235,7 +171,7 @@
                   "type" : 1
                },
                {
-                  "id" : 11,
+                  "id" : 8,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -249,7 +185,7 @@
                         "translation" : [ 0.0, 1.0, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 12,
+                        "id" : 9,
                         "object" : {
                            "baseCenter" : [ 0.0, 0.0, 0.0 ],
                            "castShadows" : true,
@@ -278,65 +214,60 @@
                   "type" : 1
                },
                {
-                  "id" : 13,
+                  "id" : 10,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 14,
+                           "id" : 11,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 15,
+                                    "id" : 12,
                                     "object" : {
                                        "active" : true,
                                        "gameObject" : {
-                                          "id" : 14,
+                                          "id" : 11,
                                           "type" : 1
                                        },
                                        "light" : {
-                                          "id" : 16,
+                                          "id" : 13,
                                           "object" : {
                                              "color" : [
-                                                0.48780804872512817,
-                                                0.45397165417671204,
-                                                0.1973789781332016,
-                                                0.71902340650558472
+                                                0.6076623797416687,
+                                                0.34659528732299805,
+                                                0.071977525949478149,
+                                                0.69367098808288574
                                              ],
                                              "enabled" : 1,
                                              "far_plane" : 10.0,
                                              "lightSpace" : [
                                                 [
-                                                   -0.10000000149011612,
-                                                   3.2626651602640777e-08,
-                                                   1.7502053140106e-08,
+                                                   -0.016464723274111748,
+                                                   -0.051638837903738022,
+                                                   -0.16824373602867126,
                                                    0.0
                                                 ],
-                                                [ 0.0, 0.025881880894303322, -0.19337856769561768, 0.0 ],
+                                                [ 0.0, 0.085200510919094086, -0.10481146723031998, 0.0 ],
                                                 [
-                                                   3.3777592278738666e-08,
-                                                   0.096592597663402557,
-                                                   0.05181557685136795,
+                                                   -0.098635248839855194,
+                                                   0.0086198300123214722,
+                                                   0.028084142133593559,
                                                    0.0
                                                 ],
                                                 [
-                                                   8.7422812100612646e-08,
-                                                   1.6689300252892281e-07,
-                                                   1.0000002384185791,
+                                                   1.1920929132713809e-08,
+                                                   1.7881394143159923e-08,
+                                                   -0.20120126008987427,
                                                    1.0
                                                 ]
                                              ],
                                              "model" : [
-                                                [ -1.0, -8.4443918524357287e-08, 2.262667209151914e-08, 0.0 ],
+                                                [ -0.54200154542922974, 0.81174230575561523, -0.21750561892986298, 0.0 ],
                                                 [ 0.0, 0.25881895422935486, 0.96592587232589722, 0.0 ],
-                                                [
-                                                   -8.7422776573475858e-08,
-                                                   0.96592587232589722,
-                                                   -0.25881895422935486,
-                                                   0.0
-                                                ],
-                                                [ 0.0, 9.6592588424682617, -2.5881896018981934, 1.0 ]
+                                                [ 0.84037744998931885, 0.52353334426879883, -0.14028027653694153, 0.0 ],
+                                                [ 3.3615100383758545, 2.0941331386566162, -0.56112104654312134, 1.0 ]
                                              ],
                                              "near_plane" : 0.0099999997764825821,
                                              "proj_size" : 10.0,
@@ -352,23 +283,23 @@
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 3.1415927410125732, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, -10.0 ]
+                                 "translation" : [ 0.0, 0.0, -4.0 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 3.1415927410125732, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, -10.0 ]
+                                 "translation" : [ 0.0, 0.0, -4.0 ]
                               },
                               "mesh" : {
-                                 "id" : 17,
+                                 "id" : 14,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
                                     "color" : [
-                                       0.48780804872512817,
-                                       0.45397165417671204,
-                                       0.1973789781332016,
-                                       0.71902340650558472
+                                       0.6076623797416687,
+                                       0.34659528732299805,
+                                       0.071977525949478149,
+                                       0.69367098808288574
                                     ],
                                     "culled" : true,
                                     "emissive" : [ 0.0, 0.0, 0.0 ],
@@ -387,42 +318,47 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 13,
+                                 "id" : 10,
                                  "type" : 1
                               }
                            },
                            "type" : 1
                         },
                         {
-                           "id" : 18,
+                           "id" : 15,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 19,
+                                    "id" : 16,
                                     "object" : {
                                        "active" : true,
                                        "gameObject" : {
-                                          "id" : 18,
+                                          "id" : 15,
                                           "type" : 1
                                        },
                                        "light" : {
-                                          "id" : 20,
+                                          "id" : 17,
                                           "object" : {
                                              "color" : [ 0.0, 0.0, 0.0, 0.0 ],
                                              "enabled" : 1,
                                              "far_plane" : 10.0,
                                              "lightSpace" : [
-                                                [ 0.10000000149011612, 0.0, 0.0, 0.0 ],
-                                                [ 0.0, 0.025881880894303322, 0.19337856769561768, 0.0 ],
-                                                [ 0.0, 0.096592597663402557, -0.05181557685136795, 0.0 ],
-                                                [ -0.0, -1.6689300252892281e-07, 1.0000002384185791, 1.0 ]
+                                                [ 0.016464719548821449, -0.051638837903738022, 0.16824373602867126, 0.0 ],
+                                                [ 0.0, 0.085200510919094086, 0.10481146723031998, 0.0 ],
+                                                [
+                                                   0.098635248839855194,
+                                                   0.0086198290809988976,
+                                                   -0.028084136545658112,
+                                                   0.0
+                                                ],
+                                                [ -0.0, -1.7136335017653437e-08, -0.20120126008987427, 1.0 ]
                                              ],
                                              "model" : [
-                                                [ 1.0, 0.0, 0.0, 0.0 ],
+                                                [ 0.54200148582458496, -0.81174236536026001, 0.21750563383102417, 0.0 ],
                                                 [ 0.0, 0.25881895422935486, 0.96592587232589722, 0.0 ],
-                                                [ 0.0, -0.96592587232589722, 0.25881895422935486, 0.0 ],
-                                                [ 0.0, -9.6592588424682617, 2.5881896018981934, 1.0 ]
+                                                [ -0.84037750959396362, -0.52353328466415405, 0.14028026163578033, 0.0 ],
+                                                [ -3.3615100383758545, -2.0941331386566162, 0.56112104654312134, 1.0 ]
                                              ],
                                              "near_plane" : 0.0099999997764825821,
                                              "proj_size" : 10.0,
@@ -438,15 +374,15 @@
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, 10.0 ]
+                                 "translation" : [ 0.0, 0.0, 4.0 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, 10.0 ]
+                                 "translation" : [ 0.0, 0.0, 4.0 ]
                               },
                               "mesh" : {
-                                 "id" : 21,
+                                 "id" : 18,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
@@ -468,7 +404,7 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 13,
+                                 "id" : 10,
                                  "type" : 1
                               }
                            },
@@ -477,7 +413,7 @@
                      ],
                      "components" : [
                         {
-                           "id" : 22,
+                           "id" : 19,
                            "object" : {
                               "active" : true,
                               "dawnColor" : [ 0.67645597457885742, 0.28496375679969788, 0.0, 0.67911922931671143 ],
@@ -489,23 +425,23 @@
                               ],
                               "duskColor" : [ 0.0, 0.0078293625265359879, 0.058720219880342484, 0.99824374914169312 ],
                               "gameObject" : {
-                                 "id" : 13,
+                                 "id" : 10,
                                  "type" : 1
                               },
                               "light1" : {
-                                 "id" : 16,
+                                 "id" : 13,
                                  "type" : 43
                               },
                               "light1Comp" : {
-                                 "id" : 15,
+                                 "id" : 12,
                                  "type" : 36
                               },
                               "light2" : {
-                                 "id" : 20,
+                                 "id" : 17,
                                  "type" : 43
                               },
                               "light2Comp" : {
-                                 "id" : 19,
+                                 "id" : 16,
                                  "type" : 36
                               },
                               "name" : "Sun",
@@ -516,8 +452,8 @@
                                  0.99729663133621216
                               ],
                               "rotationAngle" : 1.3089970350265503,
-                              "sunDistance" : 10.0,
-                              "time" : 12.0
+                              "sunDistance" : 4.0,
+                              "time" : 8.1879997253417969
                            },
                            "type" : 41
                         }
@@ -545,17 +481,17 @@
                   "type" : 1
                },
                {
-                  "id" : 23,
+                  "id" : 20,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 24,
+                           "id" : 21,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 23,
+                                 "id" : 20,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 1.2999999523162842, 1.0, 0.5 ],
@@ -564,10 +500,10 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ 3.4551637172698975, 3.0, 3.3385424613952637, 1.0 ]
+                                 [ 3.1118333339691162, 3.0, 2.0404787063598633, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 25,
+                                 "id" : 22,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -593,12 +529,12 @@
                            "type" : 27
                         },
                         {
-                           "id" : 26,
+                           "id" : 23,
                            "object" : {
                               "active" : true,
-                              "direction" : -1,
+                              "direction" : 1,
                               "gameObject" : {
-                                 "id" : 23,
+                                 "id" : 20,
                                  "type" : 1
                               },
                               "name" : "Component"
@@ -607,17 +543,17 @@
                         }
                      ],
                      "localLastTransformData" : {
-                        "eulerRotation" : [ 0.0, 4.136195182800293, 0.0 ],
+                        "eulerRotation" : [ 0.0, 2.6641364097595215, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 4.0, 3.0, 2.5 ]
                      },
                      "localTransformData" : {
-                        "eulerRotation" : [ 0.0, 4.136195182800293, 0.0 ],
+                        "eulerRotation" : [ 0.0, 2.6641364097595215, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 4.0, 3.0, 2.5 ]
                      },
                      "mesh" : {
-                        "id" : 27,
+                        "id" : 24,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 0.0, 0.0, 1.0, 1.0 ],
@@ -645,17 +581,17 @@
                   "type" : 1
                },
                {
-                  "id" : 28,
+                  "id" : 25,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 29,
+                           "id" : 26,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 28,
+                                 "id" : 25,
                                  "type" : 1
                               },
                               "isTrigger" : true,
@@ -666,7 +602,7 @@
                                  [ 6.5, 3.0, 3.0, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 30,
+                                 "id" : 27,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
@@ -705,7 +641,7 @@
                         "translation" : [ 7.0, 3.0, 3.0 ]
                      },
                      "mesh" : {
-                        "id" : 31,
+                        "id" : 28,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 0.0, 1.0, 1.0, 1.0 ],
@@ -733,17 +669,54 @@
                   "type" : 1
                },
                {
-                  "id" : 32,
+                  "id" : 29,
+                  "object" : {
+                     "active" : false,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ -2.0, 0.0, 0.0 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ -2.0, 0.0, 0.0 ]
+                     },
+                     "mesh" : {
+                        "id" : 30,
+                        "object" : {
+                           "castShadows" : true,
+                           "culled" : true,
+                           "model" : "res/models/sphere/sphere.obj",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "Node",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 31,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 33,
+                           "id" : 32,
                            "object" : {
                               "active" : true,
                               "collisionType" : 0,
                               "gameObject" : {
-                                 "id" : 32,
+                                 "id" : 31,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.5, 1.0, 0.5 ],
@@ -755,7 +728,7 @@
                                  [ 0.0, 2.0, 0.0, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 34,
+                                 "id" : 33,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -792,7 +765,7 @@
                         "translation" : [ 0.0, 2.0, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 35,
+                        "id" : 34,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 1.0, 0.0, 0.0, 1.0 ],
@@ -820,17 +793,17 @@
                   "type" : 1
                },
                {
-                  "id" : 36,
+                  "id" : 35,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 37,
+                           "id" : 36,
                            "object" : {
                               "active" : true,
                               "collisionType" : 0,
                               "gameObject" : {
-                                 "id" : 36,
+                                 "id" : 35,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.5, 0.5, 0.5 ],
@@ -842,7 +815,7 @@
                                  [ 0.0, 0.0, 1.0, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 38,
+                                 "id" : 37,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -879,7 +852,7 @@
                         "translation" : [ 0.0, 0.0, 1.0 ]
                      },
                      "mesh" : {
-                        "id" : 39,
+                        "id" : 38,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 1.0, 1.0, 0.0, 1.0 ],
@@ -907,12 +880,12 @@
                   "type" : 1
                },
                {
-                  "id" : 40,
+                  "id" : 39,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 41,
+                           "id" : 40,
                            "object" : {
                               "active" : true,
                               "localLastTransformData" : {
@@ -926,7 +899,7 @@
                                  "translation" : [ 7.0, 3.0, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 42,
+                                 "id" : 41,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 1.0, 1.0, 1.0, 1.0 ],
@@ -947,7 +920,7 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 40,
+                                 "id" : 39,
                                  "type" : 1
                               }
                            },
@@ -956,12 +929,12 @@
                      ],
                      "components" : [
                         {
-                           "id" : 43,
+                           "id" : 42,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 40,
+                                 "id" : 39,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.5, 1.0, 0.5 ],
@@ -970,10 +943,10 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ -6.7463626861572266, 3.0, 1.8672411441802979, 1.0 ]
+                                 [ 4.6815958023071289, 3.0, -5.2041006088256836, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 44,
+                                 "id" : 43,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -999,12 +972,12 @@
                            "type" : 27
                         },
                         {
-                           "id" : 45,
+                           "id" : 44,
                            "object" : {
                               "active" : true,
-                              "direction" : 1,
+                              "direction" : -1,
                               "gameObject" : {
-                                 "id" : 40,
+                                 "id" : 39,
                                  "type" : 1
                               },
                               "name" : "Component"
@@ -1013,12 +986,12 @@
                         }
                      ],
                      "localLastTransformData" : {
-                        "eulerRotation" : [ 0.0, 3.4116106033325195, 0.0 ],
+                        "eulerRotation" : [ 0.0, 0.83820366859436035, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
                      "localTransformData" : {
-                        "eulerRotation" : [ 0.0, 3.4116106033325195, 0.0 ],
+                        "eulerRotation" : [ 0.0, 0.83820366859436035, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
@@ -1035,17 +1008,17 @@
                   "type" : 1
                },
                {
-                  "id" : 46,
+                  "id" : 45,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 47,
+                           "id" : 46,
                            "object" : {
                               "active" : true,
                               "collisionType" : 0,
                               "gameObject" : {
-                                 "id" : 46,
+                                 "id" : 45,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 10.0, 0.5, 10.0 ],
@@ -1057,7 +1030,7 @@
                                  [ 0.0, -3.0, 0.0, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 48,
+                                 "id" : 47,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1094,7 +1067,7 @@
                         "translation" : [ 0.0, -3.0, 0.0 ]
                      },
                      "mesh" : {
-                        "id" : 49,
+                        "id" : 48,
                         "object" : {
                            "castShadows" : true,
                            "color" : [ 1.0, 1.0, 1.0, 1.0 ],
@@ -1122,17 +1095,17 @@
                   "type" : 1
                },
                {
-                  "id" : 50,
+                  "id" : 49,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 51,
+                           "id" : 50,
                            "object" : {
                               "active" : true,
                               "children" : [
                                  {
-                                    "id" : 52,
+                                    "id" : 51,
                                     "object" : {
                                        "active" : true,
                                        "localLastTransformData" : {
@@ -1146,7 +1119,7 @@
                                           "translation" : [ 0.0, 0.0, 0.0 ]
                                        },
                                        "mesh" : {
-                                          "id" : 53,
+                                          "id" : 52,
                                           "object" : {
                                              "castShadows" : true,
                                              "color" : [ 0.80000001192092896, 0.0, 0.0, 1.0 ],
@@ -1167,7 +1140,7 @@
                                        },
                                        "name" : "handle",
                                        "parent" : {
-                                          "id" : 51,
+                                          "id" : 50,
                                           "type" : 1
                                        }
                                     },
@@ -1176,12 +1149,12 @@
                               ],
                               "components" : [
                                  {
-                                    "id" : 54,
+                                    "id" : 53,
                                     "object" : {
                                        "active" : true,
                                        "collisionType" : 0,
                                        "gameObject" : {
-                                          "id" : 51,
+                                          "id" : 50,
                                           "type" : 1
                                        },
                                        "halfDimensions" : [ 1.0, 1.5, 0.10000000149011612 ],
@@ -1193,7 +1166,7 @@
                                           [ -4.0, 2.0, -2.0, 1.0 ]
                                        ],
                                        "mesh" : {
-                                          "id" : 55,
+                                          "id" : 54,
                                           "object" : {
                                              "castShadows" : true,
                                              "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1219,13 +1192,13 @@
                                     "type" : 27
                                  },
                                  {
-                                    "id" : 56,
+                                    "id" : 55,
                                     "object" : {
                                        "active" : true,
                                        "currentTime" : 0.0,
                                        "endTime" : 4.0,
                                        "gameObject" : {
-                                          "id" : 51,
+                                          "id" : 50,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -1277,7 +1250,7 @@
                                  "translation" : [ 0.0, 0.0, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 57,
+                                 "id" : 56,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.80000001192092896, 1.0, 1.0, 1.0 ],
@@ -1298,7 +1271,7 @@
                               },
                               "name" : "door",
                               "parent" : {
-                                 "id" : 50,
+                                 "id" : 49,
                                  "type" : 1
                               }
                            },
@@ -1328,25 +1301,25 @@
                   "type" : 1
                },
                {
-                  "id" : 58,
+                  "id" : 57,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 59,
+                           "id" : 58,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 60,
+                                    "id" : 59,
                                     "object" : {
                                        "active" : true,
                                        "gameObject" : {
-                                          "id" : 59,
+                                          "id" : 58,
                                           "type" : 1
                                        },
                                        "light" : {
-                                          "id" : 61,
+                                          "id" : 60,
                                           "object" : {
                                              "color" : [ 0.60000002384185791, 0.60000002384185791, 0.60000002384185791, 1.0 ],
                                              "constant" : 0.18000000715255737,
@@ -1354,22 +1327,17 @@
                                              "enabled" : 1,
                                              "far_plane" : 10.0,
                                              "lightSpace" : [
-                                                [ 2.2538721561431885, 0.0, -0.3590749204158783, -0.35835748910903931 ],
-                                                [ 0.0, 2.4142134189605713, 0.0, 0.0 ],
-                                                [ -0.86515146493911743, 0.0, -0.93545347452163696, -0.93358445167541504 ],
-                                                [
-                                                   -2.8779666649825231e-07,
-                                                   -2.4142134189605713,
-                                                   2.9859862327575684,
-                                                   3.0000002384185791
-                                                ]
+                                                [ -1.6189678907394409, 0.0, -0.74330568313598633, -0.7418205738067627 ],
+                                                [ 0.0, 2.4142136573791504, 0.0, 0.0 ],
+                                                [ -1.7909132242202759, 0.0, 0.67194104194641113, 0.67059850692749023 ],
+                                                [ 0.0, -2.4142136573791504, 2.9859859943389893, 3.0 ]
                                              ],
                                              "linear" : 0.10000000149011612,
                                              "model" : [
-                                                [ 0.93358445167541504, 0.0, -0.35835748910903931, 0.0 ],
+                                                [ -0.67059844732284546, 0.0, -0.74182051420211792, 0.0 ],
                                                 [ 0.0, 1.0, 0.0, 0.0 ],
-                                                [ 0.35835748910903931, 0.0, 0.93358445167541504, 0.0 ],
-                                                [ 1.0750725269317627, 1.0, 2.8007533550262451, 1.0 ]
+                                                [ 0.74182051420211792, 0.0, -0.67059844732284546, 0.0 ],
+                                                [ 2.225461483001709, 1.0, -2.0117952823638916, 1.0 ]
                                              ],
                                              "near_plane" : 0.0099999997764825821,
                                              "outerCutOff" : 0.78539818525314331,
@@ -1393,7 +1361,7 @@
                                  "translation" : [ 0.0, 1.0, 3.0 ]
                               },
                               "mesh" : {
-                                 "id" : 62,
+                                 "id" : 61,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
@@ -1415,7 +1383,7 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 58,
+                                 "id" : 57,
                                  "type" : 1
                               }
                            },
@@ -1424,11 +1392,11 @@
                      ],
                      "components" : [
                         {
-                           "id" : 63,
+                           "id" : 62,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 58,
+                                 "id" : 57,
                                  "type" : 1
                               },
                               "name" : "Rotating object",
@@ -1438,12 +1406,12 @@
                         }
                      ],
                      "localLastTransformData" : {
-                        "eulerRotation" : [ 0.0, 0.36650794744491577, 0.0 ],
+                        "eulerRotation" : [ 0.0, 8.5889968872070313, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
                      "localTransformData" : {
-                        "eulerRotation" : [ 0.0, 0.36650794744491577, 0.0 ],
+                        "eulerRotation" : [ 0.0, 8.5889968872070313, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
@@ -1460,25 +1428,25 @@
                   "type" : 1
                },
                {
-                  "id" : 64,
+                  "id" : 63,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 65,
+                           "id" : 64,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 66,
+                                    "id" : 65,
                                     "object" : {
                                        "active" : true,
                                        "gameObject" : {
-                                          "id" : 65,
+                                          "id" : 64,
                                           "type" : 1
                                        },
                                        "light" : {
-                                          "id" : 67,
+                                          "id" : 66,
                                           "object" : {
                                              "color" : [ 0.30000001192092896, 0.30000001192092896, 0.10000000149011612, 1.0 ],
                                              "constant" : 0.18000000715255737,
@@ -1486,10 +1454,10 @@
                                              "far_plane" : 10.0,
                                              "linear" : 0.10000000149011612,
                                              "model" : [
-                                                [ 0.74315983057022095, 0.0, -0.66911399364471436, 0.0 ],
+                                                [ -0.15518598258495331, 0.0, 0.98788529634475708, 0.0 ],
                                                 [ 0.0, 1.0, 0.0, 0.0 ],
-                                                [ 0.66911399364471436, 0.0, 0.74315983057022095, 0.0 ],
-                                                [ 0.37157991528511047, 0.5, -0.33455699682235718, 1.0 ]
+                                                [ -0.98788529634475708, 0.0, -0.15518598258495331, 0.0 ],
+                                                [ -0.077592991292476654, 0.5, 0.49394264817237854, 1.0 ]
                                              ],
                                              "near_plane" : 0.0099999997764825821,
                                              "quadratic" : 0.10000000149011612
@@ -1512,7 +1480,7 @@
                                  "translation" : [ 0.5, 0.5, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 68,
+                                 "id" : 67,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
@@ -1534,7 +1502,7 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 64,
+                                 "id" : 63,
                                  "type" : 1
                               }
                            },
@@ -1543,11 +1511,11 @@
                      ],
                      "components" : [
                         {
-                           "id" : 69,
+                           "id" : 68,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 64,
+                                 "id" : 63,
                                  "type" : 1
                               },
                               "name" : "Rotating object",
@@ -1557,12 +1525,12 @@
                         }
                      ],
                      "localLastTransformData" : {
-                        "eulerRotation" : [ 0.0, 0.73301589488983154, 0.0 ],
+                        "eulerRotation" : [ 0.0, 17.122943878173828, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
                      "localTransformData" : {
-                        "eulerRotation" : [ 0.0, 0.73301589488983154, 0.0 ],
+                        "eulerRotation" : [ 0.0, 17.122943878173828, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0, 0.0 ]
                      },
@@ -1579,12 +1547,12 @@
                   "type" : 1
                },
                {
-                  "id" : 70,
+                  "id" : 69,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 71,
+                           "id" : 70,
                            "object" : {
                               "active" : true,
                               "localLastTransformData" : {
@@ -1598,7 +1566,7 @@
                                  "translation" : [ 0.0, 0.0, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 72,
+                                 "id" : 71,
                                  "object" : {
                                     "baseCenter" : [ 0.0, 0.0, 0.0 ],
                                     "castShadows" : true,
@@ -1620,7 +1588,7 @@
                               },
                               "name" : "Node",
                               "parent" : {
-                                 "id" : 70,
+                                 "id" : 69,
                                  "type" : 1
                               }
                            },
@@ -1629,15 +1597,30 @@
                      ],
                      "components" : [
                         {
-                           "id" : 73,
+                           "id" : 72,
                            "object" : {
                               "active" : true,
                               "camera" : {
-                                 "id" : 3,
+                                 "id" : 73,
+                                 "object" : {
+                                    "cameraFront" : [ 0.49231842160224915, -0.32094362378120422, -0.80908453464508057 ],
+                                    "cameraPos" : [ -1.3520677089691162, 1.794802188873291, 5.4147787094116211 ],
+                                    "cameraUp" : [ 0.0, 1.0, 0.0 ],
+                                    "pitch" : -18.720001220703125,
+                                    "rotSpeed" : 6.0,
+                                    "speed" : 3.0,
+                                    "view" : [
+                                       [ 0.85427725315093994, 0.16683216392993927, -0.49231845140457153, 0.0 ],
+                                       [ -0.0, 0.94709831476211548, 0.32094362378120422, 0.0 ],
+                                       [ 0.51981765031814575, -0.27417483925819397, 0.80908453464508057, 0.0 ],
+                                       [ -1.6596567630767822, 0.01031041145324707, -5.6226921081542969, 1.0 ]
+                                    ],
+                                    "yaw" : -58.679981231689453
+                                 },
                                  "type" : 23
                               },
                               "gameObject" : {
-                                 "id" : 70,
+                                 "id" : 69,
                                  "type" : 1
                               },
                               "name" : "Billboard",
@@ -1707,16 +1690,16 @@
       },
       "spotLightComps" : [
          {
-            "id" : 60,
+            "id" : 59,
             "type" : 40
          }
       ],
       "sun" : {
-         "id" : 22,
+         "id" : 19,
          "type" : 41
       },
       "sunNode" : {
-         "id" : 13,
+         "id" : 10,
          "type" : 1
       }
    },

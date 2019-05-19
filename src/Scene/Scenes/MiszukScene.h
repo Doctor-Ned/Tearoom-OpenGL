@@ -3,13 +3,10 @@
 
 #include "Scene.h"
 #include <map>
-#include "Render/Camera.h"
 #include "Ui/UiColorPlane.h"
 
 class MiszukScene : public Scene {
 public:
-	void render() override;
-	void update(double deltaTime) override;
 	MiszukScene();
 	~MiszukScene();
 protected:

@@ -3,7 +3,6 @@
 #include <iostream>
 #include "Scene/CollisionSystem.h"
 #include "Scene/GameManager.h"
-#include "Render/Camera.h"
 #include "Scene/GraphNode.h"
 #include "CollectableObject.h"
 #include "Serialization/Serializer.h"
@@ -11,11 +10,16 @@
 #include "Scene/Components/Animation.h"
 #include "Scene/Components/AnimationController.h"
 #include "Scene/SoundSystem.h"
+#include "Scene/Components/Camera.h"
 
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const std::string& name )
 	: Component(_gameObject, name), scene(scene){
 	UiElement *root = scene->getUiRoot();
+	if(camera == nullptr) {
+		camera = _gameObject->getComponent<Camera>();
+	}
+	this->camera = camera;
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
@@ -92,6 +96,8 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 
 }
 
+Picking::Picking(GraphNode* _gameObject, const std::string& name) : Picking(_gameObject, gameManager->getCurrentNonEditorCamera(), gameManager->getCurrentNonEditorScene(), name) {}
+
 
 void Picking::hideInventoryUi() {
 	inventoryCanvas->setActive(false);
@@ -142,7 +148,7 @@ void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 
 	Collider* coll = gameObject->getComponent<Collider>();
-	GraphNode * object = CollisionSystem::getInstance()->castRay(gameManager->getCamera()->getPos(), gameManager->getCamera()->getFront(), 2.0f, coll);
+	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), 2.0f, coll);
 
 	if (object) {
 
@@ -239,3 +245,11 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	UiCanvas *Picking::getInventoryCanvas() const {
 		return inventoryCanvas;
 	}
+
+void Picking::setCamera(Camera* camera) {
+	this->camera = camera;
+}
+
+Camera* Picking::getCamera() {
+	return camera;
+}

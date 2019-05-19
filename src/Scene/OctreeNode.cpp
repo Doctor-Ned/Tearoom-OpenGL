@@ -3,7 +3,7 @@
 #include "Components/Collider.h"
 #include <iostream>
 #include "CollisionSystem.h"
-#include "Render/Camera.h"
+#include "Components/Camera.h"
 
 std::set<GraphNode*> OctreeNode::toInsert2 = std::set<GraphNode*>();
 std::vector<GraphNode*> OctreeNode::frustumContainer = std::vector<GraphNode*>();

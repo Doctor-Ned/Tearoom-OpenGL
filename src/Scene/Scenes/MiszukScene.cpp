@@ -22,12 +22,12 @@
 #include <ctime>
 #include "Mesh/AnimatedModel.h"
 #include "Scene/Components/KeyFrameAnimation.h"
+#include "Scene/Components/Camera.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
 
 	lightManager->recreateLights(0, 0, 0);
-	camera = new Camera();
 
 	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, UI_REF_CEN_Y), "+", 1.0f));
 
@@ -50,9 +50,9 @@ MiszukScene::MiszukScene() {
 	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 
 	//-------------
-    //INVENTORY UI
-	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f),glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(1076.0f, 530.0f),glm::vec2(60.0f, 60.0f), Right);
+	//INVENTORY UI
+	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(1076.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 
 
 	// COLLECTABLE ITEM
@@ -62,12 +62,12 @@ MiszukScene::MiszukScene() {
 	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera, Letter, boxRepresentation));
 	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
-    MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-    GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
+	MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
+	GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
 	tinyItemNode2->addComponent(new PhysicalObject(tinyItemNode2));
-    tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2,camera, Letter, boxRepresentation2));
-    tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
-    tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
+	tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2, camera, Letter, boxRepresentation2));
+	tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+	tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 	//-----------------
 	//miszuk animation
 	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);
@@ -124,6 +124,7 @@ MiszukScene::MiszukScene() {
 	player = new GraphNode(playerMesh, rootNode);
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player));
+	camera = player->getComponent<Camera>();  //playermovement creates a camera if it doesn't exist
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
@@ -143,7 +144,7 @@ MiszukScene::MiszukScene() {
 
 	wallNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -5.0f));
 	wallNode2->localTransform.translate(glm::vec3(8.0f, -2.0f, -15.0f));
-	
+
 	boxNode2->addComponent(new SphereCollider(boxNode2, DYNAMIC, true, glm::vec3(-0.5f, 0.0f, 0.0f), 1.0f));
 	//boxNode3->addComponent(new AnimationController());
 	boxNode->addComponent(new BoxCollider(boxNode, DYNAMIC, true, glm::vec3(1, 0, 0), glm::vec3(1.3f, 1.0f, 0.5f)));
@@ -157,13 +158,12 @@ MiszukScene::MiszukScene() {
 
 	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
-	
+
 	auto* robot = AnimatedModel::createModelData("res/models/zabijaka/Pointing.fbx");
 	srand(time(NULL));
 	AnimatedModel* robo = new AnimatedModel("res/models/zabijaka/Pointing.fbx");
-	for (int i = 0; i < 1; i++)
-	{
-		
+	for (int i = 0; i < 1; i++) {
+
 		int x = (rand() % 50);
 		int y = (rand() % 50);
 		int z = (rand() % 50);
@@ -187,65 +187,27 @@ MiszukScene::~MiszukScene() {
 	delete rootNode;
 }
 
-void MiszukScene::render() {
-	Scene::render();
-}
-
-void MiszukScene::update(double deltaTime) {
-	Scene::update(deltaTime);
-	if (getKeyState(KEY_DOWN)) {
-		camera->moveDown(deltaTime * movementSpeed);
-	}
-	if (getKeyState(KEY_MOUSE_LEFT)) {
-		camera->rotateX(-movementSpeed * deltaTime);
-	}
-	if (getKeyState(KEY_MOUSE_RIGHT)) {
-		camera->rotateX(movementSpeed * deltaTime);
-	}
-	if (getKeyState(KEY_MOUSE_UP)) {
-		camera->rotateY(-movementSpeed * deltaTime);
-	}
-	if (getKeyState(KEY_MOUSE_DOWN)) {
-		camera->rotateY(-movementSpeed * deltaTime);
-	}
-	
-}
-
 void MiszukScene::keyEvent(int key, bool pressed) {
 	switch (key) {
-		case KEY_FAST:
-			if (pressed) {
-				movementSpeed *= 2.0f;
-			} else {
-				movementSpeed /= 2.0f;
-			}
-			break;
-		case KEY_SLOW:
-			if (!pressed) {
-				movementSpeed *= 2.0f;
-			} else {
-				movementSpeed /= 2.0f;
-			}
-			break;
 		case KEY_TOGGLE_MOUSE_LOCK:
 			if (pressed) {
 				setCursorLocked(!getCursorLocked());
 			}
 			break;
-		case KEY_QUIT: {
+		case KEY_QUIT:
+		{
 			gameManager->goToMenu(false);
 		}
-			break;
-		case GLFW_KEY_I: {
+		break;
+		case GLFW_KEY_I:
+		{
 			Picking *temp = player->getComponent<Picking>();
 
 			if (pressed) {
-                setCursorLocked(!getCursorLocked());
-
-                if (temp->getSwitch() == false) temp->setSwitch(true);
-				else temp->setSwitch(false);
+				setCursorLocked(!getCursorLocked());
+				temp->setSwitch(!temp->getSwitch());
 			} else {
-				if (temp->getSwitch() == true) {
+				if (temp->getSwitch()) {
 					temp->showInventoryUi();
 				} else {
 					temp->hideInventoryUi();
