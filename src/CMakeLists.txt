@@ -24,8 +24,8 @@ file(COPY ${IRRKLANG_DIR}/irrKlang.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Components/SunController.cpp Scene/Components/SunController.h)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+#add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Components/SunController.cpp Scene/Components/SunController.h)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # Define the include DIRs
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -55,15 +55,15 @@ add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
 						   ${CMAKE_SOURCE_DIR}/res
 						   ${CMAKE_CURRENT_BINARY_DIR}/res)
 						   
-add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory
-						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes
-						   ${CMAKE_SOURCE_DIR}/Scenes)
+#add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
+#				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes
+#						   ${CMAKE_SOURCE_DIR}/Scenes)
 						   
-add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory
-						   ${CMAKE_SOURCE_DIR}/Scenes
-						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes)
+#add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
+#				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#						   ${CMAKE_SOURCE_DIR}/Scenes
+#						   ${CMAKE_CURRENT_BINARY_DIR}/Scenes)
 						   
 add_custom_command(TARGET  ${PROJECT_NAME} POST_BUILD
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory
