@@ -7,6 +7,7 @@
 #include "Scene/ComposedTransform.h"
 #include <vector>
 
+
 class Bone {
 public:
 	unsigned int ID;
@@ -17,14 +18,14 @@ public:
 	glm::mat4 transform;
 	Transform worldTransform;
 	ComposedTransform localTransform;
-	std::map<unsigned int, float> verticesWages;
-	int meshIndex;
+	//std::map<unsigned int, float> verticesWages;
+	//int meshIndex;
 	bool dirty = true;
 	Bone();
 	Bone(Bone* b);
 	void setParentsForChildren(Bone* _parent = nullptr);
 	void updateWorld();
-	void toString(int wciecie);
+	void toString(int wciecie = 0);
 	void setID(bool init = true);
 };
 

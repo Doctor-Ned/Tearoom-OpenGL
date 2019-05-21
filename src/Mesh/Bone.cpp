@@ -10,8 +10,8 @@ Bone::Bone(Bone* b) : worldTransform(Transform(dirty)), localTransform(ComposedT
 	localTransform.setData(b->localTransform.getData());
 	inverseBindPose = b->inverseBindPose;
 	transform = b->transform;
-	verticesWages = b->verticesWages;
-	meshIndex = b->meshIndex;
+	//verticesWages = b->verticesWages;
+	//meshIndex = b->meshIndex;
 
 	for (auto child : b->children) {
 		children.push_back(new Bone(child));

@@ -59,8 +59,9 @@ std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims
 	return animations;
 }
 
-Bone* AnimatedModel::loadBones(const aiScene* scene) {
+Bone* AnimatedModel::loadBones(const aiScene* scene, AnimatedModelData& data) {
 
+	int boneID = 0;
 	int meshesCount = scene->mNumMeshes;
 	//bones vector through all the meshes
 	std::vector<Bone*> bones;
@@ -68,15 +69,38 @@ Bone* AnimatedModel::loadBones(const aiScene* scene) {
 		aiMesh* mesh = scene->mMeshes[i];
 		int bonesCount = mesh->mNumBones;
 		for (int j = 0; j < bonesCount; j++) {
-			auto bone = new Bone();
+			
 			aiBone* b = mesh->mBones[j];
-			bone->name = b->mName.C_Str();
-			bone->inverseBindPose = Global::aiMatrix4x4ToGlm(b->mOffsetMatrix);
-			bone->meshIndex = i;
-			for (int k = 0; k < b->mNumWeights; k++) {
-				bone->verticesWages.emplace(b->mWeights[k].mVertexId, b->mWeights[k].mWeight);
+			Bone* bone;
+			auto it = std::find_if(bones.begin(), bones.end(), [b](const Bone* bone) { return b->mName.C_Str() == bone->name; });
+			if (it != bones.end())
+			{
+				bone = *it;
 			}
-			bones.push_back(bone);
+			else
+			{
+				bone = new Bone();
+				bone->ID = boneID;
+				bone->name = b->mName.C_Str();
+				bone->inverseBindPose = Global::aiMatrix4x4ToGlm(b->mOffsetMatrix);
+				boneID++;
+				bones.push_back(bone);
+			}
+
+			{
+				int verticesCount = b->mNumWeights;
+				for (int k = 0; k < verticesCount; k++) {
+					int vertexIndex = b->mWeights[k].mVertexId;
+					int boneIndex = data.nodeData[i]->vertices[vertexIndex].BoneCounter;
+					data.nodeData[i]->vertices[vertexIndex].BoneIDs[boneIndex] = bone->ID;
+					data.nodeData[i]->vertices[vertexIndex].BoneWages[boneIndex] = b->mWeights[k].mWeight;
+					if(boneIndex > 4)
+					{
+						float d = 4;
+					}
+					data.nodeData[i]->vertices[vertexIndex].BoneCounter++;
+				}
+			}
 		}
 	}
 
@@ -88,12 +112,11 @@ Bone* AnimatedModel::loadBones(const aiScene* scene) {
 			boneRoot = *it;
 			boneRoot->transform = Global::aiMatrix4x4ToGlm(root->mChildren[i]->mTransformation);
 			recreateBonesHierarchy(boneRoot, root->mChildren[i], bones);
-			std::cout << root->mChildren[i]->mName.C_Str() << std::endl;
 		}
 	}
 	if (boneRoot) {
-		boneRoot->setID();
-		boneRoot->toString(0);
+		//boneRoot->setID();
+		boneRoot->toString();
 	}
 	return boneRoot;
 }
@@ -112,22 +135,8 @@ void AnimatedModel::recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNod
 	}
 }
 
-void AnimatedModel::assignBonesToVertices(const Bone* root, AnimatedModelData* data) {
-	for (auto& it : root->verticesWages) {
-		int meshIndex = root->meshIndex;
-		int boneIndex = data->nodeData[meshIndex]->vertices[it.first].BoneCounter;
-		data->nodeData[meshIndex]->vertices[it.first].BoneIDs[boneIndex] = root->ID;
-		data->nodeData[meshIndex]->vertices[it.first].BoneWages[boneIndex] = it.second;
-		data->nodeData[meshIndex]->vertices[it.first].BoneCounter++;
-	}
-
-	for (auto& it : root->children) {
-		assignBonesToVertices(it, data);
-	}
-}
-
 void AnimatedModel::addToBoneTransformMatrix(Bone* bone, glm::mat4(&boneTransforms)[MAX_BONE_TRANSFORMS]) {
-	boneTransforms[bone->ID] = bone->worldTransform.getMatrix();
+	boneTransforms[bone->ID] = bone->inverseBindPose * bone->worldTransform.getMatrix() ;
 	for (auto &b : bone->children) {
 		addToBoneTransformMatrix(b, boneTransforms);
 	}
@@ -160,12 +169,10 @@ FullModelData* AnimatedModel::createModelData(std::string path) {
 		result->simpleData.textures[i] = textures[i];
 	}
 	delete[] textures;
-	Bone* boneRoot = loadBones(scene);
+	
 	auto anims = loadAnimations(scene->mAnimations, scene->mNumAnimations);
 	processNode(scene->mRootNode, scene, directory, &result->animatedData);
-	if (boneRoot) {
-		assignBonesToVertices(boneRoot, &result->animatedData);
-	}
+	Bone* boneRoot = loadBones(scene, result->animatedData);
 
 	for (auto &dat : result->animatedData.nodeData) {
 		ModelNodeData *data = new ModelNodeData();
@@ -181,6 +188,8 @@ FullModelData* AnimatedModel::createModelData(std::string path) {
 		}
 		result->simpleData.nodeData.push_back(data);
 	}
+
+	glm::mat4 globalInverseMatrix = Global::aiMatrix4x4ToGlm(scene->mRootNode->mTransformation);
 
 	AssetManager::getInstance()->addBoneHierarchy(path, boneRoot);
 	for (auto& animation : anims) {

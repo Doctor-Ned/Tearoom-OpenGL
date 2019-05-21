@@ -48,9 +48,8 @@ private:
 	std::string path;
 	Bone* rootBone;
 	static std::vector<SkeletalAnimation> loadAnimations(aiAnimation** anims, int animCount);
-	static Bone* loadBones(const aiScene* scene);
+	static Bone* loadBones(const aiScene* scene, AnimatedModelData& data);
 	static void recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNode, std::vector<Bone*>& bones);
-	static void assignBonesToVertices(const Bone* root, AnimatedModelData* data);
 	void addToBoneTransformMatrix(Bone* bone, glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]);
 	void draw(Shader *shader, glm::mat4 world) override;
 	std::vector<MeshAnimatedModel*> meshes;
