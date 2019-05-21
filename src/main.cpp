@@ -232,6 +232,17 @@ int main(int argc, char** argv) {
 
 	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
+	gameManager->setCursorLocked(true);
+
+	//int imgWidth, imgHeight, imgChannels;
+	//unsigned char* imgData = stbi_load("res/ui/Cursor.png", &imgWidth, &imgHeight, &imgChannels, 0);
+	//GLFWimage image;
+	//image.width = 60;
+	//image.height = 60;
+	//image.pixels = imgData;
+	//GLFWcursor *cursor = glfwCreateCursor(&image, 0, 0);
+	//glfwSetCursor(window, cursor);
+
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, keyboard_callback);
@@ -245,7 +256,7 @@ int main(int argc, char** argv) {
 	serializer->setup();
 	gameManager->setup();
 	SoundSystem::loadSounds();
-	
+
 	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight);
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
@@ -270,7 +281,7 @@ int main(int argc, char** argv) {
 	fpsPlane->updateDrawData();
 
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
-	
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGui_ImplOpenGL3_NewFrame();
@@ -366,11 +377,13 @@ int main(int argc, char** argv) {
 			gameManager->goToMenu();
 		}
 	}
+
 	delete gameManager;
 	delete assetManager;
 	delete LightManager::getInstance();
 	dat.dispose();
 	glfwDestroyWindow(window);
+	//glfwDestroyCursor(cursor);
 	glfwTerminate();
 
 	return 0;

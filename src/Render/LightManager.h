@@ -193,7 +193,7 @@ public:
 	int getDirAmount();
 	int getSpotAmount();
 	int getPointAmount();
-	~LightManager();
+	virtual ~LightManager();
 	float lightBleedingReduction = 0.35f;
 	float minVariance = 0.002f;
 	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.

@@ -75,11 +75,19 @@ void GameManager::setWindow(GLFWwindow* window) {
 
 void GameManager::setCursorLocked(bool locked) {
 	glfwSetInputMode(window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	//if (!locked && cursorLocked) {
+	//	glfwSetCursorPos(window, screenWidth / 2.0f, screenHeight / 2.0f);
+	//}
 	cursorLocked = locked;
 }
 
 bool GameManager::getCursorLocked() {
 	return cursorLocked;
+}
+
+void GameManager::updateRescaleVectors() {
+	uiRescaleVector = glm::vec2(UI_REF_WIDTH / screenWidth, UI_REF_HEIGHT / screenHeight);
+	screenRescaleVector = glm::vec2(screenWidth / UI_REF_WIDTH, screenHeight / UI_REF_HEIGHT);
 }
 
 void GameManager::goToMenu(bool destroyPreviousScene) {
@@ -101,6 +109,7 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 	windowCenterY = windowHeight / 2.0f;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
+	updateRescaleVectors();
 	if (updateUiProjection) {
 		UiElement::updateProjection();
 	}
@@ -249,7 +258,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 }
 
 SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,
-	GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod) {
+														 GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod) {
 	SpecialFramebuffer result;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
@@ -295,7 +304,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 }
 
 MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height,
-	GLenum format, GLenum type, int textureCount) {
+																   GLenum format, GLenum type, int textureCount) {
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	MultitextureFramebuffer result;
@@ -379,16 +388,24 @@ glm::vec2 GameManager::getMousePosition() const {
 	return mousePosition;
 }
 
+glm::vec2 GameManager::getUiRescaleVector() const {
+	return uiRescaleVector;
+}
+
+glm::vec2 GameManager::getScreenRescaleVector() const {
+	return screenRescaleVector;
+}
+
 Scene* GameManager::getCurrentScene() {
 	return currentScene;
 }
 
 Scene* GameManager::getCurrentNonEditorScene() {
-	if(currentScene == nullptr) {
+	if (currentScene == nullptr) {
 		return nullptr;
 	}
 	EditorScene* sc = getEditorScene();
-	if(sc == nullptr) {
+	if (sc == nullptr) {
 		return currentScene;
 	}
 	return sc->editedScene;
@@ -399,11 +416,11 @@ Camera* GameManager::getCurrentCamera() {
 }
 
 Camera* GameManager::getCurrentNonEditorCamera() {
-	if(currentScene == nullptr) {
+	if (currentScene == nullptr) {
 		return nullptr;
 	}
 	EditorScene *sc = getEditorScene();
-	if(sc == nullptr) {
+	if (sc == nullptr) {
 		return currentScene->getCamera();
 	}
 	return sc->playerCamera;

@@ -63,6 +63,7 @@ public:
 	void setWindow(GLFWwindow *window);
 	void setCursorLocked(bool locked);
 	bool getCursorLocked();
+	void updateRescaleVectors();
 	void goToMenu(bool destroyPreviousScene = true);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection = true);
 	void setup();
@@ -75,6 +76,8 @@ public:
 	bool getKeyState(int key);
 	bool getMouseState(int key);
 	glm::vec2 getMousePosition() const;
+	glm::vec2 getUiRescaleVector() const;
+	glm::vec2 getScreenRescaleVector() const;
 	Scene* getCurrentScene();
 	Scene* getCurrentNonEditorScene();
 	Camera* getCurrentCamera();
@@ -84,6 +87,7 @@ public:
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod = GL_CLAMP_TO_EDGE);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 protected:
+	glm::vec2 screenRescaleVector, uiRescaleVector;
 	void setKeyState(int key, bool pressed);
 	void keyEvent(int key, bool pressed) const;
 	std::map<int, bool> keyStates;
