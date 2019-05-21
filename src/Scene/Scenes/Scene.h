@@ -56,10 +56,10 @@ public:
 	std::vector<UiPlane*>* getObjectRepresentations();
 	UiElement* getUiRoot();
 	void setLights(Lights lights);
-
-protected:
 	bool getCursorLocked() const;
 	void setCursorLocked(bool locked) const;
+
+protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);

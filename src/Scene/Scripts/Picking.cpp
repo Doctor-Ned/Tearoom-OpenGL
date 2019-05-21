@@ -15,7 +15,9 @@
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const std::string& name )
 	: Component(_gameObject, name), scene(scene){
+
 	UiElement *root = scene->getUiRoot();
+
 	if(camera == nullptr) {
 		camera = _gameObject->getComponent<Camera>();
 	}
@@ -93,6 +95,20 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	encouragementCanvas->addChild(encouragementActivate);
 	inventoryCanvas->addChild(descBackground);
 	inventoryCanvas->addChild(itemDesc);
+
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]()
+    {
+	    this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+	    setSwitch(!getSwitch());
+    });
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]()
+    {
+            if (getSwitch()) {
+                showInventoryUi();
+            } else {
+                hideInventoryUi();
+            }
+    });
 
 }
 

@@ -199,23 +199,6 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 			gameManager->goToMenu(false);
 		}
 		break;
-		case GLFW_KEY_I:
-		{
-			Picking *temp = player->getComponent<Picking>();
-
-			if (pressed) {
-				setCursorLocked(!getCursorLocked());
-				temp->setSwitch(!temp->getSwitch());
-			} else {
-				if (temp->getSwitch()) {
-					temp->showInventoryUi();
-				} else {
-					temp->hideInventoryUi();
-				}
-			}
-			break;
-		}
-
 	}
 }
 
