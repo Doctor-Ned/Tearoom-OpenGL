@@ -5,9 +5,11 @@ layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inTexCoord;
 layout (location = 3) in vec3 inTangent;
 layout (location = 4) in vec3 inBitangent;
-layout (location = 5) in int inBoneIDs[8];
-layout (location = 6) in float inBoneWages[8];
-layout (location = 7) in int inBoneCounter;
+layout (location = 5) in ivec4 inBoneIDs;
+layout (location = 6) in ivec4 inBoneIDs2;
+layout (location = 7) in vec4 inBoneWages;
+layout (location = 8) in vec4 inBoneWages2;
+layout (location = 9) in int inBoneCounter;
 
 #define MAX_BONE_TRANSFORMS 80 // make sure to sync this with the value in Shader.h!
 
@@ -39,18 +41,17 @@ void main() {
 	vec4 newPosition = vec4(0.0f);
 	vec4 newNormal = vec4(0.0f);
 
-	if (inBoneCounter == 0) {
-		newPosition = vertex;
-		newNormal = vec4(inNormal, 0.0f);
-	} else {
-		mat4 boneTransform = boneTransforms[inBoneIDs[0]] * inBoneWages[0];
-		for (int i = 1; i < inBoneCounter; i++) {
+	mat4 boneTransform = boneTransforms[inBoneIDs[0]] * inBoneWages[0];
+	for (int i = 1; i < inBoneCounter; i++) {
+		if (i < 4) {
 			boneTransform += boneTransforms[inBoneIDs[i]] * inBoneWages[i];
+		} else {
+			boneTransform += boneTransforms[inBoneIDs2[i - 4]] * inBoneWages2[i - 4];
 		}
-		newPosition = boneTransform * vertex;
-		newNormal = boneTransform * vec4(inNormal, 0.0f);
-		newPosition.w = 1.0f;
 	}
+	newPosition = boneTransform * vertex;
+	newNormal = boneTransform * vec4(inNormal, 0.0f);
+	newPosition.w = 1.0f;
 
 	vs_out.texCoords = inTexCoord;
 	vs_out.pos = vec3(model * newPosition);

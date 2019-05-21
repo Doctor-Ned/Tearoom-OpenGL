@@ -11,8 +11,8 @@ MeshAnimatedModel::MeshAnimatedModel(std::vector<AnimatedModelVertex> vertices, 
 void MeshAnimatedModel::draw(Shader *shader, glm::mat4 world) {
 	Mesh::draw(shader, world);
 	int counter = 0;
-	for(int i=0;i<6;i++) {
-		if(textures[i].id != 0) {
+	for (int i = 0; i < 6; i++) {
+		if (textures[i].id != 0) {
 			glActiveTexture(GL_TEXTURE0 + counter);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 			shader->setInt(("textures[" + std::to_string(i) + "]").c_str(), counter++);
@@ -26,7 +26,7 @@ void MeshAnimatedModel::draw(Shader *shader, glm::mat4 world) {
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);
-	
+
 }
 
 void MeshAnimatedModel::setupMesh() {
@@ -58,12 +58,16 @@ void MeshAnimatedModel::setupMesh() {
 
 	glEnableVertexAttribArray(5);
 	glVertexAttribIPointer(5, 4, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneIDs)));
-
 	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneWages)));
+	glVertexAttribIPointer(6, 4, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneIDs) + 4 * sizeof(int)));
 
 	glEnableVertexAttribArray(7);
-	glVertexAttribIPointer(7, 1, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneCounter)));
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneWages)));
+	glEnableVertexAttribArray(8);
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneWages) + 4 * sizeof(float)));
+
+	glEnableVertexAttribArray(9);
+	glVertexAttribIPointer(9, 1, GL_INT, sizeof(AnimatedModelVertex), reinterpret_cast<void*>(offsetof(AnimatedModelVertex, BoneCounter)));
 
 	glBindVertexArray(0);
 }

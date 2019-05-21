@@ -94,10 +94,6 @@ Bone* AnimatedModel::loadBones(const aiScene* scene, AnimatedModelData& data) {
 					int boneIndex = data.nodeData[i]->vertices[vertexIndex].BoneCounter;
 					data.nodeData[i]->vertices[vertexIndex].BoneIDs[boneIndex] = bone->ID;
 					data.nodeData[i]->vertices[vertexIndex].BoneWages[boneIndex] = b->mWeights[k].mWeight;
-					if(boneIndex > 4)
-					{
-						float d = 4;
-					}
 					data.nodeData[i]->vertices[vertexIndex].BoneCounter++;
 				}
 			}
