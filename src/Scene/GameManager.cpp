@@ -18,6 +18,7 @@ void GameManager::setCurrentScene(Scene * scene) {
 	currentScene = scene;
 	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+		currentScene->mouse_callback(window, mousePosition.x, mousePosition.y);
 		LightManager::getInstance()->replaceLights(currentScene->getLights());
 	}
 }
