@@ -136,7 +136,7 @@ void AnimatedModel::recreateBonesHierarchy(Bone* parent, aiNode* currentSceneNod
 }
 
 void AnimatedModel::addToBoneTransformMatrix(Bone* bone, glm::mat4(&boneTransforms)[MAX_BONE_TRANSFORMS]) {
-	boneTransforms[bone->ID] = bone->inverseBindPose * bone->worldTransform.getMatrix() ;
+	boneTransforms[bone->ID] = bone->worldTransform.getMatrix() * bone->inverseBindPose;
 	for (auto &b : bone->children) {
 		addToBoneTransformMatrix(b, boneTransforms);
 	}
@@ -199,6 +199,7 @@ FullModelData* AnimatedModel::createModelData(std::string path) {
 	anims[0].play();
 	anims[0].update(0.016f);*/
 
+	result->animatedData.checkBoneCounters();
 	return result;
 }
 

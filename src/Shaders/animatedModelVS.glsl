@@ -5,8 +5,8 @@ layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inTexCoord;
 layout (location = 3) in vec3 inTangent;
 layout (location = 4) in vec3 inBitangent;
-layout (location = 5) in ivec4 inBoneIDs;
-layout (location = 6) in vec4 inBoneWages;
+layout (location = 5) in int inBoneIDs[8];
+layout (location = 6) in float inBoneWages[8];
 layout (location = 7) in int inBoneCounter;
 
 #define MAX_BONE_TRANSFORMS 80 // make sure to sync this with the value in Shader.h!

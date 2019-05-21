@@ -17,6 +17,28 @@ struct AnimatedModelNodeData {
 struct AnimatedModelData {
 	std::vector<AnimatedModelNodeData*> nodeData;
 	Texture textures[6];
+
+	void checkBoneCounters()
+	{
+		for(auto& nData : nodeData)
+		{
+			for(auto& vertex : nData->vertices)
+			{
+				if(vertex.BoneCounter > 4)
+				{
+					float d = 4;
+				}
+				if (vertex.BoneCounter > 5)
+				{
+					float d = 4;
+				}
+				if (vertex.BoneCounter > 6)
+				{
+					float d = 4;
+				}
+			}
+		}
+	}
 };
 
 struct FullModelData {

@@ -11,8 +11,8 @@ struct AnimatedModelVertex {
 	glm::vec2 TexCoords;
 	glm::vec3 Tangent;
 	glm::vec3 Bitangent;
-	int BoneIDs[4] = {0};
-	float BoneWages[4] = {0.0f};
+	int BoneIDs[8] = {0};
+	float BoneWages[8] = {0.0f};
 	int BoneCounter = 0;
 };
 
