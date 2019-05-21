@@ -39,8 +39,8 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 		itemsInventory->setActive(true);
 		photosInventory->setActive(false);
 		showInventoryUi();
-       SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
-       SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+        SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
     });
 
     itemsButton->addHoverCallback([this]()
@@ -123,30 +123,47 @@ void Picking::hideInventoryUi() {
 }
 
 void Picking::showInventoryUi() {
-	int i = 0;
 	Picking::inventoryCanvas->setActive(true);
 
 	if(letterInventory->isActive()) {
-        for (GraphNode* obj : inventory) {
+		int i = 0;
+		for (GraphNode* obj : inventory) {
             CollectableObject* col = obj->getComponent<CollectableObject>();
-            if(col->getI_type() == Letter) {inventoryCanvas->addChild(col->getIcon());}
+            if(col->getI_type() == Letter) {
+            	if(i >= 8) {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-8)), 664.0f));}
+            	else if (i >= 4){col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-4)), 597.0f));}
+            	else {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));}
+            	inventoryCanvas->addChild(col->getIcon());
+            	i++;
+            }
             else {inventoryCanvas->removeChild(col->getIcon());}
 		}
 	}
 	if(itemsInventory->isActive()) {
+		int i = 0;
         for (GraphNode* obj : inventory) {
             CollectableObject* col = obj->getComponent<CollectableObject>();
-            if(col->getI_type() == NormalItem) {inventoryCanvas->addChild(col->getIcon());
+            if(col->getI_type() == NormalItem) {
+				if(i >= 8) {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-8)), 664.0f));}
+				else if (i >= 4){col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-4)), 597.0f));}
+				else {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));}
+				inventoryCanvas->addChild(col->getIcon());
+				i++;
             }
             else {inventoryCanvas->removeChild(col->getIcon());}
         }
 	}
 	if(photosInventory->isActive()) {
+		int i = 0;
         for (GraphNode* obj : inventory) {
             CollectableObject* col = obj->getComponent<CollectableObject>();
             if(col->getI_type() == Photo) {
-                inventoryCanvas->addChild(obj->getComponent<CollectableObject>()->getIcon());
-            }
+				if(i >= 8) {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-8)), 664.0f));}
+				else if (i >= 4){col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i-4)), 597.0f));}
+				else {col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));}
+				inventoryCanvas->addChild(col->getIcon());
+				i++;
+			}
             else {inventoryCanvas->removeChild(col->getIcon());}
         }
 	}
@@ -176,9 +193,10 @@ void Picking::update(float msec) {
 
 			if (gameManager->getKeyState(GLFW_KEY_F) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
+
 				collectable->takeObject();
 
-				if(inventoryUI) //TODO: getting proper item icon to render
+				if(inventoryUI)
 				{
 				    //icon->setPosition(glm::vec2(icon->getPosition().x + (i * 81), icon->getPosition().y));
 				    if(itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
@@ -232,8 +250,9 @@ void Picking::update(float msec) {
 
 		if (gameManager->getKeyState(GLFW_KEY_G)) {
 		    collectable->leaveObject();
-			inventory.erase(inventory.begin() + i);
 			inventoryCanvas->removeChild(collectable->getIcon());
+			inventory.erase(inventory.begin() + i);
+
 		}
 	}
 
