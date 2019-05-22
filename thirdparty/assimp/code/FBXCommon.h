@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 All rights reserved.
 
@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSIMP_BUILD_NO_FBX_EXPORTER
 
-
+namespace Assimp {
 namespace FBX
 {
     const std::string NULL_RECORD = { // 13 null bytes
@@ -80,7 +80,7 @@ namespace FBX
         TransformInheritance_MAX // end-of-enum sentinel
     };
 }
-
+}
 #endif // ASSIMP_BUILD_NO_FBX_EXPORTER
 
 #endif // AI_FBXCOMMON_H_INC

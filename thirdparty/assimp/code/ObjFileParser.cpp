@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -113,23 +113,22 @@ void ObjFileParser::parseFile( IOStreamBuffer<char> &streamBuffer ) {
     //const unsigned int updateProgressEveryBytes = 100 * 1024;
     unsigned int progressCounter = 0;
     const unsigned int bytesToProcess = static_cast<unsigned int>(streamBuffer.size());
-    const unsigned int progressTotal = 3 * bytesToProcess;
-    const unsigned int progressOffset = bytesToProcess;
+    const unsigned int progressTotal = bytesToProcess;
     unsigned int processed = 0;
     size_t lastFilePos( 0 );
 
     std::vector<char> buffer;
-    while ( streamBuffer.getNextDataLine( buffer, '\\' ) ) {
+    while ( streamBuffer.getNextDataLine( buffer, '\0' ) ) {
         m_DataIt = buffer.begin();
         m_DataItEnd = buffer.end();
 
         // Handle progress reporting
         const size_t filePos( streamBuffer.getFilePos() );
         if ( lastFilePos < filePos ) {
-            processed += static_cast<unsigned int>(filePos);
+            processed = static_cast<unsigned int>(filePos);
             lastFilePos = filePos;
             progressCounter++;
-            m_progress->UpdateFileRead( progressOffset + processed * 2, progressTotal );
+            m_progress->UpdateFileRead( processed, progressTotal );
         }
 
         // parse line
@@ -152,7 +151,8 @@ void ObjFileParser::parseFile( IOStreamBuffer<char> &streamBuffer ) {
                 } else if (*m_DataIt == 't') {
                     // read in texture coordinate ( 2D or 3D )
                     ++m_DataIt;
-                    getVector( m_pModel->m_TextureCoord );
+                    size_t dim = getTexCoordVector(m_pModel->m_TextureCoord);
+                    m_pModel->m_TextureCoordDim = std::max(m_pModel->m_TextureCoordDim, (unsigned int)dim);
                 } else if (*m_DataIt == 'n') {
                     // Read in normal vector definition
                     ++m_DataIt;
@@ -272,6 +272,17 @@ static bool isDataDefinitionEnd( const char *tmp ) {
     return false;
 }
 
+static bool isNanOrInf(const char * in) {
+    // Look for "nan" or "inf", case insensitive
+    if ((in[0] == 'N' || in[0] == 'n') && ASSIMP_strincmp(in, "nan", 3) == 0) {
+        return true;
+    }
+    else if ((in[0] == 'I' || in[0] == 'i') && ASSIMP_strincmp(in, "inf", 3) == 0) {
+        return true;
+    }
+    return false;
+}
+
 size_t ObjFileParser::getNumComponentsInDataDefinition() {
     size_t numComponents( 0 );
     const char* tmp( &m_DataIt[0] );
@@ -285,7 +296,7 @@ size_t ObjFileParser::getNumComponentsInDataDefinition() {
         if ( !SkipSpaces( &tmp ) ) {
             break;
         }
-        const bool isNum( IsNumeric( *tmp ) );
+        const bool isNum( IsNumeric( *tmp ) || isNanOrInf(tmp));
         SkipToken( tmp );
         if ( isNum ) {
             ++numComponents;
@@ -297,7 +308,7 @@ size_t ObjFileParser::getNumComponentsInDataDefinition() {
     return numComponents;
 }
 
-void ObjFileParser::getVector( std::vector<aiVector3D> &point3d_array ) {
+size_t ObjFileParser::getTexCoordVector( std::vector<aiVector3D> &point3d_array ) {
     size_t numComponents = getNumComponentsInDataDefinition();
     ai_real x, y, z;
     if( 2 == numComponents ) {
@@ -319,8 +330,20 @@ void ObjFileParser::getVector( std::vector<aiVector3D> &point3d_array ) {
     } else {
         throw DeadlyImportError( "OBJ: Invalid number of components" );
     }
+
+    // Coerce nan and inf to 0 as is the OBJ default value
+    if (!std::isfinite(x))
+        x = 0;
+
+    if (!std::isfinite(y))
+        y = 0;
+
+    if (!std::isfinite(z))
+        z = 0;
+
     point3d_array.push_back( aiVector3D( x, y, z ) );
     m_DataIt = skipLine<DataArrayIt>( m_DataIt, m_DataItEnd, m_uiLine );
+    return numComponents;
 }
 
 void ObjFileParser::getVector3( std::vector<aiVector3D> &point3d_array ) {
@@ -428,13 +451,6 @@ void ObjFileParser::getFace( aiPrimitiveType type ) {
             if (type == aiPrimitiveType_POINT) {
                 ASSIMP_LOG_ERROR("Obj: Separator unexpected in point statement");
             }
-            if (iPos == 0) {
-                //if there are no texture coordinates in the file, but normals
-                if (!vt && vn) {
-                    iPos = 1;
-                    iStep++;
-                }
-            }
             iPos++;
         } else if( IsSpaceOrNewLine( *m_DataIt ) ) {
             iPos = 0;
@@ -450,6 +466,9 @@ void ObjFileParser::getFace( aiPrimitiveType type ) {
             while ( ( tmp = tmp / 10 ) != 0 ) {
                 ++iStep;
             }
+
+            if (iPos == 1 && !vt && vn)
+                iPos = 2; // skip texture coords for normals if there are no tex coords
 
             if ( iVal > 0 ) {
                 // Store parsed index

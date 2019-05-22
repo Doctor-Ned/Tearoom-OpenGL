@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -420,6 +420,9 @@ void MD5Importer::LoadMD5MeshFile ()
         // generate unique vertices in our internal verbose format
         MakeDataUnique(meshSrc);
 
+        std::string name( meshSrc.mShader.C_Str() );
+        name += ".msh";
+        mesh->mName = name;
         mesh->mNumVertices = (unsigned int) meshSrc.mVertices.size();
         mesh->mVertices = new aiVector3D[mesh->mNumVertices];
         mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
@@ -440,10 +443,10 @@ void MD5Importer::LoadMD5MeshFile ()
         for (MD5::VertexList::const_iterator iter =  meshSrc.mVertices.begin();iter != meshSrc.mVertices.end();++iter,++pv) {
             for (unsigned int jub = (*iter).mFirstWeight, w = jub; w < jub + (*iter).mNumWeights;++w)
             {
-                MD5::WeightDesc& desc = meshSrc.mWeights[w];
+                MD5::WeightDesc& weightDesc = meshSrc.mWeights[w];
                 /* FIX for some invalid exporters */
-                if (!(desc.mWeight < AI_MD5_WEIGHT_EPSILON && desc.mWeight >= -AI_MD5_WEIGHT_EPSILON ))
-                    ++piCount[desc.mBone];
+                if (!(weightDesc.mWeight < AI_MD5_WEIGHT_EPSILON && weightDesc.mWeight >= -AI_MD5_WEIGHT_EPSILON ))
+                    ++piCount[weightDesc.mBone];
             }
         }
 
@@ -471,7 +474,6 @@ void MD5Importer::LoadMD5MeshFile ()
                 MD5::ConvertQuaternion( boneSrc.mRotationQuat, boneSrc.mRotationQuatConverted );
             }
 
-            //unsigned int g = 0;
             pv = mesh->mVertices;
             for (MD5::VertexList::const_iterator iter =  meshSrc.mVertices.begin();iter != meshSrc.mVertices.end();++iter,++pv) {
                 // compute the final vertex position from all single weights
@@ -491,20 +493,20 @@ void MD5Importer::LoadMD5MeshFile ()
                     if (w >= meshSrc.mWeights.size())
                         throw DeadlyImportError("MD5MESH: Invalid weight index");
 
-                    MD5::WeightDesc& desc = meshSrc.mWeights[w];
-                    if ( desc.mWeight < AI_MD5_WEIGHT_EPSILON && desc.mWeight >= -AI_MD5_WEIGHT_EPSILON) {
+                    MD5::WeightDesc& weightDesc = meshSrc.mWeights[w];
+                    if ( weightDesc.mWeight < AI_MD5_WEIGHT_EPSILON && weightDesc.mWeight >= -AI_MD5_WEIGHT_EPSILON) {
                         continue;
                     }
 
-                    const ai_real fNewWeight = desc.mWeight / fSum;
+                    const ai_real fNewWeight = weightDesc.mWeight / fSum;
 
                     // transform the local position into worldspace
-                    MD5::BoneDesc& boneSrc = meshParser.mJoints[desc.mBone];
-                    const aiVector3D v = boneSrc.mRotationQuatConverted.Rotate (desc.vOffsetPosition);
+                    MD5::BoneDesc& boneSrc = meshParser.mJoints[weightDesc.mBone];
+                    const aiVector3D v = boneSrc.mRotationQuatConverted.Rotate (weightDesc.vOffsetPosition);
 
                     // use the original weight to compute the vertex position
                     // (some MD5s seem to depend on the invalid weight values ...)
-                    *pv += ((boneSrc.mPositionXYZ+v)* (ai_real)desc.mWeight);
+                    *pv += ((boneSrc.mPositionXYZ+v)* (ai_real)weightDesc.mWeight);
 
                     aiBone* bone = mesh->mBones[boneSrc.mMap];
                     *bone->mWeights++ = aiVertexWeight((unsigned int)(pv-mesh->mVertices),fNewWeight);
@@ -559,7 +561,9 @@ void MD5Importer::LoadMD5MeshFile ()
             // set this also as material name
             mat->AddProperty(&meshSrc.mShader,AI_MATKEY_NAME);
         }
-        else mat->AddProperty(&meshSrc.mShader,AI_MATKEY_TEXTURE_DIFFUSE(0));
+        else {
+            mat->AddProperty(&meshSrc.mShader, AI_MATKEY_TEXTURE_DIFFUSE(0));
+        }
         mesh->mMaterialIndex = n++;
     }
 #endif

@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 All rights reserved.
 
@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXExportNode.h"
 #include "FBXExportProperty.h"
 #include "FBXCommon.h"
+#include "FBXUtil.h"
 
 #include <assimp/version.h> // aiGetVersion
 #include <assimp/IOSystem.hpp>
@@ -73,7 +74,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const ai_real DEG = ai_real( 57.29577951308232087679815481 ); // degrees per radian
 
+using namespace Assimp;
+using namespace Assimp::FBX;
+
 // some constants that we'll use for writing metadata
+namespace Assimp {
 namespace FBX {
     const std::string EXPORT_VERSION_STR = "7.4.0";
     const uint32_t EXPORT_VERSION_INT = 7400; // 7.4 == 2014/2015
@@ -91,11 +96,6 @@ namespace FBX {
     const std::string COMMENT_UNDERLINE =
         ";------------------------------------------------------------------";
 }
-
-using namespace Assimp;
-using namespace FBX;
-
-namespace Assimp {
 
     // ---------------------------------------------------------------------
     // Worker function for exporting a scene to binary FBX.
@@ -121,6 +121,7 @@ namespace Assimp {
         IOSystem* pIOSystem,
         const aiScene* pScene,
         const ExportProperties* pProperties
+
     ){
         // initialize the exporter
         FBXExporter exporter(pScene, pProperties);
@@ -131,13 +132,15 @@ namespace Assimp {
 
 } // end of namespace Assimp
 
-FBXExporter::FBXExporter (
-    const aiScene* pScene,
-    const ExportProperties* pProperties
-)
-    : mScene(pScene)
-    , mProperties(pProperties)
-{
+FBXExporter::FBXExporter ( const aiScene* pScene, const ExportProperties* pProperties )
+: binary(false)
+, mScene(pScene)
+, mProperties(pProperties)
+, outfile()
+, connections()
+, mesh_uids()
+, material_uids()
+, node_uids() {
     // will probably need to determine UIDs, connections, etc here.
     // basically anything that needs to be known
     // before we start writing sections to the stream.
@@ -1391,10 +1394,6 @@ void FBXExporter::WriteObjects ()
 
     // FbxVideo - stores images used by textures.
     for (const auto &it : uid_by_image) {
-        if (it.first.compare(0, 1, "*") == 0) {
-            // TODO: embedded textures
-            continue;
-        }
         FBX::Node n("Video");
         const int64_t& uid = it.second;
         const std::string name = ""; // TODO: ... name???
@@ -1404,7 +1403,33 @@ void FBXExporter::WriteObjects ()
         // TODO: get full path... relative path... etc... ugh...
         // for now just use the same path for everything,
         // and hopefully one of them will work out.
-        const std::string& path = it.first;
+        std::string path = it.first;
+        // try get embedded texture
+        const aiTexture* embedded_texture = mScene->GetEmbeddedTexture(it.first.c_str());
+        if (embedded_texture != nullptr) {
+            // change the path (use original filename, if available. If name is empty, concatenate texture index with file extension)
+            std::stringstream newPath;
+            if (embedded_texture->mFilename.length > 0) {
+                newPath << embedded_texture->mFilename.C_Str();
+            } else if (embedded_texture->achFormatHint[0]) {
+                int texture_index = std::stoi(path.substr(1, path.size() - 1));
+                newPath << texture_index << "." << embedded_texture->achFormatHint;
+            }
+            path = newPath.str();
+            // embed the texture
+            size_t texture_size = static_cast<size_t>(embedded_texture->mWidth * std::max(embedded_texture->mHeight, 1u));
+            if (binary) {
+                // embed texture as binary data
+                std::vector<uint8_t> tex_data;
+                tex_data.resize(texture_size);
+                memcpy(&tex_data[0], (char*)embedded_texture->pcData, texture_size);
+                n.AddChild("Content", tex_data);
+            } else {
+                // embed texture in base64 encoding
+                std::string encoded_texture = FBX::Util::EncodeBase64((char*)embedded_texture->pcData, texture_size);
+                n.AddChild("Content", encoded_texture);
+            }
+        }
         p.AddP70("Path", "KString", "XRefUrl", "", path);
         n.AddChild(p);
         n.AddChild("UseMipMap", int32_t(0));
@@ -1417,17 +1442,17 @@ void FBXExporter::WriteObjects ()
     // referenced by material_index/texture_type pairs.
     std::map<std::pair<size_t,size_t>,int64_t> texture_uids;
     const std::map<aiTextureType,std::string> prop_name_by_tt = {
-        {aiTextureType_DIFFUSE, "DiffuseColor"},
-        {aiTextureType_SPECULAR, "SpecularColor"},
-        {aiTextureType_AMBIENT, "AmbientColor"},
-        {aiTextureType_EMISSIVE, "EmissiveColor"},
-        {aiTextureType_HEIGHT, "Bump"},
-        {aiTextureType_NORMALS, "NormalMap"},
-        {aiTextureType_SHININESS, "ShininessExponent"},
-        {aiTextureType_OPACITY, "TransparentColor"},
+        {aiTextureType_DIFFUSE,      "DiffuseColor"},
+        {aiTextureType_SPECULAR,     "SpecularColor"},
+        {aiTextureType_AMBIENT,      "AmbientColor"},
+        {aiTextureType_EMISSIVE,     "EmissiveColor"},
+        {aiTextureType_HEIGHT,       "Bump"},
+        {aiTextureType_NORMALS,      "NormalMap"},
+        {aiTextureType_SHININESS,    "ShininessExponent"},
+        {aiTextureType_OPACITY,      "TransparentColor"},
         {aiTextureType_DISPLACEMENT, "DisplacementColor"},
         //{aiTextureType_LIGHTMAP, "???"},
-        {aiTextureType_REFLECTION, "ReflectionColor"}
+        {aiTextureType_REFLECTION,   "ReflectionColor"}
         //{aiTextureType_UNKNOWN, ""}
     };
     for (size_t i = 0; i < mScene->mNumMaterials; ++i) {
@@ -1573,11 +1598,22 @@ void FBXExporter::WriteObjects ()
     // one sticky point is that the number of vertices may not match,
     // because assimp splits vertices by normal, uv, etc.
 
+    // functor for aiNode sorting
+    struct SortNodeByName
+    {
+        bool operator()(const aiNode *lhs, const aiNode *rhs) const
+        {
+            return strcmp(lhs->mName.C_Str(), rhs->mName.C_Str()) < 0;
+        }
+    };
+
     // first we should mark the skeleton for each mesh.
     // the skeleton must include not only the aiBones,
     // but also all their parent nodes.
     // anything that affects the position of any bone node must be included.
-    std::vector<std::set<const aiNode*>> skeleton_by_mesh(mScene->mNumMeshes);
+    // Use SorNodeByName to make sure the exported result will be the same across all systems
+    // Otherwise the aiNodes of the skeleton would be sorted based on the pointer address, which isn't consistent
+    std::vector<std::set<const aiNode*, SortNodeByName>> skeleton_by_mesh(mScene->mNumMeshes);
     // at the same time we can build a list of all the skeleton nodes,
     // which will be used later to mark them as type "limbNode".
     std::unordered_set<const aiNode*> limbnodes;
@@ -1585,7 +1621,7 @@ void FBXExporter::WriteObjects ()
     std::map<std::string,aiNode*> node_by_bone;
     for (size_t mi = 0; mi < mScene->mNumMeshes; ++mi) {
         const aiMesh* m = mScene->mMeshes[mi];
-        std::set<const aiNode*> skeleton;
+        std::set<const aiNode*, SortNodeByName> skeleton;
         for (size_t bi =0; bi < m->mNumBones; ++bi) {
             const aiBone* b = m->mBones[bi];
             const std::string name(b->mName.C_Str());
@@ -1726,7 +1762,7 @@ void FBXExporter::WriteObjects ()
         aiMatrix4x4 mesh_xform = get_world_transform(mesh_node, mScene);
 
         // now make a subdeformer for each bone in the skeleton
-        const std::set<const aiNode*> &skeleton = skeleton_by_mesh[mi];
+        const std::set<const aiNode*, SortNodeByName> skeleton= skeleton_by_mesh[mi];
         for (const aiNode* bone_node : skeleton) {
             // if there's a bone for this node, find it
             const aiBone* b = nullptr;
@@ -2235,8 +2271,8 @@ void FBXExporter::WriteModelNode(
 
     // not sure what these are for,
     // but they seem to be omnipresent
-    m.AddChild("Shading", Property(true));
-    m.AddChild("Culling", Property("CullingOff"));
+    m.AddChild("Shading", FBXExportProperty(true));
+    m.AddChild("Culling", FBXExportProperty("CullingOff"));
 
     m.Dump(outstream, binary, 1);
 }
@@ -2349,7 +2385,7 @@ void FBXExporter::WriteModelNodes(
         na.AddProperties(
             node_attribute_uid, FBX::SEPARATOR + "NodeAttribute", "LimbNode"
         );
-        na.AddChild("TypeFlags", Property("Skeleton"));
+        na.AddChild("TypeFlags", FBXExportProperty("Skeleton"));
         na.Dump(outstream, binary, 1);
         // and connect them
         connections.emplace_back("C", "OO", node_attribute_uid, node_uid);
@@ -2444,7 +2480,6 @@ void FBXExporter::WriteAnimationCurve(
     // TODO: keyattr flags and data (STUB for now)
     n.AddChild("KeyAttrFlags", std::vector<int32_t>{0});
     n.AddChild("KeyAttrDataFloat", std::vector<float>{0,0,0,0});
-    ai_assert(static_cast<int32_t>(times.size()) <= std::numeric_limits<int32_t>::max());
     n.AddChild(
         "KeyAttrRefCount",
         std::vector<int32_t>{static_cast<int32_t>(times.size())}

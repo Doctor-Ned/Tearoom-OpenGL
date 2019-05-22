@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -264,18 +264,92 @@ void ColladaParser::ReadAssetInfo()
 
                 // check element end
                 TestClosing( "up_axis");
-            } else
+            }
+            else if(IsElement("contributor"))
             {
-                SkipElement();
+                ReadContributorInfo();
+            }
+            else
+            {
+                ReadMetaDataItem(mAssetMetaData);
             }
         }
         else if( mReader->getNodeType() == irr::io::EXN_ELEMENT_END)
         {
-            if( strcmp( mReader->getNodeName(), "asset") != 0)
+            if (strcmp( mReader->getNodeName(), "asset") != 0)
                 ThrowException( "Expected end of <asset> element.");
 
             break;
         }
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Reads the contributor info
+void ColladaParser::ReadContributorInfo()
+{
+    if (mReader->isEmptyElement())
+        return;
+
+    while (mReader->read())
+    {
+        if (mReader->getNodeType() == irr::io::EXN_ELEMENT)
+        {
+            ReadMetaDataItem(mAssetMetaData);
+        }
+        else if (mReader->getNodeType() == irr::io::EXN_ELEMENT_END)
+        {
+            if (strcmp(mReader->getNodeName(), "contributor") != 0)
+                ThrowException("Expected end of <contributor> element.");
+            break;
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Reads a single string metadata item
+void ColladaParser::ReadMetaDataItem(StringMetaData &metadata)
+{
+    // Metadata such as created, keywords, subject etc
+    const char* key_char = mReader->getNodeName();
+    if (key_char != nullptr)
+    {
+        const std::string key_str(key_char);
+        const char* value_char = TestTextContent();
+        if (value_char != nullptr)
+        {
+            std::string camel_key_str = key_str;
+            ToCamelCase(camel_key_str);
+            aiString aistr;
+            aistr.Set(value_char);
+            metadata.emplace(camel_key_str, aistr);
+            TestClosing(key_str.c_str());
+        }
+        else
+            SkipElement();
+    }
+    else
+        SkipElement();
+}
+
+// ------------------------------------------------------------------------------------------------
+// Convert underscore_seperated to CamelCase: "authoring_tool" becomes "AuthoringTool"
+void ColladaParser::ToCamelCase(std::string &text)
+{
+    if (text.empty())
+        return;
+    // Capitalise first character
+    text[0] = ToUpper(text[0]);
+    for (auto it = text.begin(); it != text.end(); /*iterated below*/)
+    {
+        if ((*it) == '_')
+        {
+            it = text.erase(it);
+            if (it != text.end())
+                (*it) = ToUpper(*it);
+        }
+        else
+            ++it;
     }
 }
 
@@ -2362,7 +2436,7 @@ size_t ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pP
     if( expectedPointCount > 0 && indices.size() != expectedPointCount * numOffsets) {
         if (pPrimType == Prim_Lines) {
             // HACK: We just fix this number since SketchUp 15.3.331 writes the wrong 'count' for 'lines'
-            ReportWarning( "Expected different index count in <p> element, %d instead of %d.", indices.size(), expectedPointCount * numOffsets);
+            ReportWarning( "Expected different index count in <p> element, %zu instead of %zu.", indices.size(), expectedPointCount * numOffsets);
             pNumPrimitives = (indices.size() / numOffsets) / 2;
         } else
             ThrowException( "Expected different index count in <p> element.");

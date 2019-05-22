@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -1206,7 +1206,7 @@ aiCamera* BlenderImporter::ConvertCamera(const Scene& /*in*/, const Object* obj,
     out->mUp = aiVector3D(0.f, 1.f, 0.f);
     out->mLookAt = aiVector3D(0.f, 0.f, -1.f);
     if (cam->sensor_x && cam->lens) {
-        out->mHorizontalFOV = std::atan2(cam->sensor_x,  2.f * cam->lens);
+        out->mHorizontalFOV = 2.f * std::atan2(cam->sensor_x,  2.f * cam->lens);
     }
     out->mClipPlaneNear = cam->clipsta;
     out->mClipPlaneFar = cam->clipend;
@@ -1224,6 +1224,16 @@ aiLight* BlenderImporter::ConvertLight(const Scene& /*in*/, const Object* obj, c
     {
         case Lamp::Type_Local:
             out->mType = aiLightSource_POINT;
+            break;
+        case Lamp::Type_Spot:
+            out->mType = aiLightSource_SPOT;
+
+            // blender orients directional lights as facing toward -z
+            out->mDirection = aiVector3D(0.f, 0.f, -1.f);
+            out->mUp = aiVector3D(0.f, 1.f, 0.f);
+
+            out->mAngleInnerCone = lamp->spotsize * (1.0f - lamp->spotblend);
+            out->mAngleOuterCone = lamp->spotsize;
             break;
         case Lamp::Type_Sun:
             out->mType = aiLightSource_DIRECTIONAL;
@@ -1255,6 +1265,23 @@ aiLight* BlenderImporter::ConvertLight(const Scene& /*in*/, const Object* obj, c
     out->mColorAmbient = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
     out->mColorSpecular = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
     out->mColorDiffuse = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
+
+    // If default values are supplied, compute the coefficients from light's max distance
+    // Read this: https://imdoingitwrong.wordpress.com/2011/01/31/light-attenuation/
+    //
+    if (lamp->constant_coefficient == 1.0f && lamp->linear_coefficient == 0.0f && lamp->quadratic_coefficient == 0.0f && lamp->dist > 0.0f)
+    {
+        out->mAttenuationConstant = 1.0f;
+        out->mAttenuationLinear = 2.0f / lamp->dist;
+        out->mAttenuationQuadratic = 1.0f / (lamp->dist * lamp->dist);
+    }
+    else
+    {
+        out->mAttenuationConstant = lamp->constant_coefficient;
+        out->mAttenuationLinear = lamp->linear_coefficient;
+        out->mAttenuationQuadratic = lamp->quadratic_coefficient;
+    }
+
     return out.release();
 }
 

@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -537,6 +537,10 @@ struct Lamp : ElemBase {
 
       float energy, dist, spotsize, spotblend;
       //float haint;
+
+      float constant_coefficient;
+      float linear_coefficient;
+      float quadratic_coefficient;
 
       float att1, att2;
       //struct CurveMapping *curfalloff;
