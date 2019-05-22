@@ -13,8 +13,8 @@
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon)
-:Component(_gameObject), camera(camera), i_type(i_type), icon(icon) {
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc)
+:Component(_gameObject), camera(camera), i_type(i_type), icon(icon), desc(desc) {
 }
 
 void CollectableObject::takeObject()

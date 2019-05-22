@@ -15,10 +15,11 @@ GameManager *GameManager::getInstance() {
 }
 
 void GameManager::setCurrentScene(Scene * scene) {
-	if (currentScene != scene) {
+	/*
+    if (currentScene != scene) {
 		keyCallbacks.clear();
 		mouseCallbacks.clear();
-	}
+	} */
 	currentScene = scene;
 	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);

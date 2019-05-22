@@ -54,76 +54,23 @@ MiszukScene::MiszukScene() {
 	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 	UiPlane* boxRepresentation3 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation4 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation5 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation6 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation7 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation8 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation9 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
-	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera, Letter, boxRepresentation));
+	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, camera, Letter, boxRepresentation, "Letter number 1"));
 	tinyItemNode->addComponent(new BoxCollider(tinyItemNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
 
 	MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
 	tinyItemNode2->addComponent(new PhysicalObject(tinyItemNode2));
-	tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2, camera, Letter, boxRepresentation2));
+	tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2, camera, Letter, boxRepresentation2, "Letter number 2"));
 	tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 
-	MeshColorBox *tinyItem3 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode3 = new GraphNode(tinyItem3, rootNode);
-	tinyItemNode3->addComponent(new PhysicalObject(tinyItemNode3));
-	tinyItemNode3->addComponent(new CollectableObject(tinyItemNode3, camera, Letter, boxRepresentation3));
-	tinyItemNode3->addComponent(new BoxCollider(tinyItemNode3, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode3->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
 
-	MeshColorBox *tinyItem4 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode4 = new GraphNode(tinyItem4, rootNode);
-	tinyItemNode4->addComponent(new PhysicalObject(tinyItemNode4));
-	tinyItemNode4->addComponent(new CollectableObject(tinyItemNode4, camera, Letter, boxRepresentation4));
-	tinyItemNode4->addComponent(new BoxCollider(tinyItemNode4, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode4->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
-
-	MeshColorBox *tinyItem5 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode5 = new GraphNode(tinyItem5, rootNode);
-	tinyItemNode5->addComponent(new PhysicalObject(tinyItemNode5));
-	tinyItemNode5->addComponent(new CollectableObject(tinyItemNode5, camera, Letter, boxRepresentation5));
-	tinyItemNode5->addComponent(new BoxCollider(tinyItemNode5, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode5->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
-
-	MeshColorBox *tinyItem6 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode6 = new GraphNode(tinyItem6, rootNode);
-	tinyItemNode6->addComponent(new PhysicalObject(tinyItemNode6));
-	tinyItemNode6->addComponent(new CollectableObject(tinyItemNode6, camera, Letter, boxRepresentation6));
-	tinyItemNode6->addComponent(new BoxCollider(tinyItemNode6, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode6->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
-
-	MeshColorBox *tinyItem7 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode7 = new GraphNode(tinyItem7, rootNode);
-	tinyItemNode7->addComponent(new PhysicalObject(tinyItemNode7));
-	tinyItemNode7->addComponent(new CollectableObject(tinyItemNode7, camera, Letter, boxRepresentation7));
-	tinyItemNode7->addComponent(new BoxCollider(tinyItemNode7, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode7->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
-
-	MeshColorBox *tinyItem8 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode8 = new GraphNode(tinyItem8, rootNode);
-	tinyItemNode8->addComponent(new PhysicalObject(tinyItemNode8));
-	tinyItemNode8->addComponent(new CollectableObject(tinyItemNode8, camera, Letter, boxRepresentation8));
-	tinyItemNode8->addComponent(new BoxCollider(tinyItemNode8, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode8->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
-
-	MeshColorBox *tinyItem9 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
-	GraphNode *tinyItemNode9 = new GraphNode(tinyItem9, rootNode);
-	tinyItemNode9->addComponent(new PhysicalObject(tinyItemNode9));
-	tinyItemNode9->addComponent(new CollectableObject(tinyItemNode9, camera, Letter, boxRepresentation9));
-	tinyItemNode9->addComponent(new BoxCollider(tinyItemNode9, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	tinyItemNode9->localTransform.translate(glm::vec3(3.0f, -1.0f, 2.0f));
 	//-----------------
 	//miszuk animation
 	GraphNode* doorPivot = new GraphNode(nullptr, rootNode);

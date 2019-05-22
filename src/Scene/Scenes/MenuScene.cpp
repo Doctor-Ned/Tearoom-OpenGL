@@ -45,6 +45,8 @@ MenuScene::MenuScene() {
 	});
 	UiTextButton *quit = new UiTextButton(glm::vec2(UI_REF_CEN_X, 8 * UI_REF_HEIGHT / 9.0f), "Quit");
 	quit->addClickCallback([]() {GameManager::getInstance()->quit(); });
+	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
+	rootUiElement->addChild(engineLogo);
 	rootUiElement->addChild(miszukScene);
 	rootUiElement->addChild(newTestScene);
 	rootUiElement->addChild(loadTestScene);

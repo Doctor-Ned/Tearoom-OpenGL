@@ -103,11 +103,11 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
     });
     GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]()
     {
-            if (getSwitch()) {
-                showInventoryUi();
-            } else {
-                hideInventoryUi();
-            }
+        if (getSwitch()) {
+            showInventoryUi();
+        } else {
+            hideInventoryUi();
+        }
     });
 
 }

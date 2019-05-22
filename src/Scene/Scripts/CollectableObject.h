@@ -21,7 +21,7 @@ class CollectableObject : public Component {
 public:
 	virtual ~CollectableObject();
 	CollectableObject(GraphNode* _gameObject, Camera* camera);
-	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon);
+	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc);
 	void takeObject();
 	void leaveObject();
 	void update(float msec) override;
@@ -42,6 +42,7 @@ public:
 
 protected:
     bool isTaken = false;
+    std::string desc; //item description
     Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;

@@ -17,6 +17,7 @@ public:
 	void showOptions();
 	void hideOptions();
 private:
+	UiPlane* engineLogo;
 	OptionsScene *optionsScene;
 	bool showingOptions = false;
 };
