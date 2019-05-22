@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -112,7 +112,9 @@ void ImproveCacheLocalityProcess::Execute( aiScene* pScene)
         }
     }
     if (!DefaultLogger::isNullLogger()) {
-        ASSIMP_LOG_INFO_F("Cache relevant are ", numm, " meshes (", numf," faces). Average output ACMR is ", out / numf );
+        if (numf > 0) {
+            ASSIMP_LOG_INFO_F("Cache relevant are ", numm, " meshes (", numf, " faces). Average output ACMR is ", out / numf);
+        }
         ASSIMP_LOG_DEBUG("ImproveCacheLocalityProcess finished. ");
     }
 }

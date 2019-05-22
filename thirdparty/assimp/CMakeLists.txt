@@ -1,6 +1,6 @@
 # Open Asset Import Library (assimp)
 # ----------------------------------------------------------------------
-# Copyright (c) 2006-2018, assimp team
+# Copyright (c) 2006-2019, assimp team
 
 # All rights reserved.
 #
@@ -67,7 +67,7 @@ OPTION( ASSIMP_NO_EXPORT
 )
 OPTION( ASSIMP_BUILD_ZLIB
   "Build your own zlib"
-  OFF
+  OFF  
 )
 OPTION( ASSIMP_BUILD_ASSIMP_TOOLS
   "If the supplementary tools for Assimp are built in addition to the library."
@@ -106,7 +106,7 @@ OPTION ( BUILD_DOCS
   OFF
 )
 OPTION( INJECT_DEBUG_POSTFIX
-  "Inject debug postfix in .a/.so lib names"
+  "Inject debug postfix in .a/.so/.dll lib names"
   ON
 )
 
@@ -119,6 +119,7 @@ IF (IOS)
   IF (NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE "Release")
   ENDIF (NOT CMAKE_BUILD_TYPE)
+  ADD_DEFINITIONS(-DENABLE_BITCODE)
 ENDIF (IOS)
 
 # Use subset of Windows.h
@@ -131,6 +132,10 @@ IF(MSVC)
     "Install MSVC debug files."
     ON
   )
+  IF(NOT (MSVC_VERSION LESS 1900))
+    # Multibyte character set is deprecated since at least MSVC2015 (possibly earlier)
+    ADD_DEFINITIONS( -DUNICODE -D_UNICODE )
+  ENDIF()
 ENDIF(MSVC)
 
 IF (BUILD_FRAMEWORK)
@@ -146,8 +151,8 @@ ELSE()
 ENDIF(NOT BUILD_SHARED_LIBS)
 
 # Define here the needed parameters
-SET (ASSIMP_VERSION_MAJOR 4)
-SET (ASSIMP_VERSION_MINOR 1)
+SET (ASSIMP_VERSION_MAJOR 5)
+SET (ASSIMP_VERSION_MINOR 0)
 SET (ASSIMP_VERSION_PATCH 0)
 SET (ASSIMP_VERSION ${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}.${ASSIMP_VERSION_PATCH})
 SET (ASSIMP_SOVERSION 4)
@@ -155,7 +160,7 @@ SET (PROJECT_VERSION "${ASSIMP_VERSION}")
 
 SET( ASSIMP_PACKAGE_VERSION "0" CACHE STRING "the package-specific version used for uploading the sources" )
 
-# Enable C++1 globally
+# Enable C++11 support globally
 set_property( GLOBAL PROPERTY CXX_STANDARD 11 )
 
 IF(NOT IGNORE_GIT_HASH)
@@ -170,7 +175,7 @@ IF(NOT IGNORE_GIT_HASH)
 
   # Get the latest abbreviated commit hash of the working branch
   EXECUTE_PROCESS(
-    COMMAND git log -1 --format=%h --no-show-signature
+    COMMAND git rev-parse --short=8 HEAD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_COMMIT_HASH
     OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -196,7 +201,7 @@ CONFIGURE_FILE(
   ${CMAKE_CURRENT_BINARY_DIR}/include/assimp/config.h
 )
 
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES( BEFORE
   ./
   include
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -223,9 +228,7 @@ IF ((CMAKE_C_COMPILER_ID MATCHES "GNU") AND NOT CMAKE_COMPILER_IS_MINGW)
 ELSEIF(MSVC)
   # enable multi-core compilation with MSVC
   ADD_COMPILE_OPTIONS(/MP)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    ADD_COMPILE_OPTIONS( /bigobj )
-  ENDIF()
+  ADD_COMPILE_OPTIONS( /bigobj )
   # disable "elements of array '' will be default initialized" warning on MSVC2013
   IF(MSVC12)
     ADD_COMPILE_OPTIONS(/wd4351)
@@ -234,6 +237,11 @@ ELSEIF ( "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" )
   SET(CMAKE_CXX_FLAGS "-g -fvisibility=hidden -fPIC -fno-strict-aliasing -Wall -Wno-long-long -std=c++11 ${CMAKE_CXX_FLAGS}" )
   SET(CMAKE_C_FLAGS "-fPIC -fno-strict-aliasing ${CMAKE_C_FLAGS}")
 ELSEIF( CMAKE_COMPILER_IS_MINGW )
+  IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0)
+    message(FATAL_ERROR "MinGW is too old to be supported. Please update MinGW and try again.")
+  ELSEIF(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.3)
+    message(WARNING "MinGW is old, if you experience errors, update MinGW.")
+  ENDIF()
   SET( CMAKE_CXX_FLAGS "-fvisibility=hidden -fno-strict-aliasing -Wall -Wno-long-long -std=c++11 -Wa,-mbig-obj ${CMAKE_CXX_FLAGS}" )
   SET(CMAKE_C_FLAGS "-fPIC -fno-strict-aliasing ${CMAKE_C_FLAGS} ")
   ADD_DEFINITIONS( -U__STRICT_ANSI__ )
@@ -247,6 +255,7 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 ELSE()
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fembed-bitcode -O3")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fembed-bitcode -O3")
+  # Experimental for pdb generation
 ENDIF()
 
 ENDIF( IOS )
@@ -301,7 +310,9 @@ SET( ASSIMP_INCLUDE_INSTALL_DIR "include" CACHE STRING
 SET( ASSIMP_BIN_INSTALL_DIR "bin" CACHE STRING
   "Path the tool executables are installed to." )
 
-IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)
+
+IF (is_multi_config OR (CMAKE_BUILD_TYPE STREQUAL "Debug"))
   SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Debug Postfix for lib, samples and tools")
 ELSE()
   SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Debug Postfix for lib, samples and tools")
@@ -316,8 +327,18 @@ ENDIF()
 
 # cmake configuration files
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimp-config.cmake.in"         "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake" @ONLY IMMEDIATE)
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimpTargets.cmake.in"         "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets.cmake" @ONLY IMMEDIATE)
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimpTargets-debug.cmake.in"   "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets-debug.cmake" @ONLY IMMEDIATE)
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimpTargets-release.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets-release.cmake" @ONLY IMMEDIATE)
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimp-config-version.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/assimp-config-version.cmake" @ONLY IMMEDIATE)
-INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake"             "${CMAKE_CURRENT_BINARY_DIR}/assimp-config-version.cmake" DESTINATION "${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}" COMPONENT ${LIBASSIMP-DEV_COMPONENT})
+#we should generated these scripts after CMake VERSION 3.0.2 using export(EXPORT ...) and write_basic_package_version_file(...)
+INSTALL(FILES 
+  "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/assimp-config-version.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets-debug.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/assimpTargets-release.cmake"
+  DESTINATION "${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}" COMPONENT ${LIBASSIMP-DEV_COMPONENT})
 
 FIND_PACKAGE( DirectX )
 
@@ -341,6 +362,15 @@ IF( NOT ZLIB_FOUND )
   INCLUDE(CheckIncludeFile)
   INCLUDE(CheckTypeSize)
   INCLUDE(CheckFunctionExists)
+
+  # Explicitly turn off ASM686 and AMD64 cmake options.
+  # The AMD64 option causes a build failure on MSVC and the ASM builds seem to have problems:
+  #		https://github.com/madler/zlib/issues/41#issuecomment-125848075
+  # Also prevents these options from "polluting" the cmake options if assimp is being
+  # included as a submodule.
+  set( ASM686 FALSE CACHE INTERNAL "Override ZLIB flag to turn off assembly" FORCE )
+  set( AMD64 FALSE CACHE INTERNAL "Override ZLIB flag to turn off assembly" FORCE )
+
   # compile from sources
   ADD_SUBDIRECTORY(contrib/zlib)
   SET(ZLIB_FOUND 1)
@@ -458,6 +488,7 @@ ENDIF ( ASSIMP_BUILD_ASSIMP_TOOLS )
 IF ( ASSIMP_BUILD_SAMPLES)
   IF ( WIN32 )
     ADD_SUBDIRECTORY( samples/SimpleTexturedOpenGL/ )
+    ADD_SUBDIRECTORY( samples/SimpleTexturedDirectx11 )
   ENDIF ( WIN32 )
   ADD_SUBDIRECTORY( samples/SimpleOpenGL/ )
 ENDIF ( ASSIMP_BUILD_SAMPLES )
@@ -523,18 +554,22 @@ if(WIN32)
   if (CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET(BIN_DIR "${PROJECT_SOURCE_DIR}/bin64/")
     SET(LIB_DIR "${PROJECT_SOURCE_DIR}/lib64/")
-  elseif()
+  else()
     SET(BIN_DIR "${PROJECT_SOURCE_DIR}/bin32/")
     SET(LIB_DIR "${PROJECT_SOURCE_DIR}/lib32/")
   ENDIF()
 
-  IF(MSVC12)
-    SET(ASSIMP_MSVC_VERSION "vc120")
-  ELSEIF(MSVC14)
-    SET(ASSIMP_MSVC_VERSION "vc140")
-  ELSEIF(MSVC15)
-    SET(ASSIMP_MSVC_VERSION "vc141")
-  ENDIF(MSVC12)
+  IF(MSVC_TOOLSET_VERSION)
+    set(MSVC_PREFIX "vc${MSVC_TOOLSET_VERSION}")
+  ELSE()
+    IF(MSVC12)
+      SET(ASSIMP_MSVC_VERSION "vc120")
+    ELSEIF(MSVC14)
+      SET(ASSIMP_MSVC_VERSION "vc140")
+    ELSEIF(MSVC15)
+      SET(ASSIMP_MSVC_VERSION "vc141")
+    ENDIF(MSVC12)
+  ENDIF()
 
   IF(MSVC12 OR MSVC14 OR MSVC15 )
     ADD_CUSTOM_TARGET(UpdateAssimpLibsDebugSymbolsAndDLLs COMMENT "Copying Assimp Libraries ..." VERBATIM)

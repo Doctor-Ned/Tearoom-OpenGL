@@ -13,9 +13,23 @@ void ComposedTransform::recalculateMatrix() {
 	transform = dataToMatrix(data);
 }
 
+void ComposedTransform::recalculateMatrixQuat()
+{
+	transform = dataToMatrixQuat(data);
+}
+
 glm::mat4 ComposedTransform::getMatrix() {
 	if (selfDirty) {
 		recalculateMatrix();
+	}
+	return transform;
+}
+
+glm::mat4 ComposedTransform::getMatrixQuat()
+{
+	if(selfDirty)
+	{
+		recalculateMatrixQuat();
 	}
 	return transform;
 }
@@ -26,6 +40,11 @@ glm::mat4 ComposedTransform::getLastMatrix() const {
 
 glm::vec3 ComposedTransform::getPosition() const {
 	return data.translation;
+}
+
+glm::quat ComposedTransform::getQuaternion()
+{
+	return data.quatRotation;
 }
 
 void ComposedTransform::initialize(glm::vec3 position, glm::vec3 eulerRotation) {
@@ -84,6 +103,13 @@ void ComposedTransform::setScale(glm::vec3 scale) {
 
 void ComposedTransform::setScale(float scale) {
 	setScale(glm::vec3(scale, scale, scale));
+}
+
+void ComposedTransform::setQuatRotation(glm::quat q)
+{
+	data.quatRotation = q;
+	*dirty = true;
+	selfDirty = true;
 }
 
 void ComposedTransform::setRotation(glm::vec3 euler) {
@@ -184,10 +210,23 @@ glm::mat4 ComposedTransform::dataToMatrix(const TransformData data) {
 	return standardDataToMatrix(data);
 }
 
+glm::mat4 ComposedTransform::dataToMatrixQuat(TransformData data)
+{
+	return standardDataToMatrixQuat(data);
+}
+
 glm::mat4 ComposedTransform::standardDataToMatrix(TransformData data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
 	glm::mat4 rotation = glm::eulerAngleYXZ(data.eulerRotation.y, data.eulerRotation.x, data.eulerRotation.z);
+	return translation * rotation * scale;
+}
+
+glm::mat4 ComposedTransform::standardDataToMatrixQuat(TransformData data)
+{
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
+	glm::mat4 rotation = glm::mat4_cast(data.quatRotation);
 	return translation * rotation * scale;
 }
 

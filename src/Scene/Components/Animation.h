@@ -23,7 +23,7 @@ namespace anim {
 		{
 			if (!translation.empty())
 				return false;
-			if (!rotation.empty())
+			if (!scale.empty())
 				return false;
 			if (!rotation.empty())
 				return false;
@@ -71,11 +71,11 @@ public:
 	
 	void play(float startTime = 0.0f, bool _looped = false);
 	void stopPlaying();
-	bool addKeyFrame(std::string&& gameObjectName, anim::Animated type, float time, glm::vec3 values);
-	bool deleteKeyFrame(std::string&& gameObjectName, anim::Animated type, float time);
+	virtual bool addKeyFrame(std::string&& gameObjectName, anim::Animated type, float time, glm::vec3 values);
+	virtual bool deleteKeyFrame(std::string&& gameObjectName, anim::Animated type, float time);
 
 	std::map<std::string, anim::ObjectAnimation> getObjectAnimations();
-	void setObjectAnimation(std::map<std::string, anim::ObjectAnimation> map);
+	
 };
 
 #endif

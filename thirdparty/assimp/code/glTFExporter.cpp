@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -101,17 +101,17 @@ glTFExporter::glTFExporter(const char* filename, IOSystem* pIOSystem, const aiSc
 {
     aiScene* sceneCopy_tmp;
     SceneCombiner::CopyScene(&sceneCopy_tmp, pScene);
-    std::unique_ptr<aiScene> sceneCopy(sceneCopy_tmp);
+    aiScene *sceneCopy(sceneCopy_tmp);
 
     SplitLargeMeshesProcess_Triangle tri_splitter;
     tri_splitter.SetLimit(0xffff);
-    tri_splitter.Execute(sceneCopy.get());
+    tri_splitter.Execute(sceneCopy);
 
     SplitLargeMeshesProcess_Vertex vert_splitter;
     vert_splitter.SetLimit(0xffff);
-    vert_splitter.Execute(sceneCopy.get());
+    vert_splitter.Execute(sceneCopy);
 
-    mScene = sceneCopy.get();
+    mScene = sceneCopy;
 
     mAsset.reset( new glTF::Asset( pIOSystem ) );
 
@@ -245,7 +245,7 @@ inline Ref<Accessor> ExportData(Asset& a, std::string& meshName, Ref<Buffer>& bu
 
 namespace {
     void GetMatScalar(const aiMaterial* mat, float& val, const char* propName, int type, int idx) {
-        if (mat->Get(propName, type, idx, val) == AI_SUCCESS) {}
+        ai_assert(mat->Get(propName, type, idx, val) == AI_SUCCESS);
     }
 }
 

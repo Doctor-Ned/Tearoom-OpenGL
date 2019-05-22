@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -320,13 +320,10 @@ void LWOImporter::ConvertMaterial(const LWO::Surface& surf,aiMaterial* pcMat)
 
     // opacity ... either additive or default-blended, please
     if (0.0 != surf.mAdditiveTransparency)  {
-
         const int add = aiBlendMode_Additive;
         pcMat->AddProperty(&surf.mAdditiveTransparency,1,AI_MATKEY_OPACITY);
         pcMat->AddProperty(&add,1,AI_MATKEY_BLEND_FUNC);
-    }
-
-    else if (10e10f != surf.mTransparency)  {
+    } else if (10e10f != surf.mTransparency)  {
         const int def = aiBlendMode_Default;
         const float f = 1.0f-surf.mTransparency;
         pcMat->AddProperty(&f,1,AI_MATKEY_OPACITY);

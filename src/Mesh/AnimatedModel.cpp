@@ -51,8 +51,8 @@ std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims
 				keyTime = anims[i]->mChannels[j]->mRotationKeys[k].mTime / ticksPerSecond;
 				aiQuaternion q = anims[i]->mChannels[j]->mRotationKeys[k].mValue;
 				glm::quat q2 = glm::quat(q.w, q.x, q.y, q.z);
-				glm::vec3 eulerAngles = Global::radiansToDegrees(glm::eulerAngles(q2));
-				animations[i].addKeyFrame(nodeName, anim::ROTATION, keyTime, eulerAngles);
+				//glm::vec3 eulerAngles = Global::radiansToDegrees(glm::eulerAngles(q2));
+				animations[i].addKeyFrame(nodeName, anim::ROTATION, keyTime, q2);
 			}
 		}
 	}

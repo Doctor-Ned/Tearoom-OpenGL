@@ -27,9 +27,9 @@ void Bone::setParentsForChildren(Bone* _parent) {
 
 void Bone::updateWorld() {
 	if (parent != nullptr) {
-		worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
+		worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrixQuat());
 	} else {
-		worldTransform.setMatrix(localTransform.getMatrix());
+		worldTransform.setMatrix(localTransform.getMatrixQuat());
 	}
 
 	for (auto &child : children) {

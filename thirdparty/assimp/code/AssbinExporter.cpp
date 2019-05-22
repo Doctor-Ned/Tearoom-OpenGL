@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -89,7 +89,7 @@ size_t Write<unsigned int>(IOStream * stream, const unsigned int& w) {
     const uint32_t t = (uint32_t)w;
     if (w > t) {
         // this shouldn't happen, integers in Assimp data structures never exceed 2^32
-        throw new DeadlyExportError("loss of data due to 64 -> 32 bit integer conversion");
+        throw DeadlyExportError("loss of data due to 64 -> 32 bit integer conversion");
     }
 
     stream->Write(&t,4,1);
@@ -760,7 +760,12 @@ public:
         if (!out) return;
 
         time_t tt = time(NULL);
+#if _WIN32
         tm* p     = gmtime(&tt);
+#else
+        struct tm now;
+        tm* p = gmtime_r(&tt, &now);
+#endif
 
         // header
         char s[64];
@@ -805,10 +810,16 @@ public:
             WriteBinaryScene( &uncompressedStream, pScene );
 
             uLongf uncompressedSize = static_cast<uLongf>(uncompressedStream.Tell());
-            uLongf compressedSize = (uLongf)(uncompressedStream.Tell() * 1.001 + 12.);
+            uLongf compressedSize = (uLongf)compressBound(uncompressedSize);
             uint8_t* compressedBuffer = new uint8_t[ compressedSize ];
 
-            compress2( compressedBuffer, &compressedSize, (const Bytef*)uncompressedStream.GetBufferPointer(), uncompressedSize, 9 );
+            int res = compress2( compressedBuffer, &compressedSize, (const Bytef*)uncompressedStream.GetBufferPointer(), uncompressedSize, 9 );
+            if(res != Z_OK)
+            {
+                delete [] compressedBuffer;
+                pIOSystem->Close(out);
+                throw DeadlyExportError("Compression failed.");
+            }
 
             out->Write( &uncompressedSize, sizeof(uint32_t), 1 );
             out->Write( compressedBuffer, sizeof(char), compressedSize );

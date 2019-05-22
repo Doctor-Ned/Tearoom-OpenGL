@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -117,7 +117,7 @@ namespace FBX {
 Element::Element(const Token& key_token, Parser& parser)
 : key_token(key_token)
 {
-    TokenPtr n = NULL;
+    TokenPtr n = nullptr;
     do {
         n = parser.AdvanceToNextToken();
         if(!n) {

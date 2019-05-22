@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 All rights reserved.
@@ -188,10 +188,11 @@ struct Animation {
     } mRotationType, mScalingType, mPositionType;
 
     Animation() AI_NO_EXCEPT
-        :   mRotationType   (TRACK)
-        ,   mScalingType    (TRACK)
-        ,   mPositionType   (TRACK)
-    {}
+    :   mRotationType   (TRACK)
+    ,   mScalingType    (TRACK)
+    ,   mPositionType   (TRACK) {
+        // empty
+    }
 
     //! List of track rotation keyframes
     std::vector< aiQuatKey > akeyRotations;
@@ -242,7 +243,6 @@ struct BaseNode {
         const ai_real qnan = get_qnan();
         mTargetPosition.x = qnan;
     }
-
 
     //! Name of the mesh
     std::string mName;

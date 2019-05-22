@@ -58,12 +58,6 @@ std::map<std::string, anim::ObjectAnimation> Animation::getObjectAnimations()
 	return objectAnimations;
 }
 
-void Animation::setObjectAnimation(std::map<std::string, anim::ObjectAnimation> map)
-{
-	objectAnimations = map;
-	setEndTime();
-}
-
 Animation::~Animation()
 {
 }

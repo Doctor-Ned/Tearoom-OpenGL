@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file  ASEParser.cpp
  *  @brief Implementation of the ASE parser class
  */
-
 
 #ifndef ASSIMP_BUILD_NO_ASE_IMPORTER
 #ifndef ASSIMP_BUILD_NO_3DS_IMPORTER
