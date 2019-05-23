@@ -5,6 +5,9 @@
 #include "Scene/Transform.h"
 #include "InterfaceTransform.h"
 
+const glm::vec4 MENU_BACKGROUND_COLOR(0.761f, 0.761f, 0.761f, 1.0f);
+const glm::vec4 MENU_TEXT_COLOR(0.302f, 0.302f, 0.302f, 1.0f);
+
 enum ShaderType;
 
 enum UiRescaleMode {

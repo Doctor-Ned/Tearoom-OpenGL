@@ -39,6 +39,8 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		addResolution(res.first, res.second);
 	}
 
+	UiColorPlane *background = new UiColorPlane(MENU_BACKGROUND_COLOR, glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
+
 	addResolution(videoSettings.windowWidth, videoSettings.windowHeight);
 	addResolution(windowWidth, windowHeight);
 	addResolution(screenWidth, screenHeight);
@@ -51,9 +53,6 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 
 	tabs.push_back(generalTab);
 	tabs.push_back(screenTab);
-	for (auto &tab : tabs) {
-		rootUiElement->addChild(tab);
-	}
 
 	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 2 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
 	enableLights->setCheckboxCallback([&manager = lightManager](bool enableLights) { manager->enableLights = enableLights; });
@@ -61,7 +60,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 3 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
 	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
 	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-								   "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
+								   "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity), MENU_TEXT_COLOR);
 	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
 											   PlayerMovement::mouseSensitivity, 0.1f, 10.0f);
 	sensitivitySlider->setCallback([sensitivityText](float sensitivity) {
@@ -69,7 +68,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		sensitivityText->setText("Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
 	});
 	UiText *samplesText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-									 "Point shadow samples: " + std::to_string(lightManager->pointShadowSamples));
+									 "Point shadow samples: " + std::to_string(lightManager->pointShadowSamples), MENU_TEXT_COLOR);
 	UiSliderInt *samplesSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
 												 lightManager->pointShadowSamples, 1, 250);
 	samplesSlider->setCallback([&manager = lightManager, samplesText](int samples) {
@@ -82,7 +81,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		pps->use();
 		pps->setHdr(enabled);
 	});
-	UiText *exposureText = new UiText(glm::vec2(UI_REF_CEN_X, 9 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Exposure: " + std::to_string(pps->getExposure()));
+	UiText *exposureText = new UiText(glm::vec2(UI_REF_CEN_X, 9 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Exposure: " + std::to_string(pps->getExposure()), MENU_TEXT_COLOR);
 	UiSlider *exposureSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 10 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
 											pps->getExposure(), 0.0f, 10.0f);
 	exposureSlider->setCallback([pps = pps, exposureText](float exposure) {
@@ -91,7 +90,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		exposureText->setText("Exposure: " + std::to_string(exposure));
 	});
 
-	UiText *gammaText = new UiText(glm::vec2(UI_REF_CEN_X, 11 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Gamma: " + std::to_string(pps->getGamma()));
+	UiText *gammaText = new UiText(glm::vec2(UI_REF_CEN_X, 11 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Gamma: " + std::to_string(pps->getGamma()), MENU_TEXT_COLOR);
 	UiSlider *gammaSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 12 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
 										 pps->getGamma(), 0.0f, 10.0f);
 	gammaSlider->setCallback([pps = pps, gammaText](float gamma) {
@@ -131,18 +130,18 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	generalTab->addChild(useBloom);
 	generalTab->addChild(enableVsync);
 	generalTab->addChild(enableAntialiasing);
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use HDR"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA"));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "GENERAL SETTINGS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use HDR", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "GENERAL SETTINGS", MENU_TEXT_COLOR, MatchHeight));
 
-	UiText *windowType = new UiText(glm::vec2(UI_REF_CEN_X, 2.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Window type");
+	UiText *windowType = new UiText(glm::vec2(UI_REF_CEN_X, 2.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Window type", MENU_TEXT_COLOR);
 	UiButton *prevWindowType = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 4 * heightSeg), glm::vec2(heightSeg, heightSeg));
 	UiButton *nextWindowType = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 4 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiText *windowTypeText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), WindowTypeNames[videoSettings.windowType]);
+	UiText *windowTypeText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), WindowTypeNames[videoSettings.windowType], MENU_TEXT_COLOR);
 	prevWindowType->addClickCallback([windowTypeText]() {
 		if (static_cast<int>(videoSettings.windowType) == 0) {
 			videoSettings.windowType = WindowTypes[(sizeof(WindowTypes) / sizeof(*WindowTypes)) - 1];
@@ -161,10 +160,10 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		windowTypeText->setText(WindowTypeNames[videoSettings.windowType]);
 	});
 
-	UiText *resolution = new UiText(glm::vec2(UI_REF_CEN_X, 6.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Resolution");
+	UiText *resolution = new UiText(glm::vec2(UI_REF_CEN_X, 6.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Resolution", MENU_TEXT_COLOR);
 	UiButton *prevResolution = new UiButton("res/ui/ButtonArrowLeftIdle.png", "res/ui/ButtonArrowLeftHover.png", "res/ui/ButtonArrowLeftClicked.png", glm::vec2(UI_REF_CEN_X * 0.75f - heightSeg, 8 * heightSeg), glm::vec2(heightSeg, heightSeg));
 	UiButton *nextResolution = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", glm::vec2(UI_REF_CEN_X * 1.25f + heightSeg, 8 * heightSeg), glm::vec2(heightSeg, heightSeg));
-	UiText *resolutionText = new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), resolutionToString(resolutions[currResolution]));
+	UiText *resolutionText = new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(UI_REF_CEN_X / 2.0f, heightSeg), resolutionToString(resolutions[currResolution]), MENU_TEXT_COLOR);
 	prevResolution->addClickCallback([this, resolutionText]() {
 		if (currResolution == 0) {
 			currResolution = resolutions.size() - 1;
@@ -205,7 +204,7 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	screenTab->addChild(resolutionText);
 
 	screenTab->addChild(applyButton);
-	screenTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "SCREEN SETTINGS", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	screenTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "SCREEN SETTINGS", MENU_TEXT_COLOR, MatchHeight));
 
 	UiTextButton *back = new UiTextButton(glm::vec2(UI_REF_CEN_X, 17 * heightSeg), "Back to menu");
 	back->addClickCallback([this, menuScene]() { save(); menuScene->hideOptions(); });
@@ -218,6 +217,12 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	arrowLeft->addClickCallback([this]() {prevTab(); });
 	arrowRight = new UiButton("res/ui/ButtonArrowIdle.png", "res/ui/ButtonArrowHover.png", "res/ui/ButtonArrowClicked.png", arrowRightPos, arrowSize, Top);
 	arrowRight->addClickCallback([this]() {nextTab(); });
+
+	rootUiElement->addChild(background);
+
+	for (auto &tab : tabs) {
+		rootUiElement->addChild(tab);
+	}
 
 	rootUiElement->addChild(arrowLeft);
 	rootUiElement->addChild(arrowRight);

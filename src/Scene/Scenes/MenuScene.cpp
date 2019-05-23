@@ -11,6 +11,7 @@ class UiTextButton;
 
 MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
+	UiColorPlane *background = new UiColorPlane(MENU_BACKGROUND_COLOR, glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(UI_REF_CEN_X, 3 * UI_REF_HEIGHT / 9.0f), "Miszuk scene");
 	miszukScene->addClickCallback([]()
 	{	SoundSystem::getSound("bow")->setDefaultVolume(0.05f);
@@ -46,6 +47,7 @@ MenuScene::MenuScene() {
 	UiTextButton *quit = new UiTextButton(glm::vec2(UI_REF_CEN_X, 8 * UI_REF_HEIGHT / 9.0f), "Quit");
 	quit->addClickCallback([]() {GameManager::getInstance()->quit(); });
 	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
+	rootUiElement->addChild(background);
 	rootUiElement->addChild(engineLogo);
 	rootUiElement->addChild(miszukScene);
 	rootUiElement->addChild(newTestScene);
@@ -53,7 +55,7 @@ MenuScene::MenuScene() {
 	rootUiElement->addChild(editorScene);
 	rootUiElement->addChild(options);
 	rootUiElement->addChild(quit);
-	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 1.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH, 2.0f * UI_REF_HEIGHT / 9.0f), "MAIN MENU", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 1.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH, 2.0f * UI_REF_HEIGHT / 9.0f), "MAIN MENU", MENU_TEXT_COLOR, MatchHeight));
 	reinitializeRenderMap();
 }
 
