@@ -7,6 +7,7 @@
 #include "Ui/UiCanvas.h"
 #include <cstring>
 #include <Ui/UiButton.h>
+#include "CollectableObject.h"
 
 class Camera;
 class Picking : public Component {
@@ -26,12 +27,14 @@ public:
 	UiCanvas *getInventoryCanvas() const;
 	void setCamera(Camera *camera);
 	Camera* getCamera();
+	void placeInGrid(ItemType itype);
 private:
 	Scene* scene;
 	bool inventoryUI = false;
 	UiCanvas *inventoryCanvas, *encouragementCanvas;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
+	std::vector<UiButton*> iButtons;
 	Picking() {}
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
@@ -44,7 +47,6 @@ private:
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
 	UiColorPlane* descBackground;
-	UiText* itemDesc;
 
 };
 

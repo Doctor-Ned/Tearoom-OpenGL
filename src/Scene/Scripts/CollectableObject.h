@@ -9,6 +9,7 @@
 #include "Scene/Components/Component.h"
 #include "Render/Renderable.h"
 #include "Mesh/Mesh.h"
+#include "Ui/UiButton.h"
 
 enum ItemType {
 	Letter,
@@ -29,26 +30,23 @@ public:
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
     bool getIsTaken() const;
-
-protected:
-	ItemType i_type;
-public:
+    UiText* getDescription();
     ItemType getI_type() const;
+    UiPlane *getIcon() const;
+    UiButton* getButton();
+    void setButton(UiButton* button);
 
 protected:
     UiPlane* icon;
-public:
-    UiPlane *getIcon() const;
-
-protected:
+    ItemType i_type;
     bool isTaken = false;
-    std::string desc; //item description
+    UiText* desctext;
+    UiButton* itemButton;
     Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;
 	CollectableObject(){}
 	friend class Serializer;
 };
-
 
 #endif //TEAROOM_COLLECTABLEOBJECT_H
