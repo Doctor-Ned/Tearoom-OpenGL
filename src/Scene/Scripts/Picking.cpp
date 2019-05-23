@@ -177,7 +177,7 @@ void Picking::update(float msec) {
 			if (gameManager->getKeyState(GLFW_KEY_F) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
 				collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f,60.0f), Right));
-
+                collectable->getButton()->setOpacity(0.0f);
 				collectable->getButton()->addHoverCallback([this, collectable](){
 					inventoryCanvas->addChild(collectable->getDescription());
 					descBackground->setActive(true);
@@ -235,11 +235,11 @@ void Picking::update(float msec) {
 					} else {
 						hideInventoryUi();
 					}
-					animController->startAnimation();
+					//only if key chosen
+					//animController->startAnimation();
                 }
 			}
 		}
-
 	}
 	else {
 		encouragementCanvas->setActive(false);
@@ -255,7 +255,6 @@ void Picking::update(float msec) {
 			inventory.erase(inventory.begin() + i);
 		}
 	}
-
 }
 
 Picking::~Picking() {}

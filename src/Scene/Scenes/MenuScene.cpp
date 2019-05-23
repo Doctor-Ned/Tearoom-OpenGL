@@ -46,6 +46,13 @@ MenuScene::MenuScene() {
 	});
 	UiTextButton *quit = new UiTextButton(glm::vec2(UI_REF_CEN_X, 8 * UI_REF_HEIGHT / 9.0f), "Quit");
 	quit->addClickCallback([]() {GameManager::getInstance()->quit(); });
+
+	UiTextButton *menuPreview = new UiTextButton(glm::vec2(UI_REF_CEN_X * 1.7, 8 * UI_REF_HEIGHT / 9.0f), "Menu Preview");
+    menuPreview->addClickCallback([this]()
+    {
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+       //menu preview showing up
+    });
 	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
 	rootUiElement->addChild(background);
 	rootUiElement->addChild(engineLogo);
@@ -55,7 +62,9 @@ MenuScene::MenuScene() {
 	rootUiElement->addChild(editorScene);
 	rootUiElement->addChild(options);
 	rootUiElement->addChild(quit);
+	rootUiElement->addChild(menuPreview);
 	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 1.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH, 2.0f * UI_REF_HEIGHT / 9.0f), "MAIN MENU", MENU_TEXT_COLOR, MatchHeight));
+
 	reinitializeRenderMap();
 }
 

@@ -14,7 +14,8 @@
 enum ItemType {
 	Letter,
 	NormalItem,
-	Photo
+	Photo,
+	DoorKey
 };
 
 class CollectableObject : public Component {
