@@ -167,14 +167,15 @@ MiszukScene::MiszukScene() {
 	AnimatedModel* robo = new AnimatedModel("res/models/zabijaka/Pointing.fbx");
 	for (int i = 0; i < 1; i++) {
 
-		int x = (rand() % 50);
-		int y = (rand() % 50);
-		int z = (rand() % 50);
+		int x = (rand() % 100) - 50;
+		int y = (rand() % 100) - 50;
+		int z = (rand() % 100) - 50;
 		GraphNode* node = new GraphNode(robo, rootNode);
 		node->localTransform.setPosition(1, -2.5f, 1);
 		//node->localTransform.rotateXDegrees(-90);
 		node->localTransform.setScale(0.01f);
-		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.35f, 2.0f, 0.35f)));
+		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
+		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(100.0f, 1.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
 //#todo find out if animation works 
 		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
 		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
