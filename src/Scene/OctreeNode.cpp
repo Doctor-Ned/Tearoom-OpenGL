@@ -30,9 +30,8 @@ void OctreeNode::Calculate()
 	{
 		for (int i = 0; i < boxes.size(); i++)
 		{
-//#TODO filling octree with gameObjects which have more than one collider
-			Collider* collider = gameObject->getComponent<Collider>();
-			if(collider == nullptr)
+			auto colliders = gameObject->getComponents<Collider>();
+			if(colliders.empty())
 			{
 				if (containTest(gameObject->worldTransform.getPosition(), boxes[i]))
 				{
@@ -43,8 +42,21 @@ void OctreeNode::Calculate()
 			}
 			else
 			{
-				bool contain = CollisionSystem::getInstance()->containTest(boxes[i].minPos, boxes[i].maxPos, collider);
-				if (contain)
+				std::vector<bool> collidersAreInBox(colliders.size());
+				for(Collider* collider : colliders)
+				{
+					collidersAreInBox.push_back(CollisionSystem::getInstance()->containTest(boxes[i].minPos, boxes[i].maxPos, collider));
+				}
+				unsigned int colliderInBoxCounter = 0;
+				for(int i = 0; i < collidersAreInBox.size(); i++)
+				{
+					if(collidersAreInBox[i] == true)
+					{
+						colliderInBoxCounter++;
+					}
+				}
+				bool canPutIntoChildNode = colliderInBoxCounter == collidersAreInBox.size();
+				if (canPutIntoChildNode)
 				{
 					octList[i].push_back(gameObject);
 					deList.push_back(gameObject);
