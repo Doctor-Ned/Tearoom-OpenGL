@@ -30,6 +30,7 @@ void OctreeNode::Calculate()
 	{
 		for (int i = 0; i < boxes.size(); i++)
 		{
+//#TODO filling octree with gameObjects which have more than one collider
 			Collider* collider = gameObject->getComponent<Collider>();
 			if(collider == nullptr)
 			{
