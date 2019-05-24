@@ -13,9 +13,12 @@
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
 }
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc)
+CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview)
 :Component(_gameObject), camera(camera), i_type(i_type), icon(icon) {
     desctext = new UiText(glm::vec2(1010.0f, 360.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+    if(i_type == Letter || i_type == Photo) {
+        this->preview = preview;
+    }
 }
 
 void CollectableObject::takeObject()
@@ -88,4 +91,8 @@ void CollectableObject::setButton(UiButton* button) {
 
 UiButton* CollectableObject::getButton() {
     return itemButton;
+}
+
+UiPlane* CollectableObject::getPreview(){
+    return preview;
 }

@@ -31,10 +31,9 @@ public:
 private:
 	Scene* scene;
 	bool inventoryUI = false;
-	UiCanvas *inventoryCanvas, *encouragementCanvas;
+	UiCanvas *inventoryCanvas, *encouragementCanvas, *previewCanvas;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
-	std::vector<UiButton*> iButtons;
 	Picking() {}
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
@@ -47,7 +46,6 @@ private:
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
 	UiColorPlane* descBackground;
-
 };
 
 #endif

@@ -30,6 +30,7 @@ void OctreeNode::Calculate()
 	{
 		for (int i = 0; i < boxes.size(); i++)
 		{
+//#TODO filling octree with gameObjects which have more than one collider
 			Collider* collider = gameObject->getComponent<Collider>();
 			if(collider == nullptr)
 			{
@@ -153,21 +154,24 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 {
 	for(GraphNode* gameObject: gameObjects)
 	{
-		Collider* collider = gameObject->getComponent<Collider>();
-		if(collider != nullptr)
+		auto colliders = gameObject->getComponents<Collider>();
+		if(!colliders.empty())
 		{
-			if(collider->getType() == BoxCol)
+			for (Collider* collider : colliders)
 			{
-				if(frustum.boxInFrustum(static_cast<BoxCollider*>(collider)))
+				if (collider->getType() == BoxCol)
 				{
-					frustumContainer.push_back(gameObject);
+					if (frustum.boxInFrustum(static_cast<BoxCollider*>(collider)))
+					{
+						frustumContainer.push_back(gameObject);
+					}
 				}
-			}
-			else if(collider->getType() == SphereCol)
-			{
-				if (frustum.sphereInFrustum(static_cast<SphereCollider*>(collider)))
+				else if (collider->getType() == SphereCol)
 				{
-					frustumContainer.push_back(gameObject);
+					if (frustum.sphereInFrustum(static_cast<SphereCollider*>(collider)))
+					{
+						frustumContainer.push_back(gameObject);
+					}
 				}
 			}
 		}
