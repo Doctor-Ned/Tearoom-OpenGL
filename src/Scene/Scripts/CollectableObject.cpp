@@ -14,7 +14,8 @@ CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Com
 }
 
 CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc)
-:Component(_gameObject), camera(camera), i_type(i_type), icon(icon), desc(desc) {
+:Component(_gameObject), camera(camera), i_type(i_type), icon(icon) {
+    desctext = new UiText(glm::vec2(1010.0f, 360.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 }
 
 void CollectableObject::takeObject()
@@ -45,7 +46,9 @@ void CollectableObject::update(float msec)
 bool CollectableObject::getIsTaken() const {
     return isTaken;
 }
-
+UiText* CollectableObject::getDescription() {
+    return desctext;
+}
 
 SerializableType CollectableObject::getSerializableType() {
 	return SCollectableObject;
@@ -79,3 +82,10 @@ UiPlane *CollectableObject::getIcon() const {
     return icon;
 }
 
+void CollectableObject::setButton(UiButton* button) {
+    itemButton = button;
+}
+
+UiButton* CollectableObject::getButton() {
+    return itemButton;
+}

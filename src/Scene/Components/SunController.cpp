@@ -11,9 +11,38 @@ SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::st
     clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize()/2.0f, glm::vec2(60.0f,130.0f), Center);
     clockBack = new UiPlane("res/textures/clockBack.png",  glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f,350.0f), Left);
     clockHand->setRotationAnchor(Center);
+    clockFace->setActive(false);
+    clockHand->setActive(false);
+    clockBack->setActive(false);
+
     scene->getUiRoot()->addChild(clockBack);
     scene->getUiRoot()->addChild(clockFace);
     scene->getUiRoot()->addChild(clockHand);
+
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, true, [this]()
+    {
+        clockFace->setActive(true);
+        clockHand->setActive(true);
+        clockBack->setActive(true);
+    });
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, true, [this]()
+    {
+        clockFace->setActive(true);
+        clockHand->setActive(true);
+        clockBack->setActive(true);
+    });
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, false, [this]()
+    {
+        clockFace->setActive(false);
+        clockHand->setActive(false);
+        clockBack->setActive(false);
+    });
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, false, [this]()
+    {
+        clockFace->setActive(false);
+        clockHand->setActive(false);
+        clockBack->setActive(false);
+    });
 }
 
 SunController::~SunController() {

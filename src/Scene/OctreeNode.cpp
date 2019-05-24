@@ -83,8 +83,8 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 	std::vector<GraphNode*> thisNodeObjectsWithColliders;
 	for(GraphNode* object :gameObjects)
 	{
-		Collider* collider = object->getComponent<Collider>();
-		if(collider != nullptr)
+		auto colliders = object->getComponents<Collider>();
+		if(!colliders.empty())
 		{
 			thisNodeObjectsWithColliders.push_back(object);
 		}
@@ -92,21 +92,34 @@ void OctreeNode::CollisionTests(std::vector<GraphNode*> objectsWithColliders)
 
 	for(int i = 0; i < thisNodeObjectsWithColliders.size(); i++)
 	{
-		Collider* collider1 = thisNodeObjectsWithColliders[i]->getComponent<Collider>();
+		auto colliders1 = thisNodeObjectsWithColliders[i]->getComponents<Collider>();
 		for(int j = i + 1; j < thisNodeObjectsWithColliders.size(); j++)
 		{
-			Collider* collider2 = thisNodeObjectsWithColliders[j]->getComponent<Collider>();
-			CollisionSystem::getInstance()->checkCollision(collider1, collider2);
+			auto colliders2 = thisNodeObjectsWithColliders[j]->getComponents<Collider>();
+			//
+			for(Collider* collider1 : colliders1)
+			{
+				for (Collider* collider2 : colliders2)
+				{
+					CollisionSystem::getInstance()->checkCollision(collider1, collider2);
+				}
+			}
 		}
 	}
 
 	for (GraphNode* thisNodeObject : thisNodeObjectsWithColliders)
 	{
-		Collider* collider1 = thisNodeObject->getComponent<Collider>();
+		auto colliders1 = thisNodeObject->getComponents<Collider>();
 		for (GraphNode* NodeObject : objectsWithColliders)
 		{
-			Collider* collider2 = NodeObject->getComponent<Collider>();
-			CollisionSystem::getInstance()->checkCollision(collider1, collider2);
+			auto colliders2 = NodeObject->getComponents<Collider>();
+			for (Collider* collider1 : colliders1)
+			{
+				for (Collider* collider2 : colliders2)
+				{
+					CollisionSystem::getInstance()->checkCollision(collider1, collider2);
+				}
+			}
 		}
 	}
 
