@@ -25,6 +25,9 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	inventoryCanvas->setParent(root);
 	inventoryCanvas->setActive(false);
+	previewCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	previewCanvas->setParent(root);
+	previewCanvas->setActive(false);
 	photosInventory = new UiPlane("res/textures/photosChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	itemsInventory = new UiPlane("res/textures/itemsChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	letterInventory = new UiPlane("res/textures/lettersChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
@@ -91,12 +94,11 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
     {
         if (getSwitch()) {
             showInventoryUi();
+            previewCanvas->setActive(false);
         } else {
             hideInventoryUi();
         }
     });
-
-
 }
 
 void Picking::placeInGrid(ItemType itype) {
@@ -140,6 +142,7 @@ void Picking::hideInventoryUi() {
 
 void Picking::showInventoryUi() {
 	Picking::inventoryCanvas->setActive(true);
+	previewCanvas->setActive(false);
 
 	if(letterInventory->isActive()) {
 		placeInGrid(Letter);
@@ -178,6 +181,15 @@ void Picking::update(float msec) {
 				inventory.push_back(object);
 				collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f,60.0f), Right));
                 collectable->getButton()->setOpacity(0.0f);
+                collectable->getButton()->addClickCallback([this, collectable]()
+				{
+                	this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+                	setSwitch(!getSwitch());
+                	hideInventoryUi();
+                	previewCanvas->addChild(collectable->getPreview());
+                	previewCanvas->setActive(true);
+
+				});
 				collectable->getButton()->addHoverCallback([this, collectable](){
 					inventoryCanvas->addChild(collectable->getDescription());
 					descBackground->setActive(true);
