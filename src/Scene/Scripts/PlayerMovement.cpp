@@ -101,6 +101,18 @@ void PlayerMovement::update(float msec) {
 			glm::vec2 mpos = gameManager->getMousePosition();
 			glm::vec2 shift = mpos - lastMousePosition;
 			lastMousePosition = mpos;
+			if(gameManager->getKeyState(KEY_MOUSE_UP)) {
+				shift.y -= 10.0f;
+			}
+			if (gameManager->getKeyState(KEY_MOUSE_DOWN)) {
+				shift.y += 10.0f;
+			}
+			if (gameManager->getKeyState(KEY_MOUSE_LEFT)) {
+				shift.x -= 10.0f;
+			}
+			if (gameManager->getKeyState(KEY_MOUSE_RIGHT)) {
+				shift.x += 10.0f;
+			}
 			shift *= -mouseSensitivity * msec;
 			gameObject->localTransform.rotateYDegrees(shift.x);
 			gameObject->localTransform.rotateXDegrees(shift.y);

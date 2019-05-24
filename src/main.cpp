@@ -1,10 +1,8 @@
 #include "Global.h"
 #include <cstdio>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
-
 #include <GLFW/glfw3.h>
 #include "freetype/ftparams.h"
 #include <ctime>
