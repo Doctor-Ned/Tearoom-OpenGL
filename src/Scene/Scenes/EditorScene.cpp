@@ -128,7 +128,11 @@ void EditorScene::renderUi() {
 	if (editedScene != nullptr) {
 		if (nodeSelectionCallback == nullptr && ImGui::Button("Choose scene camera")) {
 			nodeSelectionCallback = [this](GraphNode *node) {
-				editedScene->setCamera(node->getComponent<Camera>());
+				Camera *camera = node->getComponent<Camera>();
+				if(camera) {
+					playerCamera = camera;
+					setEditorCamera(false);
+				}
 			};
 		}
 	}
