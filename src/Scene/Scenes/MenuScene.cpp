@@ -6,6 +6,7 @@
 #include "Serialization/Serializer.h"
 #include "EditorScene.h"
 #include "Scene/SoundSystem.h"
+#include "MenuPreview.h"
 
 class UiTextButton;
 
@@ -51,7 +52,7 @@ MenuScene::MenuScene() {
     menuPreview->addClickCallback([this]()
     {
         SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
-       //menu preview showing up
+        GameManager::getInstance()->setCurrentScene(new MenuPreview());
     });
 	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
 	rootUiElement->addChild(background);
