@@ -138,21 +138,27 @@ MenuPreview::MenuPreview() {
     backHover->setOpacity(0.0f);
     menuAbout->setActive(false);
     backToMenu->setActive(false);
+
 }
 
 void MenuPreview::update(double deltaTime) {
 
-    if(elapsed > 5.0f) {
-        slidePhotos[currentPhoto]->setOpacity(0.0f);
-        if(currentPhoto == slidePhotos.size() - 1) currentPhoto = 0;
-        else currentPhoto++;
-        std::cout<<currentPhoto<<std::endl;
+    if(elapsed > 1.0f) {
+        if(currentPhoto == slidePhotos.size() - 1) {
+            currentPhoto = 0;
+            previousPhoto = slidePhotos.size() - 1;
+        }
+        else {
+            if(previousPhoto == slidePhotos.size() - 1) previousPhoto = 0;
+            else previousPhoto++;
+            currentPhoto++;
+        }
         elapsed = 0.0f;
     }
-    slidePhotos[currentPhoto]->setOpacity(1.0f);
-    elapsed += 0.04f;
+    slidePhotos[previousPhoto]->setOpacity(1.0f - elapsed);
+    slidePhotos[currentPhoto]->setOpacity(elapsed);
 
-
+    elapsed += 0.01f;
 }
 
 MenuPreview::~MenuPreview() {}

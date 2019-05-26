@@ -17,7 +17,8 @@ public:
 protected:
     std::vector<UiPlane*> slidePhotos;
     double elapsed = 0.0;
-    int currentPhoto = 0;
+    int currentPhoto = 1;
+    int previousPhoto = 0;
 
 };
 
