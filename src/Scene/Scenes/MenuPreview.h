@@ -12,6 +12,13 @@ class MenuPreview : public Scene {
 public:
     MenuPreview();
     ~MenuPreview();
+    void update(double deltaTime) override;
+
+protected:
+    std::vector<UiPlane*> slidePhotos;
+    double elapsed = 0.0;
+    int currentPhoto = 0;
+
 };
 
 

@@ -32,7 +32,7 @@ MenuPreview::MenuPreview() {
     UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 678.0f), glm::vec2(170.0f,80.0f), Left);
 
     backToMenu->addHoverCallback([this, backHover]() {
-        backHover->setOpacity(0.3f);c
+        backHover->setOpacity(0.3f);
     });
     backToMenu->addLeaveCallback([this, backHover]() {
         backHover->setOpacity(0.0f);
@@ -92,7 +92,6 @@ MenuPreview::MenuPreview() {
     about->addLeaveCallback([this, aboutHover](){
         aboutHover->setOpacity(0.0f);
     });
-
     quit->addClickCallback([this]() {
         //GameManager::getInstance()->quit();
         GameManager::getInstance()->setCurrentScene(new MenuScene()); //temporary
@@ -104,6 +103,19 @@ MenuPreview::MenuPreview() {
         quitHover->setOpacity(0.0f);
     });
 
+
+    UiPlane*  slide1 = new UiPlane("res/textures/photo1.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
+    UiPlane*  slide2 = new UiPlane("res/textures/photo2.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
+    UiPlane*  slide3 = new UiPlane("res/textures/photo3.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
+
+    slidePhotos.push_back(slide1);
+    slidePhotos.push_back(slide2);
+    slidePhotos.push_back(slide3);
+
+
+    for(UiPlane* photo : slidePhotos) {
+        rootUiElement->addChild(photo);
+    }
     rootUiElement->addChild(menuBackground);
     rootUiElement->addChild(startGame);
     rootUiElement->addChild(options);
@@ -126,6 +138,21 @@ MenuPreview::MenuPreview() {
     backHover->setOpacity(0.0f);
     menuAbout->setActive(false);
     backToMenu->setActive(false);
+}
+
+void MenuPreview::update(double deltaTime) {
+
+    if(elapsed > 5.0f) {
+        slidePhotos[currentPhoto]->setOpacity(0.0f);
+        if(currentPhoto == slidePhotos.size() - 1) currentPhoto = 0;
+        else currentPhoto++;
+        std::cout<<currentPhoto<<std::endl;
+        elapsed = 0.0f;
+    }
+    slidePhotos[currentPhoto]->setOpacity(1.0f);
+    elapsed += 0.04f;
+
+
 }
 
 MenuPreview::~MenuPreview() {}
