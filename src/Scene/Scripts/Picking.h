@@ -46,6 +46,7 @@ private:
 	UiPlane* itemsInventory;
 	UiPlane* letterInventory;
 	UiColorPlane* descBackground;
+	GraphNode* currentInteraction = nullptr;
 };
 
 #endif

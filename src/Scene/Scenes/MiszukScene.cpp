@@ -43,7 +43,7 @@ MiszukScene::MiszukScene() {
 	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
 	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
 	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode));
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, 1));
 	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 
 	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
@@ -53,7 +53,9 @@ MiszukScene::MiszukScene() {
 	//INVENTORY UI
 	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* letterPreview = new UiPlane("res/textures/letterExample.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
+    UiPlane* keyRepresentation = new UiPlane("res/textures/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+
+    UiPlane* letterPreview = new UiPlane("res/textures/letterExample.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
@@ -65,10 +67,16 @@ MiszukScene::MiszukScene() {
 	MeshColorBox *tinyItem2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode2 = new GraphNode(tinyItem2, rootNode);
 	tinyItemNode2->addComponent(new PhysicalObject(tinyItemNode2));
-	tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2, camera, Letter, boxRepresentation2, "Letter number 2", letterPreview));
+	tinyItemNode2->addComponent(new CollectableObject(tinyItemNode2, camera, Photo, boxRepresentation2, "Letter number 2", letterPreview));
 	tinyItemNode2->addComponent(new BoxCollider(tinyItemNode2, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
 	tinyItemNode2->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 
+    MeshColorBox *tinyItem3 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
+    GraphNode *tinyItemNode3 = new GraphNode(tinyItem3, rootNode);
+    tinyItemNode3->addComponent(new PhysicalObject(tinyItemNode3));
+    tinyItemNode3->addComponent(new CollectableObject(tinyItemNode3, camera, DoorKey, keyRepresentation, "Key number 1", letterPreview, 1));
+    tinyItemNode3->addComponent(new BoxCollider(tinyItemNode3, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
+    tinyItemNode3->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
 
 	//-----------------
 	//miszuk animation

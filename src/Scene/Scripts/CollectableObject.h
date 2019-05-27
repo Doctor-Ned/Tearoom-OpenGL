@@ -24,7 +24,10 @@ public:
 	virtual ~CollectableObject();
 	CollectableObject(GraphNode* _gameObject, Camera* camera);
 	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview);
-	void takeObject();
+    CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon,
+            std::string desc, UiPlane* preview, int doorID);
+
+    void takeObject();
 	void leaveObject();
 	void update(float msec) override;
 	SerializableType getSerializableType() override;
@@ -37,8 +40,10 @@ public:
     UiButton* getButton();
     void setButton(UiButton* button);
     UiPlane* getPreview();
+    int getDoorID();
 
 protected:
+    int doorID = 0;
     UiPlane* icon;
     ItemType i_type;
     bool isTaken = false;

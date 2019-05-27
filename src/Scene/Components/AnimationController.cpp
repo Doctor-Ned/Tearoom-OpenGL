@@ -11,6 +11,10 @@ AnimationController::AnimationController(AnimationType _type, GraphNode *_gameOb
 :Component(_gameObject, "Animation controller"), type(_type) {
 }
 
+AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, int doorID)
+        :Component(_gameObject, "Animation controller"), type(_type), doorID(doorID) {
+}
+
 void AnimationController::startAnimation() {
 	animating = true;
 }
@@ -80,5 +84,9 @@ AnimationController::~AnimationController()
 
 AnimationType AnimationController::getType() const {
     return type;
+}
+
+int AnimationController::getDoorID() {
+    return doorID;
 }
 
