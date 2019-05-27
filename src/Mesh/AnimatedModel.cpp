@@ -140,6 +140,7 @@ void AnimatedModel::addToBoneTransformMatrix(Bone* bone, glm::mat4(&boneTransfor
 
 void AnimatedModel::draw(Shader *shader, glm::mat4 world) {
 	if (rootBone) {
+		rootBone->updateWorld();
 		glm::mat4 boneTransforms[MAX_BONE_TRANSFORMS];
 		addToBoneTransformMatrix(rootBone, boneTransforms);
 		shader->setAnimatedModelBoneTransforms(boneTransforms);

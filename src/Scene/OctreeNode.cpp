@@ -74,7 +74,6 @@ void OctreeNode::Calculate()
 			gameObjects.erase(i);
 		}
 	}
-	
 
 	for(int i = 0; i < 8; i++)
 	{

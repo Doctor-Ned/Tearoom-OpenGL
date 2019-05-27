@@ -14,6 +14,7 @@ float PlayerMovement::mouseSensitivity = 4.0f;
 void PlayerMovement::renderGui() {
 	Component::renderGui();
 	if(active) {
+		ImGui::Checkbox("Gravity", &gravity);
 		ImGui::Checkbox("Allow flight", &fly);
 		ImGui::Text("Camera source: ");
 		ImGui::SameLine();
@@ -93,7 +94,9 @@ PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera *camera) : Compone
 PlayerMovement::PlayerMovement(GraphNode* _gameObject) : PlayerMovement(_gameObject, _gameObject->getComponent<Camera>()) {}
 
 void PlayerMovement::update(float msec) {
-	if (camera != nullptr && gameManager->getCursorLocked() && gameManager->getCurrentCamera() == camera) {
+	if (camera != nullptr && gameManager->getCursorLocked() && gameManager->getCurrentCamera() == camera) 
+	{
+		GraphNode* camGameObject = camera->getGameObject();
 		if(refreshMousePosition) {
 			refreshMousePosition = false;
 			lastMousePosition = gameManager->getMousePosition();
@@ -114,9 +117,9 @@ void PlayerMovement::update(float msec) {
 				shift.x += 10.0f;
 			}
 			shift *= -mouseSensitivity * msec;
-			gameObject->localTransform.rotateYDegrees(shift.x);
-			gameObject->localTransform.rotateXDegrees(shift.y);
-			auto data = gameObject->localTransform.getData();
+			camGameObject->localTransform.rotateYDegrees(shift.x);
+			camGameObject->localTransform.rotateXDegrees(shift.y);
+			auto data = camGameObject->localTransform.getData();
 			bool changed = false;
 			static float clamp = glm::radians(89.9f);
 			if(data.eulerRotation.x > clamp) {
@@ -127,40 +130,61 @@ void PlayerMovement::update(float msec) {
 				changed = true;
 			}
 			if(changed) {
-				gameObject->localTransform.setData(data);
+				camGameObject->localTransform.setData(data);
 			}
 		}
 
 		float speed;
 		if (gameManager->getKeyState(KEY_FAST)) {
-			speed = 4.0f;
+			speed = 3.5f;
 		} else {
 			speed = 2.0f;
 		}
 
-		glm::vec3 direction = glm::vec3(0.0f);
+		glm::vec3 camFront = camGameObject->getFrontVector();
+		glm::vec2 front = glm::vec2(camFront.x, camFront.z);
+		front = glm::normalize(front);
+
+		glm::vec3 camRight = camGameObject->getRightVector();
+		glm::vec2 right = glm::vec2(camRight.x, camRight.z);
+		right = glm::normalize(right);
+
+
+		glm::vec2 direction = glm::vec2(0.0f);
 		if (gameManager->getKeyState(KEY_FORWARD)) {
-			direction.z -= speed;
+			direction += front;
 		}
 		if (gameManager->getKeyState(KEY_BACKWARD)) {
-			direction.z += speed;
+			direction -= front;
 		}
 		if (gameManager->getKeyState(KEY_LEFT)) {
-			direction.x -= speed;
+			direction -= right;
 		}
 		if (gameManager->getKeyState(KEY_RIGHT)) {
-			direction.x += speed;
+			direction += right;
 		}
+		float verticalDirection = 0.0f;
 		if (fly) {
 			if (gameManager->getKeyState(KEY_UP)) {
-				direction.y += speed;
+				verticalDirection += speed * msec;
 			}
 			if (gameManager->getKeyState(KEY_DOWN)) {
-				direction.y -= speed;
+				verticalDirection -= speed * msec;
 			}
 		}
 
-		gameObject->moveRelative(direction * msec, fly);
+		if(direction.x != 0.0f || direction.y != 0.0f)
+		{
+			direction = glm::normalize(direction);
+			direction *= msec * speed;
+			gameObject->localTransform.translate(glm::vec3(direction.x, verticalDirection, direction.y));
+		} 
+		else if (verticalDirection != 0)
+		{
+			gameObject->localTransform.translate(glm::vec3(0.0f, verticalDirection, 0.0f));
+		}
+		
+		//gameObject->moveRelative(direction * msec, fly);
 		if (gravity) {
 			Collider* collider = gameObject->getComponent<Collider>();
 			GraphNode* floor = CollisionSystem::getInstance()->castRay(gameObject->worldTransform.getPosition() + glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, -1, 0), 0.5f, collider);

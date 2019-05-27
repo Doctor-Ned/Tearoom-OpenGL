@@ -26,7 +26,6 @@ SkeletalAnimation::SkeletalAnimation(GraphNode* gameObject, std::string&& name) 
 void SkeletalAnimation::update(float msec) {
 	if (isPlaying && animatedBone != nullptr) {
 		interpolate(animatedBone);
-		animatedBone->updateWorld();
 		currentTime += msec * speed;
 	}
 
