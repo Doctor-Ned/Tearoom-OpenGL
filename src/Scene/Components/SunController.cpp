@@ -48,6 +48,8 @@ SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::st
 SunController::~SunController() {
 }
 
+
+
 //methods for sunlight control
 void SunController::moveSunBackwards() {}
 void SunController::moveSunForward() {}
@@ -68,6 +70,7 @@ void SunController::update(float msec) {
         moveSunForward();
     }
 }
+
 //SERIALIZATION
 /*
 SerializableType SunController::getSerializableType() {

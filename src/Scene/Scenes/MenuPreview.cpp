@@ -14,10 +14,9 @@ MenuPreview::MenuPreview() {
     UiButton* startGame = new UiButton(glm::vec2(98.0f, 210.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* options = new UiButton(glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* about = new UiButton(glm::vec2(98.0f, 410.0f), glm::vec2(170.0f,80.0f), Left);
-    UiButton* quit = new UiButton(glm::vec2(98.0f, 500.0f), glm::vec2(170.0f,80.0f), Left);
+    UiButton* quit = new UiButton(glm::vec2(98.0f, 510.0f), glm::vec2(170.0f,80.0f), Left);
 
-    UiButton* backToMenu = new UiButton(glm::vec2(101.0f, 675.0f), glm::vec2(170.0f,80.0f), Left);
-
+    UiButton* backToMenu = new UiButton(glm::vec2(101.0f, 585.0f), glm::vec2(170.0f,80.0f), Left);
 
     options->setOpacity(0.0f);
     startGame->setOpacity(0.0f);
@@ -29,7 +28,7 @@ MenuPreview::MenuPreview() {
     UiColorPlane* optionsHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* aboutHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 405.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 503.0f), glm::vec2(170.0f,80.0f), Left);
-    UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 678.0f), glm::vec2(170.0f,80.0f), Left);
+    UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 586.0f), glm::vec2(170.0f,80.0f), Left);
 
     backToMenu->addHoverCallback([this, backHover]() {
         backHover->setOpacity(0.3f);

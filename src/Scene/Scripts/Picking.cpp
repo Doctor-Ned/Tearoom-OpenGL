@@ -202,7 +202,6 @@ void Picking::update(float msec) {
 									auto obj = inventory[i]->getComponent<CollectableObject>();
 									if (obj->getDoorID() == anim->getDoorID()) {
 										inventory.erase(inventory.begin() + i);
-										std::cout<<"erased"<<std::endl;
 									}
 								}
 
