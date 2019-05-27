@@ -178,7 +178,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(false);
 			encouragementPick->setActive(true);
 
-			if (gameManager->getKeyState(GLFW_KEY_F) && !collectable->getIsTaken()) {
+			if (gameManager->getKeyOnce(GLFW_KEY_F) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
 				collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 				collectable->getButton()->setOpacity(0.0f);

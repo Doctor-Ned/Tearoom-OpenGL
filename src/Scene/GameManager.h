@@ -74,6 +74,7 @@ public:
 	void addMouseCallback(int key, bool pressed, const std::function<void()>& callback);
 	~GameManager();
 	bool getKeyState(int key);
+	bool getKeyOnce(int key);
 	bool getMouseState(int key);
 	glm::vec2 getMousePosition() const;
 	glm::vec2 getUiRescaleVector() const;
@@ -91,6 +92,7 @@ protected:
 	void setKeyState(int key, bool pressed);
 	void keyEvent(int key, bool pressed) const;
 	std::map<int, bool> keyStates;
+	std::map<int, bool> keysProcessed;
 	std::map<int, std::map<bool, std::vector<std::function<void()>>>> keyCallbacks;
 	void setMouseState(int key, bool pressed);
 	void mouseEvent(int key, bool pressed);

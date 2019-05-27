@@ -350,6 +350,37 @@ bool GameManager::getKeyState(const int key) {
 	return false;
 }
 
+bool GameManager::getKeyOnce(int key)
+{
+	auto pair = keyStates.find(key);
+	if (pair != keyStates.end()) {
+		if (!pair->second)
+		{
+			return false;
+		}
+
+		auto keyProcessed = keysProcessed.find(key);
+		if (keyProcessed == keysProcessed.end())
+		{
+			keysProcessed.emplace(key, true);
+			//here is the place key is processed
+			return true;
+		}
+		else
+		{
+			//keyState is true but key was not processed
+			if (!keyProcessed->second)
+			{
+				keysProcessed[key] = true;
+				return true;
+			}
+			//keyState is true but key was processed one frame earlier
+			return false;
+		}
+	}
+	return false;
+}
+
 void GameManager::setKeyState(int key, bool pressed) {
 	auto pair = keyStates.find(key);
 	if (pair != keyStates.end()) {
@@ -487,6 +518,7 @@ void GameManager::keyboard_callback(GLFWwindow* window, int key, int scancode, i
 		if (getKeyState(key)) {
 			setKeyState(key, false);
 			keyEvent(key, false);
+			keysProcessed[key] = false;
 		}
 	}
 	if (action == GLFW_PRESS) {
