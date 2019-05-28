@@ -10,12 +10,12 @@
 #include "Ui/UiCanvas.h"
 #include "Ui/UiColorPlane.h"
 
+class Sun;
 class SunController: public Component{
 public:
     SunController(GraphNode* _gameObject, Scene* scene, const std::string& name = "SunController");
     ~SunController() override;
-    void moveSunForward();
-    void moveSunBackwards();
+	void moveSun(float time);
     void update(float msec) override;
     SerializableType getSerializableType() override;
     Json::Value serialize(Serializer *serializer) override;
@@ -27,6 +27,7 @@ private:
     UiColorPlane* clockBackground;
     //Clock UI
     bool clockUI = false;
+	Sun* sun = nullptr;
     UiPlane* clockHand;
     UiPlane* clockFace;
     UiPlane* clockBack;

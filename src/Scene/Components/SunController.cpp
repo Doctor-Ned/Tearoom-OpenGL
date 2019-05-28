@@ -5,6 +5,7 @@
 #include "SunController.h"
 #include "Ui/UiPlane.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Components/LightComponents/Sun.h"
 
 SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::string& name)
 :Component(_gameObject, name), scene(scene){
@@ -18,6 +19,9 @@ SunController::SunController()
 
 void SunController::initialize()
 {
+	sun = gameObject->getComponent<Sun>();
+	if (sun != nullptr)
+		sun->setTime(12.0f);
 	clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f, 200.0f), Left);
 	clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
 	clockBack = new UiPlane("res/textures/clockBack.png", glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f, 350.0f), Left);
@@ -64,23 +68,45 @@ SunController::~SunController() {
 }
 
 //methods for sunlight control
-void SunController::moveSunBackwards() {}
-void SunController::moveSunForward() {}
-
+void SunController::moveSun(float time)
+{
+	if (sun != nullptr)
+	{
+		sun->addTime(time);
+		if (sun->getTime() > 17)
+			sun->setTime(17.0f);
+		if (sun->getTime() < 7)
+			sun->setTime(7.0f);
+	}
+}
 
 void SunController::update(float msec) {
     GameManager *gameManager = GameManager::getInstance();
 
+
     if(gameManager->getKeyState(GLFW_KEY_1))
     {
-        clockHand->localTransform.rotateZ(-0.01f);
-        moveSunBackwards();
+		if (sun != nullptr)
+		{
+			if(sun->getTime() != 7.0f)
+			{
+				clockHand->localTransform.rotateZ(-0.8f * msec);
+				moveSun(-1.6f * msec);
+			}
+		}
+        
     }
 
     if(gameManager->getKeyState(GLFW_KEY_2))
     {
-        clockHand->localTransform.rotateZ(0.01f);
-        moveSunForward();
+		if (sun != nullptr)
+		{
+			if (sun->getTime() != 17.0f)
+			{
+				clockHand->localTransform.rotateZ(0.8f * msec);
+				moveSun(1.6f * msec);
+			}
+		}
     }
 }
 
