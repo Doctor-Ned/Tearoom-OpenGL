@@ -44,12 +44,12 @@ public:
 
 protected:
     int doorID = 0;
-    UiPlane* icon;
+    UiPlane* icon = nullptr;
     ItemType i_type;
     bool isTaken = false;
     UiText* desctext;
     UiButton* itemButton;
-    UiPlane* preview;
+    UiPlane* preview = nullptr;
     Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;

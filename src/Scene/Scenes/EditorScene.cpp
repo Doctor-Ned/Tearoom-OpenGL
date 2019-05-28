@@ -1247,6 +1247,42 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 	}
 }
 
+void EditorScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (useEditorCamera)
+	{
+		Scene::keyboard_callback(window, key, scancode, action, mods);
+	}
+	else
+	{
+		editedScene->keyboard_callback(window, key, scancode, action, mods);
+	}
+}
+
+void EditorScene::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (useEditorCamera)
+	{
+		Scene::mouse_callback(window, xpos, ypos);
+	}
+	else
+	{
+		editedScene->mouse_callback(window, xpos, ypos);
+	}
+}
+
+void EditorScene::mouse_button_callback(GLFWwindow* window, int butt, int action, int mods)
+{
+	if (useEditorCamera)
+	{
+		Scene::mouse_button_callback(window, butt, action, mods);
+	}
+	else
+	{
+		editedScene->mouse_button_callback(window, butt, action, mods);
+	}
+}
+
 void EditorScene::toggleWireframe() {
 	useWireframe = !useWireframe;
 	if (useWireframe) {

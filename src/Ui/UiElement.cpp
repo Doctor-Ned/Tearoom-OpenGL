@@ -105,7 +105,7 @@ glm::vec2 UiElement::getSize() const {
 }
 
 void UiElement::removeChild(UiElement* element) {
-	if (element->parent != this) {
+	if (element == nullptr || element->parent != this) {
 		return;
 	}
 	for (auto i = children.begin(); i != children.end();) {
@@ -126,6 +126,10 @@ void UiElement::setParent(UiElement* element) {
 }
 
 void UiElement::addChild(UiElement* element) {
+	if(element == nullptr)
+	{
+		return;
+	}
 	for (auto &child : children) {
 		if (child == element) {
 			return;

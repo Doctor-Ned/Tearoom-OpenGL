@@ -39,6 +39,9 @@ public:
 	bool doesAnyChildContain(GraphNode *node, GraphNode *target);
 	void loadTexturesModels();
 	void setEditedScene(Scene *scene, bool deletePrevious = true);
+	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
+	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) override;
 	std::vector<GraphNode*> editedNodes;
 	bool updateEditedScene = true;
 	float timeScale = 1.0f;
