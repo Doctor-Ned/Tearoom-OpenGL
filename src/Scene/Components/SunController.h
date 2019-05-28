@@ -17,10 +17,12 @@ public:
     void moveSunForward();
     void moveSunBackwards();
     void update(float msec) override;
-    //SerializableType getSerializableType() override;
-   // Json::Value serialize(Serializer *serializer) override;
-  //  void deserialize(Json::Value &root, Serializer* serializer) override;
+    SerializableType getSerializableType() override;
+    Json::Value serialize(Serializer *serializer) override;
+    void deserialize(Json::Value &root, Serializer* serializer) override;
 private:
+	void initialize();
+	SunController();
     Scene* scene;
     UiColorPlane* clockBackground;
     //Clock UI

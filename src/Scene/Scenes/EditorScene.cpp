@@ -31,6 +31,7 @@
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Mesh/AnimatedModel.h"
 #include "Scene/Components/Camera.h"
+#include "Scene/Components/SunController.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -751,6 +752,14 @@ void EditorScene::renderUi() {
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
+			case SSunController:
+			{
+				if (ImGui::Button("Create")) {
+					typeCreation->creationCallback(new SunController(reinterpret_cast<GraphNode*>(typeCreation->arg), editedScene));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
+			break;
 			case SPlayerMovement:
 			{
 				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg)));
@@ -1267,7 +1276,8 @@ void EditorScene::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 	else
 	{
-		editedScene->mouse_callback(window, xpos, ypos);
+		if(editedScene != nullptr)
+			editedScene->mouse_callback(window, xpos, ypos);
 	}
 }
 

@@ -4,51 +4,64 @@
 
 #include "SunController.h"
 #include "Ui/UiPlane.h"
+#include "Serialization/Serializer.h"
 
 SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::string& name)
 :Component(_gameObject, name), scene(scene){
-    clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f,200.0f), Left);
-    clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize()/2.0f, glm::vec2(60.0f,130.0f), Center);
-    clockBack = new UiPlane("res/textures/clockBack.png",  glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f,350.0f), Left);
-    clockHand->setRotationAnchor(Center);
-    clockFace->setActive(false);
-    clockHand->setActive(false);
-    clockBack->setActive(false);
+	initialize();
+}
 
-    scene->getUiRoot()->addChild(clockBack);
-    scene->getUiRoot()->addChild(clockFace);
-    scene->getUiRoot()->addChild(clockHand);
+SunController::SunController()
+{
 
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, true, [this]()
-    {
-        clockFace->setActive(true);
-        clockHand->setActive(true);
-        clockBack->setActive(true);
-    });
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, true, [this]()
-    {
-        clockFace->setActive(true);
-        clockHand->setActive(true);
-        clockBack->setActive(true);
-    });
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, false, [this]()
-    {
-        clockFace->setActive(false);
-        clockHand->setActive(false);
-        clockBack->setActive(false);
-    });
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, false, [this]()
-    {
-        clockFace->setActive(false);
-        clockHand->setActive(false);
-        clockBack->setActive(false);
-    });
+}
+
+void SunController::initialize()
+{
+	clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f, 200.0f), Left);
+	clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
+	clockBack = new UiPlane("res/textures/clockBack.png", glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f, 350.0f), Left);
+	clockHand->setRotationAnchor(Center);
+	clockFace->setActive(false);
+	clockHand->setActive(false);
+	clockBack->setActive(false);
+
+	scene->getUiRoot()->addChild(clockBack);
+	scene->getUiRoot()->addChild(clockFace);
+	scene->getUiRoot()->addChild(clockHand);
+
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, true, [this]()
+	{
+		clockFace->setActive(true);
+		clockHand->setActive(true);
+		clockBack->setActive(true);
+	});
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, true, [this]()
+	{
+		clockFace->setActive(true);
+		clockHand->setActive(true);
+		clockBack->setActive(true);
+	});
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, false, [this]()
+	{
+		clockFace->setActive(false);
+		clockHand->setActive(false);
+		clockBack->setActive(false);
+	});
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, false, [this]()
+	{
+		clockFace->setActive(false);
+		clockHand->setActive(false);
+		clockBack->setActive(false);
+	});
 }
 
 SunController::~SunController() {
+	/*delete clockFace;
+	delete clockBack;
+	delete clockHand;
+	delete clockBackground;*/
 }
-
-
 
 //methods for sunlight control
 void SunController::moveSunBackwards() {}
@@ -72,17 +85,22 @@ void SunController::update(float msec) {
 }
 
 //SERIALIZATION
-/*
-SerializableType SunController::getSerializableType() {
 
+SerializableType SunController::getSerializableType() {
+	return SSunController;
 }
 
 Json::Value SunController::serialize(Serializer* serializer) {
-    return null;
-
+	Json::Value root = Component::serialize(serializer);
+	root["scene"] = serializer->serialize(scene);
+	//sth to serialize in this class
+	return root;
 }
 
 void SunController::deserialize(Json::Value& root, Serializer* serializer) {
-
+	Component::deserialize(root, serializer);
+	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+	initialize();
 }
-*/
+
+

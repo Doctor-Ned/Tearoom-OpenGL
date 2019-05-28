@@ -37,6 +37,7 @@
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Scene/Components/SkeletalAnimation.h"
 #include "Mesh/AnimatedModel.h"
+#include "Scene/Components/SunController.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -297,6 +298,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SAnimatedModel:
 			deserializeAndIdentify(pointer, data, new AnimatedModel());
+			break;
+		case SSunController:
+			deserializeAndIdentify(pointer, data, new SunController());
 			break;
 	}
 	return pointer;
