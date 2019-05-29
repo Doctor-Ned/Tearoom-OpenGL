@@ -55,5 +55,5 @@ void UiText::setPosition(glm::vec2 position, UiAnchor anchor) {
 }
 
 ShaderType UiText::getShaderType() {
-	return STText;
+	return STUiText;
 }

@@ -319,6 +319,7 @@ Scene::Scene() {
 	updatableShaders.push_back(assetManager->getShader(STColor));
 	updatableShaders.push_back(assetManager->getShader(STReflect));
 	updatableShaders.push_back(assetManager->getShader(STRefract));
+	updatableShaders.push_back(assetManager->getShader(STText));
 	uboLights = assetManager->getUboLights();
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();

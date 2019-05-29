@@ -31,9 +31,10 @@ enum ShaderType {
 	STPostProcessing,
 	STLight,
 	STBlur,
-	STText,
+	STUiText,
 	STAnimatedModel,
-	STGaussianBlur
+	STGaussianBlur,
+	STText
 };
 
 
@@ -55,9 +56,10 @@ static const ShaderType ShaderTypes[] = {
 	STPostProcessing,
 	STLight,
 	STBlur,
-	STText,
+	STUiText,
 	STAnimatedModel,
-	STGaussianBlur
+	STGaussianBlur,
+	STText
 };
 
 // haven't had enough lol
@@ -78,9 +80,10 @@ static const std::string ShaderTypeNames[] = {
 	"STPostProcessing",
 	"STLight",
 	"STBlur",
-	"STText",
+	"STUiText",
 	"STAnimatedModel",
-	"STGaussianBlur"
+	"STGaussianBlur",
+	"STText"
 };
 
 enum ResourceType {

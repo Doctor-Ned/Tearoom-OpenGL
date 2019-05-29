@@ -21,7 +21,7 @@ public:
 protected:
 	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
-	MeshSimple(glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshSimple(glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), ShaderType shaderType = STColor);
 	glm::vec4 color;
 	std::vector<SimpleVertex> vertices;
 };

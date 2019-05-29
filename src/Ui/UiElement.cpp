@@ -183,7 +183,7 @@ void UiElement::updateProjection() {
 		switch (pair.first) {
 			case STUiTexture:
 			case STUiColor:
-			case STText:
+			case STUiText:
 				pair.second->use();
 				pair.second->setView(view);
 				pair.second->setProjection(projection);

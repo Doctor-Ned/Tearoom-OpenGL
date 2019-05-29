@@ -1,7 +1,7 @@
 #include "MeshSimple.h"
 #include "Serialization/DataSerializer.h"
 
-MeshSimple::MeshSimple(glm::vec4 color) : MeshProperty(STColor), color(color) { }
+MeshSimple::MeshSimple(glm::vec4 color, ShaderType shaderType) : MeshProperty(shaderType), color(color) { }
 
 void MeshSimple::draw(Shader *shader, glm::mat4 world) {
 	MeshProperty::draw(shader, world);

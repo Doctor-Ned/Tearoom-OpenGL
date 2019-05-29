@@ -170,6 +170,7 @@ bool AssetManager::endsWith(std::string const &fullString, std::string const &en
 }
 
 void AssetManager::setup() {
+	shaders.emplace(STUiText, new Shader("Ui/uitextVS.glsl", "Ui/uitextFS.glsl"));
 	shaders.emplace(STText, new Shader("textVS.glsl", "textFS.glsl"));
 	textRenderer = new TextRenderer(0.5f);
 	textRenderer->load("res/fonts/Merriweather-Regular.ttf", 60);
@@ -204,6 +205,7 @@ void AssetManager::setup() {
 	shaders.push_back(getShader(STModelInstanced));
 	shaders.push_back(getShader(STTexture));
 	shaders.push_back(getShader(STColor));
+	shaders.push_back(getShader(STText));
 
 	getShader(STLight)->bind(uboViewProjection);
 	getShader(STReflect)->bind(uboViewProjection);

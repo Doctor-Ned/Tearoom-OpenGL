@@ -8,7 +8,7 @@
 TextRenderer::TextRenderer(GLfloat defaultScale) {
 	// Load and configure shader
 	this->defaultScale = defaultScale;
-	Shader *textShader = AssetManager::getInstance()->getShader(STText);
+	Shader *textShader = AssetManager::getInstance()->getShader(STUiText);
 	textShader->use();
 	textShader->setInt("text", 0);
 	// Configure VAO/VBO for texture quads
@@ -105,6 +105,10 @@ void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLflo
 
 void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, UiAnchor anchor, glm::vec3 color) {
 	shader->setColor(glm::vec4(color, 1.0f));
+	renderText(shader, text, x, y, scaleX, scaleY, anchor);
+}
+
+void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scaleX, GLfloat scaleY, UiAnchor anchor) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
 	scaleX *= defaultScale;
