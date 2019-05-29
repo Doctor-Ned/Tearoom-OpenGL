@@ -280,6 +280,8 @@ int main(int argc, char** argv) {
 
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
 
+	LightManager *lightManager = LightManager::getInstance();
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGui_ImplOpenGL3_NewFrame();
@@ -312,9 +314,8 @@ int main(int argc, char** argv) {
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {
 		// apply two-pass gaussian blur to bright fragments
-			static const unsigned int amount = 10;
 			blurShader->use();
-			for (unsigned int i = 0; i < amount; i++) {
+			for (unsigned int i = 0; i < lightManager->bloomIterations; i++) {
 				if (!horizontal) {
 					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
 				} else {
