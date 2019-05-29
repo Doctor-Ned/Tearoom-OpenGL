@@ -21,43 +21,39 @@ void SunController::initialize()
 {
 	sun = gameObject->getComponent<Sun>();
 	if (sun != nullptr)
-		sun->setTime(12.0f);
+		sun->setTime(currentHour);
 	clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f, 200.0f), Left);
 	clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
 	clockBack = new UiPlane("res/textures/clockBack.png", glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f, 350.0f), Left);
 	clockHand->setRotationAnchor(Center);
-	clockFace->setActive(false);
-	clockHand->setActive(false);
-	clockBack->setActive(false);
+	clockFace->setActive(clockShown);
+	clockHand->setActive(clockShown);
+	clockBack->setActive(clockShown);
 
 	scene->getUiRoot()->addChild(clockBack);
 	scene->getUiRoot()->addChild(clockFace);
 	scene->getUiRoot()->addChild(clockHand);
 
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, true, [this]()
+	clockHand->localTransform.setRotationZDegrees(currentClockHour);
+}
+
+void SunController::initializeTimeTravel(bool future)
+{
+	timeTravel = true;
+	startHour = sun->getTime();
+	if(!future)
 	{
-		clockFace->setActive(true);
-		clockHand->setActive(true);
-		clockBack->setActive(true);
-	});
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, true, [this]()
+		endHour = startHour - 1.0f;
+		clockStart = (startHour - 12.0f) * 30.0f;
+		clockEnd = clockStart - 30.0f;
+	}
+	else
 	{
-		clockFace->setActive(true);
-		clockHand->setActive(true);
-		clockBack->setActive(true);
-	});
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_1, false, [this]()
-	{
-		clockFace->setActive(false);
-		clockHand->setActive(false);
-		clockBack->setActive(false);
-	});
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_2, false, [this]()
-	{
-		clockFace->setActive(false);
-		clockHand->setActive(false);
-		clockBack->setActive(false);
-	});
+		endHour = startHour + 1.0f;
+		clockStart = (startHour - 12.0f) * 30.0f;
+		clockEnd = clockStart + 30.0f;
+	}
+
 }
 
 SunController::~SunController() {
@@ -67,48 +63,92 @@ SunController::~SunController() {
 	delete clockBackground;*/
 }
 
-//methods for sunlight control
-void SunController::moveSun(float time)
-{
-	if (sun != nullptr)
-	{
-		sun->addTime(time);
-		if (sun->getTime() > 17)
-			sun->setTime(17.0f);
-		if (sun->getTime() < 7)
-			sun->setTime(7.0f);
-	}
-}
-
 void SunController::update(float msec) {
     GameManager *gameManager = GameManager::getInstance();
 
 
-    if(gameManager->getKeyState(GLFW_KEY_1))
+    if(gameManager->getKeyState(GLFW_KEY_1) && !timeTravel)
     {
 		if (sun != nullptr)
 		{
-			if(sun->getTime() != 7.0f)
+			if(sun->getTime() != minHour && getFractionalPartOfHour() == 0.0f)
 			{
-				clockHand->localTransform.rotateZ(-0.8f * msec);
-				moveSun(-1.6f * msec);
+				setClockVisibility(true);
+				//to the past
+				initializeTimeTravel(false);
 			}
 		}
-        
     }
 
-    if(gameManager->getKeyState(GLFW_KEY_2))
+    if(gameManager->getKeyState(GLFW_KEY_2) && !timeTravel)
     {
 		if (sun != nullptr)
 		{
-			if (sun->getTime() != 17.0f)
+			if (sun->getTime() != maxHour && getFractionalPartOfHour() == 0.0f)
 			{
-				clockHand->localTransform.rotateZ(0.8f * msec);
-				moveSun(1.6f * msec);
+				setClockVisibility(true);
+				//to the future
+				initializeTimeTravel(true);
 			}
 		}
     }
+
+	if(!timeTravel)
+	{
+		setClockVisibility(false);
+	}
+
+	if(timeTravel)
+	{
+		//clockHand->localTransform.rotateZ(0.8f * msec);
+		//moveSun(1.6f * msec);
+		currentTimePercentage += msec;
+		interpolate();
+	}
 }
+
+void SunController::interpolate()
+{
+	if (currentTimePercentage > 1.0f)
+		currentTimePercentage = 1.0f;
+
+	currentHour = glm::mix(startHour, endHour, currentTimePercentage);
+	currentClockHour = glm::mix(clockStart, clockEnd, currentTimePercentage);
+
+	clockHand->localTransform.setRotationZDegrees(currentClockHour);
+	moveSun(currentHour);
+
+	if(sun->getTime() == endHour)
+	{
+		timeTravel = false;
+		currentTimePercentage = 0.0f;
+	}
+}
+
+float SunController::getFractionalPartOfHour()
+{
+	float integralPartOfHour;
+	return modf(sun->getTime(), &integralPartOfHour);
+}
+
+void SunController::setClockVisibility(bool active)
+{
+	//show clock
+	clockShown = active;
+	clockFace->setActive(clockShown);
+	clockHand->setActive(clockShown);
+	clockBack->setActive(clockShown);
+}
+
+void SunController::moveSun(float time)
+{
+	sun->setTime(time);
+	if (sun->getTime() > maxHour)
+		sun->setTime(maxHour);
+	if (sun->getTime() < minHour)
+		sun->setTime(minHour);
+}
+
 
 //SERIALIZATION
 
@@ -119,13 +159,30 @@ SerializableType SunController::getSerializableType() {
 Json::Value SunController::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["scene"] = serializer->serialize(scene);
-	//sth to serialize in this class
+	root["startHour"] = startHour;
+	root["endHour"] = endHour;
+	root["clockStart"] = clockStart;
+	root["clockEnd"] = clockEnd;
+	root["currentTimePercentage"] = currentTimePercentage;
+	root["currentHour"] = currentHour;
+	root["currentClockHour"] = currentClockHour;
+	root["timeTravel"] = timeTravel;
+	root["clockShown"] = clockShown;
 	return root;
 }
 
 void SunController::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+	startHour = root["startHour"].asFloat();
+	endHour = root["endHour"].asFloat();
+	clockStart = root["clockStart"].asFloat();
+	clockEnd = root["clockEnd"].asFloat();
+	currentTimePercentage = root["currentTimePercentage"].asFloat();
+	currentHour = root["currentHour"].asFloat();
+	currentClockHour = root["currentClockHour"].asFloat();
+	timeTravel = root["timeTravel"].asBool();
+	root["clockShown"] = root["clockShown"].asBool();
 	initialize();
 }
 

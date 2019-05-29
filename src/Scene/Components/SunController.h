@@ -22,6 +22,10 @@ public:
     void deserialize(Json::Value &root, Serializer* serializer) override;
 private:
 	void initialize();
+	void initializeTimeTravel(bool future);
+	void interpolate();
+	float getFractionalPartOfHour();
+	void setClockVisibility(bool active);
 	SunController();
     Scene* scene;
     UiColorPlane* clockBackground;
@@ -31,6 +35,21 @@ private:
     UiPlane* clockHand;
     UiPlane* clockFace;
     UiPlane* clockBack;
+
+	float maxHour = 17.0f;
+	float minHour = 7.0f;
+	
+	//interpolation
+	float startHour;
+	float endHour;
+	float clockStart;
+	float clockEnd;
+	float currentTimePercentage = 0.0f;
+	float currentHour = 12.0f;
+	float currentClockHour = 0.0f;
+	
+	bool timeTravel = false;
+	bool clockShown = false;
     friend class Serializer;
 
 };
