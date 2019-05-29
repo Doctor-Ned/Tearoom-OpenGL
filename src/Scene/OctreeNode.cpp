@@ -341,14 +341,17 @@ GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static Octr
 	if (containTest(glm::vec3(rayPos), node.boxPos)) 
 	{
 		for (GraphNode* game_object : node.gameObjects) {
-			Collider* collider = game_object->getComponent<Collider>();
-			if (collider != nullptr)
+			auto colliders = game_object->getComponents<Collider>();
+			if (!colliders.empty())
 			{
-				if(collider != toIgnore)
+				for(auto collider : colliders)
 				{
-					if (CollisionSystem::getInstance()->containTest(rayPos, collider))
+					if (collider != toIgnore)
 					{
-						return game_object;
+						if (CollisionSystem::getInstance()->containTest(rayPos, collider))
+						{
+							return game_object;
+						}
 					}
 				}
 			}

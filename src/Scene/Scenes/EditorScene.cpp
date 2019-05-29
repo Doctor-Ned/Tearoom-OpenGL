@@ -1267,7 +1267,8 @@ void EditorScene::keyboard_callback(GLFWwindow* window, int key, int scancode, i
 	if (useEditorCamera) {
 		Scene::keyboard_callback(window, key, scancode, action, mods);
 	} else {
-		editedScene->keyboard_callback(window, key, scancode, action, mods);
+		if (editedScene != nullptr)
+			editedScene->keyboard_callback(window, key, scancode, action, mods);
 	}
 }
 
@@ -1284,7 +1285,8 @@ void EditorScene::mouse_button_callback(GLFWwindow* window, int butt, int action
 	if (useEditorCamera) {
 		Scene::mouse_button_callback(window, butt, action, mods);
 	} else {
-		editedScene->mouse_button_callback(window, butt, action, mods);
+		if (editedScene != nullptr)
+			editedScene->mouse_button_callback(window, butt, action, mods);
 	}
 }
 
