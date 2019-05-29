@@ -76,8 +76,8 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene,  const st
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
-	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
@@ -179,7 +179,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(false);
 			encouragementPick->setActive(true);
 
-			if (gameManager->getKeyOnce(GLFW_KEY_F) && !collectable->getIsTaken()) {
+			if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
 				collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 				collectable->getButton()->setOpacity(0.0f);
@@ -258,7 +258,7 @@ void Picking::update(float msec) {
             encouragementActivate->setActive(true);
             encouragementPick->setActive(false);
 
-			if (gameManager->getKeyState(GLFW_KEY_F)) {
+			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				anim->play();
 			}
 		}
@@ -269,7 +269,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 
-			if (gameManager->getKeyState(GLFW_KEY_F))
+			if (gameManager->getKeyOnce(GLFW_KEY_E))
 			{
 			    if(animController->getType() == DoorOpeningX
 			    || animController->getType() == DoorOpeningY) {

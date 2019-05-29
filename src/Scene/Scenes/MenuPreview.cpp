@@ -102,7 +102,6 @@ MenuPreview::MenuPreview() {
         quitHover->setOpacity(0.0f);
     });
 
-
     UiPlane*  slide1 = new UiPlane("res/textures/photo1.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
     UiPlane*  slide2 = new UiPlane("res/textures/photo2.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
     UiPlane*  slide3 = new UiPlane("res/textures/photo3.jpg", glm::vec2(200.0f, 0.0f), glm::vec2(1100.0f, 800.0f), TopLeft);
@@ -110,7 +109,6 @@ MenuPreview::MenuPreview() {
     slidePhotos.push_back(slide1);
     slidePhotos.push_back(slide2);
     slidePhotos.push_back(slide3);
-
 
     for(UiPlane* photo : slidePhotos) {
         rootUiElement->addChild(photo);
