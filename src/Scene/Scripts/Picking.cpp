@@ -192,6 +192,7 @@ void Picking::update(float msec) {
 						previewCanvas->addChild(collectable->getPreview());
 						previewCanvas->setActive(true);
 					});
+
 				} else if (collectable->getI_type() == DoorKey) {
 					collectable->getButton()->addClickCallback([this, collectable]() {
 						if (currentInteraction != nullptr) {
@@ -203,6 +204,7 @@ void Picking::update(float msec) {
 									auto obj = inventory[i]->getComponent<CollectableObject>();
 									if (obj->getDoorID() == anim->getDoorID()) {
 										inventory.erase(inventory.begin() + i);
+										this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 									}
 								}
 
@@ -210,7 +212,6 @@ void Picking::update(float msec) {
 						}
 					});
 				}
-
                 else {
 					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
@@ -219,16 +220,15 @@ void Picking::update(float msec) {
 					previewCanvas->setActive(true);
                 }
 
-				/*
-                collectable->getButton()->addHoverCallback([this, collectable](){
-					inventoryCanvas->addChild(collectable->getDescription());
+				collectable->getButton()->addHoverCallback([this, collectable](){
 					descBackground->setActive(true);
+					descBackground->addChild(collectable->getDescription());
+
 				});
 				collectable->getButton()->addLeaveCallback([this, collectable](){
-					inventoryCanvas->removeChild(collectable->getDescription());
 					descBackground->setActive(false);
+					descBackground->removeChild(collectable->getDescription());
 				});
-*/
 				collectable->takeObject();
 
 				if(inventoryUI)
@@ -278,7 +278,6 @@ void Picking::update(float msec) {
 					setSwitch(!getSwitch());
 
 					showInventoryUi();
-
 					currentInteraction = object;
                 }
 			}

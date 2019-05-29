@@ -47,7 +47,7 @@ protected:
     UiPlane* icon = nullptr;
     ItemType i_type;
     bool isTaken = false;
-    UiText* desctext;
+    UiText* desctext = nullptr;
     UiButton* itemButton;
     UiPlane* preview = nullptr;
     Camera* camera;
