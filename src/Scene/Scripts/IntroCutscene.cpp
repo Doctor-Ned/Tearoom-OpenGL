@@ -19,13 +19,14 @@ IntroCutscene::IntroCutscene(Scene* scene) {
     UiElement *root = scene->getUiRoot();
     mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
     root->addChild(mainCanvas);
-    mainCanvas->addChild(paperTexture);
-    mainCanvas->addChild(text1);
-    mainCanvas->addChild(text2);
-    mainCanvas->addChild(text3);
-    mainCanvas->addChild(text4);
-    mainCanvas->addChild(text5);
-    mainCanvas->addChild(transitionPlane);
+    mainCanvas->addChild(backgroundPlane);
+    backgroundPlane->addChild(paperTexture);
+    backgroundPlane->addChild(text1);
+    backgroundPlane->addChild(text2);
+    backgroundPlane->addChild(text3);
+    backgroundPlane->addChild(text4);
+    backgroundPlane->addChild(text5);
+    backgroundPlane->addChild(transitionPlane);
     transitionPlane->setOpacity(1.0f);
     text1->setOpacity(0.0f);
     text2->setOpacity(0.0f);
@@ -54,7 +55,6 @@ void IntroCutscene::update(float msec) {
             case 0:
             if (transitionPlane->getOpacity() > 0.0f) {
                 transitionPlane->setOpacity(elapsed);
-                std::cout<<elapsed<<std::endl;
                 elapsed -= 0.01f;
             } else {
                 elapsed = 0.0f;
@@ -64,8 +64,6 @@ void IntroCutscene::update(float msec) {
             case 1:
                 if (text1->getOpacity() < 1.0f) {
                     text1->setOpacity(elapsed);
-                    std::cout<<elapsed<<std::endl;
-
                     elapsed += 0.01f;
                 } else {
                     elapsed = 0.0f;
@@ -105,7 +103,7 @@ void IntroCutscene::update(float msec) {
                     elapsed += 0.01f;
                 } else {
                     elapsed = 0.0f;
-                    phase = 5;
+                    phase = 6;
                 }
                 break;
             case 6:
@@ -113,7 +111,26 @@ void IntroCutscene::update(float msec) {
                     transitionPlane->setOpacity(elapsed);
                     elapsed += 0.01f;
                 } else {
+                    elapsed = 1.0f;
+                    phase = 7;
+                }
+                break;
+            case 7:
+                paperTexture->setActive(false);
+                text1->setActive(false);
+                text2->setActive(false);
+                text3->setActive(false);
+                text4->setActive(false);
+                text5->setActive(false);
+
+                if (backgroundPlane->getOpacity() > 0.0f) {
+                    transitionPlane->setOpacity(elapsed);
+                    backgroundPlane->setOpacity(elapsed);
+                    elapsed -= 0.01f;
+                } else {
                     elapsed = 0.0f;
+                    backgroundPlane->setActive(false);
+                    transitionPlane->setActive(false);
                     run = false;
                 }
                 break;
