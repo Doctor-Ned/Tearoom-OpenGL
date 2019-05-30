@@ -14,19 +14,20 @@
 
 class IntroCutscene: public Component {
 public:
-    IntroCutscene(Scene* scene);
+    IntroCutscene(Scene* scene, glm::vec3 cameraPos);
     ~IntroCutscene() override;
     void update(float msec) override;
-    void turnOff();
-    void turnOn();
     void runIntro();
     void showNext(UiElement* uiElement);
 protected:
+    Scene* scene;
     float elapsed = 1.0f;
     short phase = 0;
     UiCanvas* mainCanvas;
     bool run = false;
     bool planeSwitch = false;
+    MeshColorBox* box = new MeshColorBox(glm::vec3(-2.0f, -2.0f, -2.0f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    GraphNode* boxNode;
     UiPlane* paperTexture = new UiPlane("res/textures/cutscenePaper.PNG", glm::vec2(350.0f, 50.0f), glm::vec2(600.0f, 600.0f), TopLeft);;
     UiColorPlane* backgroundPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);
     UiColorPlane* transitionPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);

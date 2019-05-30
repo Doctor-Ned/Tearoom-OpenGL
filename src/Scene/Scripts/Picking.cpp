@@ -323,7 +323,7 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 		itemsInventory->setActive(true);
 		photosInventory->setActive(false);
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+		SoundSystem::getSound("bow")->setDefaultVolume(0.15);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
 
@@ -333,7 +333,7 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 		photosInventory->setActive(false);
 		letterInventory->setActive(true);
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+		SoundSystem::getSound("bow")->setDefaultVolume(0.15f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
 	photoButton->addClickCallback([this]()
@@ -342,7 +342,7 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 		itemsInventory->setActive(false);
 		photosInventory->setActive(true);
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
+		SoundSystem::getSound("bow")->setDefaultVolume(0.15);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
 
