@@ -23,6 +23,7 @@
 #include "Mesh/AnimatedModel.h"
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Scene/Components/Camera.h"
+#include "Scene/Scripts/IntroCutscene.h"
 
 MiszukScene::MiszukScene() {
 	GameManager::getInstance()->setCursorLocked(true);
@@ -135,6 +136,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player));
 	camera = player->getComponent<Camera>();  //playermovement creates a camera if it doesn't exist
+	player->addComponent(new IntroCutscene(this));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
@@ -209,6 +211,11 @@ void MiszukScene::keyEvent(int key, bool pressed) {
 		{
 			gameManager->goToMenu(false);
 		}
+		break;
+		case GLFW_KEY_8:
+			{
+				player->getComponent<IntroCutscene>()->runIntro();
+			}
 		break;
 	}
 }
