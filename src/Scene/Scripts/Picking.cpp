@@ -207,7 +207,6 @@ void Picking::update(float msec) {
 										this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 									}
 								}
-
 							}
 						}
 					});
@@ -216,8 +215,6 @@ void Picking::update(float msec) {
 					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
 					hideInventoryUi();
-					previewCanvas->addChild(collectable->getPreview());
-					previewCanvas->setActive(true);
                 }
 
 				collectable->getButton()->addHoverCallback([this, collectable](){

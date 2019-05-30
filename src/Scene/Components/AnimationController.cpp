@@ -12,7 +12,7 @@ AnimationController::AnimationController(AnimationType _type, GraphNode *_gameOb
 }
 
 AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, int doorID)
-        :Component(_gameObject, "Animation controller"), type(_type), doorID(doorID) {
+:Component(_gameObject, "Animation controller"), type(_type), doorID(doorID) {
 }
 
 void AnimationController::startAnimation() {
