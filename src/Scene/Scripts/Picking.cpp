@@ -238,7 +238,7 @@ void Picking::update(float msec) {
 			}
 		}
 		Animation* anim = object->getComponent<Animation>();
-		if (anim && anim->isComponentActive()) {
+		if (anim && anim->isComponentActive() && !anim->getIsPlaying()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
