@@ -33,6 +33,7 @@
 #include "Scene/Components/Camera.h"
 #include "Scene/Components/SunController.h"
 #include "Mesh/MeshText.h"
+#include "Scene/Scripts/AnimTimeSaver.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -833,6 +834,10 @@ void EditorScene::renderUi() {
 				}
 			}
 			break;
+			case SAnimTimeSaver:
+				typeCreation->creationCallback(new AnimTimeSaver(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+				break;
 		}
 		typeCreation->typeCreationStarted = false;
 		if (ImGui::Button("CANCEL")) {

@@ -10,20 +10,22 @@ KeyFrameAnimation::KeyFrameAnimation(GraphNode* gameObject, std::string&& name) 
 	takeObjectsToAnimate(gameObject);
 }
 
+void KeyFrameAnimation::setFrame(float time) {
+	if(time < 0.0f) {
+		currentTime = 0.0f;
+	} else if(time>endTime) {
+		currentTime = endTime;
+	} else {
+		currentTime = time;
+	}
+	interpolateObjects();
+}
+
 void KeyFrameAnimation::update(float msec)
 {
 	if (isPlaying)
 	{
-		for (GraphNode* gameObject : objectsToAnimate)
-		{
-			auto animForGameObject = objectAnimations.find(gameObject->getName());
-			if (animForGameObject != objectAnimations.end())
-			{
-				interpolateValues(currentTime, gameObject, Animated::TRANSLATION, animForGameObject->second.translation);
-				interpolateValues(currentTime, gameObject, Animated::SCALE, animForGameObject->second.scale);
-				interpolateValues(currentTime, gameObject, Animated::ROTATION, animForGameObject->second.rotation);
-			}
-		}
+		interpolateObjects();
 		currentTime += msec * speed;
 	}
 
@@ -95,6 +97,17 @@ void KeyFrameAnimation::takeObjectsToAnimate(GraphNode* objectToAnimate)
 		for (GraphNode* node : objectToAnimate->getChildren())
 		{
 			takeObjectsToAnimate(node);
+		}
+	}
+}
+
+void KeyFrameAnimation::interpolateObjects() {
+	for (GraphNode* gameObject : objectsToAnimate) {
+		auto animForGameObject = objectAnimations.find(gameObject->getName());
+		if (animForGameObject != objectAnimations.end()) {
+			interpolateValues(currentTime, gameObject, Animated::TRANSLATION, animForGameObject->second.translation);
+			interpolateValues(currentTime, gameObject, Animated::SCALE, animForGameObject->second.scale);
+			interpolateValues(currentTime, gameObject, Animated::ROTATION, animForGameObject->second.rotation);
 		}
 	}
 }

@@ -140,6 +140,10 @@ void Animation::renderGui()
 	}
 }
 
+float Animation::getEndTime() {
+	return endTime;
+}
+
 void Animation::animationGui(const char* animation, anim::animMap& map)
 {
 	ImGui::Indent(15.0f);
@@ -172,6 +176,14 @@ void Animation::animationGui(const char* animation, anim::animMap& map)
 	ImGui::Unindent(15.0f);
 }
 
+
+bool Animation::getIsPlaying() {
+	return isPlaying;
+}
+
+float Animation::getCurrentTime() {
+	return currentTime;
+}
 
 void Animation::play(float startTime, bool _looped)
 {
