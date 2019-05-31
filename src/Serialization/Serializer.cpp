@@ -39,6 +39,7 @@
 #include "Mesh/AnimatedModel.h"
 #include "Scene/Components/SunController.h"
 #include "Mesh/MeshText.h"
+#include "Scene/Scripts/AnimTimeSaver.h"
 #include "Scene/Scripts/ColumnMoving.h"
 
 namespace fs = std::experimental::filesystem;
@@ -309,6 +310,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SColumnMoving:
 			deserializeAndIdentify(pointer, data, new ColumnMoving());
+			break;
+		case SAnimTimeSaver:
+			deserializeAndIdentify(pointer, data, new AnimTimeSaver());
 			break;
 	}
 	return pointer;

@@ -57,6 +57,7 @@ enum SerializableType {
 	SAnimatedModel,
 	SSunController,
 	SMeshText,
+	SAnimTimeSaver,
 	SColumnMoving
 };
 
@@ -114,6 +115,7 @@ const std::string SerializableTypeNames[] = {
 	"SAnimatedModel",
 	"SSunController",
 	"SMeshText",
+	"SAnimTimeSaver",
 	"SColumnMoving"
 };
 

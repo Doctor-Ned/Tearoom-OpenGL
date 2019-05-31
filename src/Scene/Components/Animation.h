@@ -68,6 +68,10 @@ public:
 	virtual ~Animation();
 	
 	void renderGui() override;
+
+	float getEndTime();
+	bool getIsPlaying();
+	float getCurrentTime();
 	
 	void play(float startTime = 0.0f, bool _looped = false);
 	void stopPlaying();
