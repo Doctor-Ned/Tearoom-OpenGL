@@ -33,7 +33,7 @@ private:
     bool clockUI = false;
 	Sun* sun = nullptr;
     UiPlane* clockHand;
-    UiPlane* clockFace;
+    //UiPlane* clockFace;
     UiPlane* clockBack;
 
 	float maxHour = 17.0f;

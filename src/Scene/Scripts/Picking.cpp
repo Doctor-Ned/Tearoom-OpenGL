@@ -259,7 +259,6 @@ void Picking::update(float msec) {
 
 					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
-
 					showInventoryUi();
 					currentInteraction = object;
 				}
@@ -336,8 +335,8 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), uiRoot->getSize());
 	encouragementCanvas->setParent(uiRoot);
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
-	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press F to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);

@@ -32,23 +32,7 @@ MiszukScene::MiszukScene() {
 
 	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, UI_REF_CEN_Y), "+", 1.0f));
 
-	// for basic animation testing
-	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	MeshColorBox *slidingDoor = new MeshColorBox(glm::vec3(-0.3f, 0.4f, -1), glm::vec3(0.7f, 5.4f, 0.7f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-	MeshColorBox *wall = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	MeshColorBox *wall2 = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	GraphNode* animatedBoxNode = new GraphNode(animatedBox, rootNode);
-	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
-	GraphNode* wallNode = new GraphNode(wall, rootNode);
-	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
-	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
-	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
-	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, 1));
-	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
 
-	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
-	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 
 	//-------------
 	//INVENTORY UI
@@ -116,7 +100,22 @@ MiszukScene::MiszukScene() {
 	anim->addKeyFrame("handle", anim::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
 	anim->addKeyFrame("handle", anim::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
 	//
-
+	// for basic animation testing
+	MeshColorBox *fallingBox = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	MeshColorBox *animatedBox = new MeshColorBox(glm::vec3(-0.3f, 0.3f, -1), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox *slidingDoor = new MeshColorBox(glm::vec3(-0.3f, 0.4f, -1), glm::vec3(0.7f, 5.4f, 0.7f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	MeshColorBox *wall = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	MeshColorBox *wall2 = new MeshColorBox(glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.7f, 5.4f, 8.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	GraphNode* animatedBoxNode = new GraphNode(animatedBox, rootNode);
+	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
+	GraphNode* wallNode = new GraphNode(wall, rootNode);
+	GraphNode* wallNode2 = new GraphNode(wall2, rootNode);
+	animatedBoxNode->addComponent(new AnimationController(SafePullOutY, animatedBoxNode));
+	animatedBoxNode->addComponent(new BoxCollider(animatedBoxNode, STATIC, false, glm::vec3(0), glm::vec3(1)));
+	slidingDoorNode->addComponent(new AnimationController(DoorOpeningX, slidingDoorNode, 1));
+	slidingDoorNode->addComponent(new BoxCollider(slidingDoorNode, STATIC, true, glm::vec3(0, 1.0f, 0), glm::vec3(0.5f, 1.0f, 0.5f)));
+	slidingDoorNode->localTransform.translate(glm::vec3(8.0f, -2.0f, -6.0f));
+	animatedBoxNode->localTransform.translate(glm::vec3(8.0f, -1.0f, 0.0f));
 	MeshColorBox* box = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	MeshColorBox* box1 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	MeshColorBox* box2 = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

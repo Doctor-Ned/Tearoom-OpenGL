@@ -22,16 +22,14 @@ void SunController::initialize()
 	sun = gameObject->getComponent<Sun>();
 	if (sun != nullptr)
 		sun->setTime(currentHour);
-	clockFace = new UiPlane("res/textures/clockFace.png", glm::vec2(50.0f, 580.0f), glm::vec2(200.0f, 200.0f), Left);
-	clockHand = new UiPlane("res/textures/clockHand.png", clockFace->getPosition() + clockFace->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
-	clockBack = new UiPlane("res/textures/clockBack.png", glm::vec2(-24.0f, 583.0f), glm::vec2(345.0f, 350.0f), Left);
+	clockBack = new UiPlane("res/textures/watch_sprite.png", glm::vec2(50.0f, 583.0f), glm::vec2(250.0f, 250.0f), Left);
+	clockHand = new UiPlane("res/textures/watch_arrow_sprite.png", clockBack->getPosition() + clockBack->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
 	clockHand->setRotationAnchor(Center);
-	clockFace->setActive(clockShown);
+	//clockFace->setActive(clockShown);
 	clockHand->setActive(clockShown);
 	clockBack->setActive(clockShown);
-
 	scene->getUiRoot()->addChild(clockBack);
-	scene->getUiRoot()->addChild(clockFace);
+	//scene->getUiRoot()->addChild(clockFace);
 	scene->getUiRoot()->addChild(clockHand);
 
 	clockHand->localTransform.setRotationZDegrees(currentClockHour);
@@ -135,7 +133,7 @@ void SunController::setClockVisibility(bool active)
 {
 	//show clock
 	clockShown = active;
-	clockFace->setActive(clockShown);
+	//clockFace->setActive(clockShown);
 	clockHand->setActive(clockShown);
 	clockBack->setActive(clockShown);
 }
