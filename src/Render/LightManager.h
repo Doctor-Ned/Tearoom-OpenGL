@@ -220,6 +220,6 @@ private:
 	SpotLightData spotLights[MAX_LIGHTS_OF_TYPE];
 	PointLightData pointLights[MAX_LIGHTS_OF_TYPE];
 	int dirLightAmount = 0, spotLightAmount = 0, pointLightAmount = 0;
-	float initialAmbient = 0.003f;
+	float initialAmbient = 0.01f;
 	const int SHADOW_SIZE = 2048;
 };
