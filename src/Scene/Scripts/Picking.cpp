@@ -171,10 +171,10 @@ void Picking::update(float msec) {
 	Collider* coll = gameObject->getComponent<Collider>();
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), 2.0f, coll);
 
-	if (object) {
+	if (object && object->isActive()) {
 
 		CollectableObject *collectable = object->getComponent<CollectableObject>();
-		if (collectable) {
+		if (collectable && collectable->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(false);
 			encouragementPick->setActive(true);
@@ -249,7 +249,7 @@ void Picking::update(float msec) {
 			}
 		}
 		Animation* anim = object->getComponent<Animation>();
-		if(anim)
+		if(anim && anim->isComponentActive())
 		{
             encouragementCanvas->setActive(true);
             encouragementActivate->setActive(true);
@@ -260,7 +260,7 @@ void Picking::update(float msec) {
 			}
 		}
 		AnimationController* animController = object->getComponent<AnimationController>();
-		if(animController)
+		if(animController && animController->isComponentActive())
 		{
             encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
