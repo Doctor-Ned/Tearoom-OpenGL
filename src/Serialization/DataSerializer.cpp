@@ -189,7 +189,29 @@ std::map<float, glm::vec3> DataSerializer::deserializeTransformationMap(const Js
 	{
 		std::string key = it.key().asString();
 		glm::vec3 transformation = deserializeVec3(root[key]);
-		result.emplace(atof(key.c_str()), transformation);
+		result.emplace(float(atof(key.c_str())), transformation);
+	}
+	return result;
+}
+
+Json::Value DataSerializer::serializeIntFloatMap(std::map<int, float>& map)
+{
+	Json::Value root;
+	for (auto it : map)
+	{
+		root[std::to_string(it.first)] = it.second;
+	}
+	return root;
+}
+
+std::map<int, float> DataSerializer::deserializeIntFloatMap(const Json::Value& root)
+{
+	std::map<int, float> result;
+	for (Json::ValueConstIterator it = root.begin(); it != root.end(); ++it)
+	{
+		float val = root[it.key().asCString()].asFloat();
+		std::string key = it.key().asString();
+		result.emplace(std::stoi(key), val);
 	}
 	return result;
 }
