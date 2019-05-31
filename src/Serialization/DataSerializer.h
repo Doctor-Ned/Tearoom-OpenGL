@@ -32,5 +32,7 @@ public:
 	static anim::ObjectAnimation deserializeObjectAnimation(const Json::Value &root);
 	static Json::Value serializeTransformationMap(std::map<float, glm::vec3>& map);
 	static std::map<float, glm::vec3> deserializeTransformationMap(const Json::Value &root);
+	static Json::Value serializeIntFloatMap(std::map<int, float>& map);
+	static std::map<int, float> deserializeIntFloatMap(const Json::Value &root);
 	
 };

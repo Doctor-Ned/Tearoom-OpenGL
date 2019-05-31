@@ -34,6 +34,7 @@
 #include "Scene/Components/SunController.h"
 #include "Mesh/MeshText.h"
 #include "Scene/Scripts/AnimTimeSaver.h"
+#include "Scene/Scripts/ColumnMoving.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -764,6 +765,14 @@ void EditorScene::renderUi() {
 			{
 				if (ImGui::Button("Create")) {
 					typeCreation->creationCallback(new SunController(reinterpret_cast<GraphNode*>(typeCreation->arg), editedScene));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
+			break;
+			case SColumnMoving:
+			{
+				if (ImGui::Button("Create")) {
+					typeCreation->creationCallback(new ColumnMoving(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}

@@ -34,7 +34,6 @@ void UiButton::render(Shader *shader) {
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-
 }
 
 void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -53,7 +52,6 @@ void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 			runCallbacks(Idle);
 		}
 	}
-
 }
 
 void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
