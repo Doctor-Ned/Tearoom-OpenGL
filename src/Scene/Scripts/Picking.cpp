@@ -75,16 +75,20 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+    encouragementDoorClosed = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Oops.. I need a key", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
-	inventoryCanvas->addChild(descBackground);
+    encouragementCanvas->addChild(encouragementDoorClosed);
+
+    inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
 		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+		encouragementActivate->setText("Press E to interact");
 		setSwitch(!getSwitch());
 	});
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]() {
@@ -168,7 +172,8 @@ void Picking::update(float msec) {
 		if (collectable && collectable->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(false);
-			encouragementPick->setActive(true);
+            encouragementDoorClosed->setActive(false);
+            encouragementPick->setActive(true);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
 				inventory.push_back(object);
@@ -196,6 +201,7 @@ void Picking::update(float msec) {
 									if (obj->getDoorID() == anim->getDoorID()) {
 										inventory.erase(inventory.begin() + i);
 										this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+										encouragementDoorClosed->setActive(false);
 									}
 								}
 							}
@@ -242,6 +248,7 @@ void Picking::update(float msec) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
+            encouragementDoorClosed->setActive(false);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				anim->play();
@@ -256,13 +263,16 @@ void Picking::update(float msec) {
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				if (animController->getType() == DoorOpeningX
 					|| animController->getType() == DoorOpeningY) {
-
-					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+                    encouragementActivate->setText("Oops.. I need a key");
+                    this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
 					showInventoryUi();
 					currentInteraction = object;
 				}
 			}
+		}
+		else {
+
 		}
 	}
 }
@@ -307,7 +317,6 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 		SoundSystem::getSound("bow")->setDefaultVolume(0.15);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
-
 	letterButton->addClickCallback([this]() {
 		itemsInventory->setActive(false);
 		photosInventory->setActive(false);
@@ -337,17 +346,21 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+    encouragementDoorClosed = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Oops.. I need a key", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
-	inventoryCanvas->addChild(descBackground);
+    encouragementCanvas->addChild(encouragementDoorClosed);
+
+    inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
 		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-		setSwitch(!getSwitch());
+        encouragementActivate->setText("Press E to interact");
+        setSwitch(!getSwitch());
 	});
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]() {
 		if (getSwitch()) {
