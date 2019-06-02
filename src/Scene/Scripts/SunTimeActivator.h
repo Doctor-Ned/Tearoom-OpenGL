@@ -11,6 +11,7 @@ protected:
 	Sun *sun = nullptr;
 	std::vector<Component*> components;
 	int targetTime = 12;
+	bool correct = false;
 public:
 	Sun *getSun();
 	void setSun(Sun *sun);
@@ -18,6 +19,8 @@ public:
 	void addActivatableComponent(Component *component);
 	void removeActivatableComponent(Component *component);
 	void clearActivatableComponents();
+	bool hasComponent(Component *comp);
+	bool isTimeCorrect();
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer *serializer) override;
 	void deserialize(Json::Value &root, Serializer* serializer) override;

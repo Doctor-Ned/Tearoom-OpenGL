@@ -2,6 +2,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/Scenes/EditorScene.h"
 #include "Serialization/Serializer.h"
+#include "SunTimeActivator.h"
 
 void AnimTimeSaver::renderGui() {
 	Component::renderGui();
@@ -26,7 +27,6 @@ void AnimTimeSaver::renderGui() {
 				};
 			}
 		}
-		ImGui::Checkbox("Apply activity", &applyActivity);
 		if (ImGui::Button("RESET")) {
 			reset();
 		}
@@ -61,10 +61,6 @@ KeyFrameAnimation* AnimTimeSaver::getAnimation() {
 	return animation;
 }
 
-bool AnimTimeSaver::getApplyActivity() {
-	return applyActivity;
-}
-
 void AnimTimeSaver::setSun(Sun* sun) {
 	this->sun = sun;
 	reset();
@@ -73,10 +69,6 @@ void AnimTimeSaver::setSun(Sun* sun) {
 void AnimTimeSaver::setAnimation(KeyFrameAnimation* animation) {
 	this->animation = animation;
 	reset();
-}
-
-void AnimTimeSaver::setApplyActivity(bool applyActivity) {
-	this->applyActivity = applyActivity;
 }
 
 SerializableType AnimTimeSaver::getSerializableType() {
@@ -90,7 +82,6 @@ Json::Value AnimTimeSaver::serialize(Serializer* serializer) {
 	root["targetTime"] = targetTime;
 	root["startedPlaying"] = startedPlaying;
 	root["retargetAllowed"] = retargetAllowed;
-	root["applyActivity"] = applyActivity;
 	return root;
 }
 
@@ -101,7 +92,6 @@ void AnimTimeSaver::deserialize(Json::Value& root, Serializer* serializer) {
 	targetTime = root["targetTime"].asInt();
 	startedPlaying = root["startedPlaying"].asBool();
 	retargetAllowed = root["retargetAllowed"].asBool();
-	applyActivity = root.get("applyActivity", applyActivity).asBool();
 }
 
 AnimTimeSaver::AnimTimeSaver(GraphNode* _gameObject) : Component(_gameObject, "AnimTimeSaver") {
@@ -120,14 +110,15 @@ void AnimTimeSaver::update(float msec) {
 				float time = sun->getTime();
 				float curr = animation->getCurrentTime();
 				float end = animation->getEndTime();
+				SunTimeActivator *activator = gameObject->getComponent<SunTimeActivator>();
 				if (time >= targetTime) {
-					if(applyActivity)animation->setComponentActive(false);
+					animation->setComponentActive(false);
 					retargetAllowed = false;
 					if(curr != end) {
 						animation->setFrame(end);
 					}
 				} else {
-					if(applyActivity)animation->setComponentActive(true);
+					if(activator == nullptr || activator->isTimeCorrect()) animation->setComponentActive(true);
 					retargetAllowed = true;
 					if(time < targetTime - 1) {
 						animation->setFrame(0.0f);

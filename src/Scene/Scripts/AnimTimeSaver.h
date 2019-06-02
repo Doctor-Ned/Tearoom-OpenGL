@@ -13,15 +13,12 @@ protected:
 	int targetTime;
 	bool startedPlaying;
 	bool retargetAllowed;
-	bool applyActivity = true;
 public:
 	void reset();
 	Sun *getSun();
 	KeyFrameAnimation *getAnimation();
-	bool getApplyActivity();
 	void setSun(Sun *sun);
 	void setAnimation(KeyFrameAnimation *animation);
-	void setApplyActivity(bool applyActivity);
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer *serializer) override;
 	void deserialize(Json::Value &root, Serializer* serializer) override;
