@@ -57,7 +57,8 @@ int AnimationController::getDoorID() {
 }
 
 void AnimationController::open() {
-	anim->play();
 	setComponentActive(false);
+	anim->setComponentActive(true);
+	anim->play();
 }
 
