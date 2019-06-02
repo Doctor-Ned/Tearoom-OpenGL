@@ -184,11 +184,12 @@ void Picking::collect(CollectableObject* collectable) {
 				if (anim->isComponentActive() && collectable->getDoorID() == anim->getDoorID()) {
 					anim->open();
 					hideInventoryUi();
+					gameManager->setCursorLocked(false);
+					//this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					for (int i = 0; i < inventory.size(); i++) {
 						auto obj = inventory[i]->getComponent<CollectableObject>();
 						if (obj->getDoorID() == anim->getDoorID()) {
 							inventory.erase(inventory.begin() + i);
-							this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 						}
 					}
 				}
