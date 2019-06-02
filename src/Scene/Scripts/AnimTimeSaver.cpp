@@ -110,7 +110,6 @@ void AnimTimeSaver::update(float msec) {
 				float time = sun->getTime();
 				float curr = animation->getCurrentTime();
 				float end = animation->getEndTime();
-				SunTimeActivator *activator = gameObject->getComponent<SunTimeActivator>();
 				if (time >= targetTime) {
 					animation->setComponentActive(false);
 					retargetAllowed = false;
@@ -118,7 +117,7 @@ void AnimTimeSaver::update(float msec) {
 						animation->setFrame(end);
 					}
 				} else {
-					if(activator == nullptr || activator->isTimeCorrect()) animation->setComponentActive(true);
+					if(gameObject->getComponent<SunTimeActivator>() == nullptr) animation->setComponentActive(true);
 					retargetAllowed = true;
 					if(time < targetTime - 1) {
 						animation->setFrame(0.0f);

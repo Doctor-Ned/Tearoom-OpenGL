@@ -356,7 +356,7 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
     inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
-		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+		GameManager::getInstance()->setCursorLocked(!(GameManager::getInstance()->getCursorLocked()));
         encouragementActivate->setText("Press E to interact");
         setSwitch(!getSwitch());
 	});
