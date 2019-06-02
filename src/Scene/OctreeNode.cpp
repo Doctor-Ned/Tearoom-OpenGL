@@ -346,7 +346,7 @@ GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static Octr
 			{
 				for(auto collider : colliders)
 				{
-					if (collider != toIgnore)
+					if (collider != toIgnore && collider->isComponentActive())
 					{
 						if (CollisionSystem::getInstance()->containTest(rayPos, collider))
 						{
