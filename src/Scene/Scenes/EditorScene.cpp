@@ -37,6 +37,7 @@
 #include "Scene/Scripts/ColumnMoving.h"
 #include "Scene/Scripts/SunTimeActivator.h"
 #include "Scene/Scripts/CollectableWatch.h"
+#include "Scene/Scripts/IntroCutscene.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -899,6 +900,10 @@ void EditorScene::renderUi() {
 				break;
 			case SCollectableWatch:
 				typeCreation->creationCallback(new CollectableWatch(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+				break;
+			case SIntroCutscene:
+				typeCreation->creationCallback(new IntroCutscene(editedScene, reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
 		}

@@ -14,19 +14,22 @@
 
 class IntroCutscene: public Component {
 public:
-    IntroCutscene(Scene* scene, glm::vec3 cameraPos, GraphNode* player);
+    IntroCutscene(Scene* scene, GraphNode* player);
     ~IntroCutscene() override;
+    SerializableType getSerializableType() override;
+    Json::Value serialize(Serializer *serializer) override;
+    void deserialize(Json::Value &root, Serializer* serializer) override;
     void update(float msec) override;
     void runIntro();
     void showNext(UiElement* uiElement);
 protected:
+    friend class Serializer;
     GraphNode* player;
     Scene* scene;
     float elapsed = 1.0f;
     short phase = 0;
     UiCanvas* mainCanvas;
     bool run = false;
-    bool planeSwitch = false;
     MeshColorBox* box = new MeshColorBox(glm::vec3(-2.0f, -2.0f, -2.0f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     GraphNode* boxNode;
     UiPlane* paperTexture = new UiPlane("res/textures/cutscenePaper.PNG", glm::vec2(350.0f, 50.0f), glm::vec2(600.0f, 600.0f), TopLeft);;

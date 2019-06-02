@@ -18,12 +18,13 @@ Yoshiro
 #include "CollectableObject.h"
 #include "Picking.h"
 #include "Scene/Components/SunController.h"
+#include "Serialization/Serializer.h"
 
-IntroCutscene::IntroCutscene(Scene* scene, glm::vec3 cameraPos, GraphNode* player) {
+IntroCutscene::IntroCutscene(Scene* scene, GraphNode* player) {
     this->scene = scene;
     this->player = player;
     boxNode = new GraphNode(box, scene->getRootNode());
-    boxNode->localTransform.setPosition(glm::vec3(cameraPos.x - 3.5f, cameraPos.y - 1.0f, cameraPos.z - 3.8f));
+    boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
     UiElement *root = scene->getUiRoot();
     mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
     root->addChild(mainCanvas);
@@ -41,6 +42,10 @@ IntroCutscene::IntroCutscene(Scene* scene, glm::vec3 cameraPos, GraphNode* playe
     text3->setOpacity(0.0f);
     text4->setOpacity(0.0f);
     text5->setOpacity(0.0f);
+
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+        this->runIntro();
+    });
 
 }
 
@@ -157,3 +162,40 @@ void IntroCutscene::update(float msec) {
 
 IntroCutscene::~IntroCutscene() {}
 
+SerializableType IntroCutscene::getSerializableType() {
+    return SIntroCutscene;
+}
+
+Json::Value IntroCutscene::serialize(Serializer* serializer) {
+    Json::Value root = Component::serialize(serializer);
+    root["scene"] = serializer->serialize(scene);
+    root["player"] = serializer->serialize(player);
+    return root;
+}
+
+void IntroCutscene::deserialize(Json::Value& root, Serializer* serializer) {
+    Component::deserialize(root, serializer);
+    scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+    player = dynamic_cast<GraphNode*>(serializer->deserialize(root["player"]).object);
+
+    boxNode = new GraphNode(box, scene->getRootNode());
+    boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
+    UiElement *uiRoot = scene->getUiRoot();
+    mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), uiRoot->getSize());
+    mainCanvas->setParent(uiRoot);
+    mainCanvas->addChild(backgroundPlane);
+    mainCanvas->addChild(paperTexture);
+    mainCanvas->addChild(text1);
+    mainCanvas->addChild(text2);
+    mainCanvas->addChild(text3);
+    mainCanvas->addChild(text4);
+    mainCanvas->addChild(text5);
+    mainCanvas->addChild(transitionPlane);
+    transitionPlane->setOpacity(1.0f);
+    text1->setOpacity(0.0f);
+    text2->setOpacity(0.0f);
+    text3->setOpacity(0.0f);
+    text4->setOpacity(0.0f);
+    text5->setOpacity(0.0f);
+
+}
