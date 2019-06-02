@@ -102,6 +102,13 @@ int CollectableObject::getDoorID() {
 	return doorID;
 }
 
+void CollectableObject::renderGui() {
+	Component::renderGui();
+	if(active) {
+		ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+	}
+}
+
 void CollectableObject::initializeUiPlanes() {
 	desctext = new UiText(glm::vec2(100.0f, 30.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	icon = new UiPlane(iconResource.c_str(), iconPos, iconSize, Right);

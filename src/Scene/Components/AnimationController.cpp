@@ -1,31 +1,34 @@
-//
-// Created by MB on 4/3/2019.
-//
-
 #include "AnimationController.h"
 #include "Mesh/MeshColorBox.h"
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
+#include "Serialization/Serializer.h"
+#include "Scene/Scenes/EditorScene.h"
 
-AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject)
-:Component(_gameObject, "Animation controller"), type(_type) {
+void AnimationController::update(float msec) {
+	if(anim != nullptr) {
+		anim->setComponentActive(false);
+	}
 }
 
-AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, int doorID, Animation* anim)
-        :Component(_gameObject, "Animation controller"), type(_type), doorID(doorID), anim(anim) {
-}
-
-void AnimationController::startAnimation() {
-	animating = true;
-}
-
-void AnimationController::update(float msec)
-{
-
-}
-
-void AnimationController::playAnimation() {
-	anim->play();
+void AnimationController::renderGui() {
+	Component::renderGui();
+	if(active ) {
+		ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+		ImGui::Text(("Animation acquired from: " + (anim == nullptr ? "None" : anim->getGameObject()->getName())).c_str());
+		EditorScene *editor = gameManager->getEditorScene();
+		if(editor && editor->nodeSelectionCallback == nullptr) {
+			ImGui::SameLine();
+			if(ImGui::Button("CHOOSE")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					anim = node->getComponent<Animation>();
+				};
+			}
+		}
+		if(ImGui::Button("ACQUIRE OWN")) {
+			anim = gameObject->getComponent<Animation>();
+		}
+	}
 }
 
 SerializableType AnimationController::getSerializableType() {
@@ -34,29 +37,27 @@ SerializableType AnimationController::getSerializableType() {
 
 Json::Value AnimationController::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
-	root["animating"] = animating;
-	root["type"] = static_cast<int>(type);
-	root["elapsed"] = elapsed;
+	root["doorID"] = doorID;
+	root["anim"] = serializer->serialize(anim);
 	return root;
 }
 
 void AnimationController::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
-	animating = root["animating"].asBool();
-	type = static_cast<AnimationType>(root["type"].asInt());
-	elapsed = root["elapsed"].asFloat();
+	doorID = root["doorID"].asInt();
+	anim = dynamic_cast<Animation*>(serializer->deserialize(root["anim"]).object);
 }
 
-AnimationController::~AnimationController()
-{
+AnimationController::AnimationController(GraphNode* _gameObject) : Component(_gameObject, "Animation Controller") {}
 
-}
-
-AnimationType AnimationController::getType() const {
-    return type;
-}
+AnimationController::AnimationController(GraphNode* _gameObject, int doorID, Animation* anim) : Component(_gameObject, "Animation Controller"), doorID(doorID), anim(anim) {}
 
 int AnimationController::getDoorID() {
-    return doorID;
+	return doorID;
+}
+
+void AnimationController::open() {
+	anim->play();
+	setComponentActive(false);
 }
 

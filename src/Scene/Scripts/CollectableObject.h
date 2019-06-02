@@ -53,6 +53,7 @@ public:
     int getDoorID();
 
 protected:
+	void renderGui() override;
 	CollectableObject(GraphNode* _gameObject);
 	void initializeUiPlanes();
     int doorID = 0;

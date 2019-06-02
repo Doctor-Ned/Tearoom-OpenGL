@@ -4,6 +4,7 @@
 #include "Serialization/Serializer.h"
 #include "SunTimeActivator.h"
 #include "Scene/Components/Collider.h"
+#include "Scene/Components/AnimationController.h"
 
 void AnimTimeSaver::renderGui() {
 	Component::renderGui();
@@ -145,12 +146,16 @@ void AnimTimeSaver::update(float msec) {
 					}
 				}
 				auto activator = gameObject->getComponent<SunTimeActivator>();
-				if(activator != nullptr) {
+				if(activator != nullptr && activator->isComponentActive()) {
 					if(retargetAllowed) {
 						animation->setComponentActive(false);
 					} else if(disableCollider && collider) {
 						collider->setComponentActive(false);
 					}
+				}
+				auto cont = gameObject->getComponent<AnimationController>();
+				if(cont != nullptr && cont->isComponentActive()) {
+					animation->setComponentActive(false);
 				}
 			}
 		}

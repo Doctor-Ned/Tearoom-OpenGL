@@ -8,55 +8,23 @@
 #include "Mesh/Mesh.h"
 #include "Render/Renderable.h"
 
-enum AnimationType {
-	DoorOpeningX,
-	DoorClosingX,
-	DoorOpeningY,
-	DoorClosingY,
-	SafePullOutX,
-	SafePullOutY
-};
-
-const AnimationType AnimationTypes[6] = {
-	DoorOpeningX,
-	DoorClosingX,
-	DoorOpeningY,
-	DoorClosingY,
-	SafePullOutX,
-	SafePullOutY
-};
-
-const std::string AnimationTypeNames[6] = {
-	"DoorOpeningX",
-	"DoorClosingX",
-	"DoorOpeningY",
-	"DoorClosingY",
-	"SafePullOutX",
-	"SafePullOutY"
-};
-
 class AnimationController : public Component {
 
 protected:
 	friend class Serializer;
 	AnimationController() {}
-	bool animating = false;
-	AnimationType type;
+	Animation* anim = nullptr;
 	int doorID = 0;
-	glm::float32 elapsed = 0.0f;
-	Animation* anim;
+	void renderGui() override;
 public:
-	AnimationType getType() const;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
-	virtual ~AnimationController();
-	AnimationController(AnimationType _type, GraphNode* _gameObject);
-	AnimationController(AnimationType _type, GraphNode* _gameObject, int doorID, Animation* anim);
+	AnimationController(GraphNode * _gameObject);
+	AnimationController(GraphNode* _gameObject, int doorID, Animation* anim);
 	void update(float msec) override;
 	int getDoorID();
-	void playAnimation();
-	void startAnimation();
+	void open();
 };
 
 #endif //TEAROOM_ANIMATION_H
