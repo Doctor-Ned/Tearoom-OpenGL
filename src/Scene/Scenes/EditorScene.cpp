@@ -1349,10 +1349,11 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
 			AnimTimeSaver *saver = new AnimTimeSaver(node);
 			Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
-			saver->setSun(sun);
 			KeyFrameAnimation *anim = new KeyFrameAnimation(node);
 			SunTimeActivator *activator = new SunTimeActivator(node);
+			saver->setSun(sun);
 			activator->addActivatableComponent(anim);
+			saver->setAnimation(anim);
 			activator->setSun(sun);
 			editedScene->addComponent(node, collider);
 			editedScene->addComponent(node, activator);
