@@ -181,14 +181,15 @@ void Picking::collect(CollectableObject* collectable) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
 			if (currentInteraction != nullptr) {
 				AnimationController *anim = currentInteraction->getComponent<AnimationController>();
-				if (collectable->getDoorID() == anim->getDoorID()) {
-					anim->playAnimation();
+				if (anim->isComponentActive() && collectable->getDoorID() == anim->getDoorID()) {
+					anim->open();
 					hideInventoryUi();
+					gameManager->setCursorLocked(false);
+					//this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					for (int i = 0; i < inventory.size(); i++) {
 						auto obj = inventory[i]->getComponent<CollectableObject>();
 						if (obj->getDoorID() == anim->getDoorID()) {
 							inventory.erase(inventory.begin() + i);
-							this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 						}
 					}
 				}
@@ -325,13 +326,11 @@ void Picking::update(float msec) {
 			encouragementPick->setActive(false);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
-				if (animController->getType() == DoorOpeningX || animController->getType() == DoorOpeningY) {
-					encouragementActivate->setText("Oops.. I need a key");
-					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-					setSwitch(!getSwitch());
-					showInventoryUi();
-					currentInteraction = object;
-				}
+				encouragementActivate->setText("Oops.. I need a key");
+				this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+				setSwitch(!getSwitch());
+				showInventoryUi();
+				currentInteraction = object;
 			}
 		} else {
 

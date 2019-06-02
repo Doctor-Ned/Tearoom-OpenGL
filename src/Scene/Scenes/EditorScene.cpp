@@ -93,7 +93,7 @@ void EditorScene::renderUi() {
 	if (shaderTypeSelectionCallback != nullptr && ImGui::Button("Stop selecting shader type")) {
 		shaderTypeSelectionCallback = nullptr;
 	}
-	if(prefabSelectionCallback != nullptr && ImGui::Button("Stop selecting prefab")) {
+	if (prefabSelectionCallback != nullptr && ImGui::Button("Stop selecting prefab")) {
 		prefabSelectionCallback = nullptr;
 	}
 
@@ -645,26 +645,8 @@ void EditorScene::renderUi() {
 			break;
 			case SAnimationController:
 			{
-				static int animationType;
-				if (typeCreation->typeCreationStarted) {
-					animationType = 0;
-				}
-				if (ImGui::BeginCombo("Animation type", AnimationTypeNames[animationType].c_str())) {
-					for (int i = 0; i < sizeof(AnimationTypes) / sizeof(*AnimationTypes); i++) {
-						bool isSelected = i == animationType;
-						if (ImGui::Selectable(AnimationTypeNames[animationType].c_str(), isSelected)) {
-							animationType = i;
-						}
-						if (isSelected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new AnimationController(AnimationTypes[animationType], reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+				typeCreation->creationCallback(new AnimationController(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SBillboard:
@@ -751,8 +733,67 @@ void EditorScene::renderUi() {
 			break;
 			case SCollectableObject:
 			{
-				//typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
+				static std::string icon, preview;
+				static glm::vec2 iconPos, iconSize, previewPos, previewSize;
+				static int itemType, doorID;
+				static bool addPreview;
+				if (typeCreation->typeCreationStarted) {
+					icon = "";
+					preview = "";
+					doorID = 0;
+					addPreview = false;
+					iconPos = glm::vec2(995.0f, 530.0f);
+					iconSize = glm::vec2(60.0f, 60.0f);
+					previewPos = glm::vec2(1200.0f, 430.0f);
+					previewSize = glm::vec2(300.0f, 500.0f);
+					itemType = 0;
+				}
+				ImGui::Text(("Item type: " + ItemTypeNames[itemType]).c_str());
+				ImGui::SameLine();
+				if (ImGui::Button("CHANGE")) {
+					itemType++;
+					if (itemType >= sizeof(ItemTypes) / sizeof(*ItemTypes)) {
+						itemType = 0;
+					}
+				}
+				static const auto BUFFER_SIZE = 150;
+				static char nameBuffer[BUFFER_SIZE] = "";
+				ImGui::InputText("Description", nameBuffer, sizeof(nameBuffer));
+				ImGui::PushID(1);
+				ImGui::Text(("Icon: " + (icon.empty() ? "NONE" : icon)).c_str());
+				if (textureSelectionCallback == nullptr) {
+					ImGui::SameLine();
+					if (ImGui::Button("CHOOSE")) {
+						textureSelectionCallback = [icon = &icon](Texture t) {
+							*icon = t.path;
+						};
+					}
+					ImGui::DragFloat2("Icon position", reinterpret_cast<float*>(&iconPos), 1.0f, 0.0f, 1280.0f);
+					ImGui::DragFloat2("Icon size", reinterpret_cast<float*>(&iconSize), 1.0f, 0.0f, 1000.0f);
+				}
+				ImGui::PopID();
+				ImGui::Checkbox("Add preview", &addPreview);
+				if (addPreview) {
+					ImGui::PushID(2);
+					ImGui::Text(("Preview: " + (preview.empty() ? "NONE" : preview)).c_str());
+					if (textureSelectionCallback == nullptr) {
+						ImGui::SameLine();
+						if (ImGui::Button("CHOOSE")) {
+							textureSelectionCallback = [preview = &preview](Texture t) {
+								*preview = t.path;
+							};
+						}
+					}
+					ImGui::DragFloat2("Preview position", reinterpret_cast<float*>(&previewPos), 1.0f, 0.0f, 1280.0f);
+					ImGui::DragFloat2("Preview size", reinterpret_cast<float*>(&previewSize), 1.0f, 0.0f, 1000.0f);
+					ImGui::PopID();
+				}
+				ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+				if (!icon.empty() && !(addPreview && preview.empty()) && ImGui::Button("Create")) {
+					std::string desc(nameBuffer);
+					typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize, doorID));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SCollisionTest:
@@ -959,12 +1000,12 @@ void EditorScene::renderUi() {
 		ImGui::End();
 	}
 
-	if(prefabSelectionCallback != nullptr) {
+	if (prefabSelectionCallback != nullptr) {
 		ImGui::Begin("SELECT PREFAB TYPE", nullptr, 64);
-		for(int i=0;i<sizeof(PrefabNames)/sizeof(*PrefabNames);i++) {
+		for (int i = 0; i < sizeof(PrefabNames) / sizeof(*PrefabNames); i++) {
 			std::string prefabName = PrefabNames[i];
 			ImGui::PushID(prefabName.c_str());
-			if(ImGui::Button(prefabName.c_str())) {
+			if (ImGui::Button(prefabName.c_str())) {
 				prefabSelectionCallback(Prefabs[i]);
 				prefabSelectionCallback = nullptr;
 			}
@@ -1354,7 +1395,7 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 }
 
 void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
-	switch(prefab) {
+	switch (prefab) {
 		case PrefCache:
 			BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
 			AnimTimeSaver *saver = new AnimTimeSaver(node);
@@ -1438,9 +1479,9 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			}
 			ImGui::SameLine();
 		}
-		if(this->prefabSelectionCallback == nullptr) {
-			if(ImGui::Button("Apply prefab...")) {
-				prefabSelectionCallback = [this,node](Prefab prefab) {
+		if (this->prefabSelectionCallback == nullptr) {
+			if (ImGui::Button("Apply prefab...")) {
+				prefabSelectionCallback = [this, node](Prefab prefab) {
 					applyPrefab(node, prefab);
 				};
 			}

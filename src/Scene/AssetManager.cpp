@@ -355,7 +355,7 @@ void AssetManager::loadResource(std::string path, bool verify) {
 	switch (getResourceTypeByExtension(Global::getExtension(path))) {
 		default:
 		case NoneResource:
-			throw std::exception("Attempted to load an invalid resource file!");
+			break;
 		case ModelResource:
 			if (verify) {
 				for (auto &pair : models) {

@@ -434,22 +434,22 @@
                                        },
                                        "name" : "Camera",
                                        "view" : [
-                                          [ 0.82140457630157471, 0.26420643925666809, -0.50545978546142578, 0.0 ],
-                                          [ -0.0, 0.8862336277961731, 0.46323880553245544, 0.0 ],
-                                          [ 0.57034605741500854, -0.3805064857006073, 0.72795629501342773, 0.0 ],
-                                          [ 0.07591690868139267, -0.37228092551231384, -0.47507297992706299, 1.0 ]
+                                          [ 0.66173982620239258, 0.42837315797805786, -0.61530220508575439, 0.0 ],
+                                          [ -0.0, 0.82069450616836548, 0.57136726379394531, 0.0 ],
+                                          [ 0.74973344802856445, -0.37809646129608154, 0.54308634996414185, 0.0 ],
+                                          [ 0.40196436643600464, -0.45106032490730286, -0.31471395492553711, 1.0 ]
                                        ]
                                     },
                                     "type" : 23
                                  }
                               ],
                               "localLastTransformData" : {
-                                 "eulerRotation" : [ -0.48164629936218262, -6.8901124000549316, 0.0 ],
+                                 "eulerRotation" : [ -0.60817080736160278, -7.1308445930480957, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.55000001192092896, 0.0 ]
                               },
                               "localTransformData" : {
-                                 "eulerRotation" : [ -0.48164629936218262, -6.8901124000549316, 0.0 ],
+                                 "eulerRotation" : [ -0.60817080736160278, -7.1308445930480957, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.55000001192092896, 0.0 ]
                               },
@@ -516,7 +516,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ -0.20412977039813995, 0.17000000178813934, 0.16087815165519714, 1.0 ]
+                                 [ -0.26641792058944702, 0.17000000178813934, -0.30099368095397949, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 23,
@@ -570,12 +570,12 @@
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -0.20412977039813995, 0.0, 0.16087815165519714 ]
+                        "translation" : [ -0.26641792058944702, 0.0, -0.30099368095397949 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -0.20412977039813995, 0.0, 0.16087815165519714 ]
+                        "translation" : [ -0.26641792058944702, 0.0, -0.30099368095397949 ]
                      },
                      "mesh" : {
                         "id" : -1,
@@ -1205,7 +1205,7 @@
                                           [ 1.0, 0.0, 0.0, 0.0 ],
                                           [ 0.0, 1.0, 0.0, 0.0 ],
                                           [ 0.0, 0.0, 1.0, 0.0 ],
-                                          [ 0.93954497575759888, 0.4287000298500061, 0.61248219013214111, 1.0 ]
+                                          [ 0.93954497575759888, 0.4287000298500061, 0.43549999594688416, 1.0 ]
                                        ],
                                        "mesh" : {
                                           "id" : 56,
@@ -1261,20 +1261,44 @@
                                        "speed" : 1.0
                                     },
                                     "type" : 34
+                                 },
+                                 {
+                                    "id" : 58,
+                                    "object" : {
+                                       "active" : true,
+                                       "animation" : {
+                                          "id" : 57,
+                                          "type" : 34
+                                       },
+                                       "disableCollider" : false,
+                                       "gameObject" : {
+                                          "id" : 54,
+                                          "type" : 1
+                                       },
+                                       "name" : "AnimTimeSaver",
+                                       "retargetAllowed" : false,
+                                       "startedPlaying" : false,
+                                       "sun" : {
+                                          "id" : 13,
+                                          "type" : 41
+                                       },
+                                       "targetTime" : -1
+                                    },
+                                    "type" : 53
                                  }
                               ],
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 0.008500000461935997, 0.008500000461935997, 0.008500000461935997 ],
-                                 "translation" : [ 0.0, 0.0, 0.17698217928409576 ]
+                                 "translation" : [ 0.0, 0.0, 0.0 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 0.008500000461935997, 0.008500000461935997, 0.008500000461935997 ],
-                                 "translation" : [ 0.0, 0.0, 0.17698217928409576 ]
+                                 "translation" : [ 0.0, 0.0, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 58,
+                                 "id" : 59,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -1320,23 +1344,23 @@
                   "type" : 1
                },
                {
-                  "id" : 59,
+                  "id" : 60,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 60,
+                           "id" : 61,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 61,
+                                    "id" : 62,
                                     "object" : {
-                                       "active" : true,
+                                       "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 2.0,
                                        "gameObject" : {
-                                          "id" : 60,
+                                          "id" : 61,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -1360,12 +1384,12 @@
                                     "type" : 34
                                  },
                                  {
-                                    "id" : 62,
+                                    "id" : 63,
                                     "object" : {
                                        "active" : true,
                                        "collisionType" : 0,
                                        "gameObject" : {
-                                          "id" : 60,
+                                          "id" : 61,
                                           "type" : 1
                                        },
                                        "halfDimensions" : [ 0.0099999997764825821, 0.43000000715255737, 0.16500000655651093 ],
@@ -1377,7 +1401,7 @@
                                           [ 0.93999999761581421, 0.43450000882148743, -0.25999999046325684, 1.0 ]
                                        ],
                                        "mesh" : {
-                                          "id" : 63,
+                                          "id" : 64,
                                           "object" : {
                                              "castShadows" : true,
                                              "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1403,16 +1427,16 @@
                                     "type" : 27
                                  },
                                  {
-                                    "id" : 64,
+                                    "id" : 65,
                                     "object" : {
                                        "active" : true,
                                        "animation" : {
-                                          "id" : 61,
+                                          "id" : 62,
                                           "type" : 34
                                        },
                                        "disableCollider" : false,
                                        "gameObject" : {
-                                          "id" : 60,
+                                          "id" : 61,
                                           "type" : 1
                                        },
                                        "name" : "AnimTimeSaver",
@@ -1425,6 +1449,23 @@
                                        "targetTime" : -1
                                     },
                                     "type" : 53
+                                 },
+                                 {
+                                    "id" : 66,
+                                    "object" : {
+                                       "active" : true,
+                                       "anim" : {
+                                          "id" : 62,
+                                          "type" : 34
+                                       },
+                                       "doorID" : 1,
+                                       "gameObject" : {
+                                          "id" : 61,
+                                          "type" : 1
+                                       },
+                                       "name" : "Animation Controller"
+                                    },
+                                    "type" : 25
                                  }
                               ],
                               "localLastTransformData" : {
@@ -1438,7 +1479,7 @@
                                  "translation" : [ -0.079999998211860657, 0.0, -0.11999999731779099 ]
                               },
                               "mesh" : {
-                                 "id" : 65,
+                                 "id" : 67,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -1454,7 +1495,7 @@
                               },
                               "name" : "door",
                               "parent" : {
-                                 "id" : 59,
+                                 "id" : 60,
                                  "type" : 1
                               }
                            },
@@ -1484,12 +1525,12 @@
                   "type" : 1
                },
                {
-                  "id" : 66,
+                  "id" : 68,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 67,
+                           "id" : 69,
                            "object" : {
                               "active" : false,
                               "localLastTransformData" : {
@@ -1503,7 +1544,7 @@
                                  "translation" : [ 0.0, 0.0, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 68,
+                                 "id" : 70,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -1519,7 +1560,7 @@
                               },
                               "name" : "WindowGlassBig",
                               "parent" : {
-                                 "id" : 66,
+                                 "id" : 68,
                                  "type" : 1
                               }
                            },
@@ -1537,7 +1578,7 @@
                         "translation" : [ 5.6999998092651367, 0.0, -5.5999999046325684 ]
                      },
                      "mesh" : {
-                        "id" : 69,
+                        "id" : 71,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -1560,26 +1601,95 @@
                   "type" : 1
                },
                {
-                  "id" : 70,
+                  "id" : 72,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 71,
+                           "id" : 73,
                            "object" : {
                               "active" : true,
+                              "components" : [
+                                 {
+                                    "id" : 74,
+                                    "object" : {
+                                       "active" : true,
+                                       "collisionType" : 1,
+                                       "gameObject" : {
+                                          "id" : 73,
+                                          "type" : 1
+                                       },
+                                       "halfDimensions" : [ 0.014999999664723873, 0.014999999664723873, 0.035000000149011612 ],
+                                       "isTrigger" : true,
+                                       "matrix" : [
+                                          [ 1.0, 0.0, 0.0, 0.0 ],
+                                          [ 0.0, 1.0, 0.0, 0.0 ],
+                                          [ 0.0, 0.0, 1.0, 0.0 ],
+                                          [ -1.0470000505447388, 0.41699999570846558, 0.39900001883506775, 1.0 ]
+                                       ],
+                                       "mesh" : {
+                                          "id" : 75,
+                                          "object" : {
+                                             "castShadows" : true,
+                                             "color" : [ 0.0, 1.0, 0.0, 1.0 ],
+                                             "culled" : true,
+                                             "emissive" : [ 0.0, 0.0, 0.0 ],
+                                             "max" : [ 0.014999999664723873, 0.014999999664723873, 0.035000000149011612 ],
+                                             "metallic" : 0.0,
+                                             "min" : [ -0.014999999664723873, -0.014999999664723873, -0.035000000149011612 ],
+                                             "opacity" : 1.0,
+                                             "opaque" : true,
+                                             "renderMode" : 3,
+                                             "roughness" : 1.0,
+                                             "shaderType" : 3,
+                                             "uiScale" : 1.0,
+                                             "useLight" : false
+                                          },
+                                          "type" : 4
+                                       },
+                                       "name" : "Box collider",
+                                       "positionOffset" : [ 0.0, 0.0, 0.0 ],
+                                       "type" : 1
+                                    },
+                                    "type" : 27
+                                 },
+                                 {
+                                    "id" : 76,
+                                    "object" : {
+                                       "active" : true,
+                                       "desc" : "A mysterious key",
+                                       "doorID" : 1,
+                                       "fKeyState" : false,
+                                       "gameObject" : {
+                                          "id" : 73,
+                                          "type" : 1
+                                       },
+                                       "i_type" : 3,
+                                       "iconPos" : [ 995.0, 530.0 ],
+                                       "iconResource" : "res/textures/Icons/keyIcon.png",
+                                       "iconSize" : [ 60.0, 60.0 ],
+                                       "isHitByRay" : false,
+                                       "isTaken" : false,
+                                       "name" : "Component",
+                                       "previewPos" : [ 1200.0, 430.0 ],
+                                       "previewResource" : "",
+                                       "previewSize" : [ 300.0, 500.0 ]
+                                    },
+                                    "type" : 30
+                                 }
+                              ],
                               "localLastTransformData" : {
-                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                                 "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 5.0, 0.80000001192092896, 0.0 ]
+                                 "eulerRotation" : [ 0.0, 0.12217305600643158, 0.0 ],
+                                 "scale" : [ 1.3999999761581421, 1.3999999761581421, 1.3999999761581421 ],
+                                 "translation" : [ 4.3000001907348633, 1.7000000476837158, -0.10000000149011612 ]
                               },
                               "localTransformData" : {
-                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                                 "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 5.0, 0.80000001192092896, 0.0 ]
+                                 "eulerRotation" : [ 0.0, 0.12217305600643158, 0.0 ],
+                                 "scale" : [ 1.3999999761581421, 1.3999999761581421, 1.3999999761581421 ],
+                                 "translation" : [ 4.3000001907348633, 1.7000000476837158, -0.10000000149011612 ]
                               },
                               "mesh" : {
-                                 "id" : 72,
+                                 "id" : 77,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -1595,7 +1705,7 @@
                               },
                               "name" : "RoomKey",
                               "parent" : {
-                                 "id" : 70,
+                                 "id" : 72,
                                  "type" : 1
                               }
                            },
@@ -1604,12 +1714,12 @@
                      ],
                      "components" : [
                         {
-                           "id" : 73,
+                           "id" : 78,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 70,
+                                 "id" : 72,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.094999998807907104, 0.05000000074505806, 0.090000003576278687 ],
@@ -1621,7 +1731,7 @@
                                  [ -1.0900000333786011, 0.43154999613761902, 0.40000000596046448, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 74,
+                                 "id" : 79,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1647,18 +1757,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 75,
+                           "id" : 80,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 76,
+                                    "id" : 81,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 70,
+                                          "id" : 72,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -1681,7 +1791,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 70,
+                                 "id" : 72,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -1694,20 +1804,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 76,
+                           "id" : 81,
                            "type" : 34
                         },
                         {
-                           "id" : 77,
+                           "id" : 82,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 76,
+                                 "id" : 81,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 70,
+                                 "id" : 72,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -1733,7 +1843,7 @@
                         "translation" : [ -1.0900000333786011, 0.40000000596046448, 0.40000000596046448 ]
                      },
                      "mesh" : {
-                        "id" : 78,
+                        "id" : 83,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -1756,17 +1866,17 @@
                   "type" : 1
                },
                {
-                  "id" : 79,
+                  "id" : 84,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 80,
+                           "id" : 85,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 79,
+                                 "id" : 84,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.10000000149011612, 0.054999999701976776, 0.090000003576278687 ],
@@ -1778,7 +1888,7 @@
                                  [ -1.0900000333786011, 0.23714999854564667, -0.10000000149011612, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 81,
+                                 "id" : 86,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1804,18 +1914,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 82,
+                           "id" : 87,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 83,
+                                    "id" : 88,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 79,
+                                          "id" : 84,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -1838,7 +1948,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 79,
+                                 "id" : 84,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -1851,20 +1961,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 83,
+                           "id" : 88,
                            "type" : 34
                         },
                         {
-                           "id" : 84,
+                           "id" : 89,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 83,
+                                 "id" : 88,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 79,
+                                 "id" : 84,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -1890,7 +2000,7 @@
                         "translation" : [ -1.0900000333786011, 0.20000000298023224, -0.10000000149011612 ]
                      },
                      "mesh" : {
-                        "id" : 85,
+                        "id" : 90,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -1913,22 +2023,22 @@
                   "type" : 1
                },
                {
-                  "id" : 86,
+                  "id" : 91,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 87,
+                           "id" : 92,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 88,
+                                    "id" : 93,
                                     "object" : {
                                        "active" : true,
                                        "collisionType" : 1,
                                        "gameObject" : {
-                                          "id" : 87,
+                                          "id" : 92,
                                           "type" : 1
                                        },
                                        "halfDimensions" : [ 0.029999999329447746, 0.0099999997764825821, 0.029999999329447746 ],
@@ -1940,7 +2050,7 @@
                                           [ 0.29200002551078796, 0.34400001168251038, -0.8200000524520874, 1.0 ]
                                        ],
                                        "mesh" : {
-                                          "id" : 89,
+                                          "id" : 94,
                                           "object" : {
                                              "castShadows" : true,
                                              "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1966,15 +2076,17 @@
                                     "type" : 27
                                  },
                                  {
-                                    "id" : 90,
+                                    "id" : 95,
                                     "object" : {
                                        "active" : true,
                                        "desc" : "Yoshiro's letter about the watch",
+                                       "doorID" : 0,
                                        "fKeyState" : false,
                                        "gameObject" : {
-                                          "id" : 87,
+                                          "id" : 92,
                                           "type" : 1
                                        },
+                                       "i_type" : 0,
                                        "iconPos" : [ 995.0, 530.0 ],
                                        "iconResource" : "res/textures/Icons/letterIcon.png",
                                        "iconSize" : [ 60.0, 60.0 ],
@@ -1988,15 +2100,15 @@
                                     "type" : 30
                                  },
                                  {
-                                    "id" : 91,
+                                    "id" : 96,
                                     "object" : {
                                        "active" : true,
                                        "collectable" : {
-                                          "id" : 90,
+                                          "id" : 95,
                                           "type" : 30
                                        },
                                        "gameObject" : {
-                                          "id" : 87,
+                                          "id" : 92,
                                           "type" : 1
                                        },
                                        "name" : "Collectable Watch",
@@ -2019,7 +2131,7 @@
                                  "translation" : [ -3.0, 4.4000000953674316, -0.80000001192092896 ]
                               },
                               "mesh" : {
-                                 "id" : 92,
+                                 "id" : 97,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -2035,7 +2147,340 @@
                               },
                               "name" : "Watch",
                               "parent" : {
-                                 "id" : 86,
+                                 "id" : 91,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 98,
+                           "object" : {
+                              "active" : true,
+                              "components" : [
+                                 {
+                                    "id" : 99,
+                                    "object" : {
+                                       "active" : true,
+                                       "collisionType" : 1,
+                                       "gameObject" : {
+                                          "id" : 98,
+                                          "type" : 1
+                                       },
+                                       "halfDimensions" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                       "isTrigger" : true,
+                                       "matrix" : [
+                                          [ 1.0, 0.0, 0.0, 0.0 ],
+                                          [ 0.0, 1.0, 0.0, 0.0 ],
+                                          [ 0.0, 0.0, 1.0, 0.0 ],
+                                          [ 0.30000001192092896, 0.33900001645088196, -0.85000002384185791, 1.0 ]
+                                       ],
+                                       "mesh" : {
+                                          "id" : 100,
+                                          "object" : {
+                                             "castShadows" : true,
+                                             "color" : [ 0.0, 1.0, 0.0, 1.0 ],
+                                             "culled" : true,
+                                             "emissive" : [ 0.0, 0.0, 0.0 ],
+                                             "max" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                             "metallic" : 0.0,
+                                             "min" : [ -0.013000000268220901, -0.0070000002160668373, -0.020999999716877937 ],
+                                             "opacity" : 1.0,
+                                             "opaque" : true,
+                                             "renderMode" : 3,
+                                             "roughness" : 1.0,
+                                             "shaderType" : 3,
+                                             "uiScale" : 1.0,
+                                             "useLight" : false
+                                          },
+                                          "type" : 4
+                                       },
+                                       "name" : "Box collider",
+                                       "positionOffset" : [ 0.0, 0.0, 0.0 ],
+                                       "type" : 1
+                                    },
+                                    "type" : 27
+                                 },
+                                 {
+                                    "id" : 101,
+                                    "object" : {
+                                       "active" : true,
+                                       "desc" : "",
+                                       "doorID" : 0,
+                                       "fKeyState" : false,
+                                       "gameObject" : {
+                                          "id" : 98,
+                                          "type" : 1
+                                       },
+                                       "i_type" : 2,
+                                       "iconPos" : [ 995.0, 530.0 ],
+                                       "iconResource" : "res/textures/Photos/keyPhoto.jpg",
+                                       "iconSize" : [ 60.0, 60.0 ],
+                                       "isHitByRay" : false,
+                                       "isTaken" : false,
+                                       "name" : "Component",
+                                       "previewPos" : [ 1200.0, 430.0 ],
+                                       "previewResource" : "res/textures/Photos/keyPhoto.jpg",
+                                       "previewSize" : [ 300.0, 500.0 ]
+                                    },
+                                    "type" : 30
+                                 }
+                              ],
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 3.9000000953674316, 0.0 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 3.9000000953674316, 0.0 ]
+                              },
+                              "mesh" : {
+                                 "id" : 102,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "color" : [ 0.34803920984268188, 0.26529452204704285, 0.18254996836185455, 1.0 ],
+                                    "culled" : true,
+                                    "emissive" : [ 0.044117629528045654, 0.02473955973982811, 0.011461934074759483 ],
+                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
+                                    "metallic" : 0.0,
+                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "roughness" : 1.0,
+                                    "shaderType" : 3,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 4
+                              },
+                              "name" : "Node #1",
+                              "parent" : {
+                                 "id" : 91,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 103,
+                           "object" : {
+                              "active" : true,
+                              "components" : [
+                                 {
+                                    "id" : 104,
+                                    "object" : {
+                                       "active" : true,
+                                       "collisionType" : 1,
+                                       "gameObject" : {
+                                          "id" : 103,
+                                          "type" : 1
+                                       },
+                                       "halfDimensions" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                       "isTrigger" : true,
+                                       "matrix" : [
+                                          [ 1.0, 0.0, 0.0, 0.0 ],
+                                          [ 0.0, 1.0, 0.0, 0.0 ],
+                                          [ 0.0, 0.0, 1.0, 0.0 ],
+                                          [ 0.30000001192092896, 0.34000000357627869, -0.85000002384185791, 1.0 ]
+                                       ],
+                                       "mesh" : {
+                                          "id" : 105,
+                                          "object" : {
+                                             "castShadows" : true,
+                                             "color" : [ 0.0, 1.0, 0.0, 1.0 ],
+                                             "culled" : true,
+                                             "emissive" : [ 0.0, 0.0, 0.0 ],
+                                             "max" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                             "metallic" : 0.0,
+                                             "min" : [ -0.013000000268220901, -0.0070000002160668373, -0.020999999716877937 ],
+                                             "opacity" : 1.0,
+                                             "opaque" : true,
+                                             "renderMode" : 3,
+                                             "roughness" : 1.0,
+                                             "shaderType" : 3,
+                                             "uiScale" : 1.0,
+                                             "useLight" : false
+                                          },
+                                          "type" : 4
+                                       },
+                                       "name" : "Box collider",
+                                       "positionOffset" : [ 0.0, 0.0, 0.0 ],
+                                       "type" : 1
+                                    },
+                                    "type" : 27
+                                 },
+                                 {
+                                    "id" : 106,
+                                    "object" : {
+                                       "active" : true,
+                                       "desc" : "",
+                                       "doorID" : 0,
+                                       "fKeyState" : false,
+                                       "gameObject" : {
+                                          "id" : 103,
+                                          "type" : 1
+                                       },
+                                       "i_type" : 2,
+                                       "iconPos" : [ 995.0, 530.0 ],
+                                       "iconResource" : "res/textures/Photos/extraSecretPhoto1.jpg",
+                                       "iconSize" : [ 60.0, 60.0 ],
+                                       "isHitByRay" : false,
+                                       "isTaken" : false,
+                                       "name" : "Component",
+                                       "previewPos" : [ 1200.0, 430.0 ],
+                                       "previewResource" : "res/textures/Photos/extraSecretPhoto1.jpg",
+                                       "previewSize" : [ 300.0, 500.0 ]
+                                    },
+                                    "type" : 30
+                                 }
+                              ],
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 4.0, 0.0 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 4.0, 0.0 ]
+                              },
+                              "mesh" : {
+                                 "id" : 107,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "color" : [ 0.3490196168422699, 0.26666668057441711, 0.18431372940540314, 1.0 ],
+                                    "culled" : true,
+                                    "emissive" : [ 0.043137256056070328, 0.023529412224888802, 0.011764706112444401 ],
+                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
+                                    "metallic" : 0.0,
+                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "roughness" : 1.0,
+                                    "shaderType" : 3,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 4
+                              },
+                              "name" : "Node #2",
+                              "parent" : {
+                                 "id" : 91,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 108,
+                           "object" : {
+                              "active" : true,
+                              "components" : [
+                                 {
+                                    "id" : 109,
+                                    "object" : {
+                                       "active" : true,
+                                       "collisionType" : 1,
+                                       "gameObject" : {
+                                          "id" : 108,
+                                          "type" : 1
+                                       },
+                                       "halfDimensions" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                       "isTrigger" : true,
+                                       "matrix" : [
+                                          [ 1.0, 0.0, 0.0, 0.0 ],
+                                          [ 0.0, 1.0, 0.0, 0.0 ],
+                                          [ 0.0, 0.0, 1.0, 0.0 ],
+                                          [ 0.30000001192092896, 0.34000000357627869, -0.85000002384185791, 1.0 ]
+                                       ],
+                                       "mesh" : {
+                                          "id" : 110,
+                                          "object" : {
+                                             "castShadows" : true,
+                                             "color" : [ 0.0, 1.0, 0.0, 1.0 ],
+                                             "culled" : true,
+                                             "emissive" : [ 0.0, 0.0, 0.0 ],
+                                             "max" : [ 0.013000000268220901, 0.0070000002160668373, 0.020999999716877937 ],
+                                             "metallic" : 0.0,
+                                             "min" : [ -0.013000000268220901, -0.0070000002160668373, -0.020999999716877937 ],
+                                             "opacity" : 1.0,
+                                             "opaque" : true,
+                                             "renderMode" : 3,
+                                             "roughness" : 1.0,
+                                             "shaderType" : 3,
+                                             "uiScale" : 1.0,
+                                             "useLight" : false
+                                          },
+                                          "type" : 4
+                                       },
+                                       "name" : "Box collider",
+                                       "positionOffset" : [ 0.0, 0.0, 0.0 ],
+                                       "type" : 1
+                                    },
+                                    "type" : 27
+                                 },
+                                 {
+                                    "id" : 111,
+                                    "object" : {
+                                       "active" : true,
+                                       "desc" : "",
+                                       "doorID" : 0,
+                                       "fKeyState" : false,
+                                       "gameObject" : {
+                                          "id" : 108,
+                                          "type" : 1
+                                       },
+                                       "i_type" : 2,
+                                       "iconPos" : [ 995.0, 530.0 ],
+                                       "iconResource" : "res/textures/Photos/extraSecretPhoto2.jpg",
+                                       "iconSize" : [ 60.0, 60.0 ],
+                                       "isHitByRay" : false,
+                                       "isTaken" : false,
+                                       "name" : "Component",
+                                       "previewPos" : [ 1200.0, 430.0 ],
+                                       "previewResource" : "res/textures/Photos/extraSecretPhoto2.jpg",
+                                       "previewSize" : [ 300.0, 500.0 ]
+                                    },
+                                    "type" : 30
+                                 }
+                              ],
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 4.0, 0.0 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "translation" : [ 0.0, 4.0, 0.0 ]
+                              },
+                              "mesh" : {
+                                 "id" : 112,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "color" : [ 0.3490196168422699, 0.26666668057441711, 0.18431372940540314, 1.0 ],
+                                    "culled" : true,
+                                    "emissive" : [ 0.043137256056070328, 0.023529412224888802, 0.011764706112444401 ],
+                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
+                                    "metallic" : 0.0,
+                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "roughness" : 1.0,
+                                    "shaderType" : 3,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 4
+                              },
+                              "name" : "Node #3",
+                              "parent" : {
+                                 "id" : 91,
                                  "type" : 1
                               }
                            },
@@ -2044,12 +2489,12 @@
                      ],
                      "components" : [
                         {
-                           "id" : 93,
+                           "id" : 113,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 86,
+                                 "id" : 91,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.090000003576278687, 0.059999998658895493, 0.10000000149011612 ],
@@ -2061,7 +2506,7 @@
                                  [ 0.30000001192092896, 0.33885002136230469, -0.85000002384185791, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 94,
+                                 "id" : 114,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -2087,18 +2532,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 95,
+                           "id" : 115,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 96,
+                                    "id" : 116,
                                     "object" : {
                                        "active" : true,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 86,
+                                          "id" : 91,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -2121,7 +2566,7 @@
                               ],
                               "correct" : true,
                               "gameObject" : {
-                                 "id" : 86,
+                                 "id" : 91,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -2134,20 +2579,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 96,
+                           "id" : 116,
                            "type" : 34
                         },
                         {
-                           "id" : 97,
+                           "id" : 117,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 96,
+                                 "id" : 116,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 86,
+                                 "id" : 91,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -2173,7 +2618,7 @@
                         "translation" : [ 0.30000001192092896, 0.30000001192092896, -0.85000002384185791 ]
                      },
                      "mesh" : {
-                        "id" : 98,
+                        "id" : 118,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2196,17 +2641,17 @@
                   "type" : 1
                },
                {
-                  "id" : 99,
+                  "id" : 119,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 100,
+                           "id" : 120,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 99,
+                                 "id" : 119,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.10999999940395355, 0.079999998211860657, 0.070000000298023224 ],
@@ -2218,7 +2663,7 @@
                                  [ 0.5, 0.3361000120639801, 0.11999999731779099, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 101,
+                                 "id" : 121,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -2244,18 +2689,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 102,
+                           "id" : 122,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 103,
+                                    "id" : 123,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 99,
+                                          "id" : 119,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -2278,7 +2723,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 99,
+                                 "id" : 119,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -2291,20 +2736,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 103,
+                           "id" : 123,
                            "type" : 34
                         },
                         {
-                           "id" : 104,
+                           "id" : 124,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 103,
+                                 "id" : 123,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 99,
+                                 "id" : 119,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -2330,7 +2775,7 @@
                         "translation" : [ 0.5, 0.30000001192092896, 0.11999999731779099 ]
                      },
                      "mesh" : {
-                        "id" : 105,
+                        "id" : 125,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2353,7 +2798,7 @@
                   "type" : 1
                },
                {
-                  "id" : 106,
+                  "id" : 126,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2367,7 +2812,7 @@
                         "translation" : [ -0.2199999988079071, 0.0, 0.81499999761581421 ]
                      },
                      "mesh" : {
-                        "id" : 107,
+                        "id" : 127,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2390,7 +2835,7 @@
                   "type" : 1
                },
                {
-                  "id" : 108,
+                  "id" : 128,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2404,7 +2849,7 @@
                         "translation" : [ 1.75, 0.80000001192092896, -5.6519999504089355 ]
                      },
                      "mesh" : {
-                        "id" : 109,
+                        "id" : 129,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2427,7 +2872,7 @@
                   "type" : 1
                },
                {
-                  "id" : 110,
+                  "id" : 130,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2441,7 +2886,7 @@
                         "translation" : [ 9.6700000762939453, 0.80000001192092896, -5.5 ]
                      },
                      "mesh" : {
-                        "id" : 111,
+                        "id" : 131,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2464,7 +2909,7 @@
                   "type" : 1
                },
                {
-                  "id" : 112,
+                  "id" : 132,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2478,7 +2923,7 @@
                         "translation" : [ 5.6999998092651367, 0.80000001192092896, -1.6499999761581421 ]
                      },
                      "mesh" : {
-                        "id" : 113,
+                        "id" : 133,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2501,7 +2946,7 @@
                   "type" : 1
                },
                {
-                  "id" : 114,
+                  "id" : 134,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2515,7 +2960,7 @@
                         "translation" : [ 5.6999998092651367, 0.69999998807907104, -9.5649995803833008 ]
                      },
                      "mesh" : {
-                        "id" : 115,
+                        "id" : 135,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2538,7 +2983,7 @@
                   "type" : 1
                },
                {
-                  "id" : 116,
+                  "id" : 136,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2552,7 +2997,7 @@
                         "translation" : [ 0.97022223472595215, 0.25, 0.43999999761581421 ]
                      },
                      "mesh" : {
-                        "id" : 117,
+                        "id" : 137,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2575,7 +3020,7 @@
                   "type" : 1
                },
                {
-                  "id" : 118,
+                  "id" : 138,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2589,7 +3034,7 @@
                         "translation" : [ 0.93000000715255737, 0.41999998688697815, -0.11999999731779099 ]
                      },
                      "mesh" : {
-                        "id" : 119,
+                        "id" : 139,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2612,16 +3057,16 @@
                   "type" : 1
                },
                {
-                  "id" : 120,
+                  "id" : 140,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 121,
+                           "id" : 141,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 120,
+                                 "id" : 140,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -2650,7 +3095,7 @@
                         "translation" : [ 3.7999999523162842, 0.0, -4.75 ]
                      },
                      "mesh" : {
-                        "id" : 122,
+                        "id" : 142,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2673,16 +3118,16 @@
                   "type" : 1
                },
                {
-                  "id" : 123,
+                  "id" : 143,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 124,
+                           "id" : 144,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 123,
+                                 "id" : 143,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -2709,7 +3154,7 @@
                         "translation" : [ 7.5999999046325684, -1.0, -3.5999999046325684 ]
                      },
                      "mesh" : {
-                        "id" : 125,
+                        "id" : 145,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2732,16 +3177,16 @@
                   "type" : 1
                },
                {
-                  "id" : 126,
+                  "id" : 146,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 127,
+                           "id" : 147,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 126,
+                                 "id" : 146,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -2769,7 +3214,7 @@
                         "translation" : [ 3.7999999523162842, -1.0, -7.5 ]
                      },
                      "mesh" : {
-                        "id" : 128,
+                        "id" : 148,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2792,16 +3237,16 @@
                   "type" : 1
                },
                {
-                  "id" : 129,
+                  "id" : 149,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 130,
+                           "id" : 150,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 129,
+                                 "id" : 149,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -2830,7 +3275,7 @@
                         "translation" : [ 8.0, -1.0, -7.9000000953674316 ]
                      },
                      "mesh" : {
-                        "id" : 131,
+                        "id" : 151,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2853,16 +3298,16 @@
                   "type" : 1
                },
                {
-                  "id" : 132,
+                  "id" : 152,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 133,
+                           "id" : 153,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 132,
+                                 "id" : 152,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -2891,7 +3336,7 @@
                         "translation" : [ 6.0999999046325684, -2.0, -5.9000000953674316 ]
                      },
                      "mesh" : {
-                        "id" : 134,
+                        "id" : 154,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -2914,7 +3359,7 @@
                   "type" : 1
                },
                {
-                  "id" : 135,
+                  "id" : 155,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2928,7 +3373,7 @@
                         "translation" : [ 1.7000000476837158, 0.0, 0.059999998658895493 ]
                      },
                      "mesh" : {
-                        "id" : 136,
+                        "id" : 156,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2951,7 +3396,7 @@
                   "type" : 1
                },
                {
-                  "id" : 137,
+                  "id" : 157,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -2965,7 +3410,7 @@
                         "translation" : [ 2.5450000762939453, 0.0, -0.79000002145767212 ]
                      },
                      "mesh" : {
-                        "id" : 138,
+                        "id" : 158,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -2988,7 +3433,7 @@
                   "type" : 1
                },
                {
-                  "id" : 139,
+                  "id" : 159,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -3002,7 +3447,7 @@
                         "translation" : [ 1.75, 0.0, -1.25 ]
                      },
                      "mesh" : {
-                        "id" : 140,
+                        "id" : 160,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -3025,7 +3470,7 @@
                   "type" : 1
                },
                {
-                  "id" : 141,
+                  "id" : 161,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -3039,7 +3484,7 @@
                         "translation" : [ 1.3200000524520874, 0.0, -0.81000000238418579 ]
                      },
                      "mesh" : {
-                        "id" : 142,
+                        "id" : 162,
                         "object" : {
                            "castShadows" : false,
                            "culled" : true,
@@ -3062,16 +3507,16 @@
                   "type" : 1
                },
                {
-                  "id" : 143,
+                  "id" : 163,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 144,
+                           "id" : 164,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 143,
+                                 "id" : 163,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -3099,7 +3544,7 @@
                         "translation" : [ 6.5, -0.60000002384185791, -7.0999999046325684 ]
                      },
                      "mesh" : {
-                        "id" : 145,
+                        "id" : 165,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3122,16 +3567,16 @@
                   "type" : 1
                },
                {
-                  "id" : 146,
+                  "id" : 166,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 147,
+                           "id" : 167,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 146,
+                                 "id" : 166,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -3158,7 +3603,7 @@
                         "translation" : [ 5.3000001907348633, 0.0, -3.2000000476837158 ]
                      },
                      "mesh" : {
-                        "id" : 148,
+                        "id" : 168,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3181,16 +3626,16 @@
                   "type" : 1
                },
                {
-                  "id" : 149,
+                  "id" : 169,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 150,
+                           "id" : 170,
                            "object" : {
                               "active" : true,
                               "gameObject" : {
-                                 "id" : 149,
+                                 "id" : 169,
                                  "type" : 1
                               },
                               "heightToHourMap" : {
@@ -3219,7 +3664,7 @@
                         "translation" : [ 8.6999998092651367, -1.75, -4.6999998092651367 ]
                      },
                      "mesh" : {
-                        "id" : 151,
+                        "id" : 171,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3242,12 +3687,12 @@
                   "type" : 1
                },
                {
-                  "id" : 152,
+                  "id" : 172,
                   "object" : {
                      "active" : true,
                      "children" : [
                         {
-                           "id" : 153,
+                           "id" : 173,
                            "object" : {
                               "active" : true,
                               "localLastTransformData" : {
@@ -3261,7 +3706,7 @@
                                  "translation" : [ -5.0, 0.80000001192092896, 0.0 ]
                               },
                               "mesh" : {
-                                 "id" : 154,
+                                 "id" : 174,
                                  "object" : {
                                     "castShadows" : true,
                                     "culled" : true,
@@ -3277,7 +3722,7 @@
                               },
                               "name" : "HallKey",
                               "parent" : {
-                                 "id" : 152,
+                                 "id" : 172,
                                  "type" : 1
                               }
                            },
@@ -3286,12 +3731,12 @@
                      ],
                      "components" : [
                         {
-                           "id" : 155,
+                           "id" : 175,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 152,
+                                 "id" : 172,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.10499999672174454, 0.070000000298023224, 0.079999998211860657 ],
@@ -3303,7 +3748,7 @@
                                  [ 9.7299995422363281, 0.233800008893013, -6.5, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 156,
+                                 "id" : 176,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -3329,18 +3774,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 157,
+                           "id" : 177,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 158,
+                                    "id" : 178,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 152,
+                                          "id" : 172,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -3363,7 +3808,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 152,
+                                 "id" : 172,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -3376,20 +3821,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 158,
+                           "id" : 178,
                            "type" : 34
                         },
                         {
-                           "id" : 159,
+                           "id" : 179,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 158,
+                                 "id" : 178,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 152,
+                                 "id" : 172,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -3415,7 +3860,7 @@
                         "translation" : [ 9.7299995422363281, 0.20000000298023224, -6.5 ]
                      },
                      "mesh" : {
-                        "id" : 160,
+                        "id" : 180,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3438,17 +3883,17 @@
                   "type" : 1
                },
                {
-                  "id" : 161,
+                  "id" : 181,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 162,
+                           "id" : 182,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 161,
+                                 "id" : 181,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.10000000149011612, 0.079999998211860657, 0.094999998807907104 ],
@@ -3460,7 +3905,7 @@
                                  [ 1.6749999523162842, 0.23510000109672546, -8.1000003814697266, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 163,
+                                 "id" : 183,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -3486,18 +3931,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 164,
+                           "id" : 184,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 165,
+                                    "id" : 185,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 161,
+                                          "id" : 181,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -3520,7 +3965,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 161,
+                                 "id" : 181,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -3533,20 +3978,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 165,
+                           "id" : 185,
                            "type" : 34
                         },
                         {
-                           "id" : 166,
+                           "id" : 186,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 165,
+                                 "id" : 185,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 161,
+                                 "id" : 181,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -3572,7 +4017,7 @@
                         "translation" : [ 1.6749999523162842, 0.20000000298023224, -8.1000003814697266 ]
                      },
                      "mesh" : {
-                        "id" : 167,
+                        "id" : 187,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3595,17 +4040,17 @@
                   "type" : 1
                },
                {
-                  "id" : 168,
+                  "id" : 188,
                   "object" : {
                      "active" : true,
                      "components" : [
                         {
-                           "id" : 169,
+                           "id" : 189,
                            "object" : {
                               "active" : true,
                               "collisionType" : 1,
                               "gameObject" : {
-                                 "id" : 168,
+                                 "id" : 188,
                                  "type" : 1
                               },
                               "halfDimensions" : [ 0.10499999672174454, 0.070000000298023224, 0.10000000149011612 ],
@@ -3617,7 +4062,7 @@
                                  [ 7.8000001907348633, 0.2350500077009201, -9.630000114440918, 1.0 ]
                               ],
                               "mesh" : {
-                                 "id" : 170,
+                                 "id" : 190,
                                  "object" : {
                                     "castShadows" : true,
                                     "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -3643,18 +4088,18 @@
                            "type" : 27
                         },
                         {
-                           "id" : 171,
+                           "id" : 191,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 172,
+                                    "id" : 192,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 168,
+                                          "id" : 188,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -3677,7 +4122,7 @@
                               ],
                               "correct" : false,
                               "gameObject" : {
-                                 "id" : 168,
+                                 "id" : 188,
                                  "type" : 1
                               },
                               "name" : "Component",
@@ -3690,20 +4135,20 @@
                            "type" : 55
                         },
                         {
-                           "id" : 172,
+                           "id" : 192,
                            "type" : 34
                         },
                         {
-                           "id" : 173,
+                           "id" : 193,
                            "object" : {
                               "active" : true,
                               "animation" : {
-                                 "id" : 172,
+                                 "id" : 192,
                                  "type" : 34
                               },
                               "disableCollider" : true,
                               "gameObject" : {
-                                 "id" : 168,
+                                 "id" : 188,
                                  "type" : 1
                               },
                               "name" : "AnimTimeSaver",
@@ -3729,7 +4174,7 @@
                         "translation" : [ 7.8000001907348633, 0.20000000298023224, -9.630000114440918 ]
                      },
                      "mesh" : {
-                        "id" : 174,
+                        "id" : 194,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3752,7 +4197,7 @@
                   "type" : 1
                },
                {
-                  "id" : 175,
+                  "id" : 195,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -3766,7 +4211,7 @@
                         "translation" : [ 9.6230001449584961, 0.0, -9.2100000381469727 ]
                      },
                      "mesh" : {
-                        "id" : 176,
+                        "id" : 196,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3789,7 +4234,7 @@
                   "type" : 1
                },
                {
-                  "id" : 177,
+                  "id" : 197,
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
@@ -3803,7 +4248,7 @@
                         "translation" : [ 9.6049995422363281, 0.38999998569488525, -9.0799999237060547 ]
                      },
                      "mesh" : {
-                        "id" : 178,
+                        "id" : 198,
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
@@ -3849,7 +4294,7 @@
          "type" : 1
       },
       "skybox" : {
-         "id" : 179,
+         "id" : 199,
          "object" : {
             "faces" : [
                "res/skybox/test/right.jpg",
