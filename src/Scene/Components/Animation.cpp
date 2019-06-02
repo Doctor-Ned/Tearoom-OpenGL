@@ -65,78 +65,71 @@ Animation::~Animation()
 void Animation::renderGui()
 {
 	Component::renderGui();
-	ImGui::Text("__________________");
-	static float startTime = 0.0f;
-	static bool looped = false;
-	ImGui::Checkbox("Looped", &looped);
-	ImGui::InputFloat("startTime:", &startTime);
-	ImGui::InputFloat("Speed", &speed);
-	if(ImGui::Button("Play"))
-	{
-		play(startTime, looped);
-	}
-	if(ImGui::Button("Stop"))
-	{
-		stopPlaying();
-	}
-	ImGui::Text("Edition");
-	static float time = 0.0f;
-	static float x = 0.0f;
-	static float y = 0.0f;
-	static float z = 0.0f;
-	static char str0[128] = "Object to animate";
-	ImGui::InputText("AnimatedObject", str0, IM_ARRAYSIZE(str0));
-	ImGui::InputFloat("time:", &time);
-	ImGui::InputFloat("fixed X:", &x);
-	ImGui::InputFloat("fixed Y:", &y);
-	ImGui::InputFloat("fixed Z:", &z);
-	if (ImGui::Button("Add/edit pos KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		addKeyFrame(str0, anim::TRANSLATION, time, values);
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Delete pos KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		deleteKeyFrame(str0, anim::TRANSLATION, time);
-	}
-
-	if (ImGui::Button("Add/edit scale KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		addKeyFrame(str0, anim::SCALE, time, values);
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Delete scale KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		deleteKeyFrame(str0, anim::SCALE, time);
-	}
-
-	if (ImGui::Button("Add/edit rot KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		addKeyFrame(str0, anim::ROTATION, time, values);
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Delete rot KeyFrame"))
-	{
-		glm::vec3 values = { x, y, z };
-		deleteKeyFrame(str0, anim::ROTATION, time);
-	}
-
-
-	for(auto animObjIt = objectAnimations.begin(); animObjIt != objectAnimations.end(); ++animObjIt)
-	{
-		std::string animatedObject = animObjIt->first;
-		ImGui::Text("Object:");
+	if (isComponentActive()) {
+		ImGui::Text("__________________");
+		static float startTime = 0.0f;
+		static bool looped = false;
+		ImGui::Checkbox("Looped", &looped);
+		ImGui::InputFloat("startTime:", &startTime);
+		ImGui::InputFloat("Speed", &speed);
+		if (ImGui::Button("Play")) {
+			play(startTime, looped);
+		}
+		if (ImGui::Button("Stop")) {
+			stopPlaying();
+		}
+		ImGui::Text("Edition");
+		static float time = 0.0f;
+		static float x = 0.0f;
+		static float y = 0.0f;
+		static float z = 0.0f;
+		static char str0[128] = "Object to animate";
+		ImGui::InputText("AnimatedObject", str0, IM_ARRAYSIZE(str0));
+		ImGui::InputFloat("time:", &time);
+		ImGui::InputFloat("fixed X:", &x);
+		ImGui::InputFloat("fixed Y:", &y);
+		ImGui::InputFloat("fixed Z:", &z);
+		if (ImGui::Button("Add/edit pos KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			addKeyFrame(str0, anim::TRANSLATION, time, values);
+		}
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.6f, 1.0f), animatedObject.c_str());
+		if (ImGui::Button("Delete pos KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			deleteKeyFrame(str0, anim::TRANSLATION, time);
+		}
 
-		animationGui("Translation", animObjIt->second.translation);
-		animationGui("Scale", animObjIt->second.scale);
-		animationGui("Rotation", animObjIt->second.rotation);
+		if (ImGui::Button("Add/edit scale KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			addKeyFrame(str0, anim::SCALE, time, values);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Delete scale KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			deleteKeyFrame(str0, anim::SCALE, time);
+		}
+
+		if (ImGui::Button("Add/edit rot KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			addKeyFrame(str0, anim::ROTATION, time, values);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Delete rot KeyFrame")) {
+			glm::vec3 values = { x, y, z };
+			deleteKeyFrame(str0, anim::ROTATION, time);
+		}
+
+
+		for (auto animObjIt = objectAnimations.begin(); animObjIt != objectAnimations.end(); ++animObjIt) {
+			std::string animatedObject = animObjIt->first;
+			ImGui::Text("Object:");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.6f, 1.0f), animatedObject.c_str());
+
+			animationGui("Translation", animObjIt->second.translation);
+			animationGui("Scale", animObjIt->second.scale);
+			animationGui("Rotation", animObjIt->second.rotation);
+		}
 	}
 }
 

@@ -419,6 +419,8 @@ LightManager::~LightManager() {
 }
 
 void LightManager::renderGui() {
+	ImGui::Checkbox("Enable lights", &enableLights);
+	ImGui::Checkbox("Enable shadow casting", &enableShadowCasting);
 	ImGui::DragFloat("Initial ambient", &initialAmbient, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Blur amount", &blurAmount, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat("Light bleeding reduction", &lightBleedingReduction, 0.001f, 0.0f, 1.0f);

@@ -3,6 +3,7 @@
 #include "Scene/Scenes/EditorScene.h"
 #include "Serialization/Serializer.h"
 #include "SunTimeActivator.h"
+#include "Scene/Components/Collider.h"
 
 void AnimTimeSaver::renderGui() {
 	Component::renderGui();
@@ -27,6 +28,7 @@ void AnimTimeSaver::renderGui() {
 				};
 			}
 		}
+		ImGui::Checkbox("Disable collider", &disableCollider);
 		if (ImGui::Button("RESET")) {
 			reset();
 		}
@@ -61,6 +63,10 @@ KeyFrameAnimation* AnimTimeSaver::getAnimation() {
 	return animation;
 }
 
+bool AnimTimeSaver::getDisableCollider() {
+	return disableCollider;
+}
+
 void AnimTimeSaver::setSun(Sun* sun) {
 	this->sun = sun;
 	reset();
@@ -69,6 +75,10 @@ void AnimTimeSaver::setSun(Sun* sun) {
 void AnimTimeSaver::setAnimation(KeyFrameAnimation* animation) {
 	this->animation = animation;
 	reset();
+}
+
+void AnimTimeSaver::setDisableCollider(bool disableCollider) {
+	this->disableCollider = disableCollider;
 }
 
 SerializableType AnimTimeSaver::getSerializableType() {
@@ -82,6 +92,7 @@ Json::Value AnimTimeSaver::serialize(Serializer* serializer) {
 	root["targetTime"] = targetTime;
 	root["startedPlaying"] = startedPlaying;
 	root["retargetAllowed"] = retargetAllowed;
+	root["disableCollider"] = disableCollider;
 	return root;
 }
 
@@ -92,6 +103,7 @@ void AnimTimeSaver::deserialize(Json::Value& root, Serializer* serializer) {
 	targetTime = root["targetTime"].asInt();
 	startedPlaying = root["startedPlaying"].asBool();
 	retargetAllowed = root["retargetAllowed"].asBool();
+	disableCollider = root.get("disableCollider", disableCollider).asBool();
 }
 
 AnimTimeSaver::AnimTimeSaver(GraphNode* _gameObject) : Component(_gameObject, "AnimTimeSaver") {
@@ -110,11 +122,15 @@ void AnimTimeSaver::update(float msec) {
 				float time = sun->getTime();
 				float curr = animation->getCurrentTime();
 				float end = animation->getEndTime();
+				Collider *collider = gameObject->getComponent<Collider>();
 				if (time >= targetTime) {
 					animation->setComponentActive(false);
 					retargetAllowed = false;
 					if(curr != end) {
 						animation->setFrame(end);
+					}
+					if(disableCollider && collider) {
+						collider->setComponentActive(false);
 					}
 				} else {
 					animation->setComponentActive(true);
@@ -124,11 +140,16 @@ void AnimTimeSaver::update(float msec) {
 					} else {
 						animation->setFrame(end * (time + 1.0f - targetTime));
 					}
+					if(disableCollider && collider) {
+						collider->setComponentActive(true);
+					}
 				}
 				auto activator = gameObject->getComponent<SunTimeActivator>();
 				if(activator != nullptr) {
 					if(retargetAllowed) {
 						animation->setComponentActive(false);
+					} else if(disableCollider && collider) {
+						collider->setComponentActive(false);
 					}
 				}
 			}

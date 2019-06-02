@@ -5,15 +5,14 @@ using anim::Animated;
 using anim::animMap;
 using anim::ObjectAnimation;
 
-KeyFrameAnimation::KeyFrameAnimation(GraphNode* gameObject, std::string&& name) : Animation(gameObject, std::move(name))
-{
+KeyFrameAnimation::KeyFrameAnimation(GraphNode* gameObject, std::string&& name) : Animation(gameObject, std::move(name)) {
 	takeObjectsToAnimate(gameObject);
 }
 
 void KeyFrameAnimation::setFrame(float time) {
-	if(time < 0.0f) {
+	if (time < 0.0f) {
 		currentTime = 0.0f;
-	} else if(time>endTime) {
+	} else if (time > endTime) {
 		currentTime = endTime;
 	} else {
 		currentTime = time;
@@ -21,50 +20,43 @@ void KeyFrameAnimation::setFrame(float time) {
 	interpolateObjects();
 }
 
-void KeyFrameAnimation::update(float msec)
-{
-	if (isPlaying)
-	{
+void KeyFrameAnimation::update(float msec) {
+	if (isPlaying) {
 		interpolateObjects();
 		currentTime += msec * speed;
 	}
 
-	if (currentTime >= endTime)
-	{
-		if (!looped)
-		{
+	if (currentTime >= endTime) {
+		if (!looped) {
 			isPlaying = false;
 		}
 		currentTime = 0.0f;
 	}
 }
 
-SerializableType KeyFrameAnimation::getSerializableType()
-{
+SerializableType KeyFrameAnimation::getSerializableType() {
 	return SKeyFrameAnimation;
 }
 
-void KeyFrameAnimation::deserialize(Json::Value& root, Serializer* serializer)
-{
+void KeyFrameAnimation::deserialize(Json::Value& root, Serializer* serializer) {
 	Animation::deserialize(root, serializer);
 	takeObjectsToAnimate(gameObject);
 }
 
-void KeyFrameAnimation::renderGui()
-{
-	if(!isPlaying && ImGui::Button("Go back to start")) {
-		setFrame(0.0f);
-	}
+void KeyFrameAnimation::renderGui() {
 	Animation::renderGui();
-	ImGui::Text("If anim doesn't work, try reload.");
-	if (ImGui::Button("Reload"))
-	{
-		takeObjectsToAnimate(gameObject);
+	if (isComponentActive()) {
+		if (!isPlaying && ImGui::Button("Go back to start")) {
+			setFrame(0.0f);
+		}
+		ImGui::Text("If anim doesn't work, try reload.");
+		if (ImGui::Button("Reload")) {
+			takeObjectsToAnimate(gameObject);
+		}
 	}
 }
 
-void KeyFrameAnimation::interpolateValues(float currentTime, GraphNode* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate)
-{
+void KeyFrameAnimation::interpolateValues(float currentTime, GraphNode* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate) {
 	if (mapToInterpolate.size() < 2)
 		return;
 	keyFramePair itPair = getProperIterators(currentTime, mapToInterpolate);
@@ -78,27 +70,19 @@ void KeyFrameAnimation::interpolateValues(float currentTime, GraphNode* animated
 	currentTime = currentTime - leftKeyFrame->first;
 	glm::vec3 mix = glm::mix(leftKeyFrame->second, rightKeyFrame->second, currentTime / time);
 
-	if (type == Animated::TRANSLATION)
-	{
+	if (type == Animated::TRANSLATION) {
 		animatedObject->localTransform.setPosition(mix);
-	}
-	else if (type == Animated::SCALE)
-	{
+	} else if (type == Animated::SCALE) {
 		animatedObject->localTransform.setScale(mix);
-	}
-	else if (type == Animated::ROTATION)
-	{
+	} else if (type == Animated::ROTATION) {
 		animatedObject->localTransform.setRotationDegrees(mix);
 	}
 }
 
-void KeyFrameAnimation::takeObjectsToAnimate(GraphNode* objectToAnimate)
-{
-	if (objectToAnimate)
-	{
+void KeyFrameAnimation::takeObjectsToAnimate(GraphNode* objectToAnimate) {
+	if (objectToAnimate) {
 		objectsToAnimate.push_back(objectToAnimate);
-		for (GraphNode* node : objectToAnimate->getChildren())
-		{
+		for (GraphNode* node : objectToAnimate->getChildren()) {
 			takeObjectsToAnimate(node);
 		}
 	}

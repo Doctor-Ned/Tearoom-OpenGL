@@ -13,12 +13,15 @@ protected:
 	int targetTime;
 	bool startedPlaying;
 	bool retargetAllowed;
+	bool disableCollider = false;
 public:
 	void reset();
 	Sun *getSun();
 	KeyFrameAnimation *getAnimation();
+	bool getDisableCollider();
 	void setSun(Sun *sun);
 	void setAnimation(KeyFrameAnimation *animation);
+	void setDisableCollider(bool disableCollider);
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer *serializer) override;
 	void deserialize(Json::Value &root, Serializer* serializer) override;

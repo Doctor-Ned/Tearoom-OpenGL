@@ -1355,6 +1355,7 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			activator->addActivatableComponent(anim);
 			saver->setAnimation(anim);
 			activator->setSun(sun);
+			saver->setDisableCollider(true);
 			editedScene->addComponent(node, collider);
 			editedScene->addComponent(node, activator);
 			editedScene->addComponent(node, anim);
