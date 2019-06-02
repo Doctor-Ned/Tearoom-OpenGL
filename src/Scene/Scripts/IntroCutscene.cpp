@@ -20,32 +20,10 @@ Yoshiro
 #include "Scene/Components/SunController.h"
 #include "Serialization/Serializer.h"
 
-IntroCutscene::IntroCutscene(Scene* scene, GraphNode* player) {
+IntroCutscene::IntroCutscene(Scene* scene, GraphNode* player) : Component(player, "Intro Cutscene") {
     this->scene = scene;
     this->player = player;
-    boxNode = new GraphNode(box, scene->getRootNode());
-    boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
-    UiElement *root = scene->getUiRoot();
-    mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
-    root->addChild(mainCanvas);
-    mainCanvas->addChild(backgroundPlane);
-    mainCanvas->addChild(paperTexture);
-    mainCanvas->addChild(text1);
-    mainCanvas->addChild(text2);
-    mainCanvas->addChild(text3);
-    mainCanvas->addChild(text4);
-    mainCanvas->addChild(text5);
-    mainCanvas->addChild(transitionPlane);
-    transitionPlane->setOpacity(1.0f);
-    text1->setOpacity(0.0f);
-    text2->setOpacity(0.0f);
-    text3->setOpacity(0.0f);
-    text4->setOpacity(0.0f);
-    text5->setOpacity(0.0f);
-
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
-        this->runIntro();
-    });
+	initialize();
 }
 
 void IntroCutscene::runIntro() {
@@ -62,6 +40,32 @@ void IntroCutscene::showNext(UiElement* uiElement) {
         elapsed += 0.01f;
     }
     elapsed = 0.0f;
+}
+
+void IntroCutscene::initialize() {
+	boxNode = new GraphNode(box, scene->getRootNode());
+	boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
+	UiElement *root = scene->getUiRoot();
+	mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	root->addChild(mainCanvas);
+	mainCanvas->addChild(backgroundPlane);
+	mainCanvas->addChild(paperTexture);
+	mainCanvas->addChild(text1);
+	mainCanvas->addChild(text2);
+	mainCanvas->addChild(text3);
+	mainCanvas->addChild(text4);
+	mainCanvas->addChild(text5);
+	mainCanvas->addChild(transitionPlane);
+	transitionPlane->setOpacity(1.0f);
+	text1->setOpacity(0.0f);
+	text2->setOpacity(0.0f);
+	text3->setOpacity(0.0f);
+	text4->setOpacity(0.0f);
+	text5->setOpacity(0.0f);
+
+	GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+		this->runIntro();
+	});
 }
 
 void IntroCutscene::update(float msec) {
@@ -176,29 +180,5 @@ void IntroCutscene::deserialize(Json::Value& root, Serializer* serializer) {
     Component::deserialize(root, serializer);
     scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
     player = dynamic_cast<GraphNode*>(serializer->deserialize(root["player"]).object);
-
-    boxNode = new GraphNode(box, scene->getRootNode());
-    boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
-    UiElement *uiRoot = scene->getUiRoot();
-    mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), uiRoot->getSize());
-    mainCanvas->setParent(uiRoot);
-    mainCanvas->addChild(backgroundPlane);
-    mainCanvas->addChild(paperTexture);
-    mainCanvas->addChild(text1);
-    mainCanvas->addChild(text2);
-    mainCanvas->addChild(text3);
-    mainCanvas->addChild(text4);
-    mainCanvas->addChild(text5);
-    mainCanvas->addChild(transitionPlane);
-    transitionPlane->setOpacity(1.0f);
-    text1->setOpacity(0.0f);
-    text2->setOpacity(0.0f);
-    text3->setOpacity(0.0f);
-    text4->setOpacity(0.0f);
-    text5->setOpacity(0.0f);
-
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
-        this->runIntro();
-    });
-
+	initialize();
 }

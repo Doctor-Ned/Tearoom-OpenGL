@@ -23,7 +23,9 @@ public:
     void runIntro();
     void showNext(UiElement* uiElement);
 protected:
+	void initialize();
     friend class Serializer;
+	IntroCutscene(){}
     GraphNode* player;
     Scene* scene;
     float elapsed = 1.0f;
