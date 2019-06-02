@@ -18,6 +18,20 @@ enum ItemType {
 	DoorKey
 };
 
+const ItemType ItemTypes[] = {
+	Letter,
+	NormalItem,
+	Photo,
+	DoorKey 
+};
+
+const std::string ItemTypeNames[]{
+	"Letter",
+	"NormalItem",
+	"Photo",
+	"DoorKey"
+};
+
 class CollectableObject : public Component {
 
 public:

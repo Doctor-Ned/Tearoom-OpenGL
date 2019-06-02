@@ -750,8 +750,61 @@ void EditorScene::renderUi() {
 			break;
 			case SCollectableObject:
 			{
-				//typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
+				static std::string icon, preview;
+				static glm::vec2 iconPos, iconSize, previewPos, previewSize;
+				static int itemType;
+				static bool addPreview;
+				if(typeCreation->typeCreationStarted) {
+					icon = "";
+					preview = "";
+					addPreview = false;
+					iconPos = glm::vec2(995.0f, 530.0f);
+					iconSize = glm::vec2(60.0f, 60.0f);
+					previewPos = glm::vec2(1200.0f, 430.0f);
+					previewSize = glm::vec2(300.0f, 500.0f);
+					itemType = 0;
+				}
+				ImGui::Text(("Item type: " + ItemTypeNames[itemType]).c_str());
+				ImGui::SameLine();
+				if(ImGui::Button("CHANGE")) {
+					itemType++;
+					if(itemType >= sizeof(ItemTypes)/sizeof(*ItemTypes)) {
+						itemType = 0;
+					}
+				}
+				static const auto BUFFER_SIZE = 150;
+				static char nameBuffer[BUFFER_SIZE] = "";
+				ImGui::InputText("Description", nameBuffer, sizeof(nameBuffer));
+				ImGui::Text(("Icon: " + icon.empty() ? "NONE" : icon).c_str());
+				if(textureSelectionCallback == nullptr) {
+					ImGui::SameLine();
+					if(ImGui::Button("CHOOSE")) {
+						textureSelectionCallback = [&](Texture t) {
+							icon = t.path;
+						};
+					}
+					ImGui::DragFloat2("Icon position", reinterpret_cast<float*>(&iconPos), 1.0f, 0.0f, 1280.0f);
+					ImGui::DragFloat2("Icon size", reinterpret_cast<float*>(&iconSize), 1.0f, 0.0f, 1000.0f);
+				}
+				ImGui::Checkbox("Add preview", &addPreview);
+				if(addPreview) {
+					ImGui::Text(("Preview: " + preview.empty() ? "NONE" : preview).c_str());
+					if (textureSelectionCallback == nullptr) {
+						ImGui::SameLine();
+						if (ImGui::Button("CHOOSE")) {
+							textureSelectionCallback = [&](Texture t) {
+								preview = t.path;
+							};
+						}
+					}
+					ImGui::DragFloat2("Preview position", reinterpret_cast<float*>(&previewPos), 1.0f, 0.0f, 1280.0f);
+					ImGui::DragFloat2("Preview size", reinterpret_cast<float*>(&previewSize), 1.0f, 0.0f, 1000.0f);
+				}
+				if(!icon.empty() && !(addPreview && preview.empty()) && ImGui::Button("Create")) {
+					std::string desc(nameBuffer);
+					typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
 			}
 			break;
 			case SCollisionTest:
