@@ -138,7 +138,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player));
 	camera = player->getComponent<Camera>();  //playermovement creates a camera if it doesn't exist
-	player->addComponent(new IntroCutscene(this, player->getPosition(), player));
+	player->addComponent(new IntroCutscene(this, player));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
