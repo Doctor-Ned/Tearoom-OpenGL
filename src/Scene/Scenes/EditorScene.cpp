@@ -644,26 +644,8 @@ void EditorScene::renderUi() {
 			break;
 			case SAnimationController:
 			{
-				static int animationType;
-				if (typeCreation->typeCreationStarted) {
-					animationType = 0;
-				}
-				if (ImGui::BeginCombo("Animation type", AnimationTypeNames[animationType].c_str())) {
-					for (int i = 0; i < sizeof(AnimationTypes) / sizeof(*AnimationTypes); i++) {
-						bool isSelected = i == animationType;
-						if (ImGui::Selectable(AnimationTypeNames[animationType].c_str(), isSelected)) {
-							animationType = i;
-						}
-						if (isSelected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new AnimationController(AnimationTypes[animationType], reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+				typeCreation->creationCallback(new AnimationController(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
 			case SBillboard:
