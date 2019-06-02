@@ -36,11 +36,11 @@ MiszukScene::MiszukScene() {
 
 	//-------------
 	//INVENTORY UI
-	UiPlane* boxRepresentation = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* boxRepresentation2 = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-    UiPlane* keyRepresentation = new UiPlane("res/textures/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+	UiPlane* boxRepresentation = new UiPlane("res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+	UiPlane* boxRepresentation2 = new UiPlane("res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+    UiPlane* keyRepresentation = new UiPlane("res/textures/Icons/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
 
-    UiPlane* letterPreview = new UiPlane("res/textures/letterExample.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
+    UiPlane* letterPreview = new UiPlane("res/textures/Letter/letterExample.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
 	// COLLECTABLE ITEM
 	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);

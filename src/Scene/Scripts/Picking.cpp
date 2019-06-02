@@ -99,9 +99,9 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	});
 
     // for demo purposes
-    UiPlane* firstPhotoIcon = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-    UiPlane* firstPhotoPreview = new UiPlane("res/textures/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
-    UiPlane* firstLetterPreview = new UiPlane("res/textures/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f), Right);
+    UiPlane* firstPhotoIcon = new UiPlane("res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+    UiPlane* firstPhotoPreview = new UiPlane("res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
+    UiPlane* firstLetterPreview = new UiPlane("res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f), Right);
 
     GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
     GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
