@@ -75,14 +75,12 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-    encouragementDoorClosed = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Oops.. I need a key", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
-    encouragementCanvas->addChild(encouragementDoorClosed);
 
     inventoryCanvas->addChild(descBackground);
 
@@ -173,7 +171,6 @@ void Picking::update(float msec) {
 		if (collectable && collectable->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(false);
-            encouragementDoorClosed->setActive(false);
             encouragementPick->setActive(true);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
@@ -202,7 +199,6 @@ void Picking::update(float msec) {
 									if (obj->getDoorID() == anim->getDoorID()) {
 										inventory.erase(inventory.begin() + i);
 										this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-										encouragementDoorClosed->setActive(false);
 									}
 								}
 							}
@@ -252,6 +248,7 @@ void Picking::update(float msec) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
+			encouragementActivate->setText("Press E to interact");
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				anim->play();
@@ -349,14 +346,12 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
 	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-    encouragementDoorClosed = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Oops.. I need a key", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
-    encouragementCanvas->addChild(encouragementDoorClosed);
 
     inventoryCanvas->addChild(descBackground);
 

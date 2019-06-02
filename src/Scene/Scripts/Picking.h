@@ -37,7 +37,7 @@ private:
 	Picking() {}
 	friend class Serializer;
 	UiColorPlane* encouragementBackground;
-	UiText *encouragementPick, *encouragementActivate, *encouragementDoorClosed;
+	UiText *encouragementPick, *encouragementActivate;
 	UiButton* itemsButton;
 	UiButton* letterButton;
 	UiButton* photoButton;
