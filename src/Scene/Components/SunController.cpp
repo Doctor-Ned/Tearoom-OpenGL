@@ -25,8 +25,8 @@ void SunController::initialize()
 	clockBack = new UiPlane("res/textures/watch_sprite.png", glm::vec2(50.0f, 583.0f), glm::vec2(250.0f, 250.0f), Left);
 	clockHand = new UiPlane("res/textures/watch_arrow_sprite.png", clockBack->getPosition() + clockBack->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
 	clockHand->setRotationAnchor(Center);
-	clockHand->setActive(clockShown);
-	clockBack->setActive(clockShown);
+	//clockHand->setActive(clockShown);
+	//clockBack->setActive(clockShown);
 	scene->getUiRoot()->addChild(clockBack);
 	scene->getUiRoot()->addChild(clockHand);
 
@@ -91,7 +91,7 @@ void SunController::update(float msec) {
 
 	if(!timeTravel)
 	{
-		setClockVisibility(false);
+		//setClockVisibility(false);
 	}
 
 	if(timeTravel)

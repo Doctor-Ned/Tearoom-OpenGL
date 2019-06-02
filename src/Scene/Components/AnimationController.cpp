@@ -26,7 +26,6 @@ void AnimationController::update(float msec)
 
 void AnimationController::playAnimation() {
 	anim->play();
-	std::cout<<"HALOO"<<std::endl;
 }
 
 SerializableType AnimationController::getSerializableType() {

@@ -97,6 +97,29 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 			hideInventoryUi();
 		}
 	});
+
+    // for demo purposes
+    UiPlane* firstPhotoIcon = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
+    UiPlane* firstPhotoPreview = new UiPlane("res/textures/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
+    GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
+    CollectableObject* col = new CollectableObject(firstPhoto, camera, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
+    firstPhoto->addComponent(col);
+    col->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+    col->getButton()->setOpacity(0.0f);
+    inventory.push_back(firstPhoto);
+    firstPhoto->setActive(false);
+
+    col->getButton()->addClickCallback([this, col]() {
+        this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+        setSwitch(!getSwitch());
+        hideInventoryUi();
+        previewCanvas->addChild(col->getPreview());
+        previewCanvas->setActive(true);
+    });
+
+    previewCanvas->addChild(firstPhotoPreview);
+    previewCanvas->setActive(true);
+
 }
 
 void Picking::placeInGrid(ItemType itype) {
@@ -152,6 +175,14 @@ void Picking::showInventoryUi() {
 
 bool Picking::getSwitch() {
 	return inventoryUI;
+}
+
+void Picking::hidePreview() {
+    previewCanvas->setActive(false);
+}
+
+void Picking::showPreview() {
+    previewCanvas->setActive(true);
 }
 
 void Picking::setSwitch(bool ifShown) {
