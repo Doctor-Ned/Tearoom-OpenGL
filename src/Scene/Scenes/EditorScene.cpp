@@ -1354,10 +1354,10 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			SunTimeActivator *activator = new SunTimeActivator(node);
 			activator->addActivatableComponent(anim);
 			activator->setSun(sun);
-			node->addComponent(collider);
-			node->addComponent(activator);
-			node->addComponent(anim);
-			node->addComponent(saver);
+			editedScene->addComponent(node, collider);
+			editedScene->addComponent(node, activator);
+			editedScene->addComponent(node, anim);
+			editedScene->addComponent(node, saver);
 			break;
 	}
 }

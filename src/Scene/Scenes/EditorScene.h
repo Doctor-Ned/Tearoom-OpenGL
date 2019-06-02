@@ -19,9 +19,9 @@ enum Prefab {
 	PrefCache
 };
 
-Prefab Prefabs[] = { PrefCache };
+const Prefab Prefabs[] = { PrefCache };
 
-std::string PrefabNames[] = { "PrefCache" };
+const std::string PrefabNames[] = { "PrefCache" };
 
 struct TypeCreation {
 	SerializableType typeToCreate = SNone;
