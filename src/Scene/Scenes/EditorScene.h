@@ -15,6 +15,14 @@ enum TypeToCreate {
 	TTCMesh
 };
 
+enum Prefab {
+	PrefCache
+};
+
+Prefab Prefabs[] = { PrefCache };
+
+std::string PrefabNames[] = { "PrefCache" };
+
 struct TypeCreation {
 	SerializableType typeToCreate = SNone;
 	bool typeCreationStarted = true;
@@ -51,6 +59,7 @@ public:
 	bool useWireframe = true;
 	std::vector<std::pair<GraphNode*, GraphNode*>> addRenderedNodeQueue;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
+	void applyPrefab(GraphNode* node, Prefab prefab);
 	void showNodeAsTree(GraphNode *node);
 	void keyEvent(int key, bool pressed) override;
 	bool useEditorCamera = true;
@@ -70,6 +79,7 @@ public:
 	std::function<void(SerializableType)> componentSelectionCallback = nullptr;
 	std::function<void(SerializableType)> meshSelectionCallback = nullptr;
 	std::function<void(std::string)> modelSelectionCallback = nullptr;
+	std::function<void(Prefab)> prefabSelectionCallback = nullptr;
 	std::vector<TypeCreation*> typeCreations;
 	Scene *editedScene = nullptr;
 	Serializer *serializer;

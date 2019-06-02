@@ -97,7 +97,7 @@ const std::string SerializableTypeNames[] = {
 	"SPhysicalObject",
 	"SPicking",
 	"SPlayerMovement",
-	"SAnimation",
+	"SKeyFrameAnimation",
 	"SRotatingObject",
 	"SDirLightComp",
 	"SLightComp",

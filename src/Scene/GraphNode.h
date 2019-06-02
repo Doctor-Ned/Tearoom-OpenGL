@@ -46,6 +46,7 @@ public:
 	template <class T> void removeComponents();
 	template <class T> T* getComponent();
 	template <class T> std::vector<T*> getComponents();
+	template <class T> T* getComponentInChildren();
 	std::vector<Component*> getComponents();
 	GraphNode* getChild(int index);
 	float getOpacity();
@@ -141,6 +142,24 @@ std::vector<T*> GraphNode::getComponents() {
 		}
 	}
 	return result;
+}
+
+template <class T>
+T* GraphNode::getComponentInChildren() {
+	T* t = getComponent<T>();
+	if(t) {
+		return t;
+	}
+	if(children.empty()) {
+		return nullptr;
+	}
+	for(auto &child : children) {
+		t = child->getComponentInChildren<T>();
+		if(t != nullptr) {
+			return t;
+		}
+	}
+	return nullptr;
 }
 
 #endif

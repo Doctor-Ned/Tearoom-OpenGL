@@ -91,6 +91,9 @@ void EditorScene::renderUi() {
 	if (shaderTypeSelectionCallback != nullptr && ImGui::Button("Stop selecting shader type")) {
 		shaderTypeSelectionCallback = nullptr;
 	}
+	if(prefabSelectionCallback != nullptr && ImGui::Button("Stop selecting prefab")) {
+		prefabSelectionCallback = nullptr;
+	}
 
 	ImGui::Begin("Light manager", nullptr, 64);
 	lightManager->drawGui();
@@ -881,7 +884,7 @@ void EditorScene::renderUi() {
 	}
 
 	if (componentSelectionCallback != nullptr) {
-		ImGui::Begin("SELECT COMPOENT TYPE", nullptr, 64);
+		ImGui::Begin("SELECT COMPONENT TYPE", nullptr, 64);
 		for (auto &type : creatableComponents) {
 			if (ImGui::Button(SerializableTypeNames[type].c_str())) {
 				componentSelectionCallback(type);
@@ -942,6 +945,20 @@ void EditorScene::renderUi() {
 		}
 		if (ImGui::Button("CANCEL")) {
 			shaderTypeSelectionCallback = nullptr;
+		}
+		ImGui::End();
+	}
+
+	if(prefabSelectionCallback != nullptr) {
+		ImGui::Begin("SELECT PREFAB TYPE", nullptr, 64);
+		for(int i=0;i<sizeof(PrefabNames)/sizeof(*PrefabNames);i++) {
+			std::string prefabName = PrefabNames[i];
+			ImGui::PushID(prefabName.c_str());
+			if(ImGui::Button(prefabName.c_str())) {
+				prefabSelectionCallback(Prefabs[i]);
+				prefabSelectionCallback = nullptr;
+			}
+			ImGui::PopID();
 		}
 		ImGui::End();
 	}
@@ -1326,6 +1343,25 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 	addRenderedNodeQueue.push_back(std::pair<GraphNode*, GraphNode*>(node, parent));
 }
 
+void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
+	switch(prefab) {
+		case PrefCache:
+			BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
+			AnimTimeSaver *saver = new AnimTimeSaver(node);
+			Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
+			saver->setSun(sun);
+			KeyFrameAnimation *anim = new KeyFrameAnimation(node);
+			SunTimeActivator *activator = new SunTimeActivator(node);
+			activator->addActivatableComponent(anim);
+			activator->setSun(sun);
+			node->addComponent(collider);
+			node->addComponent(activator);
+			node->addComponent(anim);
+			node->addComponent(saver);
+			break;
+	}
+}
+
 void EditorScene::showNodeAsTree(GraphNode* node) {
 	ImGui::PushID(idCounter++);
 	ImGui::Text(node->getName().c_str());
@@ -1386,6 +1422,14 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 					if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
 						node->setParent(parent);
 					}
+				};
+			}
+			ImGui::SameLine();
+		}
+		if(this->prefabSelectionCallback == nullptr) {
+			if(ImGui::Button("Apply prefab...")) {
+				prefabSelectionCallback = [this,node](Prefab prefab) {
+					applyPrefab(node, prefab);
 				};
 			}
 			ImGui::SameLine();
