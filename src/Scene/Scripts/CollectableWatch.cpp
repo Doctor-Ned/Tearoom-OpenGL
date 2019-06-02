@@ -5,18 +5,17 @@
 #include "CollectableObject.h"
 
 CollectableWatch::CollectableWatch(GraphNode* _gameObject) : Component(_gameObject, "Collectable Watch") {
-	UiPlane* icon = new UiPlane("res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-	UiPlane* preview = new UiPlane("res/textures/Letter/clockLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
-	collectable = new CollectableObject(_gameObject, Letter, icon, "Yoshiro's letter about the watch", preview);
-	//_gameObject->addComponent(collectable);
+	collectable = new CollectableObject(_gameObject, Letter, "res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f),
+										"Yoshiro's letter about the watch", "res/textures/Letter/clockLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+	_gameObject->addComponent(collectable);
 }
 
 void CollectableWatch::update(float msec) {}
 
 void CollectableWatch::pickup() {
 	if (sunController) {
-		sunController->setClockVisibility(true);
 		sunController->setComponentActive(true);
+		sunController->setClockVisibility(true);
 	}
 	this->setComponentActive(false);
 }

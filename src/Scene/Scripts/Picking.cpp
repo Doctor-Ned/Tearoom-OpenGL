@@ -83,7 +83,7 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
 
-    inventoryCanvas->addChild(descBackground);
+	inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
 		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
@@ -99,45 +99,41 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 		}
 	});
 
-    // for demo purposes
-    UiPlane* firstPhotoIcon = new UiPlane("res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
-    UiPlane* firstPhotoPreview = new UiPlane("res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
-    UiPlane* firstLetterPreview = new UiPlane("res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f), Right);
+	// for demo purposes
+	GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
+	GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
 
-    GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
-    GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
+	CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, "res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Photo from uncle Yoshiro", "res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+	CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, "res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Letter from uncle Yoshiro", "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f));
+	firstPhoto->addComponent(colPhoto);
+	firstLetter->addComponent(colLetter);
+	firstPhoto->setActive(false);
+	firstLetter->setActive(false);
+	colPhoto->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+	colPhoto->getButton()->setOpacity(0.0f);
+	colLetter->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+	colLetter->getButton()->setOpacity(0.0f);
+	inventory.push_back(firstPhoto);
+	inventory.push_back(firstLetter);
 
-    CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
-    CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, firstPhotoIcon, "Letter from uncle Yoshiro", firstLetterPreview);
-    firstPhoto->addComponent(colPhoto);
-    firstLetter->addComponent(colLetter);
-    firstPhoto->setActive(false);
-    firstLetter->setActive(false);
-    colPhoto->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
-    colPhoto->getButton()->setOpacity(0.0f);
-    colLetter->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
-    colLetter->getButton()->setOpacity(0.0f);
-    inventory.push_back(firstPhoto);
-    inventory.push_back(firstLetter);
+	colPhoto->getButton()->addClickCallback([this, colPhoto]() {
+		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+		setSwitch(!getSwitch());
+		hideInventoryUi();
+		previewCanvas->addChild(colPhoto->getPreview());
+		previewCanvas->setActive(true);
+	});
 
-    colPhoto->getButton()->addClickCallback([this, colPhoto]() {
-        this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-        setSwitch(!getSwitch());
-        hideInventoryUi();
-        previewCanvas->addChild(colPhoto->getPreview());
-        previewCanvas->setActive(true);
-    });
+	colLetter->getButton()->addClickCallback([this, colLetter]() {
+		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+		setSwitch(!getSwitch());
+		hideInventoryUi();
+		previewCanvas->addChild(colLetter->getPreview());
+		previewCanvas->setActive(true);
+	});
 
-    colLetter->getButton()->addClickCallback([this, colLetter]() {
-        this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-        setSwitch(!getSwitch());
-        hideInventoryUi();
-        previewCanvas->addChild(colLetter->getPreview());
-        previewCanvas->setActive(true);
-    });
-
-    previewCanvas->addChild(firstPhotoPreview);
-    previewCanvas->setActive(true);
+	previewCanvas->addChild(colPhoto->getPreview());
+	previewCanvas->setActive(true);
 
 }
 
@@ -263,11 +259,11 @@ bool Picking::getSwitch() {
 }
 
 void Picking::hidePreview() {
-    previewCanvas->setActive(false);
+	previewCanvas->setActive(false);
 }
 
 void Picking::showPreview() {
-    previewCanvas->setActive(true);
+	previewCanvas->setActive(true);
 }
 
 void Picking::setSwitch(bool ifShown) {
@@ -283,19 +279,8 @@ void Picking::update(float msec) {
 
 	encouragementCanvas->setActive(false);
 	if (object && object->isActive()) {
-		CollectableObject *collectable = object->getComponent<CollectableObject>();
-		if (collectable && collectable->isComponentActive()) {
-			encouragementCanvas->setActive(true);
-			encouragementActivate->setActive(false);
-            encouragementPick->setActive(true);
-
-			if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
-				collect(collectable);
-			}
-		}
-
 		CollectableWatch *watch = object->getComponent<CollectableWatch>();
-		if(watch && watch->isComponentActive()) {
+		if (watch && watch->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
@@ -303,15 +288,25 @@ void Picking::update(float msec) {
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				watch->pickup();
 				collect(watch->getCollectable());
-				previewCanvas->addChild(collectable->getPreview());
+				previewCanvas->addChild(watch->getCollectable()->getPreview());
 				previewCanvas->setActive(true);
 			}
-			//todo: show the letter
+		} else {
+			CollectableObject *collectable = object->getComponent<CollectableObject>();
+			if (collectable && collectable->isComponentActive()) {
+				encouragementCanvas->setActive(true);
+				encouragementActivate->setActive(false);
+				encouragementPick->setActive(true);
+
+				if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
+					collect(collectable);
+				}
+			}
 		}
 
 		Animation* anim = object->getComponent<Animation>();
-        AnimationController* animController = object->getComponent<AnimationController>();
-		
+		AnimationController* animController = object->getComponent<AnimationController>();
+
 		if (anim && anim->isComponentActive() && !anim->getIsPlaying() && !animController) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
@@ -322,7 +317,7 @@ void Picking::update(float msec) {
 				anim->play();
 			}
 		}
-		 
+
 
 		if (animController && animController->isComponentActive()) {
 			encouragementCanvas->setActive(true);
@@ -331,15 +326,14 @@ void Picking::update(float msec) {
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				if (animController->getType() == DoorOpeningX || animController->getType() == DoorOpeningY) {
-                    encouragementActivate->setText("Oops.. I need a key");
-                    this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+					encouragementActivate->setText("Oops.. I need a key");
+					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
 					showInventoryUi();
 					currentInteraction = object;
 				}
 			}
-		}
-		else {
+		} else {
 
 		}
 	}
@@ -421,12 +415,12 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
 
-    inventoryCanvas->addChild(descBackground);
+	inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
 		GameManager::getInstance()->setCursorLocked(!(GameManager::getInstance()->getCursorLocked()));
-        encouragementActivate->setText("Press E to interact");
-        setSwitch(!getSwitch());
+		encouragementActivate->setText("Press E to interact");
+		setSwitch(!getSwitch());
 	});
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]() {
 		if (getSwitch()) {

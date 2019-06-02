@@ -750,7 +750,7 @@ void EditorScene::renderUi() {
 			break;
 			case SCollectableObject:
 			{
-				typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				//typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
