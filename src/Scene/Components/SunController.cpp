@@ -188,7 +188,7 @@ void SunController::deserialize(Json::Value& root, Serializer* serializer) {
 	currentHour = root["currentHour"].asFloat();
 	currentClockHour = root["currentClockHour"].asFloat();
 	timeTravel = root["timeTravel"].asBool();
-	root["clockShown"] = root["clockShown"].asBool();
+	clockShown = root["clockShown"].asBool();
 	initialize();
 }
 
