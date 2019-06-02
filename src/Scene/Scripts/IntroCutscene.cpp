@@ -49,7 +49,6 @@ void IntroCutscene::runIntro() {
     player->getComponent<Picking>()->hidePreview();
     player->getComponent<SunController>()->setComponentActive(false);
     player->getComponent<SunController>()->setClockVisibility(false);
-
     run = true;
 }
 
