@@ -67,8 +67,8 @@ public:
 	Camera *editorCamera, *playerCamera = nullptr;
 	UiText *cameraText;
 	SerializableType creatableTypes[2] = { SGraphNode, SSkybox };
-	SerializableType creatableComponents[20] = { SKeyFrameAnimation, SSkeletalAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
-		SDirLightComp, SSpotLightComp, SPointLightComp, SSun, SSunController, SColumnMoving, SAnimTimeSaver, SSunTimeActivator, SCollectableWatch};
+	SerializableType creatableComponents[21] = { SKeyFrameAnimation, SSkeletalAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
+		SDirLightComp, SSpotLightComp, SPointLightComp, SSun, SSunController, SColumnMoving, SAnimTimeSaver, SSunTimeActivator, SCollectableWatch, SIntroCutscene};
 	SerializableType creatableMeshes[17] = { SModel, SAnimatedModel, SMeshBox, SMeshColorBox, SMeshColorCone, SMeshColorCylinder, SMeshColorPlane, SMeshColorSphere, SMeshColorTorus, SMeshCone, SMeshCylinder, SMeshPlane, SMeshRefBox, SMeshRefSphere,
 	SMeshSphere, SMeshTorus, SMeshText};
 	bool showSaveDialog = false, showLoadDialog = false;
