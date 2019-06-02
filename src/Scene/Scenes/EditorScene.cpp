@@ -752,11 +752,12 @@ void EditorScene::renderUi() {
 			{
 				static std::string icon, preview;
 				static glm::vec2 iconPos, iconSize, previewPos, previewSize;
-				static int itemType;
+				static int itemType, doorID;
 				static bool addPreview;
 				if(typeCreation->typeCreationStarted) {
 					icon = "";
 					preview = "";
+					doorID = 0;
 					addPreview = false;
 					iconPos = glm::vec2(995.0f, 530.0f);
 					iconSize = glm::vec2(60.0f, 60.0f);
@@ -800,9 +801,10 @@ void EditorScene::renderUi() {
 					ImGui::DragFloat2("Preview position", reinterpret_cast<float*>(&previewPos), 1.0f, 0.0f, 1280.0f);
 					ImGui::DragFloat2("Preview size", reinterpret_cast<float*>(&previewSize), 1.0f, 0.0f, 1000.0f);
 				}
+				ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
 				if(!icon.empty() && !(addPreview && preview.empty()) && ImGui::Button("Create")) {
 					std::string desc(nameBuffer);
-					typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize));
+					typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize, doorID));
 					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}

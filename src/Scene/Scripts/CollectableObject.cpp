@@ -10,35 +10,33 @@
 #include <iostream>
 #include "Serialization/Serializer.h"
 
-CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObject) { }
+CollectableObject::CollectableObject(GraphNode* _gameObject) :Component(_gameObject) {}
 
 CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc, std::string preview, glm::vec2 previewPos, glm::vec2 previewSize)
-:Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(preview), previewPos(previewPos), previewSize(previewSize) {
+	: Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(preview), previewPos(previewPos), previewSize(previewSize) {
 	initializeUiPlanes();
 }
 
 CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc, std::string preview, glm::vec2 previewPos, glm::vec2 previewSize, int doorID)
-:Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(preview), previewPos(previewPos), previewSize(previewSize), doorID(doorID) {
+	: Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(preview), previewPos(previewPos), previewSize(previewSize), doorID(doorID) {
 	initializeUiPlanes();
 }
 
-void CollectableObject::takeObject()
-{
-    isTaken = true;
+void CollectableObject::takeObject() {
+	isTaken = true;
 	gameObject->setActive(false);
-    gameObject->getMesh()->setOpaque(false);
+	gameObject->getMesh()->setOpaque(false);
 }
 
-void CollectableObject::update(float msec)
-{
+void CollectableObject::update(float msec) {
 
 }
 
 bool CollectableObject::getIsTaken() const {
-    return isTaken;
+	return isTaken;
 }
 UiText* CollectableObject::getDescription() {
-    return desctext;
+	return desctext;
 }
 
 SerializableType CollectableObject::getSerializableType() {
@@ -81,31 +79,35 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 CollectableObject::~CollectableObject() {}
 
 ItemType CollectableObject::getI_type() const {
-    return i_type;
+	return i_type;
 }
 
 UiPlane *CollectableObject::getIcon() const {
-    return icon;
+	return icon;
 }
 
 void CollectableObject::setButton(UiButton* button) {
-    itemButton = button;
+	itemButton = button;
 }
 
 UiButton* CollectableObject::getButton() {
-    return itemButton;
+	return itemButton;
 }
 
-UiPlane* CollectableObject::getPreview(){
-    return preview;
+UiPlane* CollectableObject::getPreview() {
+	return preview;
 }
 
 int CollectableObject::getDoorID() {
-    return doorID;
+	return doorID;
 }
 
 void CollectableObject::initializeUiPlanes() {
 	desctext = new UiText(glm::vec2(100.0f, 30.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	icon = new UiPlane(iconResource.c_str(), iconPos, iconSize, Right);
-	preview = new UiPlane(previewResource.c_str(), previewPos, previewSize, Right);
+	if (!previewResource.empty()) {
+		preview = new UiPlane(previewResource.c_str(), previewPos, previewSize, Right);
+	} else {
+		preview = nullptr;
+	}
 }
