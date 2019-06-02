@@ -86,11 +86,9 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
-		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 		encouragementActivate->setText("Press E to interact");
-		setSwitch(!getSwitch());
-	});
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, false, [this]() {
+		gameManager->setCursorLocked(inventoryUI);
+		inventoryUI = !inventoryUI;
 		if (getSwitch()) {
 			previewCanvas->setActive(false);
 			showInventoryUi();
@@ -117,16 +115,16 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	inventory.push_back(firstLetter);
 
 	colPhoto->getButton()->addClickCallback([this, colPhoto]() {
-		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-		setSwitch(!getSwitch());
+		gameManager->setCursorLocked(true);
+		inventoryUI = false;
 		hideInventoryUi();
 		previewCanvas->addChild(colPhoto->getPreview());
 		previewCanvas->setActive(true);
 	});
 
 	colLetter->getButton()->addClickCallback([this, colLetter]() {
-		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-		setSwitch(!getSwitch());
+		gameManager->setCursorLocked(true);
+		inventoryUI = false;
 		hideInventoryUi();
 		previewCanvas->addChild(colLetter->getPreview());
 		previewCanvas->setActive(true);
@@ -170,9 +168,8 @@ void Picking::collect(CollectableObject* collectable) {
 
 	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
-			this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-			setSwitch(!getSwitch());
-			hideInventoryUi();
+			gameManager->setCursorLocked(true);
+			inventoryUI = false;
 			previewCanvas->addChild(collectable->getPreview());
 			previewCanvas->setActive(true);
 		});
@@ -196,9 +193,8 @@ void Picking::collect(CollectableObject* collectable) {
 			}
 		});
 	} else {
-		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-		setSwitch(!getSwitch());
-		hideInventoryUi();
+		gameManager->setCursorLocked(true);
+		inventoryUI = false;
 	}
 	collectable->getButton()->addHoverCallback([this, collectable]() {
 		descBackground->setActive(true);
@@ -327,7 +323,7 @@ void Picking::update(float msec) {
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				encouragementActivate->setText("Oops.. I need a key");
-				this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+				gameManager->setCursorLocked(false);
 				setSwitch(!getSwitch());
 				showInventoryUi();
 				currentInteraction = object;

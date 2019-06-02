@@ -7,6 +7,7 @@
 #include <Ui/UiColorPlane.h>
 #include "MenuScene.h"
 #include "MiszukScene.h"
+#include "Serialization/Serializer.h"
 
 MenuPreview::MenuPreview() {
     UiPlane*  menuBackground = new UiPlane("res/textures/menuSideBar.PNG", glm::vec2(-1.0f, -10.0f), glm::vec2(380.0f, 800.0f), TopLeft);
@@ -53,7 +54,9 @@ MenuPreview::MenuPreview() {
         backHover->setActive(false);
     });
     startGame->addClickCallback([this]() {
-        GameManager::getInstance()->setCurrentScene(new MiszukScene());
+        //GameManager::getInstance()->setCurrentScene(new MiszukScene());
+		GameManager::getInstance()->setCursorLocked(true);
+		GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
     });
     startGame->addHoverCallback([this, startHover](){
         startHover->setOpacity(0.3f);
