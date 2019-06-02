@@ -2,6 +2,7 @@
 #include "Scene/GraphNode.h"
 #include "Scene/Scenes/EditorScene.h"
 #include "Serialization/Serializer.h"
+#include "SunTimeActivator.h"
 
 void AnimTimeSaver::renderGui() {
 	Component::renderGui();
@@ -122,6 +123,12 @@ void AnimTimeSaver::update(float msec) {
 						animation->setFrame(0.0f);
 					} else {
 						animation->setFrame(end * (time + 1.0f - targetTime));
+					}
+				}
+				auto activator = gameObject->getComponent<SunTimeActivator>();
+				if(activator != nullptr) {
+					if(retargetAllowed) {
+						animation->setComponentActive(false);
 					}
 				}
 			}

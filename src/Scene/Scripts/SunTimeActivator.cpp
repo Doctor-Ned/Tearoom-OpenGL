@@ -83,6 +83,19 @@ void SunTimeActivator::clearActivatableComponents() {
 	components.clear();
 }
 
+bool SunTimeActivator::hasComponent(Component* comp) {
+	for(auto &c : components) {
+		if (c==comp) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool SunTimeActivator::isTimeCorrect() {
+	return correct;
+}
+
 SerializableType SunTimeActivator::getSerializableType() {
 	return SSunTimeActivator;
 }
@@ -91,9 +104,9 @@ SunTimeActivator::SunTimeActivator(GraphNode* _gameObject) : Component(_gameObje
 
 void SunTimeActivator::update(float msec) {
 	if (sun != nullptr) {
-		bool active = abs(targetTime - sun->getTime()) < 0.1f;
+		correct = abs(targetTime - sun->getTime()) < 0.1f;
 		for (auto &comp : components) {
-			comp->setComponentActive(active);
+			comp->setComponentActive(correct);
 		}
 	}
 }
@@ -105,6 +118,7 @@ Json::Value SunTimeActivator::serialize(Serializer* serializer) {
 		root["components"][i] = serializer->serialize(components[i]);
 	}
 	root["targetTime"] = targetTime;
+	root["correct"] = correct;
 	return root;
 }
 
@@ -115,4 +129,5 @@ void SunTimeActivator::deserialize(Json::Value& root, Serializer* serializer) {
 		addActivatableComponent(dynamic_cast<Component*>(serializer->deserialize(root["components"][i]).object));
 	}
 	targetTime = root["targetTime"].asInt();
+	correct = root.get("correct", correct).asBool();
 }

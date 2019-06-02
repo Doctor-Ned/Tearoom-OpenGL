@@ -44,7 +44,6 @@ Json::Value ModelInstanced::serialize(Serializer* serializer) {
 }
 
 void ModelInstanced::deserialize(Json::Value& root, Serializer* serializer) {
-	Mesh::deserialize(root, serializer);
 	int offsetSize = root["offsets"].size();
 	glm::vec3 *offsets = new glm::vec3[offsetSize];
 	for(int i=0;i<offsetSize;i++) {
@@ -52,6 +51,7 @@ void ModelInstanced::deserialize(Json::Value& root, Serializer* serializer) {
 	}
 	this->path = root.get("model", "").asString();
 	initialize(AssetManager::getInstance()->getModelData(path), offsets, offsetSize);
+	Mesh::deserialize(root, serializer);
 }
 
 void ModelInstanced::renderGui() {
