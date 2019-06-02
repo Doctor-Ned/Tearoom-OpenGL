@@ -10,6 +10,7 @@ protected:
 	std::map<int, float> heightToHourMap;
 	void renderGui() override;
 	float getFractionalPartOfHour(float hour);
+	float getHeightForTime(float time);
 public:
 	ColumnMoving(GraphNode* gameObject, std::string name = "ColumnMoving");
 	ColumnMoving() = default;
