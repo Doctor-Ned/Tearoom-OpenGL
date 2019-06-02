@@ -14,12 +14,13 @@
 
 class IntroCutscene: public Component {
 public:
-    IntroCutscene(Scene* scene, glm::vec3 cameraPos);
+    IntroCutscene(Scene* scene, glm::vec3 cameraPos, GraphNode* player);
     ~IntroCutscene() override;
     void update(float msec) override;
     void runIntro();
     void showNext(UiElement* uiElement);
 protected:
+    GraphNode* player;
     Scene* scene;
     float elapsed = 1.0f;
     short phase = 0;

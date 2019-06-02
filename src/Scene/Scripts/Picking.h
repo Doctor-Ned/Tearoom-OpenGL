@@ -21,6 +21,8 @@ public:
 	void deserialize(Json::Value &root, Serializer* serializer) override;
 	void showInventoryUi();
 	void hideInventoryUi();
+	void hidePreview();
+	void showPreview();
 	bool getSwitch();
 	void setSwitch(bool ifShown);
 	Scene *getScene() const;

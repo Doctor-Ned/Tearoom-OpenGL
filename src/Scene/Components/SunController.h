@@ -20,12 +20,13 @@ public:
     SerializableType getSerializableType() override;
     Json::Value serialize(Serializer *serializer) override;
     void deserialize(Json::Value &root, Serializer* serializer) override;
+    void setClockVisibility(bool active);
+
 private:
 	void initialize();
 	void initializeTimeTravel(bool future);
 	void interpolate();
 	float getFractionalPartOfHour();
-	void setClockVisibility(bool active);
 	SunController();
     Scene* scene;
     UiColorPlane* clockBackground;

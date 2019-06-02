@@ -15,9 +15,13 @@ Yoshiro
  */
 #include <Scene/SoundSystem.h>
 #include "IntroCutscene.h"
+#include "CollectableObject.h"
+#include "Picking.h"
+#include "Scene/Components/SunController.h"
 
-IntroCutscene::IntroCutscene(Scene* scene, glm::vec3 cameraPos) {
+IntroCutscene::IntroCutscene(Scene* scene, glm::vec3 cameraPos, GraphNode* player) {
     this->scene = scene;
+    this->player = player;
     boxNode = new GraphNode(box, scene->getRootNode());
     boxNode->localTransform.setPosition(glm::vec3(cameraPos.x - 3.5f, cameraPos.y - 1.0f, cameraPos.z - 3.8f));
     UiElement *root = scene->getUiRoot();
@@ -41,6 +45,11 @@ IntroCutscene::IntroCutscene(Scene* scene, glm::vec3 cameraPos) {
 }
 
 void IntroCutscene::runIntro() {
+    this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+    player->getComponent<Picking>()->hidePreview();
+    player->getComponent<SunController>()->setComponentActive(false);
+    player->getComponent<SunController>()->setClockVisibility(false);
+
     run = true;
 }
 
@@ -120,6 +129,7 @@ void IntroCutscene::update(float msec) {
                     elapsed = 1.0f;
                     phase = 7;
                     boxNode->setActive(false);
+                    player->getComponent<Picking>()->showPreview();
                 }
                 break;
             case 7:
@@ -139,6 +149,7 @@ void IntroCutscene::update(float msec) {
                     backgroundPlane->setActive(false);
                     transitionPlane->setActive(false);
                     run = false;
+                    this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
                 }
                 break;
         }
