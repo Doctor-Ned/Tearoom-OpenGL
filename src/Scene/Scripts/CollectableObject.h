@@ -22,13 +22,12 @@ class CollectableObject : public Component {
 
 public:
 	virtual ~CollectableObject();
-	CollectableObject(GraphNode* _gameObject, Camera* camera);
-	CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview);
-    CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon,
+	CollectableObject(GraphNode* _gameObject);
+	CollectableObject(GraphNode* _gameObject, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview);
+    CollectableObject(GraphNode* _gameObject, ItemType i_type, UiPlane* icon,
             std::string desc, UiPlane* preview, int doorID);
 
     void takeObject();
-	void leaveObject();
 	void update(float msec) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
@@ -50,7 +49,6 @@ protected:
     UiText* desctext = nullptr;
     UiButton* itemButton;
     UiPlane* preview = nullptr;
-    Camera* camera;
     bool isHitByRay = false;
 	bool fKeyState = false;
 	CollectableObject(){}

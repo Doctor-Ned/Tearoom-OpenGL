@@ -2,6 +2,7 @@
 
 #include "Scene/Components/Component.h"
 
+class CollectableObject;
 class SunController;
 
 class CollectableWatch : public Component {
@@ -14,7 +15,9 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 	void setSunController(SunController *sunController);
 	SunController *getSunController();
+	CollectableObject *getCollectable();
 protected:
+	CollectableObject *collectable;
 	void renderGui() override;
 	SunController *sunController = nullptr;
 	CollectableWatch(){}

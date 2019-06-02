@@ -10,19 +10,19 @@
 #include <iostream>
 #include "Serialization/Serializer.h"
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera):Component(_gameObject), camera(camera) {
+CollectableObject::CollectableObject(GraphNode* _gameObject):Component(_gameObject) {
 }
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview)
-:Component(_gameObject), camera(camera), i_type(i_type), icon(icon) {
+CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview)
+:Component(_gameObject), i_type(i_type), icon(icon) {
     desctext = new UiText(glm::vec2(100.0f, 30.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
     if(i_type == Letter || i_type == Photo) {
         this->preview = preview;
     }
 }
 
-CollectableObject::CollectableObject(GraphNode* _gameObject, Camera* camera, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview, int doorID)
-:Component(_gameObject), camera(camera), i_type(i_type), icon(icon), doorID(doorID) {
+CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, UiPlane* icon, std::string desc, UiPlane* preview, int doorID)
+:Component(_gameObject), i_type(i_type), icon(icon), doorID(doorID) {
     desctext = new UiText(glm::vec2(100.0f, 30.0f), glm::vec2(60.0f, 30.0f), desc, glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
     if(i_type == Letter || i_type == Photo) {
         this->preview = preview;
@@ -34,19 +34,6 @@ void CollectableObject::takeObject()
     isTaken = true;
 	gameObject->setActive(false);
     gameObject->getMesh()->setOpaque(false);
-}
-
-void CollectableObject::leaveObject()
-{
-    float distance = 2.0f;
-	glm::vec3 front = camera->getGameObject()->getFrontVector();
-	glm::vec3 pos = camera->getGameObject()->getPosition();
-    glm::vec2 cameraFront  =  glm::normalize(glm::vec2(front.x, front.z));
-    glm::vec3 itemNewPosition = glm::vec3(pos.x + cameraFront.x * distance, pos.y, pos.z + cameraFront.y * distance);
-    gameObject->localTransform.setPosition(itemNewPosition);
-    isTaken = false;
-    gameObject->setActive(true);
-    gameObject->getMesh()->setOpaque(true);
 }
 
 void CollectableObject::update(float msec)
@@ -70,7 +57,6 @@ Json::Value CollectableObject::serialize(Serializer* serializer) {
 	root["isTaken"] = isTaken;
 	root["isHitByRay"] = isHitByRay;
 	root["fKeyState"] = fKeyState;
-	root["camera"] = serializer->serialize(camera);
 	return root;
 }
 
@@ -79,7 +65,6 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 	isTaken = root["isTaken"].asBool();
 	isHitByRay = root["isHitByRay"].asBool();
 	fKeyState = root["fKeyState"].asBool();
-	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 }
 
 

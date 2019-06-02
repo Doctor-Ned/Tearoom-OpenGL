@@ -23,6 +23,7 @@ public:
     void setClockVisibility(bool active);
 
 private:
+	void renderGui() override;
 	void initialize();
 	void initializeTimeTravel(bool future);
 	void interpolate();

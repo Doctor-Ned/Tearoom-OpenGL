@@ -42,6 +42,7 @@
 #include "Scene/Scripts/AnimTimeSaver.h"
 #include "Scene/Scripts/ColumnMoving.h"
 #include "Scene/Scripts/SunTimeActivator.h"
+#include "Scene/Scripts/CollectableWatch.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -317,6 +318,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SSunTimeActivator:
 			deserializeAndIdentify(pointer, data, new SunTimeActivator());
+			break;
+		case SCollectableWatch:
+			deserializeAndIdentify(pointer, data, new CollectableWatch());
 			break;
 	}
 	return pointer;

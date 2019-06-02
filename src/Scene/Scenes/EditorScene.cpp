@@ -36,6 +36,7 @@
 #include "Scene/Scripts/AnimTimeSaver.h"
 #include "Scene/Scripts/ColumnMoving.h"
 #include "Scene/Scripts/SunTimeActivator.h"
+#include "Scene/Scripts/CollectableWatch.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -749,7 +750,7 @@ void EditorScene::renderUi() {
 			break;
 			case SCollectableObject:
 			{
-				typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera));
+				typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
 			break;
@@ -853,6 +854,10 @@ void EditorScene::renderUi() {
 				break;
 			case SSunTimeActivator:
 				typeCreation->creationCallback(new SunTimeActivator(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+				break;
+			case SCollectableWatch:
+				typeCreation->creationCallback(new CollectableWatch(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
 		}

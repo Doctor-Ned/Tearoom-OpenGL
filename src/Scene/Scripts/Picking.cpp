@@ -11,6 +11,7 @@
 #include "Scene/Components/AnimationController.h"
 #include "Scene/SoundSystem.h"
 #include "Scene/Components/Camera.h"
+#include "CollectableWatch.h"
 
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std::string& name)
@@ -106,8 +107,8 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
     GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
     GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
 
-    CollectableObject* colPhoto = new CollectableObject(firstPhoto, camera, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
-    CollectableObject* colLetter = new CollectableObject(firstLetter, camera, Letter, firstPhotoIcon, "Letter from uncle Yoshiro", firstLetterPreview);
+    CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
+    CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, firstPhotoIcon, "Letter from uncle Yoshiro", firstLetterPreview);
     firstPhoto->addComponent(colPhoto);
     firstLetter->addComponent(colLetter);
     firstPhoto->setActive(false);
@@ -162,6 +163,72 @@ void Picking::placeInGrid(ItemType itype) {
 		} else {
 			inventoryCanvas->removeChild(col->getIcon());
 			inventoryCanvas->removeChild(col->getButton());
+		}
+	}
+}
+
+void Picking::collect(CollectableObject* collectable) {
+	inventory.push_back(collectable->getGameObject());
+	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+	collectable->getButton()->setOpacity(0.0f);
+
+	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
+		collectable->getButton()->addClickCallback([this, collectable]() {
+			this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+			setSwitch(!getSwitch());
+			hideInventoryUi();
+			previewCanvas->addChild(collectable->getPreview());
+			previewCanvas->setActive(true);
+		});
+
+	} else if (collectable->getI_type() == DoorKey) {
+		collectable->getButton()->addClickCallback([this, collectable]() {
+			if (currentInteraction != nullptr) {
+				AnimationController *anim = currentInteraction->getComponent<AnimationController>();
+				if (collectable->getDoorID() == anim->getDoorID()) {
+					anim->playAnimation();
+					hideInventoryUi();
+					for (int i = 0; i < inventory.size(); i++) {
+						auto obj = inventory[i]->getComponent<CollectableObject>();
+						if (obj->getDoorID() == anim->getDoorID()) {
+							inventory.erase(inventory.begin() + i);
+							this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+						}
+					}
+				}
+			}
+		});
+	} else {
+		this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+		setSwitch(!getSwitch());
+		hideInventoryUi();
+	}
+	collectable->getButton()->addHoverCallback([this, collectable]() {
+		descBackground->setActive(true);
+		descBackground->addChild(collectable->getDescription());
+
+	});
+	collectable->getButton()->addLeaveCallback([this, collectable]() {
+		descBackground->setActive(false);
+		descBackground->removeChild(collectable->getDescription());
+	});
+	collectable->takeObject();
+
+	if (inventoryUI) {
+		if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
+			inventoryCanvas->addChild(collectable->getButton());
+			inventoryCanvas->addChild(collectable->getIcon());
+			showInventoryUi();
+		}
+		if (letterInventory->isActive() && collectable->getI_type() == Letter) {
+			inventoryCanvas->addChild(collectable->getButton());
+			inventoryCanvas->addChild(collectable->getIcon());
+			showInventoryUi();
+		}
+		if (photosInventory->isActive() && collectable->getI_type() == Photo) {
+			inventoryCanvas->addChild(collectable->getButton());
+			inventoryCanvas->addChild(collectable->getIcon());
+			showInventoryUi();
 		}
 	}
 }
@@ -223,70 +290,24 @@ void Picking::update(float msec) {
             encouragementPick->setActive(true);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
-				inventory.push_back(object);
-				collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
-				collectable->getButton()->setOpacity(0.0f);
-
-				if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
-					collectable->getButton()->addClickCallback([this, collectable]() {
-						this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-						setSwitch(!getSwitch());
-						hideInventoryUi();
-						previewCanvas->addChild(collectable->getPreview());
-						previewCanvas->setActive(true);
-					});
-
-				} else if (collectable->getI_type() == DoorKey) {
-					collectable->getButton()->addClickCallback([this, collectable]() {
-						if (currentInteraction != nullptr) {
-							AnimationController *anim = currentInteraction->getComponent<AnimationController>();
-							if (collectable->getDoorID() == anim->getDoorID()) {
-								anim->playAnimation();
-								hideInventoryUi();
-								for (int i = 0; i < inventory.size(); i++) {
-									auto obj = inventory[i]->getComponent<CollectableObject>();
-									if (obj->getDoorID() == anim->getDoorID()) {
-										inventory.erase(inventory.begin() + i);
-										this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-									}
-								}
-							}
-						}
-					});
-				} else {
-					this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-					setSwitch(!getSwitch());
-					hideInventoryUi();
-				}
-				collectable->getButton()->addHoverCallback([this, collectable]() {
-					descBackground->setActive(true);
-					descBackground->addChild(collectable->getDescription());
-
-				});
-				collectable->getButton()->addLeaveCallback([this, collectable]() {
-					descBackground->setActive(false);
-					descBackground->removeChild(collectable->getDescription());
-				});
-				collectable->takeObject();
-
-				if (inventoryUI) {
-					if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
-						inventoryCanvas->addChild(collectable->getButton());
-						inventoryCanvas->addChild(collectable->getIcon());
-						showInventoryUi();
-					}
-					if (letterInventory->isActive() && collectable->getI_type() == Letter) {
-						inventoryCanvas->addChild(collectable->getButton());
-						inventoryCanvas->addChild(collectable->getIcon());
-						showInventoryUi();
-					}
-					if (photosInventory->isActive() && collectable->getI_type() == Photo) {
-						inventoryCanvas->addChild(collectable->getButton());
-						inventoryCanvas->addChild(collectable->getIcon());
-						showInventoryUi();
-					}
-				}
+				collect(collectable);
 			}
+		}
+
+		CollectableWatch *watch = object->getComponent<CollectableWatch>();
+		if(watch && watch->isComponentActive()) {
+			watch->pickup();
+			encouragementCanvas->setActive(true);
+			encouragementActivate->setActive(true);
+			encouragementPick->setActive(false);
+			encouragementActivate->setText("Press E to take the watch");
+			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
+				watch->pickup();
+				collect(watch->getCollectable());
+				previewCanvas->addChild(collectable->getPreview());
+				previewCanvas->setActive(true);
+			}
+			//todo: show the letter
 		}
 
 		Animation* anim = object->getComponent<Animation>();

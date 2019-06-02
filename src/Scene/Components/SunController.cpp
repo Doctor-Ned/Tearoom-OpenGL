@@ -135,6 +135,17 @@ void SunController::setClockVisibility(bool active)
 	clockBack->setActive(clockShown);
 }
 
+void SunController::renderGui() {
+	Component::renderGui();
+	if(isComponentActive()) {
+		bool clockActive = clockShown;
+		ImGui::Checkbox("Clock active", &clockActive);
+		if(clockActive != clockShown) {
+			setClockVisibility(clockActive);
+		}
+	}
+}
+
 void SunController::moveSun(float time)
 {
 	sun->setTime(time);

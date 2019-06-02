@@ -59,7 +59,8 @@ enum SerializableType {
 	SMeshText,
 	SAnimTimeSaver,
 	SColumnMoving,
-	SSunTimeActivator
+	SSunTimeActivator,
+	SCollectableWatch
 };
 
 const std::string SerializableTypeNames[] = {
@@ -118,7 +119,8 @@ const std::string SerializableTypeNames[] = {
 	"SMeshText",
 	"SAnimTimeSaver",
 	"SColumnMoving",
-	"SSunTimeActivator"
+	"SSunTimeActivator",
+	"SCollectableWatch"
 };
 
 class Serializable {
