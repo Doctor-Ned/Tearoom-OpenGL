@@ -12,12 +12,12 @@ private:
 	void interpolateObjects();
 	KeyFrameAnimation() {}
 	friend class Serializer;
+	void renderGui() override;
 public:
 	KeyFrameAnimation(GraphNode* gameObject, std::string&& name = "Animation");
 	void setFrame(float time);
 	SerializableType getSerializableType() override;
 	void update(float msec) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;
-	void renderGui() override;
 };
 #endif

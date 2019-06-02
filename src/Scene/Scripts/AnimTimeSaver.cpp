@@ -29,6 +29,16 @@ void AnimTimeSaver::renderGui() {
 		if (ImGui::Button("RESET")) {
 			reset();
 		}
+		if (ImGui::Button("ACQUIRE OWN")) {
+			Sun *sun = gameObject->getComponent<Sun>();
+			KeyFrameAnimation *anim = gameObject->getComponent<KeyFrameAnimation>();
+			if (sun != nullptr) {
+				setSun(sun);
+			}
+			if (anim != nullptr) {
+				setAnimation(anim);
+			}
+		}
 		if (ImGui::Button("SET NULLS")) {
 			setSun(nullptr);
 			setAnimation(nullptr);

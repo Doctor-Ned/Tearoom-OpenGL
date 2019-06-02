@@ -52,6 +52,9 @@ void KeyFrameAnimation::deserialize(Json::Value& root, Serializer* serializer)
 
 void KeyFrameAnimation::renderGui()
 {
+	if(!isPlaying && ImGui::Button("Go back to start")) {
+		setFrame(0.0f);
+	}
 	Animation::renderGui();
 	ImGui::Text("If anim doesn't work, try reload.");
 	if (ImGui::Button("Reload"))
