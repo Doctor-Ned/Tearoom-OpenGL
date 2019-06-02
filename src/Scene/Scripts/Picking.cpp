@@ -296,7 +296,6 @@ void Picking::update(float msec) {
 
 		CollectableWatch *watch = object->getComponent<CollectableWatch>();
 		if(watch && watch->isComponentActive()) {
-			watch->pickup();
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
