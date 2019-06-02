@@ -245,9 +245,9 @@ void Picking::update(float msec) {
 			}
 		}
 
-        AnimationController* animController = object->getComponent<AnimationController>();
 		Animation* anim = object->getComponent<Animation>();
-		/*
+        AnimationController* animController = object->getComponent<AnimationController>();
+		
 		if (anim && anim->isComponentActive() && !anim->getIsPlaying() && !animController) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
@@ -257,7 +257,7 @@ void Picking::update(float msec) {
 				anim->play();
 			}
 		}
-		 */
+		 
 
 		if (animController && animController->isComponentActive()) {
 			encouragementCanvas->setActive(true);
