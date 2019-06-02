@@ -101,19 +101,37 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
     // for demo purposes
     UiPlane* firstPhotoIcon = new UiPlane("res/textures/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), Right);
     UiPlane* firstPhotoPreview = new UiPlane("res/textures/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f), Right);
-    GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
-    CollectableObject* col = new CollectableObject(firstPhoto, camera, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
-    firstPhoto->addComponent(col);
-    col->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
-    col->getButton()->setOpacity(0.0f);
-    inventory.push_back(firstPhoto);
-    firstPhoto->setActive(false);
+    UiPlane* firstLetterPreview = new UiPlane("res/textures/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f), Right);
 
-    col->getButton()->addClickCallback([this, col]() {
+    GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
+    GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
+
+    CollectableObject* colPhoto = new CollectableObject(firstPhoto, camera, Photo, firstPhotoIcon, "Photo from uncle Yoshiro", firstPhotoPreview);
+    CollectableObject* colLetter = new CollectableObject(firstLetter, camera, Letter, firstPhotoIcon, "Letter from uncle Yoshiro", firstLetterPreview);
+    firstPhoto->addComponent(colPhoto);
+    firstLetter->addComponent(colLetter);
+    firstPhoto->setActive(false);
+    firstLetter->setActive(false);
+    colPhoto->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+    colPhoto->getButton()->setOpacity(0.0f);
+    colLetter->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
+    colLetter->getButton()->setOpacity(0.0f);
+    inventory.push_back(firstPhoto);
+    inventory.push_back(firstLetter);
+
+    colPhoto->getButton()->addClickCallback([this, colPhoto]() {
         this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
         setSwitch(!getSwitch());
         hideInventoryUi();
-        previewCanvas->addChild(col->getPreview());
+        previewCanvas->addChild(colPhoto->getPreview());
+        previewCanvas->setActive(true);
+    });
+
+    colLetter->getButton()->addClickCallback([this, colLetter]() {
+        this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+        setSwitch(!getSwitch());
+        hideInventoryUi();
+        previewCanvas->addChild(colLetter->getPreview());
         previewCanvas->setActive(true);
     });
 
@@ -240,7 +258,6 @@ void Picking::update(float msec) {
 					setSwitch(!getSwitch());
 					hideInventoryUi();
 				}
-
 				collectable->getButton()->addHoverCallback([this, collectable]() {
 					descBackground->setActive(true);
 					descBackground->addChild(collectable->getDescription());
