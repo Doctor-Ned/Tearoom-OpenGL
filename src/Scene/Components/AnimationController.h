@@ -44,6 +44,7 @@ protected:
 	AnimationType type;
 	int doorID = 0;
 	glm::float32 elapsed = 0.0f;
+	Animation* anim;
 public:
 	AnimationType getType() const;
 	SerializableType getSerializableType() override;
@@ -51,9 +52,10 @@ public:
 	void deserialize(Json::Value& root, Serializer* serializer) override;
 	virtual ~AnimationController();
 	AnimationController(AnimationType _type, GraphNode* _gameObject);
-	AnimationController(AnimationType _type, GraphNode* _gameObject, int doorID);
+	AnimationController(AnimationType _type, GraphNode* _gameObject, int doorID, Animation* anim);
 	void update(float msec) override;
 	int getDoorID();
+	void playAnimation();
 	void startAnimation();
 };
 

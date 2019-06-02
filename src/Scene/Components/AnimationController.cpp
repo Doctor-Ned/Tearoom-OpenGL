@@ -11,8 +11,8 @@ AnimationController::AnimationController(AnimationType _type, GraphNode *_gameOb
 :Component(_gameObject, "Animation controller"), type(_type) {
 }
 
-AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, int doorID)
-        :Component(_gameObject, "Animation controller"), type(_type), doorID(doorID) {
+AnimationController::AnimationController(AnimationType _type, GraphNode *_gameObject, int doorID, Animation* anim)
+        :Component(_gameObject, "Animation controller"), type(_type), doorID(doorID), anim(anim) {
 }
 
 void AnimationController::startAnimation() {
@@ -21,41 +21,12 @@ void AnimationController::startAnimation() {
 
 void AnimationController::update(float msec)
 {
-    if(animating) {
-        switch (type) {
-            case DoorOpeningX:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, -0.04f));
-                elapsed += 0.01f;
-                break;
-            case DoorClosingX:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.0f, 0.04f));
-                elapsed += 0.04f;
-                break;
-            case DoorOpeningY:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, 0.04f, 0.0f));
-                elapsed += 0.04f;
-                break;
-            case DoorClosingY:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.0f, -0.04f, 0.00f));
-                elapsed += 0.04f;
-                break;
-            case SafePullOutX:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(0.03f, 0.0f, 0.0f));
-                elapsed += 0.04f;
-                break;
-            case SafePullOutY:
-                if (elapsed < 1.8f)
-                    gameObject->localTransform.translate(glm::vec3(-0.03f, 0.0f, 0.0f));
-                elapsed += 0.04f;
-                break;
-        }
-    }
 
+}
+
+void AnimationController::playAnimation() {
+	anim->play();
+	std::cout<<"HALOO"<<std::endl;
 }
 
 SerializableType AnimationController::getSerializableType() {

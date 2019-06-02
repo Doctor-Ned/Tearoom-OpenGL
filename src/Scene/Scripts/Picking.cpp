@@ -160,6 +160,7 @@ void Picking::setSwitch(bool ifShown) {
 	this->inventoryUI = ifShown;
 }
 
+
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 
@@ -194,7 +195,7 @@ void Picking::update(float msec) {
 						if (currentInteraction != nullptr) {
 							AnimationController *anim = currentInteraction->getComponent<AnimationController>();
 							if (collectable->getDoorID() == anim->getDoorID()) {
-								anim->startAnimation();
+								anim->playAnimation();
 								hideInventoryUi();
 								for (int i = 0; i < inventory.size(); i++) {
 									auto obj = inventory[i]->getComponent<CollectableObject>();
@@ -243,26 +244,28 @@ void Picking::update(float msec) {
 				}
 			}
 		}
+
+        AnimationController* animController = object->getComponent<AnimationController>();
 		Animation* anim = object->getComponent<Animation>();
-		if (anim && anim->isComponentActive() && !anim->getIsPlaying()) {
+		/*
+		if (anim && anim->isComponentActive() && !anim->getIsPlaying() && !animController) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
-            encouragementDoorClosed->setActive(false);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
 				anim->play();
 			}
 		}
-		AnimationController* animController = object->getComponent<AnimationController>();
+		 */
+
 		if (animController && animController->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 
 			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
-				if (animController->getType() == DoorOpeningX
-					|| animController->getType() == DoorOpeningY) {
+				if (animController->getType() == DoorOpeningX || animController->getType() == DoorOpeningY) {
                     encouragementActivate->setText("Oops.. I need a key");
                     this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
 					setSwitch(!getSwitch());
