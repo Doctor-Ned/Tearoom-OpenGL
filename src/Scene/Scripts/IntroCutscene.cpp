@@ -46,7 +46,6 @@ IntroCutscene::IntroCutscene(Scene* scene, GraphNode* player) {
     GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
         this->runIntro();
     });
-
 }
 
 void IntroCutscene::runIntro() {
@@ -197,5 +196,9 @@ void IntroCutscene::deserialize(Json::Value& root, Serializer* serializer) {
     text3->setOpacity(0.0f);
     text4->setOpacity(0.0f);
     text5->setOpacity(0.0f);
+
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+        this->runIntro();
+    });
 
 }
