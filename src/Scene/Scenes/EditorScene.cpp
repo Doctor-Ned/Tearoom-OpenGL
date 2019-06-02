@@ -903,7 +903,7 @@ void EditorScene::renderUi() {
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
 			case SIntroCutscene:
-				typeCreation->creationCallback(new IntroCutscene(editedScene, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreation->creationCallback(new IntroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
 		}

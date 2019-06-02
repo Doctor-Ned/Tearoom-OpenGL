@@ -12,9 +12,11 @@
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 
+class SunController;
+
 class IntroCutscene: public Component {
 public:
-    IntroCutscene(Scene* scene, GraphNode* player);
+    IntroCutscene(Scene* scene, SunController *sunController, GraphNode* player);
     ~IntroCutscene() override;
     SerializableType getSerializableType() override;
     Json::Value serialize(Serializer *serializer) override;
@@ -24,6 +26,7 @@ public:
     void showNext(UiElement* uiElement);
 protected:
 	void initialize();
+	SunController *sunController;
     friend class Serializer;
 	IntroCutscene(){}
     GraphNode* player;

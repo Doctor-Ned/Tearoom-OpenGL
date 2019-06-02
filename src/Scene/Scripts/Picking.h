@@ -31,6 +31,7 @@ public:
 	Camera* getCamera();
 	void placeInGrid(ItemType itype);
 private:
+	void initialize();
 	void collect(CollectableObject *collectable);
 	Scene* scene;
 	bool inventoryUI = false;
