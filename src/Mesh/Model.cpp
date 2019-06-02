@@ -69,9 +69,9 @@ Json::Value Model::serialize(Serializer* serializer) {
 }
 
 void Model::deserialize(Json::Value& root, Serializer* serializer) {
-	Mesh::deserialize(root, serializer);
 	this->path = root.get("model", "").asString();
 	initialize(AssetManager::getInstance()->getModelData(path));
+	Mesh::deserialize(root, serializer);
 }
 
 void Model::renderGui() {

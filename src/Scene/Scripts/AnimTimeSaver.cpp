@@ -117,12 +117,18 @@ void AnimTimeSaver::update(float msec) {
 						animation->setFrame(end);
 					}
 				} else {
-					if(gameObject->getComponent<SunTimeActivator>() == nullptr) animation->setComponentActive(true);
+					animation->setComponentActive(true);
 					retargetAllowed = true;
 					if(time < targetTime - 1) {
 						animation->setFrame(0.0f);
 					} else {
 						animation->setFrame(end * (time + 1.0f - targetTime));
+					}
+				}
+				auto activator = gameObject->getComponent<SunTimeActivator>();
+				if(activator != nullptr) {
+					if(retargetAllowed) {
+						animation->setComponentActive(false);
 					}
 				}
 			}
