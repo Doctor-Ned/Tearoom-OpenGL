@@ -1351,6 +1351,7 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
 			KeyFrameAnimation *anim = new KeyFrameAnimation(node);
 			SunTimeActivator *activator = new SunTimeActivator(node);
+			saver->setApplyActivity(false);
 			saver->setSun(sun);
 			activator->addActivatableComponent(anim);
 			saver->setAnimation(anim);
