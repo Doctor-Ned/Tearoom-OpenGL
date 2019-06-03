@@ -28,26 +28,14 @@ void Collider::setCollisionCallback(std::function<void(Collider*)> f) {
 void Collider::renderGui()
 {
 	Component::renderGui();
-	static bool initialized = false;
-	static bool isDynamic = false;
-	if(!initialized)
-	{
-		isDynamic = getCollisionType();
-		initialized = true;
-	}
-	
+	bool isDynamic = getCollisionType() == DYNAMIC;
+
 	ImGui::Checkbox("IsTrigger", &isTrigger);
-	if (ImGui::Checkbox("IsDynamic", &isDynamic))
-	{
-		if(isDynamic)
-		{
-			collisionType = DYNAMIC;
-		}
-		else
-		{
-			collisionType = STATIC;
-		}
-	}
+	ImGui::Checkbox("IsDynamic", &isDynamic);
+
+	//if(getCollisionType() != (isDynamic ? DYNAMIC : STATIC)) {
+		collisionType = isDynamic ? DYNAMIC : STATIC;
+	//}
 
 	ImGui::Text("Offset:");
 	ImGui::DragFloat("X: ", &positionOffset.x, 0.005f);
