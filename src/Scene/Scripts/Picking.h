@@ -31,8 +31,10 @@ public:
 	Camera* getCamera();
 	void placeInGrid(ItemType itype);
 private:
+	void renderGui() override;
 	void collect(CollectableObject *collectable);
 	Scene* scene;
+	float distance = 1.0f;
 	bool inventoryUI = false;
 	UiCanvas *inventoryCanvas, *encouragementCanvas, *previewCanvas;
 	Camera* camera;

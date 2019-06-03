@@ -163,6 +163,12 @@ void Picking::placeInGrid(ItemType itype) {
 	}
 }
 
+void Picking::renderGui()
+{
+	Component::renderGui();
+	ImGui::InputFloat("distance", &distance);
+}
+
 void Picking::collect(CollectableObject* collectable) {
 	inventory.push_back(collectable->getGameObject());
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
@@ -276,7 +282,7 @@ void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 
 	Collider* coll = gameObject->getComponent<Collider>();
-	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), 2.0f, coll);
+	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), distance, coll);
 
 	encouragementCanvas->setActive(false);
 	if (object && object->isActive()) {
@@ -348,6 +354,7 @@ Json::Value Picking::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["camera"] = serializer->serialize(camera);
 	root["scene"] = serializer->serialize(scene);
+	root["distance"] = distance;
 	return root;
 }
 
@@ -355,6 +362,8 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+	distance = root.get("distance", distance).asFloat();
+
 	UiElement *uiRoot = scene->getUiRoot();
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), uiRoot->getSize());
 	inventoryCanvas->setParent(uiRoot);
