@@ -6,6 +6,7 @@
 #include <imgui.h>
 #include "Serialization/Serializable.h"
 #include "Global.h"
+#include "GLFW/glfw3.h"
 
 class GameManager;
 class GraphNode;
@@ -28,6 +29,7 @@ public:
 	virtual void updateWorld();
 	virtual bool isComponentActive();
 	virtual void setComponentActive(bool active);
+	void updateComponent(float msec);
 	virtual void update(float msec);
 	GraphNode* getGameObject() const;
 	std::string getName();
