@@ -30,8 +30,9 @@ public:
 	void setCamera(Camera *camera);
 	Camera* getCamera();
 	void placeInGrid(ItemType itype);
+	void setShowHint(bool showHint);
+	bool getShowHint();
 private:
-<<<<<<< HEAD
     void renderGui() override;
     void initialize();
     void collect(CollectableObject *collectable);
@@ -54,28 +55,6 @@ private:
     UiPlane* letterInventory;
     UiColorPlane* descBackground;
     GraphNode* currentInteraction = nullptr;
-=======
-	void initialize();
-	void collect(CollectableObject *collectable);
-	Scene* scene;
-	float distance = 1.0f;
-	bool inventoryUI = false;
-	UiCanvas *inventoryCanvas, *encouragementCanvas, *previewCanvas;
-	Camera* camera;
-	std::vector<GraphNode*> inventory;
-	Picking() {}
-	friend class Serializer;
-	UiColorPlane* encouragementBackground;
-	UiText *encouragementPick, *encouragementActivate;
-	UiButton* itemsButton;
-	UiButton* letterButton;
-	UiButton* photoButton;
-	UiPlane* photosInventory;
-	UiPlane* itemsInventory;
-	UiPlane* letterInventory;
-	UiColorPlane* descBackground;
-	GraphNode* currentInteraction = nullptr;
->>>>>>> parent of 1abcab9... Picking class refactor
 };
 
 #endif

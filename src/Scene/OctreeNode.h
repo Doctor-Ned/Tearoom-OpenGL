@@ -14,7 +14,7 @@ struct Box
 	glm::vec3 middle;
 };
 
-struct Frustum;
+class Frustum;
 class GraphNode;
 class Camera;
 class Collider;

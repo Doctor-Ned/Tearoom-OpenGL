@@ -13,6 +13,8 @@ protected:
 	bool refreshMousePosition = true;
 	bool fly = false;
 	bool gravity = true;
+	float speed = 2.0f;
+	float fastSpeed = 3.5f;
 	glm::vec2 lastMousePosition;
 	void renderGui() override;
 public:
