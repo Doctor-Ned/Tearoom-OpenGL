@@ -22,8 +22,6 @@ Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std
 	}
 
 	this->camera = camera;
-	std::cout<<-1<<std::endl;
-
 	initialize();
 }
 
@@ -50,10 +48,7 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 }
 
 void Picking::initialize() {
-	std::cout<<0<<std::endl;
-
 	UiElement *root = scene->getUiRoot();
-	std::cout<<21<<std::endl;
 	//each canvas represents different inventory section
 	letterInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	photosInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
@@ -240,7 +235,9 @@ void Picking::collect(CollectableObject* collectable) {
 		descBackground->setActive(false);
 		descBackground->removeChild(collectable->getDescription());
 	});
+
 	collectable->takeObject();
+
 
 	if (inventoryUI) {
 		if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
@@ -266,14 +263,17 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name) : Picking(_gam
 
 void Picking::hideInventoryUi() {
 	currentCanvas->setActive(false);
+	currentCanvas = itemsInventoryCanvas;
 }
 
 void Picking::showInventoryUi() {
 	previewCanvas->setActive(false);
 	currentCanvas->setActive(true);
+
 	itemsButton->setActive(true);
 	letterButton->setActive(true);
 	photoButton->setActive(true);
+
 	if (letterInventoryCanvas->isActive()) {
 		placeInGrid(Letter, letterInventoryCanvas);
 	}
@@ -349,7 +349,6 @@ void Picking::update(float msec) {
 			}
 		}
 
-
 		if (animController && animController->isComponentActive()) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
@@ -366,6 +365,8 @@ void Picking::update(float msec) {
 
 		}
 	}
+
+
 }
 void Picking::setShowHint(bool showHint) {
 	this->showHint = showHint;
