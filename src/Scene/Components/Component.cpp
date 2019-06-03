@@ -43,6 +43,13 @@ void Component::setComponentActive(bool active) {
 	this->active = active;
 }
 
+void Component::updateComponent(float msec)
+{
+	float  startTime = glfwGetTime();
+	update(msec);
+	float elapsedTime = glfwGetTime() - startTime;
+}
+
 void Component::update(float msec) {}
 
 GraphNode* Component::getGameObject() const {

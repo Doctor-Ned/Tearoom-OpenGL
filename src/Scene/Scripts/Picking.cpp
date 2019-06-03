@@ -277,7 +277,7 @@ void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
 
 	Collider* coll = gameObject->getComponent<Collider>();
-	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), 2.0f, coll);
+	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), distance, coll);
 
 	encouragementCanvas->setActive(false);
 	if (object && object->isActive()) {
@@ -349,6 +349,7 @@ Json::Value Picking::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["camera"] = serializer->serialize(camera);
 	root["scene"] = serializer->serialize(scene);
+	root["distance"] = distance;
 	return root;
 }
 

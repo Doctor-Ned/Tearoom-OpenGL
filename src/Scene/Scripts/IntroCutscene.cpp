@@ -75,7 +75,7 @@ void IntroCutscene::update(float msec) {
             case 0:
             if (transitionPlane->getOpacity() > 0.0f) {
                 transitionPlane->setOpacity(elapsed);
-                elapsed -= 0.005f;
+                elapsed -= 0.3f * msec;
             } else {
                 elapsed = 0.0f;
                 phase = 1;
@@ -84,7 +84,7 @@ void IntroCutscene::update(float msec) {
             case 1:
                 if (text1->getOpacity() < 1.0f) {
                     text1->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 2;
@@ -93,7 +93,7 @@ void IntroCutscene::update(float msec) {
             case 2:
                 if (text2->getOpacity() < 1.0f) {
                     text2->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 3;
@@ -102,7 +102,7 @@ void IntroCutscene::update(float msec) {
             case 3:
                 if (text3->getOpacity() < 1.0f) {
                     text3->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 4;
@@ -111,7 +111,7 @@ void IntroCutscene::update(float msec) {
             case 4:
                 if (text4->getOpacity() < 1.0f) {
                     text4->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 5;
@@ -120,7 +120,7 @@ void IntroCutscene::update(float msec) {
             case 5:
                 if (text5->getOpacity() < 1.0f) {
                     text5->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 6;
@@ -131,7 +131,7 @@ void IntroCutscene::update(float msec) {
             case 6:
                 if (transitionPlane->getOpacity() < 1.0f) {
                     transitionPlane->setOpacity(elapsed);
-                    elapsed += 0.005f;
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 1.0f;
                     phase = 7;
@@ -150,7 +150,7 @@ void IntroCutscene::update(float msec) {
                 if (backgroundPlane->getOpacity() > 0.0f) {
                     transitionPlane->setOpacity(elapsed);
                     backgroundPlane->setOpacity(elapsed);
-                    elapsed -= 0.005f;
+                    elapsed -= 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     backgroundPlane->setActive(false);
