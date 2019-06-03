@@ -31,6 +31,7 @@ public:
     Camera* getCamera();
     void placeInGrid(ItemType itype, UiCanvas* canvas);
 private:
+    void renderGui() override;
     void initialize();
     void collect(CollectableObject *collectable);
     Scene* scene;
