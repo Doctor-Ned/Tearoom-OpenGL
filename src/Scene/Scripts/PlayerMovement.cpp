@@ -16,6 +16,9 @@ void PlayerMovement::renderGui() {
 	if(active) {
 		ImGui::Checkbox("Gravity", &gravity);
 		ImGui::Checkbox("Allow flight", &fly);
+		ImGui::InputFloat("Speed", &speed);
+		ImGui::InputFloat("fastSpeed", &fastSpeed);
+		
 		ImGui::Text("Camera source: ");
 		ImGui::SameLine();
 		if(camera == nullptr) {
@@ -70,6 +73,8 @@ Json::Value PlayerMovement::serialize(Serializer* serializer) {
 	root["camera"] = serializer->serialize(camera);
 	root["gravity"] = gravity;
 	root["fly"] = fly;
+	root["speed"] = speed;
+	root["fastSpeed"] = fastSpeed;
 	return root;
 }
 
@@ -78,6 +83,8 @@ void PlayerMovement::deserialize(Json::Value& root, Serializer* serializer) {
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	gravity = root.get("gravity", gravity).asBool();
 	fly = root.get("fly", fly).asBool();
+	speed = root.get("speed", speed).asFloat();
+	fastSpeed = root.get("fastSpeed", fastSpeed).asFloat();
 }
 
 PlayerMovement::PlayerMovement(GraphNode* _gameObject, Camera *camera) : Component(_gameObject, "Player movement") {
@@ -134,11 +141,11 @@ void PlayerMovement::update(float msec) {
 			}
 		}
 
-		float speed;
+		float loc_speed;
 		if (gameManager->getKeyState(KEY_FAST)) {
-			speed = 3.5f;
+			loc_speed = fastSpeed;
 		} else {
-			speed = 2.0f;
+			loc_speed = speed;
 		}
 
 		glm::vec3 camFront = camGameObject->getFrontVector();
@@ -166,17 +173,17 @@ void PlayerMovement::update(float msec) {
 		float verticalDirection = 0.0f;
 		if (fly) {
 			if (gameManager->getKeyState(KEY_UP)) {
-				verticalDirection += speed * msec;
+				verticalDirection += loc_speed * msec;
 			}
 			if (gameManager->getKeyState(KEY_DOWN)) {
-				verticalDirection -= speed * msec;
+				verticalDirection -= loc_speed * msec;
 			}
 		}
 
 		if(direction.x != 0.0f || direction.y != 0.0f)
 		{
 			direction = glm::normalize(direction);
-			direction *= msec * speed;
+			direction *= msec * loc_speed;
 			gameObject->localTransform.translate(glm::vec3(direction.x, verticalDirection, direction.y));
 		} 
 		else if (verticalDirection != 0)
