@@ -52,6 +52,25 @@ void Picking::placeInGrid(ItemType itype) {
 	}
 }
 
+void Picking::setShowHint(bool showHint) {
+	this->showHint = showHint;
+}
+
+bool Picking::getShowHint() {
+	return showHint;
+}
+
+void Picking::renderGui() {
+	Component::renderGui();
+	if(active) {
+		bool hint = showHint;
+		ImGui::Checkbox("Show hint", &hint);
+		if(hint != showHint) {
+			setShowHint(hint);
+		}
+	}
+}
+
 void Picking::initialize() {
 	UiElement *root = scene->getUiRoot();
 	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
@@ -100,6 +119,9 @@ void Picking::initialize() {
 	inventoryCanvas->addChild(photosInventory);
 	inventoryCanvas->addChild(itemsInventory);
 	inventoryCanvas->addChild(letterInventory);
+
+	inventoryHint = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(50.0f, 368.0f), glm::vec2(350.0f, 30.0f), TopLeft);
+	inventoryHint->addChild(new UiText(inventoryHint->getSize() / 2.0f - glm::vec2(20.0f, 0.0f), inventoryHint->getSize(), "Press I to open the inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
@@ -168,6 +190,10 @@ void Picking::collect(CollectableObject* collectable) {
 	inventory.push_back(collectable->getGameObject());
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	collectable->getButton()->setOpacity(0.0f);
+
+	if(showHint) {
+		gameManager->getCurrentNonEditorScene()->getUiRoot()->addChild(inventoryHint);
+	}
 
 	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
@@ -242,6 +268,12 @@ void Picking::hideInventoryUi() {
 }
 
 void Picking::showInventoryUi() {
+
+	if(showHint) {
+		setShowHint(false);
+		gameManager->getCurrentNonEditorScene()->getUiRoot()->removeChild(inventoryHint);
+	}
+
 	inventoryCanvas->setActive(true);
 	previewCanvas->setActive(false);
 
@@ -350,6 +382,7 @@ Json::Value Picking::serialize(Serializer* serializer) {
 	root["camera"] = serializer->serialize(camera);
 	root["scene"] = serializer->serialize(scene);
 	root["distance"] = distance;
+	root["showHint"] = showHint;
 	return root;
 }
 
@@ -357,7 +390,8 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
-
+	distance = root["distance"].asFloat();
+	showHint = root.get("showHint", true).asBool();
 	initialize();
 }
 Scene *Picking::getScene() const {

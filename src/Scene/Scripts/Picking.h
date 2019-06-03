@@ -30,17 +30,22 @@ public:
 	void setCamera(Camera *camera);
 	Camera* getCamera();
 	void placeInGrid(ItemType itype);
+	void setShowHint(bool showHint);
+	bool getShowHint();
 private:
+	void renderGui() override;
 	void initialize();
 	void collect(CollectableObject *collectable);
 	Scene* scene;
 	float distance = 1.0f;
 	bool inventoryUI = false;
+	bool showHint = false;
 	UiCanvas *inventoryCanvas, *encouragementCanvas, *previewCanvas;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
 	Picking() {}
 	friend class Serializer;
+	UiColorPlane* inventoryHint;
 	UiColorPlane* encouragementBackground;
 	UiText *encouragementPick, *encouragementActivate;
 	UiButton* itemsButton;
