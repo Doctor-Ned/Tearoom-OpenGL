@@ -15,23 +15,23 @@
 
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std::string& name)
-	: Component(_gameObject, name), scene(scene) {
+		: Component(_gameObject, name), scene(scene) {
 
 	if (camera == nullptr) {
 		camera = _gameObject->getComponent<Camera>();
 	}
 
 	this->camera = camera;
+	std::cout<<-1<<std::endl;
 
 	initialize();
 }
 
-void Picking::placeInGrid(ItemType itype) {
+void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 	int i = 0;
 	for (GraphNode *obj : inventory) {
 		CollectableObject *col = obj->getComponent<CollectableObject>();
 		if (col->getI_type() == itype || (col->getI_type() == DoorKey && itype == NormalItem)) {
-
 			if (i >= 8) {
 				col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i - 8)), 664.0f));
 				col->getButton()->setPosition(glm::vec2(995.0f + (81.0f * (i - 8)), 664.0f));
@@ -42,86 +42,88 @@ void Picking::placeInGrid(ItemType itype) {
 				col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 				col->getButton()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 			}
-			inventoryCanvas->addChild(col->getButton());
-			inventoryCanvas->addChild(col->getIcon());
+			canvas->addChild(col->getButton());
+			canvas->addChild(col->getIcon());
 			i++;
-		} else {
-			inventoryCanvas->removeChild(col->getIcon());
-			inventoryCanvas->removeChild(col->getButton());
-		}
-	}
-}
-
-void Picking::setShowHint(bool showHint) {
-	this->showHint = showHint;
-}
-
-bool Picking::getShowHint() {
-	return showHint;
-}
-
-void Picking::renderGui() {
-	Component::renderGui();
-	if(active) {
-		bool hint = showHint;
-		ImGui::Checkbox("Show hint", &hint);
-		if(hint != showHint) {
-			setShowHint(hint);
 		}
 	}
 }
 
 void Picking::initialize() {
+	std::cout<<0<<std::endl;
+
 	UiElement *root = scene->getUiRoot();
-	inventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
-	inventoryCanvas->setParent(root);
-	inventoryCanvas->setActive(false);
+	std::cout<<21<<std::endl;
+	//each canvas represents different inventory section
+	letterInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	photosInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	itemsInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+
+	letterInventoryCanvas->setParent(root);
+	photosInventoryCanvas->setParent(root);
+	itemsInventoryCanvas->setParent(root);
+
+	//canvas for photos/letters preview
 	previewCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	previewCanvas->setParent(root);
 	previewCanvas->setActive(false);
+
 	photosInventory = new UiPlane("res/textures/photosChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	itemsInventory = new UiPlane("res/textures/itemsChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	letterInventory = new UiPlane("res/textures/lettersChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+
+	photosInventoryCanvas->addChild(photosInventory);
+	letterInventoryCanvas->addChild(letterInventory);
+	itemsInventoryCanvas->addChild(itemsInventory);
+
+	currentCanvas = itemsInventoryCanvas; //!!!
+
 	itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f, 40.0f), Right);
 	letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
 	photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
 	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
 	itemsButton->addClickCallback([this]() {
-		letterInventory->setActive(false);
-		itemsInventory->setActive(true);
-		photosInventory->setActive(false);
+		letterInventoryCanvas->setActive(false);
+		photosInventoryCanvas->setActive(false);
+
+		currentCanvas = itemsInventoryCanvas;
 		showInventoryUi();
 		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
-
 	letterButton->addClickCallback([this]() {
-		itemsInventory->setActive(false);
-		photosInventory->setActive(false);
-		letterInventory->setActive(true);
+		photosInventoryCanvas->setActive(false);
+		itemsInventoryCanvas->setActive(false);
+		currentCanvas = letterInventoryCanvas;
 		showInventoryUi();
 		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
 	photoButton->addClickCallback([this]() {
-		letterInventory->setActive(false);
-		itemsInventory->setActive(false);
-		photosInventory->setActive(true);
+		letterInventoryCanvas->setActive(false);
+		itemsInventoryCanvas->setActive(false);
+
+		currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
 		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
 	});
 
-	inventoryCanvas->addChild(itemsButton);
-	inventoryCanvas->addChild(letterButton);
-	inventoryCanvas->addChild(photoButton);
-	inventoryCanvas->addChild(photosInventory);
-	inventoryCanvas->addChild(itemsInventory);
-	inventoryCanvas->addChild(letterInventory);
+	letterInventoryCanvas->addChild(itemsButton);
+	letterInventoryCanvas->addChild(letterButton);
+	letterInventoryCanvas->addChild(photoButton);
+	letterInventoryCanvas->addChild(descBackground);
 
-	inventoryHint = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(50.0f, 368.0f), glm::vec2(350.0f, 30.0f), TopLeft);
-	inventoryHint->addChild(new UiText(inventoryHint->getSize() / 2.0f - glm::vec2(20.0f, 0.0f), inventoryHint->getSize(), "Press I to open the inventory", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	photosInventoryCanvas->addChild(itemsButton);
+	photosInventoryCanvas->addChild(letterButton);
+	photosInventoryCanvas->addChild(photoButton);
+	photosInventoryCanvas->addChild(descBackground);
+
+	itemsInventoryCanvas->addChild(itemsButton);
+	itemsInventoryCanvas->addChild(letterButton);
+	itemsInventoryCanvas->addChild(photoButton);
+	itemsInventoryCanvas->addChild(descBackground);
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
@@ -134,8 +136,6 @@ void Picking::initialize() {
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
-
-	inventoryCanvas->addChild(descBackground);
 
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
 		encouragementActivate->setText("Press E to interact");
@@ -153,8 +153,8 @@ void Picking::initialize() {
 	GraphNode* firstPhoto = new GraphNode(nullptr, scene->getRootNode());
 	GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
 
-	CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, "res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Photo from uncle Yoshiro", "res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
-	CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, "res/textures/Icons/letterIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Letter from uncle Yoshiro", "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f));
+	CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, "res/textures/Photos/13thHour.jpg", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Photo from uncle Yoshiro", "res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+	CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Letter from uncle Yoshiro", "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f));
 	firstPhoto->addComponent(colPhoto);
 	firstLetter->addComponent(colLetter);
 	firstPhoto->setActive(false);
@@ -184,16 +184,20 @@ void Picking::initialize() {
 
 	previewCanvas->addChild(colPhoto->getPreview());
 	previewCanvas->setActive(true);
+	letterInventoryCanvas->setActive(false);
+	photosInventoryCanvas->setActive(false);
+	itemsInventoryCanvas->setActive(false);
+
+	letterButton->setOpacity(0.0f);
+	itemsButton->setOpacity(0.0f);
+	photoButton->setOpacity(0.0f);
+
 }
 
 void Picking::collect(CollectableObject* collectable) {
 	inventory.push_back(collectable->getGameObject());
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	collectable->getButton()->setOpacity(0.0f);
-
-	if(showHint) {
-		gameManager->getCurrentNonEditorScene()->getUiRoot()->addChild(inventoryHint);
-	}
 
 	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
@@ -240,18 +244,18 @@ void Picking::collect(CollectableObject* collectable) {
 
 	if (inventoryUI) {
 		if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
-			inventoryCanvas->addChild(collectable->getButton());
-			inventoryCanvas->addChild(collectable->getIcon());
+			itemsInventoryCanvas->addChild(collectable->getButton());
+			itemsInventoryCanvas->addChild(collectable->getIcon());
 			showInventoryUi();
 		}
 		if (letterInventory->isActive() && collectable->getI_type() == Letter) {
-			inventoryCanvas->addChild(collectable->getButton());
-			inventoryCanvas->addChild(collectable->getIcon());
+			letterInventoryCanvas->addChild(collectable->getButton());
+			letterInventoryCanvas->addChild(collectable->getIcon());
 			showInventoryUi();
 		}
 		if (photosInventory->isActive() && collectable->getI_type() == Photo) {
-			inventoryCanvas->addChild(collectable->getButton());
-			inventoryCanvas->addChild(collectable->getIcon());
+			photosInventoryCanvas->addChild(collectable->getButton());
+			photosInventoryCanvas->addChild(collectable->getIcon());
 			showInventoryUi();
 		}
 	}
@@ -261,30 +265,23 @@ Picking::Picking(GraphNode* _gameObject, const std::string& name) : Picking(_gam
 
 
 void Picking::hideInventoryUi() {
-	inventoryCanvas->setActive(false);
-	for (GraphNode* obj : inventory) {
-		inventoryCanvas->removeChild(obj->getComponent<CollectableObject>()->getIcon());
-	}
+	currentCanvas->setActive(false);
 }
 
 void Picking::showInventoryUi() {
-
-	if(showHint) {
-		setShowHint(false);
-		gameManager->getCurrentNonEditorScene()->getUiRoot()->removeChild(inventoryHint);
-	}
-
-	inventoryCanvas->setActive(true);
 	previewCanvas->setActive(false);
-
-	if (letterInventory->isActive()) {
-		placeInGrid(Letter);
+	currentCanvas->setActive(true);
+	itemsButton->setActive(true);
+	letterButton->setActive(true);
+	photoButton->setActive(true);
+	if (letterInventoryCanvas->isActive()) {
+		placeInGrid(Letter, letterInventoryCanvas);
 	}
-	if (itemsInventory->isActive()) {
-		placeInGrid(NormalItem);
+	if (itemsInventoryCanvas->isActive()) {
+		placeInGrid(NormalItem, itemsInventoryCanvas);
 	}
-	if (photosInventory->isActive()) {
-		placeInGrid(Photo);
+	if (photosInventoryCanvas->isActive()) {
+		placeInGrid(Photo, photosInventoryCanvas);
 	}
 }
 
@@ -370,6 +367,24 @@ void Picking::update(float msec) {
 		}
 	}
 }
+void Picking::setShowHint(bool showHint) {
+	this->showHint = showHint;
+}
+
+bool Picking::getShowHint() {
+	return showHint;
+}
+
+void Picking::renderGui() {
+	Component::renderGui();
+	if(active) {
+		bool hint = showHint;
+		ImGui::Checkbox("Show hint", &hint);
+		if(hint != showHint) {
+			setShowHint(hint);
+		}
+	}
+}
 
 Picking::~Picking() {}
 
@@ -382,7 +397,6 @@ Json::Value Picking::serialize(Serializer* serializer) {
 	root["camera"] = serializer->serialize(camera);
 	root["scene"] = serializer->serialize(scene);
 	root["distance"] = distance;
-	root["showHint"] = showHint;
 	return root;
 }
 
@@ -390,15 +404,11 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
-	distance = root["distance"].asFloat();
-	showHint = root.get("showHint", true).asBool();
+
 	initialize();
 }
 Scene *Picking::getScene() const {
 	return scene;
-}
-UiCanvas *Picking::getInventoryCanvas() const {
-	return inventoryCanvas;
 }
 
 void Picking::setCamera(Camera* camera) {

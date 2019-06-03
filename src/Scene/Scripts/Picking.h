@@ -29,32 +29,33 @@ public:
 	UiCanvas *getInventoryCanvas() const;
 	void setCamera(Camera *camera);
 	Camera* getCamera();
-	void placeInGrid(ItemType itype);
+	void placeInGrid(ItemType itype, UiCanvas* canvas);
 	void setShowHint(bool showHint);
 	bool getShowHint();
 private:
-    void renderGui() override;
-    void initialize();
-    void collect(CollectableObject *collectable);
-    Scene* scene;
-    float distance = 1.0f;
-    bool inventoryUI = false;
-    UiCanvas *encouragementCanvas, *previewCanvas, *currentCanvas;
-    UiCanvas *letterInventoryCanvas, *photosInventoryCanvas, *itemsInventoryCanvas;
-    Camera* camera;
-    std::vector<GraphNode*> inventory;
-    Picking() {}
-    friend class Serializer;
-    UiColorPlane* encouragementBackground;
-    UiText *encouragementPick, *encouragementActivate;
-    UiButton* itemsButton;
-    UiButton* letterButton;
-    UiButton* photoButton;
-    UiPlane* photosInventory;
-    UiPlane* itemsInventory;
-    UiPlane* letterInventory;
-    UiColorPlane* descBackground;
-    GraphNode* currentInteraction = nullptr;
+	void renderGui() override;
+	void initialize();
+	void collect(CollectableObject *collectable);
+	Scene* scene;
+	float distance = 1.0f;
+	bool inventoryUI = false;
+	bool showHint = false;
+	UiCanvas *encouragementCanvas, *previewCanvas, *currentCanvas;
+	UiCanvas *letterInventoryCanvas, *photosInventoryCanvas, *itemsInventoryCanvas;
+	Camera* camera;
+	std::vector<GraphNode*> inventory;
+	Picking() {}
+	friend class Serializer;
+	UiColorPlane* encouragementBackground;
+	UiText *encouragementPick, *encouragementActivate;
+	UiButton* itemsButton;
+	UiButton* letterButton;
+	UiButton* photoButton;
+	UiPlane* photosInventory;
+	UiPlane* itemsInventory;
+	UiPlane* letterInventory;
+	UiColorPlane* descBackground;
+	GraphNode* currentInteraction = nullptr;
 };
 
 #endif
