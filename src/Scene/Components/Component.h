@@ -14,12 +14,12 @@ class Component abstract : public GuiConfigurable, public Serializable
 {
 protected:
 	friend class Serializer;
-	GameManager *gameManager;
+	GameManager *gameManager = nullptr;
 	Component();
-	GraphNode* gameObject;
+	GraphNode* gameObject = nullptr;
 	Component(GraphNode* _gameObject, std::string name = "Component");
 	bool active = true;
-	std::string name;
+	std::string name = "";
 	void renderGui() override;
 public:
 	SerializableType getSerializableType() override;

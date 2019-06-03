@@ -13,6 +13,7 @@
 #include "Scene/Components/LightComponents/PointLightComp.h"
 #include "Scene/Components/Camera.h"
 #include "EditorScene.h"
+#include "Profiler.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -261,16 +262,39 @@ void Scene::reinitializeRenderMap() {
 
 void Scene::update(double deltaTime) {
 	if (!rootNode->getChildren().empty()) {
+		double  startTime = glfwGetTime();
 		OctreeNode::getInstance().RebuildTree(50.0f);
+		double elapsedTime = glfwGetTime() - startTime;
+		Profiler::getInstance()->setRebuildTreeTime(elapsedTime * 1000);
+		
+		startTime = glfwGetTime();
 		OctreeNode::getInstance().Calculate();
+		elapsedTime = glfwGetTime() - startTime;
+		Profiler::getInstance()->setCalculateTreeTime(elapsedTime * 1000);
+
+		startTime = glfwGetTime();
 		OctreeNode::getInstance().CollisionTests();
+		elapsedTime = glfwGetTime() - startTime;
+		Profiler::getInstance()->setCollisionTestsTime(elapsedTime * 1000);
+
 		if (camera != nullptr) {
 			camera->RecalculateFrustum();
 			Frustum frustum = camera->getFrustum();
+			startTime = glfwGetTime();
 			OctreeNode::getInstance().frustumCulling(frustum);
+			elapsedTime = glfwGetTime() - startTime;
+			Profiler::getInstance()->setFrustumCullingTime(elapsedTime * 1000);
 		}
 	}
+
 	rootNode->update(deltaTime);
+	Profiler::getInstance()->update(deltaTime);
+
+
+	if(GameManager::getInstance()->getKeyOnce(GLFW_KEY_F3))
+	{
+		Profiler::getInstance()->setEnable(!Profiler::getInstance()->getEnabled());
+	}
 }
 
 void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
