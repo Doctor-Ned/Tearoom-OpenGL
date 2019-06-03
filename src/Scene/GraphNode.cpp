@@ -83,7 +83,8 @@ void GraphNode::update(double timeDiff) {
 	}
 	for (Component* component : components) {
 		if (component->isComponentActive()) {
-			component->update(timeDiff);
+			//component->update(timeDiff);
+			component->updateComponent(timeDiff);
 		}
 	}
 	for (auto &child : children) {
