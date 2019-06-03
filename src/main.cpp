@@ -19,6 +19,7 @@
 #include "Scene/Node.h"
 #include "Scene/SoundSystem.h"
 #include "Scene/Scenes/OptionsScene.h"
+#include "Profiler.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -287,6 +288,7 @@ int main(int argc, char** argv) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		Profiler::getInstance()->clearFrameData();
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta, deltaSum = 100.0f;
 		static int lastFps = 0;
@@ -309,7 +311,10 @@ int main(int argc, char** argv) {
 		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		double  startTime = glfwGetTime();
 		gameManager->render();
+		double elapsedTime = glfwGetTime() - startTime;
+		Profiler::getInstance()->setRenderTime(elapsedTime * 1000);
 
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {
@@ -363,7 +368,6 @@ int main(int argc, char** argv) {
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.ui.texture);
 		dat.render();
-
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);

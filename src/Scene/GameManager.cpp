@@ -5,6 +5,7 @@
 #include "Render/LightManager.h"
 #include "Scenes/LoadingScene.h"
 #include "Scenes/EditorScene.h"
+#include "Profiler.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -504,6 +505,10 @@ void GameManager::render() {
 void GameManager::renderUi() {
 	if (currentScene != nullptr) {
 		currentScene->renderUi();
+		if (Profiler::getInstance()->getEnabled())
+		{
+			Profiler::getInstance()->renderProfilerWindow();
+		}
 	}
 }
 

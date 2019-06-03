@@ -2,6 +2,7 @@
 #include "Serialization/Serializer.h"
 #include "Scene/GraphNode.h"
 #include "Scene/GameManager.h"
+#include "Profiler.h"
 
 Component::Component() {
 	gameManager = GameManager::getInstance();
@@ -45,9 +46,13 @@ void Component::setComponentActive(bool active) {
 
 void Component::updateComponent(float msec)
 {
-	float  startTime = glfwGetTime();
+	double  startTime = glfwGetTime();
 	update(msec);
-	float elapsedTime = glfwGetTime() - startTime;
+	double elapsedTime = glfwGetTime() - startTime;
+	if(getGameObject() != nullptr)
+	{
+		Profiler::getInstance()->addUpdateTime(getGameObject()->getName() + " : " + getName(), elapsedTime * 1000.0f);
+	}
 }
 
 void Component::update(float msec) {}
