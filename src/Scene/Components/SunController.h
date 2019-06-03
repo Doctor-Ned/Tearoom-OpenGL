@@ -21,7 +21,8 @@ public:
     Json::Value serialize(Serializer *serializer) override;
     void deserialize(Json::Value &root, Serializer* serializer) override;
     void setClockVisibility(bool active);
-
+	void setShowHint(bool showHint);
+	bool getShowHint();
 private:
 	void renderGui() override;
 	void initialize();
@@ -30,6 +31,7 @@ private:
 	float getFractionalPartOfHour();
 	SunController();
     Scene* scene;
+	bool showHint = false, hintLeft = false, hintRight = false;
     UiColorPlane* clockBackground;
     //Clock UI
     bool clockUI = false;
@@ -37,6 +39,7 @@ private:
     UiPlane* clockHand;
     //UiPlane* clockFace;
     UiPlane* clockBack;
+	UiColorPlane *hint;
 
 	float maxHour = 17.0f;
 	float minHour = 7.0f;
