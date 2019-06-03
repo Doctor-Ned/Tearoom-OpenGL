@@ -31,7 +31,7 @@ public:
 	Camera* getCamera();
 	void placeInGrid(ItemType itype);
 private:
-	void renderGui() override;
+	void initialize();
 	void collect(CollectableObject *collectable);
 	Scene* scene;
 	float distance = 1.0f;

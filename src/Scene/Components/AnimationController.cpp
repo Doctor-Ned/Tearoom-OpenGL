@@ -4,6 +4,7 @@
 #include "Scene/GameManager.h"
 #include "Serialization/Serializer.h"
 #include "Scene/Scenes/EditorScene.h"
+#include "Scene/SoundSystem.h"
 
 void AnimationController::update(float msec) {
 	if(anim != nullptr) {
@@ -58,6 +59,8 @@ int AnimationController::getDoorID() {
 
 void AnimationController::open() {
 	setComponentActive(false);
+	SoundSystem::getSound("doorOpeningSound")->setDefaultVolume(0.15);
+	SoundSystem::getEngine()->play2D(SoundSystem::getSound("doorOpeningSound"));
 	anim->setComponentActive(true);
 	anim->play();
 }

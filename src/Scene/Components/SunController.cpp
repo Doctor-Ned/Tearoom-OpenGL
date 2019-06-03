@@ -6,6 +6,7 @@
 #include "Ui/UiPlane.h"
 #include "Serialization/Serializer.h"
 #include "Scene/Components/LightComponents/Sun.h"
+#include "Scene/SoundSystem.h"
 
 SunController::SunController(GraphNode* _gameObject, Scene* scene, const std::string& name)
 :Component(_gameObject, name), scene(scene){
@@ -39,12 +40,16 @@ void SunController::initializeTimeTravel(bool future)
 	startHour = sun->getTime();
 	if(!future)
 	{
+        SoundSystem::getSound("clockSound")->setDefaultVolume(0.15);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clockSound"));
 		endHour = startHour - 1.0f;
 		clockStart = (startHour - 12.0f) * 30.0f;
 		clockEnd = clockStart - 30.0f;
 	}
 	else
 	{
+        SoundSystem::getSound("clockSound")->setDefaultVolume(0.15);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clockSound"));
 		endHour = startHour + 1.0f;
 		clockStart = (startHour - 12.0f) * 30.0f;
 		clockEnd = clockStart + 30.0f;

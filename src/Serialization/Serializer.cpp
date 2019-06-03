@@ -43,6 +43,7 @@
 #include "Scene/Scripts/ColumnMoving.h"
 #include "Scene/Scripts/SunTimeActivator.h"
 #include "Scene/Scripts/CollectableWatch.h"
+#include "Scene/Scripts/IntroCutscene.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -321,6 +322,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SCollectableWatch:
 			deserializeAndIdentify(pointer, data, new CollectableWatch());
+			break;
+		case SIntroCutscene:
+			deserializeAndIdentify(pointer, data, new IntroCutscene());
 			break;
 	}
 	return pointer;
