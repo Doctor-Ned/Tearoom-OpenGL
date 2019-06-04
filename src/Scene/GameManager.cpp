@@ -422,8 +422,11 @@ void GameManager::keyEvent(const int key, const bool pressed) const {
 bool GameManager::getMouseState(const int key) {
 	auto pair = mouseStates.find(key);
 	if (pair != mouseStates.end()) {
+		std::cout<<"click"<<std::endl;
 		return pair->second;
 	}
+	std::cout<<"false"<<std::endl;
+
 	return false;
 }
 
@@ -551,6 +554,18 @@ void GameManager::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void GameManager::mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
+	if (action == GLFW_RELEASE) {
+		if (getMouseState(butt)) {
+			setMouseState(butt, false);
+			mouseEvent(butt, false);
+		}
+	}
+	if (action == GLFW_PRESS) {
+		if (!getMouseState(butt)) {
+			setMouseState(butt, true);
+			mouseEvent(butt, true);
+		}
+	}
 	if (currentScene != nullptr) {
 		currentScene->mouse_button_callback(window, butt, action, mods);
 	}

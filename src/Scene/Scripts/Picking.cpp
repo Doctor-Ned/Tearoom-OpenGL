@@ -50,9 +50,7 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 		else {
             col->getButton()->setActive(false);
             col->getIcon()->setActive(false);
-
         }
-
 	}
 }
 
@@ -79,7 +77,6 @@ void Picking::initialize() {
 	photosInventoryCanvas->addChild(photosInventory);
 	letterInventoryCanvas->addChild(letterInventory);
 	itemsInventoryCanvas->addChild(itemsInventory);
-
 	currentCanvas = itemsInventoryCanvas; //!!!
 
 	//BUTTONS AND THEIR CALLBACKS
@@ -96,33 +93,26 @@ void Picking::initialize() {
         SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
         SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
-		for (UiElement* elem : letterInventoryCanvas->getChildren()) {
-		    elem->setActive(false);
-		}
 		photosInventoryCanvas->setActive(false);
-
 		currentCanvas = itemsInventoryCanvas;
 		showInventoryUi();
-		SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 	});
 	letterButton->addClickCallback([this]() {
-        SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
-        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
-		photosInventoryCanvas->setActive(false);
+		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		itemsInventoryCanvas->setActive(false);
+		photosInventoryCanvas->setActive(false);
 		currentCanvas = letterInventoryCanvas;
 		showInventoryUi();
 
 	});
 	photoButton->addClickCallback([this]() {
+		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
-
 		currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
-		SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 	});
 
 	letterInventoryCanvas->addChild(itemsButton);
@@ -152,7 +142,7 @@ void Picking::initialize() {
 	encouragementCanvas->addChild(encouragementPick);
 	encouragementCanvas->addChild(encouragementActivate);
 
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_I, true, [this]() {
+	GameManager::getInstance()->addMouseCallback(GLFW_MOUSE_BUTTON_RIGHT, true, [this]() {
 		encouragementActivate->setText("Press E to interact");
 		gameManager->setCursorLocked(inventoryUI);
 		inventoryUI = !inventoryUI;
@@ -183,29 +173,11 @@ void Picking::initialize() {
 	inventory.push_back(firstLetter);
 
 	colPhoto->getButton()->addClickCallback([this, colPhoto]() {
-		gameManager->setCursorLocked(true);
-		inventoryUI = false;
-		hideInventoryUi();
-		for (UiElement* elem : previewCanvas->getChildren()) {
-		    previewCanvas->removeChild(elem);
-        }
-        SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
-        SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
-		previewCanvas->addChild(colPhoto->getPreview());
-		previewCanvas->setActive(true);
+		setButtonCallbackBody(colPhoto);
 	});
 
 	colLetter->getButton()->addClickCallback([this, colLetter]() {
-		gameManager->setCursorLocked(true);
-		inventoryUI = false;
-		hideInventoryUi();
-        for (UiElement* elem : previewCanvas->getChildren()) {
-            previewCanvas->removeChild(elem);
-        }
-		previewCanvas->addChild(colLetter->getPreview());
-		previewCanvas->setActive(true);
-        SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
-        SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+		setButtonCallbackBody(colLetter);
 	});
 
 	previewCanvas->addChild(colPhoto->getPreview());
@@ -213,7 +185,6 @@ void Picking::initialize() {
 	letterInventoryCanvas->setActive(false);
 	photosInventoryCanvas->setActive(false);
 	itemsInventoryCanvas->setActive(false);
-
 
 }
 
@@ -224,20 +195,8 @@ void Picking::collect(CollectableObject* collectable) {
 
 	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
-			gameManager->setCursorLocked(true);
-			inventoryUI = false;
-			hideInventoryUi();
-            for (UiElement* elem : previewCanvas->getChildren()) {
-                previewCanvas->removeChild(elem);
-            }
-			previewCanvas->addChild(collectable->getPreview());
-			previewCanvas->setActive(true);
-            SoundSystem::getSound("previewSound")->setDefaultVolume(0.80f);
-            SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
-			if(collectable->getI_type() ==  Letter) letterInventoryCanvas->addChild(collectable->getButton());
-            if(collectable->getI_type() ==  Photo) photosInventoryCanvas->addChild(collectable->getButton());
-        });
-
+			setButtonCallbackBody(collectable);
+		});
 	} else if (collectable->getI_type() == DoorKey) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
 			if (currentInteraction != nullptr) {
@@ -294,6 +253,19 @@ void Picking::collect(CollectableObject* collectable) {
 }
 
 Picking::Picking(GraphNode* _gameObject, const std::string& name) : Picking(_gameObject, gameManager->getCurrentNonEditorCamera(), gameManager->getCurrentNonEditorScene(), name) {}
+
+void Picking::setButtonCallbackBody(CollectableObject *collectable) {
+	gameManager->setCursorLocked(true);
+	inventoryUI = false;
+	hideInventoryUi();
+	for (UiElement* elem : previewCanvas->getChildren()) {
+		previewCanvas->removeChild(elem);
+	}
+	previewCanvas->addChild(collectable->getPreview());
+	previewCanvas->setActive(true);
+	SoundSystem::getSound("previewSound")->setDefaultVolume(0.80f);
+	SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+}
 
 void Picking::hideInventoryUi() {
 	currentCanvas->setActive(false);
@@ -352,7 +324,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 			encouragementActivate->setText("Press E to take the watch");
-			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
+			if (gameManager->getMouseState(0)) {
 				watch->pickup();
 				collect(watch->getCollectable());
 				previewCanvas->addChild(watch->getCollectable()->getPreview());
@@ -365,7 +337,7 @@ void Picking::update(float msec) {
 				encouragementActivate->setActive(false);
 				encouragementPick->setActive(true);
 
-				if (gameManager->getKeyOnce(GLFW_KEY_E) && !collectable->getIsTaken()) {
+				if (gameManager->getMouseState(0) && !collectable->getIsTaken()) {
 					collect(collectable);
 				}
 			}
@@ -380,7 +352,7 @@ void Picking::update(float msec) {
 			encouragementPick->setActive(false);
 			encouragementActivate->setText("Press E to interact");
 
-			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
+			if (gameManager->getMouseState(0)) {
 				anim->play();
 			}
 		}
@@ -390,19 +362,15 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 
-			if (gameManager->getKeyOnce(GLFW_KEY_E)) {
+			if (gameManager->getMouseState(0)) {
 				encouragementActivate->setText("Oops.. I need a key");
 				gameManager->setCursorLocked(false);
 				setSwitch(!getSwitch());
 				showInventoryUi();
 				currentInteraction = object;
 			}
-		} else {
-
 		}
 	}
-
-
 }
 void Picking::setShowHint(bool showHint) {
 	this->showHint = showHint;

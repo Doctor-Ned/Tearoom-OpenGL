@@ -23,6 +23,7 @@ public:
 	void hideInventoryUi();
 	void hidePreview();
 	void showPreview();
+	void setButtonCallbackBody(CollectableObject* collectable);
 	bool getSwitch();
 	void setSwitch(bool ifShown);
 	Scene *getScene() const;
