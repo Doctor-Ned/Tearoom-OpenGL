@@ -37,7 +37,7 @@ private:
 	void initialize();
 	void collect(CollectableObject *collectable);
 	Scene* scene;
-	float distance = 1.0f;
+	float distance = 0.4f;
 	bool inventoryUI = false;
 	bool showHint = false;
 	UiCanvas *encouragementCanvas, *previewCanvas, *currentCanvas;
