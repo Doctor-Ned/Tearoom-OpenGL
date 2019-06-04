@@ -311,10 +311,9 @@ int main(int argc, char** argv) {
 		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		double  startTime = glfwGetTime();
+		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
-		double elapsedTime = glfwGetTime() - startTime;
-		Profiler::getInstance()->setRenderTime(elapsedTime * 1000);
+		Profiler::getInstance()->addMeasure("Render calculations");
 
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {

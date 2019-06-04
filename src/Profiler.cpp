@@ -5,26 +5,19 @@
 #include "imgui_impl_opengl3.h"
 #include <string>
 #include "GLFW/glfw3.h"
+#include <ctime>
 
 void Profiler::clearFrameDataBuffer()
 {
 	overallUpdateTimeBuffer = 0.0;
-	rebuildTreeTimeBuffer = 0.0;
-	calculateTreeTimeBuffer = 0.0;
-	collisionTestsTimeBuffer = 0.0;
-	frustumCullingTimeBuffer = 0.0;
-	renderTimeBuffer = 0.0;
+	measuresMapBuffer.clear();
 	updateTimesBuffer.clear();
 }
 
 void Profiler::addFrameDataToBuffer()
 {
-	renderTimeBuffer = renderTime;
 	overallUpdateTimeBuffer = overallUpdateTime;
-	rebuildTreeTimeBuffer = rebuildTreeTime;
-	calculateTreeTimeBuffer = calculateTreeTime;
-	collisionTestsTimeBuffer = collisionTestsTime;
-	frustumCullingTimeBuffer = frustumCullingTime;
+	measuresMapBuffer = measuresMap;
 	updateTimesBuffer = updateTimes;
 }
 
@@ -67,29 +60,18 @@ void Profiler::addUpdateTime(std::string&& componentId, double time)
 	}
 }
 
-void Profiler::setRebuildTreeTime(double time)
+void Profiler::startCountingTime()
 {
-	rebuildTreeTime = time;
+	startTime = glfwGetTime();
 }
 
-void Profiler::setCalculateTreeTime(double time)
+void Profiler::addMeasure(std::string&& measureName)
 {
-	calculateTreeTime = time;
-}
-
-void Profiler::setCollisionTestsTime(double time)
-{
-	collisionTestsTime = time;
-}
-
-void Profiler::setFrustumCullingTime(double time)
-{
-	frustumCullingTime = time;
-}
-
-void Profiler::setRenderTime(double time)
-{
-	renderTime = time;
+	if (enabled)
+	{
+		measuresMap[std::move(measureName)] = (glfwGetTime() - startTime) * 1000;
+		startTime = 0;
+	}
 }
 
 void Profiler::setEnable(bool enabled)
@@ -105,38 +87,25 @@ bool Profiler::getEnabled()
 void Profiler::renderProfilerWindow()
 {
 	//overallUpdateTime *= 1000.0f; //in miliseconds
-	if(ImGui::Begin("Profiler", &enabled, ImGuiWindowFlags_NoCollapse))
+	if(ImGui::Begin("Profiler", &enabled, 64))
 	{
-		ImGui::Text("Render Time:");
-		ImGui::SameLine();
-		ImGui::Text("%.8f ms", renderTimeBuffer);
-		ImGui::Text("________________");
-		ImGui::Text("Octree rebuild");
-		ImGui::SameLine();
-		ImGui::Text("%.8f ms", rebuildTreeTimeBuffer);
-
-		ImGui::Text("Octree calculation");
-		ImGui::SameLine();
-		ImGui::Text("%.8f ms", calculateTreeTimeBuffer);
-
-		ImGui::Text("Octree collisions");
-		ImGui::SameLine();
-		ImGui::Text("%.8f ms", collisionTestsTimeBuffer);
-
-		ImGui::Text("Frustum Culling");
-		ImGui::SameLine();
-		ImGui::Text("%.8f ms", frustumCullingTimeBuffer);
+		for(auto it : measuresMapBuffer)
+		{
+			ImGui::Text(it.first.c_str());
+			ImGui::SameLine();
+			ImGui::Text("%.4f ms", it.second);
+		}
 
 		ImGui::Text("Overall Update Time");
 		ImGui::SameLine();
-		ImGui::Text("%.8f ms", overallUpdateTimeBuffer);
+		ImGui::Text("%.4f ms", overallUpdateTimeBuffer);
 		if(ImGui::TreeNode("Update Times"))
 		{
 			for (auto it : updateTimesBuffer)
 			{
 				ImGui::Text(it.first.c_str());
 				ImGui::SameLine();
-				ImGui::Text("%.8f ms", it.second);
+				ImGui::Text("%.4f ms", it.second);
 			}
 			ImGui::TreePop();
 		}

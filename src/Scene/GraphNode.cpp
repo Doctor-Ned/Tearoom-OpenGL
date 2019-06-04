@@ -261,12 +261,12 @@ void GraphNode::setActive(bool active) {
 	this->active = active;
 }
 
-std::string GraphNode::getName() const {
+const std::string& GraphNode::getName() const {
 	return name;
 }
 
-void GraphNode::setName(std::string name) {
-	this->name = name;
+void GraphNode::setName(std::string&& name) {
+	this->name = std::move(name);
 }
 
 std::vector<GraphNode*> GraphNode::getChildren() const {
@@ -367,7 +367,7 @@ void GraphNode::renderGui() {
 		ImGui::InputText("Name", buff, IM_ARRAYSIZE(buff));
 		std::string newName(Global::trim(buff));
 		if (newName.length() > 0 && newName != name && ImGui::Button("Apply name")) {
-			setName(newName);
+			setName(std::move(newName));
 			buff[0] = '\0';
 		}
 		ImGui::Text("_____________________");

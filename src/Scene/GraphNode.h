@@ -56,8 +56,8 @@ public:
 	bool isOpaque() override;
 	bool isActive() override;
 	void setActive(bool active);
-	std::string getName() const;
-	void setName(std::string name);
+	const std::string& getName() const;
+	void setName(std::string&& name);
 	std::vector<GraphNode*> getChildren() const;
 	std::vector<Renderable*> getRenderableComponents() const;
 	Json::Value serialize(Serializer* serializer) override;

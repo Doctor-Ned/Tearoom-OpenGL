@@ -262,28 +262,24 @@ void Scene::reinitializeRenderMap() {
 
 void Scene::update(double deltaTime) {
 	if (!rootNode->getChildren().empty()) {
-		double  startTime = glfwGetTime();
+		Profiler::getInstance()->startCountingTime();
 		OctreeNode::getInstance().RebuildTree(50.0f);
-		double elapsedTime = glfwGetTime() - startTime;
-		Profiler::getInstance()->setRebuildTreeTime(elapsedTime * 1000);
+		Profiler::getInstance()->addMeasure("Octree rebuild");
 		
-		startTime = glfwGetTime();
+		Profiler::getInstance()->startCountingTime();
 		OctreeNode::getInstance().Calculate();
-		elapsedTime = glfwGetTime() - startTime;
-		Profiler::getInstance()->setCalculateTreeTime(elapsedTime * 1000);
+		Profiler::getInstance()->addMeasure("Octree calculation");
 
-		startTime = glfwGetTime();
+		Profiler::getInstance()->startCountingTime();
 		OctreeNode::getInstance().CollisionTests();
-		elapsedTime = glfwGetTime() - startTime;
-		Profiler::getInstance()->setCollisionTestsTime(elapsedTime * 1000);
+		Profiler::getInstance()->addMeasure("Collisions detection");
 
 		if (camera != nullptr) {
 			camera->RecalculateFrustum();
 			Frustum frustum = camera->getFrustum();
-			startTime = glfwGetTime();
+			Profiler::getInstance()->startCountingTime();
 			OctreeNode::getInstance().frustumCulling(frustum);
-			elapsedTime = glfwGetTime() - startTime;
-			Profiler::getInstance()->setFrustumCullingTime(elapsedTime * 1000);
+			Profiler::getInstance()->addMeasure("Frustum Culling");
 		}
 	}
 

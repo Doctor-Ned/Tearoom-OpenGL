@@ -37,7 +37,7 @@ public:
 	Collider(ColliderType _type, GraphNode* _gameObject, Collision classification = STATIC, bool isTrigger = false, glm::vec3 positionOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 	bool isOpaque() override;
 	virtual ~Collider();
-	glm::vec3 getPosition();
+	const glm::vec3& getPosition();
 	void update(float mscec) override;
 	void updateDrawData() override;
 	void drawSelf(Shader* shader) override;

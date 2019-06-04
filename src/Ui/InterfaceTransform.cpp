@@ -5,7 +5,7 @@
 
 InterfaceTransform::InterfaceTransform(bool& dirty, glm::vec2 size, UiAnchor anchor) : ComposedTransform(dirty), size(size), anchor(anchor) {}
 
-glm::mat4 InterfaceTransform::dataToMatrix(TransformData data) {
+glm::mat4 InterfaceTransform::dataToMatrix(const TransformData& data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
 	//glm::vec2 size = glm::vec2(scale * glm::vec4(this->size, 0.0f, 1.0f));

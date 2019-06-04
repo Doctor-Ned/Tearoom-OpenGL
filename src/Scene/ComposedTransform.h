@@ -15,10 +15,10 @@ public:
 	ComposedTransform(bool& dirty);
 	void recalculateMatrix();
 	void recalculateMatrixQuat();
-	glm::mat4 getMatrix();
+	const glm::mat4& getMatrix();
 	glm::mat4 getMatrixQuat();
 	glm::mat4 getLastMatrix() const;
-	glm::vec3 getPosition() const;
+	const glm::vec3& getPosition() const;
 	glm::quat getQuaternion();
 	void initialize(glm::vec3 position, glm::vec3 eulerRotation);
 	void initialize(glm::vec3 position, glm::vec3 scale, glm::vec3 eulerRotation);
@@ -50,11 +50,11 @@ public:
 	void updateLast();
 	void setData(TransformData data);
 	void setLastData(TransformData data);
-	TransformData getData() const;
+	const TransformData& getData() const;
 	TransformData getLastData() const;
-	virtual glm::mat4 dataToMatrix(TransformData data);
+	virtual glm::mat4 dataToMatrix(const TransformData& data);
 	virtual glm::mat4 dataToMatrixQuat(TransformData data);
-	static glm::mat4 standardDataToMatrix(TransformData data);
+	static glm::mat4 standardDataToMatrix(const TransformData& data);
 	static glm::mat4 standardDataToMatrixQuat(TransformData data);
 protected:
 	TransformData data, lastData;
