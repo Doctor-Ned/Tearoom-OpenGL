@@ -293,14 +293,14 @@ void Scene::update(double deltaTime) {
 	}
 }
 
-void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
+void Scene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, float fov) {
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
 	windowCenterX = windowWidth / 2.0f;
 	windowCenterY = windowHeight / 2.0f;
-	projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(fov), windowWidth / windowHeight, 0.1f, 100.0f);
 }
 
 void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
@@ -344,7 +344,7 @@ Scene::Scene() {
 	uboTextureColor = assetManager->getUboTextureColor();
 	uboViewProjection = assetManager->getUboViewProjection();
 	gameFramebuffers = gameManager->getFramebuffers();
-	Scene::updateWindowSize(gameManager->getWindowWidth(), gameManager->getWindowHeight(), gameManager->getScreenWidth(), gameManager->getScreenHeight());
+	Scene::updateWindowSize(gameManager->getWindowWidth(), gameManager->getWindowHeight(), gameManager->getScreenWidth(), gameManager->getScreenHeight(), gameManager->getFOV());
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			renderMap.emplace(type, new std::vector<Renderable*>());

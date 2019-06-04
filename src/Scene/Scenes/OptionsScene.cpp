@@ -250,8 +250,8 @@ void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, 
 	}
 }
 
-void OptionsScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+void OptionsScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, float fov) {
+	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, fov);
 	addResolution(windowWidth, windowHeight);
 	addResolution(screenWidth, screenHeight);
 	sortResolutions();

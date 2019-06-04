@@ -23,7 +23,7 @@ void GameManager::setCurrentScene(Scene * scene) {
 	} */
 	currentScene = scene;
 	if (currentScene != nullptr) {
-		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, fov);
 		currentScene->mouse_callback(window, mousePosition.x, mousePosition.y);
 		LightManager::getInstance()->replaceLights(currentScene->getLights());
 	}
@@ -41,6 +41,11 @@ float GameManager::getWindowWidth() {
 
 float GameManager::getWindowHeight() {
 	return windowHeight;
+}
+
+float GameManager::getFOV()
+{
+	return fov;
 }
 
 float GameManager::getScreenWidth() {

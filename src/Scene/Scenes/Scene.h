@@ -39,7 +39,7 @@ public:
 	virtual void keyEvent(int key, bool pressed);
 	virtual void mouseEvent(int key, bool pressed);
 	virtual void update(double deltaTime);
-	virtual void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight);
+	virtual void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, float fov);
 	virtual void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	virtual void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);

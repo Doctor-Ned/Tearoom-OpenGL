@@ -117,9 +117,9 @@ void MenuScene::mouse_button_callback(GLFWwindow * window, int butt, int action,
 	}
 }
 
-void MenuScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) {
-	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
-	optionsScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight);
+void MenuScene::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, float fov) {
+	Scene::updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, fov);
+	optionsScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, fov);
 }
 
 MenuScene::~MenuScene() {

@@ -38,7 +38,7 @@ void Camera::RecalculateFrustum() {
 	float screenRatio = GameManager::getInstance()->getScreenWidth() / GameManager::getInstance()->getScreenHeight();
 
 	//float tangens = 2 * glm::tan(M_PI / 4);
-	float tangens = glm::tan((M_PI / 180.0f) * 45.0f * 0.5f);
+	float tangens = glm::tan((M_PI / 180.0f) * GameManager::getInstance()->getFOV() * 0.5f);
 
 	float nearHeight = tangens * nearDistance;
 	float nearWidth = nearHeight * screenRatio;

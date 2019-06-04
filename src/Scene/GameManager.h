@@ -53,6 +53,7 @@ public:
 	void setCurrentSceneAndDeletePrevious(Scene* scene);
 	float getWindowWidth();
 	float getWindowHeight();
+	float getFOV();
 	float getScreenWidth();
 	float getScreenHeight();
 	float getWindowCenterX();
@@ -103,6 +104,7 @@ protected:
 	glm::vec2 mousePosition;
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
+	float fov = 65.0f;
 	Framebuffer uiFramebuffer, pingPongFramebuffers[2];
 	MultitextureFramebuffer mainFramebuffer;
 	GLuint renderbuffer;

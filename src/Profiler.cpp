@@ -48,6 +48,7 @@ void Profiler::clearFrameData()
 {
 	updateTimes.clear();
 	overallUpdateTime = 0.0f;
+	measuresMap.clear();
 }
 
 void Profiler::addUpdateTime(std::string&& componentId, double time)

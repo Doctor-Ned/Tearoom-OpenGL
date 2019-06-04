@@ -14,7 +14,7 @@ public:
 	~OptionsScene();
 	void update(double deltaTime) override;
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
-	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight) override;
+	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, float fov) override;
 	static VideoSettings loadVideoSettings();
 	static void setVideoSettings(VideoSettings videoSettings);
 	static void saveVideoSettings();
