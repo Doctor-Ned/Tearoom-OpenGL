@@ -94,7 +94,7 @@ Collider::~Collider() {
 
 }
 
-const glm::vec3& Collider::getPosition() {
+glm::vec3 Collider::getPosition() {
 	return matrix[3];
 }
 

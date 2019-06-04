@@ -32,7 +32,7 @@ void BoxCollider::setHalfDimensions(glm::vec3& half_dimensions)
 	box->updateValues(glm::vec3(-halfDimensions.x, -halfDimensions.y, -halfDimensions.z), glm::vec3(halfDimensions.x, halfDimensions.y, halfDimensions.z));
 }
 
-const glm::vec3& BoxCollider::getHalfDimensions()
+glm::vec3 BoxCollider::getHalfDimensions()
 {
 	return halfDimensions;
 }

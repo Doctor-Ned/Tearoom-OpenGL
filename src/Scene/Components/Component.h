@@ -32,7 +32,7 @@ public:
 	void updateComponent(float msec);
 	virtual void update(float msec);
 	GraphNode* getGameObject() const;
-	const std::string& getName() const;
+	std::string getName();
 	virtual ~Component() = default;
 };
 #endif

@@ -51,9 +51,7 @@ void Component::updateComponent(float msec)
 	double elapsedTime = glfwGetTime() - startTime;
 	if(getGameObject() != nullptr)
 	{
-		std::stringstream ss;
-		ss << getGameObject()->getName() + " : " + getName();
-		Profiler::getInstance()->addUpdateTime(ss.str(), elapsedTime * 1000.0f);
+		Profiler::getInstance()->addUpdateTime(getGameObject()->getName() + " : " + getName(), elapsedTime * 1000.0f);
 	}
 }
 
@@ -63,7 +61,7 @@ GraphNode* Component::getGameObject() const {
 	return gameObject;
 }
 
-const std::string& Component::getName() const
+std::string Component::getName()
 {
 	return name;
 }

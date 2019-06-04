@@ -18,7 +18,7 @@ void ComposedTransform::recalculateMatrixQuat()
 	transform = dataToMatrixQuat(data);
 }
 
-const glm::mat4& ComposedTransform::getMatrix() {
+glm::mat4 ComposedTransform::getMatrix() {
 	if (selfDirty) {
 		recalculateMatrix();
 	}
@@ -38,7 +38,7 @@ glm::mat4 ComposedTransform::getLastMatrix() const {
 	return lastTransform;
 }
 
-const glm::vec3& ComposedTransform::getPosition() const {
+glm::vec3 ComposedTransform::getPosition() const {
 	return data.translation;
 }
 
@@ -198,7 +198,7 @@ void ComposedTransform::setLastData(const TransformData data) {
 	lastTransform = dataToMatrix(lastData);
 }
 
-const TransformData& ComposedTransform::getData() const {
+TransformData ComposedTransform::getData() const {
 	return data;
 }
 
@@ -206,7 +206,7 @@ TransformData ComposedTransform::getLastData() const {
 	return lastData;
 }
 
-glm::mat4 ComposedTransform::dataToMatrix(const TransformData& data) {
+glm::mat4 ComposedTransform::dataToMatrix(const TransformData data) {
 	return standardDataToMatrix(data);
 }
 
@@ -215,7 +215,7 @@ glm::mat4 ComposedTransform::dataToMatrixQuat(TransformData data)
 	return standardDataToMatrixQuat(data);
 }
 
-glm::mat4 ComposedTransform::standardDataToMatrix(const TransformData& data) {
+glm::mat4 ComposedTransform::standardDataToMatrix(TransformData data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
 	glm::mat4 rotation = glm::eulerAngleYXZ(data.eulerRotation.y, data.eulerRotation.x, data.eulerRotation.z);
