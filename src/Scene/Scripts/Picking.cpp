@@ -40,10 +40,18 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 				col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 				col->getButton()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 			}
-			canvas->addChild(col->getButton());
-			canvas->addChild(col->getIcon());
-			i++;
+            col->getButton()->setActive(true);
+            col->getIcon()->setActive(true);
+            canvas->addChild(col->getButton());
+            canvas->addChild(col->getIcon());
+            i++;
 		}
+		else {
+            col->getButton()->setActive(false);
+            col->getIcon()->setActive(false);
+
+        }
+
 	}
 }
 
@@ -73,27 +81,38 @@ void Picking::initialize() {
 
 	currentCanvas = itemsInventoryCanvas; //!!!
 
+	//BUTTONS AND THEIR CALLBACKS
 	itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f, 40.0f), Right);
 	letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
 	photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
 	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
+    letterButton->setOpacity(0.0f);
+    itemsButton->setOpacity(0.0f);
+    photoButton->setOpacity(0.0f);
+
 	itemsButton->addClickCallback([this]() {
+        SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
+		for (UiElement* elem : letterInventoryCanvas->getChildren()) {
+		    elem->setActive(false);
+		}
 		photosInventoryCanvas->setActive(false);
 
 		currentCanvas = itemsInventoryCanvas;
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 	});
 	letterButton->addClickCallback([this]() {
+        SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		photosInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
 		currentCanvas = letterInventoryCanvas;
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+
 	});
 	photoButton->addClickCallback([this]() {
 		letterInventoryCanvas->setActive(false);
@@ -101,8 +120,8 @@ void Picking::initialize() {
 
 		currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
-		SoundSystem::getSound("bow")->setDefaultVolume(0.03f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		SoundSystem::getSound("clickSound")->setDefaultVolume(0.10f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 	});
 
 	letterInventoryCanvas->addChild(itemsButton);
@@ -158,6 +177,7 @@ void Picking::initialize() {
 	colPhoto->getButton()->setOpacity(0.0f);
 	colLetter->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	colLetter->getButton()->setOpacity(0.0f);
+
 	inventory.push_back(firstPhoto);
 	inventory.push_back(firstLetter);
 
@@ -165,6 +185,11 @@ void Picking::initialize() {
 		gameManager->setCursorLocked(true);
 		inventoryUI = false;
 		hideInventoryUi();
+		for (UiElement* elem : previewCanvas->getChildren()) {
+		    previewCanvas->removeChild(elem);
+        }
+        SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
 		previewCanvas->addChild(colPhoto->getPreview());
 		previewCanvas->setActive(true);
 	});
@@ -173,8 +198,13 @@ void Picking::initialize() {
 		gameManager->setCursorLocked(true);
 		inventoryUI = false;
 		hideInventoryUi();
+        for (UiElement* elem : previewCanvas->getChildren()) {
+            previewCanvas->removeChild(elem);
+        }
 		previewCanvas->addChild(colLetter->getPreview());
 		previewCanvas->setActive(true);
+        SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
+        SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
 	});
 
 	previewCanvas->addChild(colPhoto->getPreview());
@@ -183,9 +213,6 @@ void Picking::initialize() {
 	photosInventoryCanvas->setActive(false);
 	itemsInventoryCanvas->setActive(false);
 
-	letterButton->setOpacity(0.0f);
-	itemsButton->setOpacity(0.0f);
-	photoButton->setOpacity(0.0f);
 
 }
 
@@ -199,9 +226,16 @@ void Picking::collect(CollectableObject* collectable) {
 			gameManager->setCursorLocked(true);
 			inventoryUI = false;
 			hideInventoryUi();
+            for (UiElement* elem : previewCanvas->getChildren()) {
+                previewCanvas->removeChild(elem);
+            }
 			previewCanvas->addChild(collectable->getPreview());
 			previewCanvas->setActive(true);
-		});
+            SoundSystem::getSound("previewSound")->setDefaultVolume(0.80f);
+            SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+			if(collectable->getI_type() ==  Letter) letterInventoryCanvas->addChild(collectable->getButton());
+            if(collectable->getI_type() ==  Photo) photosInventoryCanvas->addChild(collectable->getButton());
+        });
 
 	} else if (collectable->getI_type() == DoorKey) {
 		collectable->getButton()->addClickCallback([this, collectable]() {
@@ -238,7 +272,7 @@ void Picking::collect(CollectableObject* collectable) {
 
 	collectable->takeObject();
 
-
+    //adding item to grid while opened
 	if (inventoryUI) {
 		if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
 			itemsInventoryCanvas->addChild(collectable->getButton());
@@ -259,7 +293,6 @@ void Picking::collect(CollectableObject* collectable) {
 }
 
 Picking::Picking(GraphNode* _gameObject, const std::string& name) : Picking(_gameObject, gameManager->getCurrentNonEditorCamera(), gameManager->getCurrentNonEditorScene(), name) {}
-
 
 void Picking::hideInventoryUi() {
 	currentCanvas->setActive(false);
@@ -294,6 +327,8 @@ void Picking::hidePreview() {
 }
 
 void Picking::showPreview() {
+    SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
+    SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
 	previewCanvas->setActive(true);
 }
 
@@ -304,7 +339,6 @@ void Picking::setSwitch(bool ifShown) {
 
 void Picking::update(float msec) {
 	GameManager *gameManager = GameManager::getInstance();
-
 	Collider* coll = gameObject->getComponent<Collider>();
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), distance, coll);
 
@@ -405,7 +439,6 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
-
 	initialize();
 }
 Scene *Picking::getScene() const {
