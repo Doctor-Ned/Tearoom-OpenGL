@@ -8,6 +8,7 @@
 #include "Mesh/MeshRef.h"
 #include "Ui/UiPlane.h"
 #include <iostream>
+#include <Ui/UiButton.h>
 #include "Scene/Components/LightComponents/DirLightComp.h"
 #include "Scene/Components/LightComponents/SpotLightComp.h"
 #include "Scene/Components/LightComponents/PointLightComp.h"
@@ -79,6 +80,7 @@ void Scene::render() {
 }
 
 void Scene::renderUiElement(UiElement* uiElement) {
+
 	if (!uiElement->isActive()) {
 		return;
 	}

@@ -43,6 +43,33 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 			}
             col->getButton()->setActive(true);
             col->getIcon()->setActive(true);
+
+            if(col->getI_type() == Letter || col->getI_type() == Photo) {
+                col->getButton()->addClickCallback([this, col]() {
+                    setButtonCallbackBody(col);
+                });
+            }
+            else if (col->getI_type() == DoorKey){
+                col->getButton()->addClickCallback([this, col]() {
+                    if (currentInteraction != nullptr) {
+                        AnimationController *anim = currentInteraction->getComponent<AnimationController>();
+                        if (anim->isComponentActive() && col->getDoorID() == anim->getDoorID()) {
+                            anim->open();
+                            inventoryUI = false;
+                            hideInventoryUi();
+                            gameManager->setCursorLocked(true);
+                            //this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+                            for (int i = 0; i < inventory.size(); i++) {
+                                auto obj = inventory[i]->getComponent<CollectableObject>();
+                                if (obj->getDoorID() == anim->getDoorID()) {
+                                    inventory.erase(inventory.begin() + i);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
             canvas->addChild(col->getButton());
             canvas->addChild(col->getIcon());
             i++;
@@ -50,6 +77,7 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 		else {
             col->getButton()->setActive(false);
             col->getIcon()->setActive(false);
+            col->getButton()->clearCallbacks();
         }
 	}
 }
@@ -143,7 +171,7 @@ void Picking::initialize() {
 	encouragementCanvas->addChild(encouragementActivate);
 
 	GameManager::getInstance()->addMouseCallback(GLFW_MOUSE_BUTTON_RIGHT, true, [this]() {
-		encouragementActivate->setText("Press E to interact");
+		encouragementActivate->setText("Click to interact");
 		gameManager->setCursorLocked(inventoryUI);
 		inventoryUI = !inventoryUI;
 		if (getSwitch()) {
@@ -193,37 +221,9 @@ void Picking::collect(CollectableObject* collectable) {
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	collectable->getButton()->setOpacity(0.0f);
 
-	if (collectable->getI_type() == Letter || collectable->getI_type() == Photo) {
-		collectable->getButton()->addClickCallback([this, collectable]() {
-			setButtonCallbackBody(collectable);
-		});
-	} else if (collectable->getI_type() == DoorKey) {
-		collectable->getButton()->addClickCallback([this, collectable]() {
-			if (currentInteraction != nullptr) {
-				AnimationController *anim = currentInteraction->getComponent<AnimationController>();
-				if (anim->isComponentActive() && collectable->getDoorID() == anim->getDoorID()) {
-					anim->open();
-					inventoryUI = false;
-					hideInventoryUi();
-					gameManager->setCursorLocked(true);
-					//this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-					for (int i = 0; i < inventory.size(); i++) {
-						auto obj = inventory[i]->getComponent<CollectableObject>();
-						if (obj->getDoorID() == anim->getDoorID()) {
-							inventory.erase(inventory.begin() + i);
-						}
-					}
-				}
-			}
-		});
-	} else {
-		gameManager->setCursorLocked(true);
-		inventoryUI = false;
-	}
 	collectable->getButton()->addHoverCallback([this, collectable]() {
 		descBackground->setActive(true);
 		descBackground->addChild(collectable->getDescription());
-
 	});
 	collectable->getButton()->addLeaveCallback([this, collectable]() {
 		descBackground->setActive(false);
@@ -323,7 +323,7 @@ void Picking::update(float msec) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
-			encouragementActivate->setText("Press E to take the watch");
+			encouragementActivate->setText("Click to take the watch");
 			if (gameManager->getMouseState(0)) {
 				watch->pickup();
 				collect(watch->getCollectable());
@@ -350,7 +350,7 @@ void Picking::update(float msec) {
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
-			encouragementActivate->setText("Press E to interact");
+			encouragementActivate->setText("Click to interact");
 
 			if (gameManager->getMouseState(0)) {
 				anim->play();

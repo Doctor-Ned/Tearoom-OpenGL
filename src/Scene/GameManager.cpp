@@ -422,10 +422,8 @@ void GameManager::keyEvent(const int key, const bool pressed) const {
 bool GameManager::getMouseState(const int key) {
 	auto pair = mouseStates.find(key);
 	if (pair != mouseStates.end()) {
-		std::cout<<"click"<<std::endl;
 		return pair->second;
 	}
-	std::cout<<"false"<<std::endl;
 
 	return false;
 }
