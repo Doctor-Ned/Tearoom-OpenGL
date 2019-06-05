@@ -220,6 +220,10 @@ Shader::~Shader() {
 	glDeleteProgram(id);
 }
 
+void Shader::setEmissiveFactor(float emissiveFactor) {
+	setFloat("emissiveFactor", emissiveFactor);
+}
+
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	GLuint shader;
 	shader = glCreateShader(shaderType);

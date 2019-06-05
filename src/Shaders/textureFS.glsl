@@ -24,6 +24,7 @@ uniform float opacity;
 uniform float roughness;
 uniform float metallic;
 uniform vec3 emissive;
+uniform float emissiveFactor;
 const float ao = 1.0f;
 
 //%lightComputations.glsl%
@@ -45,12 +46,12 @@ void main() {
 		FragColor = vec4(color, opac);
 	}
 
-	FragColor = FragColor + vec4(emissive, 0.0f);
+	FragColor = FragColor + vec4(emissive * emissiveFactor, 0.0f);
 
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {
 		BrightColor = FragColor;
 	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive, 0.0f);
+		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive * emissiveFactor, 0.0f);
 	}
 }

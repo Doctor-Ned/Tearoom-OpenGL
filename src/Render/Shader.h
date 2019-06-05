@@ -41,6 +41,7 @@ public:
 	void setMat3(const char* name, glm::mat3 &value);
 	void setMat4(const char* name, glm::mat4 &value);
 	virtual ~Shader();
+	void setEmissiveFactor(float emissiveFactor);
 protected:
 	std::map<std::string, std::string> sharedData;
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);

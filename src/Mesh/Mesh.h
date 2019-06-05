@@ -15,9 +15,11 @@ public:
 	bool isCulled() const;
 	virtual bool isOpaque() const;
 	float getOpacity() const;
+	float getEmissiveFactor() const;
 	virtual void setCastShadows(bool castShadows);
 	virtual void setUseLight(bool useLight);
 	virtual void setCulled(bool culled);
+	virtual void setEmissiveFactor(float emissiveFactor);
 	virtual void setOpaque(bool opaque);
 	virtual void setOpacity(float opacity);
 	void drawSelf(Shader *shader, glm::mat4 world);
@@ -42,6 +44,7 @@ protected:
 	bool castShadows;
 	float opacity = 1.0f;
 	float uiScale = 1.0f;
+	float emissiveFactor = 1.0f;
 	Mesh() : Mesh(STNone) {}
 	friend class Serializer;
 };

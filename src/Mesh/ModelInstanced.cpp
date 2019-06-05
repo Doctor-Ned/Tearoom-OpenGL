@@ -18,7 +18,7 @@ ModelInstanced::ModelInstanced(std::string path, glm::vec3* offsets, int offsetS
 
 void ModelInstanced::setOpacity(float opacity) {
 	Mesh::setOpacity(opacity);
-	for(auto &mesh: meshes) {
+	for (auto &mesh : meshes) {
 		mesh->setOpacity(opacity);
 	}
 }
@@ -27,6 +27,41 @@ void ModelInstanced::setCulled(bool culled) {
 	Mesh::setCulled(culled);
 	for (auto &mesh : meshes) {
 		mesh->setCulled(culled);
+	}
+}
+
+void ModelInstanced::setUseLight(bool useLight) {
+	Mesh::setUseLight(useLight);
+	for (auto &mesh : meshes) {
+		mesh->setUseLight(useLight);
+	}
+}
+
+void ModelInstanced::setCastShadows(bool castShadows) {
+	Mesh::setCastShadows(castShadows);
+	for (auto &mesh : meshes) {
+		mesh->setCastShadows(castShadows);
+	}
+}
+
+void ModelInstanced::setRenderMode(GLuint renderMode) {
+	Mesh::setRenderMode(renderMode);
+	for (auto &mesh : meshes) {
+		mesh->setRenderMode(renderMode);
+	}
+}
+
+void ModelInstanced::setOpaque(bool opaque) {
+	Mesh::setOpaque(opaque);
+	for (auto &mesh : meshes) {
+		mesh->setOpaque(opaque);
+	}
+}
+
+void ModelInstanced::setEmissiveFactor(float emissiveFactor) {
+	Mesh::setEmissiveFactor(emissiveFactor);
+	for(auto &mesh : meshes) {
+		mesh->setEmissiveFactor(emissiveFactor);
 	}
 }
 
@@ -65,4 +100,5 @@ void ModelInstanced::initialize(ModelData* data, glm::vec3* offsets, int offsetS
 	for (auto &modelNodeData : data->nodeData) {
 		meshes.push_back(new MeshModelInstanced(modelNodeData->vertices, modelNodeData->indices, data->textures, offsets, offsetSize));
 	}
+	setEmissiveFactor(data->textures[2].id == 0 ? 0.0f : 1.0f);
 }

@@ -27,6 +27,7 @@ uniform sampler2D textures[7];
 uniform bool available[7];
 uniform mat4 model;
 uniform float opacity;
+uniform float emissiveFactor;
 
 //%lightComputations.glsl%
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
@@ -88,9 +89,8 @@ void main() {
 	float roughness = available[5] ? texture(textures[5], texCoords).r : 1.0f;
 	float metallic = available[3] ? texture(textures[3], texCoords).r : 0.0f;
 	float ao = available[0] ? texture(textures[0], texCoords).r : 1.0f;
-	vec3 emissive = available[2] ? texture(textures[2], texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
-	//todo: add AO and normal
-	//vec3 normal = available[4] ? texture(textures[4], fs_in.texCoords).rgb : fs_in.normal;
+	//vec3 emissive = available[2] ? texture(textures[2], texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
+	vec3 emissive = (available[2] ? texture(textures[2], texCoords).rgb : albedo.rgb) * emissiveFactor;
 	
 	vec3 color = initialAmbient * albedoRGB;
 	float opac = albedo.w * opacity;

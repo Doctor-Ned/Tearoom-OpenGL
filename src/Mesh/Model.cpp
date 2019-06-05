@@ -58,6 +58,13 @@ void Model::setOpaque(bool opaque) {
 	}
 }
 
+void Model::setEmissiveFactor(float emissiveFactor) {
+	Mesh::setEmissiveFactor(emissiveFactor);
+	for(auto &mesh : meshes) {
+		mesh->setEmissiveFactor(emissiveFactor);
+	}
+}
+
 SerializableType Model::getSerializableType() {
 	return SModel;
 }
@@ -83,4 +90,5 @@ void Model::initialize(ModelData* data) {
 	for (auto &modelNodeData : data->nodeData) {
 		meshes.push_back(new MeshModel(modelNodeData->vertices, modelNodeData->indices, data->textures));
 	}
+	setEmissiveFactor(data->textures[2].id == 0 ? 0.0f : 1.0f);
 }

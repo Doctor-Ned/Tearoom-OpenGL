@@ -22,6 +22,10 @@ bool Mesh::getUseLight() const {
 	return useLight;
 }
 
+float Mesh::getEmissiveFactor() const {
+	return emissiveFactor;
+}
+
 bool Mesh::isOpaque() const {
 	return opacity > 0.99f && opaque;
 }
@@ -38,12 +42,17 @@ void Mesh::setCulled(bool culled) {
 	this->culled = culled;
 }
 
+void Mesh::setEmissiveFactor(float emissiveFactor) {
+	this->emissiveFactor = emissiveFactor;
+}
+
 void Mesh::draw(Shader *shader, glm::mat4 world) {
 	//shader->use();
 	shader->setOpacity(opacity);
 	shader->setModel(world);
 	shader->setUseLight(useLight);
 	shader->setCastShadows(castShadows);
+	shader->setEmissiveFactor(emissiveFactor);
 }
 
 ShaderType Mesh::getShaderType() {
@@ -101,6 +110,7 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 	root["castShadows"] = castShadows;
 	root["uiScale"] = uiScale;
 	root["renderMode"] = static_cast<int>(renderMode);
+	root["emissiveFactor"] = emissiveFactor;
 	return root;
 }
 
@@ -113,6 +123,7 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setOpacity(root.get("opacity", opacity).asFloat());
 	setUiScale(root.get("uiScale", uiScale).asFloat());
 	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
+	setEmissiveFactor(root.get("emissiveFactor", emissiveFactor).asFloat());
 }
 
 void Mesh::renderGui() {
@@ -121,16 +132,20 @@ void Mesh::renderGui() {
 		opaque = this->opaque,
 		culled = this->culled,
 		castShadows = this->castShadows;
-	float opacity = this->opacity, uiScale=this->uiScale;
+	float opacity = this->opacity, uiScale=this->uiScale, emissiveFactor=this->emissiveFactor;
 
 	ImGui::Checkbox("Use light", &useLight);
 	ImGui::Checkbox("Cast shadows", &castShadows);
 	ImGui::Checkbox("Opaque", &opaque);
 	ImGui::SliderFloat("Opacity", &opacity, 0.0f, 1.0f);
 	ImGui::Checkbox("Culled", &culled);
+	ImGui::DragFloat("Emissive factor", &emissiveFactor, 0.05f, 0.0f, 100.0f);
 	ImGui::DragFloat("Scale in UI", &uiScale, 0.01f);
 	if (useLight != this->useLight) {
 		setUseLight(useLight);
+	}
+	if(emissiveFactor != this->emissiveFactor) {
+		setEmissiveFactor(emissiveFactor);
 	}
 	if (castShadows != this->castShadows) {
 		setCastShadows(castShadows);
