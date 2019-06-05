@@ -284,8 +284,6 @@ void Scene::update(double deltaTime) {
 	}
 
 	rootNode->update(deltaTime);
-	Profiler::getInstance()->update(deltaTime);
-
 
 	if(GameManager::getInstance()->getKeyOnce(GLFW_KEY_F3))
 	{

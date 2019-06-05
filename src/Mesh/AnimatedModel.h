@@ -16,7 +16,7 @@ struct AnimatedModelNodeData {
 
 struct AnimatedModelData {
 	std::vector<AnimatedModelNodeData*> nodeData;
-	Texture textures[6];
+	Texture textures[7];
 
 	void checkBoneCounters()
 	{

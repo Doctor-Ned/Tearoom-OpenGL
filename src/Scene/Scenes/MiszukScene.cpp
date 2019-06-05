@@ -138,7 +138,7 @@ MiszukScene::MiszukScene() {
 	player->addComponent(new BoxCollider(player, DYNAMIC));
 	player->addComponent(new PlayerMovement(player));
 	camera = player->getComponent<Camera>();  //playermovement creates a camera if it doesn't exist
-	player->addComponent(new IntroCutscene(this, player->getComponent<SunController>(), player));
+	//player->addComponent(new IntroCutscene(this, player->getComponent<SunController>(), player));
 	player->localTransform.setPosition(glm::vec3(-5.0f, 0.0f, -3.0f));
 	player->addComponent(new SunController(player, this));
 	player->addComponent(new Picking(player, camera, this));
@@ -190,9 +190,9 @@ MiszukScene::MiszukScene() {
 //#todo find out if animation works 
 		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
 		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
-		node->getComponent<SkeletalAnimation>()->play();
-	}
+		node->getComponent<SkeletalAnimation>()->play(0.0f, true);
 
+	}
 	rootNode->updateDrawData();
 	rootUiElement->updateDrawData();
 	reinitializeRenderMap();

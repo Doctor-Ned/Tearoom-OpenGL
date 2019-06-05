@@ -161,7 +161,7 @@ FullModelData* AnimatedModel::createModelData(std::string path) {
 	std::string directory = path.substr(0, path.find_last_of('/'));
 	FullModelData* result = new FullModelData();
 	Texture *textures = loadModelTextures(path);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		result->animatedData.textures[i] = textures[i];
 		result->simpleData.textures[i] = textures[i];
 	}
@@ -330,7 +330,7 @@ AnimatedModelNodeData *AnimatedModel::processMesh(aiMesh* mesh, const aiScene* s
 }
 
 Texture *AnimatedModel::loadModelTextures(const std::string &objPath) {
-	Texture *textures = new Texture[6];
+	Texture *textures = new Texture[7];
 	AssetManager *assetManager = AssetManager::getInstance();
 	std::string dir = objPath.substr(0, objPath.find_last_of("/") + 1);
 	for (auto &text : assetManager->getTextures()) {
@@ -347,6 +347,8 @@ Texture *AnimatedModel::loadModelTextures(const std::string &objPath) {
 				textures[4] = assetManager->getTexture(text);
 			} else if (Global::endsWith(text, "_Roughness.png")) {
 				textures[5] = assetManager->getTexture(text);
+			} else if (Global::endsWith(text, "_Height.png")) {
+				textures[6] = assetManager->getTexture(text);
 			}
 		}
 	}

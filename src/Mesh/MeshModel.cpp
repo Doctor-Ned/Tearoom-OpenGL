@@ -1,8 +1,8 @@
 #include "MeshModel.h"
 
-MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices, Texture textures[6])
+MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int> indices, Texture textures[7])
 	: Mesh(STModel), indices(indices), vertices(vertices) {
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		this->textures[i] = textures[i];
 	}
 	setupMesh();
@@ -11,7 +11,7 @@ MeshModel::MeshModel(std::vector<ModelVertex> vertices, std::vector<unsigned int
 void MeshModel::draw(Shader *shader, glm::mat4 world) {
 	Mesh::draw(shader, world);
 	int counter = 0;
-	for(int i=0;i<6;i++) {
+	for(int i=0;i<7;i++) {
 		if(textures[i].id != 0) {
 			glActiveTexture(GL_TEXTURE0 + counter);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);

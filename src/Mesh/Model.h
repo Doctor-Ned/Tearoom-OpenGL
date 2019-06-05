@@ -13,7 +13,7 @@ struct ModelNodeData {
 
 struct ModelData {
 	std::vector<ModelNodeData*> nodeData;
-	Texture textures[6];
+	Texture textures[7];
 };
 
 class Model : public Mesh {

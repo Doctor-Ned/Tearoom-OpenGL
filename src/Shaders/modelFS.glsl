@@ -21,24 +21,77 @@ in VS_OUT {
 
 uniform sampler2D default_texture;
 
-uniform sampler2D textures[6];
-// ao, albedo, emissive, metallic, normal, roughness
-//  0,      1,        2,        3,      4,         5
-uniform bool available[6];
+uniform sampler2D textures[7];
+// ao, albedo, emissive, metallic, normal, roughness, height
+//  0,      1,        2,        3,      4,         5,      6
+uniform bool available[7];
 uniform mat4 model;
 uniform float opacity;
 
 //%lightComputations.glsl%
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
+	/*float height = texture(textures[6], texCoords).r;
+	vec2 p = viewDir.xy * (height * 0.15f);
+	return texCoords - p;*/
+	float heightScale = 0.2f;
+	// number of depth layers
+	const float minLayers = 8.0;
+	const float maxLayers = 16.0;
+	float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));
+	// calculate the size of each layer
+	float layerDepth = 1.0 / numLayers;
+	// depth of current layer
+	float currentLayerDepth = 0.0;
+	// the amount to shift the texture coordinates per layer (from vector P)
+	vec2 P = viewDir.xy * heightScale;
+	vec2 deltaTexCoords = P / numLayers;
+
+	vec2  currentTexCoords = texCoords;
+	float currentDepthMapValue = 1.0f - texture(textures[6], currentTexCoords).r;
+
+	while (currentLayerDepth < currentDepthMapValue)
+	{
+		// shift texture coordinates along direction of P
+		currentTexCoords -= deltaTexCoords;
+		// get depthmap value at current texture coordinates
+		currentDepthMapValue = 1.0f - texture(textures[6], currentTexCoords).r;
+		// get depth of next layer
+		currentLayerDepth += layerDepth;
+	}
+
+	vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+	// get depth after and before collision for linear interpolation
+	float afterDepth = currentDepthMapValue - currentLayerDepth;
+	float beforeDepth = (1.0f - texture(textures[6], prevTexCoords).r) - currentLayerDepth + layerDepth;
+
+	// interpolation of texture coordinates
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return finalTexCoords;
+}
 
 void main() {
-	vec4 albedo = texture(available[1] ? textures[1] : default_texture, fs_in.texCoords);
+	vec2 texCoords = vec2(0.0f);
+	if (available[6]) {
+		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
+		viewDir = normalize(fs_in.TBN * viewDir);
+		texCoords = ParallaxMapping(fs_in.texCoords, viewDir);
+	}
+	else {
+		texCoords = fs_in.texCoords;
+	}
+	vec4 albedo = texture(available[1] ? textures[1] : default_texture, texCoords);
+	//float height = available[6] ? 1.0f - texture(textures[3], fs_in.texCoords).r : 0.0f;
 	vec3 albedoRGB = albedo.rgb;
-	float roughness = available[5] ? texture(textures[5], fs_in.texCoords).r : 1.0f;
-	float metallic = available[3] ? texture(textures[3], fs_in.texCoords).r : 0.0f;
-	float ao = available[0] ? texture(textures[0], fs_in.texCoords).r : 1.0f;
-	vec3 emissive = available[2] ? texture(textures[2], fs_in.texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
+	float roughness = available[5] ? texture(textures[5], texCoords).r : 1.0f;
+	float metallic = available[3] ? texture(textures[3], texCoords).r : 0.0f;
+	float ao = available[0] ? texture(textures[0], texCoords).r : 1.0f;
+	vec3 emissive = available[2] ? texture(textures[2], texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
 	//todo: add AO and normal
 	//vec3 normal = available[4] ? texture(textures[4], fs_in.texCoords).rgb : fs_in.normal;
+	
 	vec3 color = initialAmbient * albedoRGB;
 	float opac = albedo.w * opacity;
 	if(useLight == 0 || !enableLights) {
@@ -46,7 +99,7 @@ void main() {
 	} else {
 		vec3 N = fs_in.normal;
 		if (available[4]) {
-			vec3 norm = texture(textures[4], fs_in.texCoords).rgb;
+			vec3 norm = texture(textures[4], texCoords).rgb;
 			norm = normalize(norm*2.0f - 1.0f);
 			N = normalize(fs_in.TBN * norm);
 		}

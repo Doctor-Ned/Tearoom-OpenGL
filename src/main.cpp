@@ -302,6 +302,7 @@ int main(int argc, char** argv) {
 			deltaSum = 0.0f;
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
+		Profiler::getInstance()->update(timeDelta);
 		gameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
