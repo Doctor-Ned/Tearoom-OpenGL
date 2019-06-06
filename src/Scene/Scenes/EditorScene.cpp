@@ -1397,6 +1397,7 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 	switch (prefab) {
 		case PrefCache:
+		{
 			BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
 			AnimTimeSaver *saver = new AnimTimeSaver(node);
 			Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
@@ -1411,7 +1412,35 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			editedScene->addComponent(node, activator);
 			editedScene->addComponent(node, anim);
 			editedScene->addComponent(node, saver);
-			break;
+		}
+		break;
+		case PrefPhoto:
+		{
+			MeshColorBox *box = new MeshColorBox(glm::vec3(1.0f, 0.25f, 0.6f), glm::vec4(0.3480f, 0.2653f, 0.1825f, 1.0f));
+			box->setEmissive(glm::vec3(0.0441f, 0.0247f, 0.0115f));
+			GraphNode *photo = new GraphNode(box, node);
+			editedScene->addRenderedNode(photo, node);
+			CollectableObject *obj = new CollectableObject(photo, Photo, "res/textures/Photos/keyPhoto.jpg", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "", "res/textures/Photos/keyPhoto.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+			BoxCollider *collider = new BoxCollider(photo, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.013f, 0.007f, 0.021f));
+			photo->localTransform.setScale(4.2f);
+			editedScene->addComponent(photo, obj);
+			editedScene->addComponent(photo, collider);
+			editedScene->updateRenderable(node);
+		}
+		break;
+		case PrefKey:
+		{
+			Model *model = new Model("res/models/key/key.obj");
+			GraphNode *key = new GraphNode(model, node);
+			editedScene->addRenderedNode(key, node);
+			CollectableObject *obj = new CollectableObject(key, DoorKey, "res/textures/Icons/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "A mysterious key");
+			BoxCollider *collider = new BoxCollider(key, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.015f, 0.015f, 0.035f));
+			key->localTransform.setScale(1.40f);
+			editedScene->addComponent(key, obj);
+			editedScene->addComponent(key, collider);
+			editedScene->updateRenderable(node);
+		}
+		break;
 	}
 }
 

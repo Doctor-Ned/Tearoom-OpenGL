@@ -36,6 +36,7 @@ class CollectableObject : public Component {
 
 public:
 	virtual ~CollectableObject();
+	CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc);
 	CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc, std::string preview, glm::vec2 previewPos, glm::vec2 previewSize);
     CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc, std::string preview, glm::vec2 previewPos, glm::vec2 previewSize, int doorID);
     void takeObject();

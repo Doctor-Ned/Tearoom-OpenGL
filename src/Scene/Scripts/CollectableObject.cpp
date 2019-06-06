@@ -9,8 +9,12 @@
 #include "Scene/CollisionSystem.h"
 #include <iostream>
 #include "Serialization/Serializer.h"
+#include "Scene/Scenes/EditorScene.h"
 
 CollectableObject::CollectableObject(GraphNode* _gameObject) :Component(_gameObject) {}
+
+CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos,
+	glm::vec2 iconSize, std::string desc) : Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(""), previewPos(glm::vec2()), previewSize(glm::vec2()) {}
 
 CollectableObject::CollectableObject(GraphNode* _gameObject, ItemType i_type, std::string icon, glm::vec2 iconPos, glm::vec2 iconSize, std::string desc, std::string preview, glm::vec2 previewPos, glm::vec2 previewSize)
 	: Component(_gameObject), i_type(i_type), desc(desc), iconResource(icon), iconPos(iconPos), iconSize(iconSize), previewResource(preview), previewPos(previewPos), previewSize(previewSize) {
@@ -108,6 +112,29 @@ void CollectableObject::renderGui() {
 	Component::renderGui();
 	if(active) {
 		ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+		ImGui::Text(("Icon: " + iconResource).c_str());
+		EditorScene *editor = gameManager->getEditorScene();
+		if(editor && editor->textureSelectionCallback == nullptr) {
+			ImGui::SameLine();
+			if(ImGui::Button("CHANGE")) {
+				editor->textureSelectionCallback = [this](Texture tex) {
+					this->iconResource = tex.path;
+					icon->setTexture(tex.path.c_str());
+				};
+			}
+		}
+		if(preview) {
+			ImGui::Text(("Preview: " + previewResource).c_str());
+			if (editor && editor->textureSelectionCallback == nullptr) {
+				ImGui::SameLine();
+				if (ImGui::Button("CHANGE")) {
+					editor->textureSelectionCallback = [this](Texture tex) {
+						this->previewResource = tex.path;
+						preview->setTexture(tex.path.c_str());
+					};
+				}
+			}
+		}
 	}
 }
 

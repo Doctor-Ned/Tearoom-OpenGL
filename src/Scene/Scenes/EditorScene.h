@@ -16,12 +16,14 @@ enum TypeToCreate {
 };
 
 enum Prefab {
-	PrefCache
+	PrefCache,
+	PrefPhoto,
+	PrefKey
 };
 
-const Prefab Prefabs[] = { PrefCache };
+const Prefab Prefabs[] = { PrefCache, PrefPhoto, PrefKey };
 
-const std::string PrefabNames[] = { "PrefCache" };
+const std::string PrefabNames[] = { "PrefCache", "PrefPhoto", "PrefKey" };
 
 struct TypeCreation {
 	SerializableType typeToCreate = SNone;

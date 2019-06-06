@@ -5,6 +5,10 @@ UiPlane::UiPlane(const char* texture, glm::vec2 position, glm::vec2 size, UiAnch
 	setup();
 }
 
+void UiPlane::setTexture(const char* texture) {
+	AssetManager::getInstance()->getTexture(texture);
+}
+
 void UiPlane::render(Shader *shader) {
 	UiTexturedElement::render(shader);
 	glActiveTexture(GL_TEXTURE0);
