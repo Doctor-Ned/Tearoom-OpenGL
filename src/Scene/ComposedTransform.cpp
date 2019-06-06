@@ -234,19 +234,8 @@ void ComposedTransform::renderGui() {
 	glm::vec3 translation = data.translation, scale = data.scale, eulerRotation = data.eulerRotation;
 	ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&translation), 0.1f);
 	ImGui::InputFloat3("Translation (fixed)", reinterpret_cast<float*>(&translation));
-	static bool uniformScale = true;
-	ImGui::Checkbox("Uniform scale", &uniformScale);
-	if (uniformScale) {
-		float scl = glm::min(glm::min(scale.x, scale.y), scale.z);
-		ImGui::DragFloat("Scale", &scl, 0.1f);
-		ImGui::InputFloat("Scale (fixed)", &scl);
-		scale.x = scl;
-		scale.y = scl;
-		scale.z = scl;
-	} else {
-		ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.1f);
-		ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
-	}
+	ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.1f);
+	ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
 	glm::vec3 eulerRotationDegrees = Global::radiansToDegrees(eulerRotation);
 	ImGui::SliderAngle("X Rotation", &eulerRotation.x);
 	ImGui::InputFloat("X Rotation (fixed)", &eulerRotationDegrees.x);
