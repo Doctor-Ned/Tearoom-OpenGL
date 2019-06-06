@@ -14,7 +14,7 @@ void Collider::updateDrawData() {
 }
 
 void Collider::drawSelf(Shader* shader) {
-	//mesh_ptr->drawSelf(shader, matrix);
+	if(gameManager->drawColliders) mesh_ptr->drawSelf(shader, matrix);
 }
 
 ShaderType Collider::getShaderType() {

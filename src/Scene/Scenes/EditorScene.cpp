@@ -97,6 +97,8 @@ void EditorScene::renderUi() {
 		prefabSelectionCallback = nullptr;
 	}
 
+	ImGui::Checkbox("Draw colliders", &gameManager->drawColliders);
+
 	ImGui::Begin("Light manager", nullptr, 64);
 	lightManager->drawGui();
 	ImGui::End();
@@ -1425,7 +1427,6 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			photo->localTransform.setScale(4.2f);
 			editedScene->addComponent(photo, obj);
 			editedScene->addComponent(photo, collider);
-			editedScene->updateRenderable(node);
 		}
 		break;
 		case PrefKey:
@@ -1438,7 +1439,6 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 			key->localTransform.setScale(1.40f);
 			editedScene->addComponent(key, obj);
 			editedScene->addComponent(key, collider);
-			editedScene->updateRenderable(node);
 		}
 		break;
 	}
