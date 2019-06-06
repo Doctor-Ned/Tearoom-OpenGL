@@ -116,7 +116,7 @@ void CollectableObject::renderGui() {
 		EditorScene *editor = gameManager->getEditorScene();
 		if(editor && editor->textureSelectionCallback == nullptr) {
 			ImGui::SameLine();
-			if(ImGui::Button("CHANGE")) {
+			if(ImGui::Button("CHANGE ICON")) {
 				editor->textureSelectionCallback = [this](Texture tex) {
 					this->iconResource = tex.path;
 					icon->setTexture(tex.path.c_str());
@@ -127,7 +127,7 @@ void CollectableObject::renderGui() {
 			ImGui::Text(("Preview: " + previewResource).c_str());
 			if (editor && editor->textureSelectionCallback == nullptr) {
 				ImGui::SameLine();
-				if (ImGui::Button("CHANGE")) {
+				if (ImGui::Button("CHANGE PREVIEW")) {
 					editor->textureSelectionCallback = [this](Texture tex) {
 						this->previewResource = tex.path;
 						preview->setTexture(tex.path.c_str());
