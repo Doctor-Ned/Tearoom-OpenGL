@@ -224,6 +224,11 @@ void Shader::setEmissiveFactor(float emissiveFactor) {
 	setFloat("emissiveFactor", emissiveFactor);
 }
 
+void Shader::setDepthScale(float depthScale)
+{
+	setFloat("depthScale", depthScale);
+}
+
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	GLuint shader;
 	shader = glCreateShader(shaderType);

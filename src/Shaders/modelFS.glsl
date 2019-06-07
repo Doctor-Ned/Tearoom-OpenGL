@@ -30,14 +30,14 @@ uniform bool available[7];
 uniform mat4 model;
 uniform float opacity;
 uniform float emissiveFactor;
-
+uniform float depthScale;
 //%lightComputations.glsl%
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	/*float height = texture(textures[6], texCoords).r;
 	vec2 p = viewDir.xy * (height * 0.1f);
 	return texCoords - p;*/
 
-	float heightScale = 0.03f;
+	float heightScale = depthScale;
 	// number of depth layers
 	const float minLayers = 8.0;
 	const float maxLayers = 32.0;

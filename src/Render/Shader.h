@@ -25,6 +25,7 @@ public:
 	void setCastShadows(bool castShadows);
 	void setOpacity(float opacity);
 	void setEmissive(glm::vec3 &emissive);
+	void setDepthScale(float depthScale);
 	void setRoughness(float roughness);
 	void setMetallic(float metallic);
 	void setAnimatedModelBoneTransforms(glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]);

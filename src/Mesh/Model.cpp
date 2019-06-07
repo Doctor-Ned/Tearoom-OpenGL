@@ -65,6 +65,14 @@ void Model::setEmissiveFactor(float emissiveFactor) {
 	}
 }
 
+void Model::setDepthScale(float depth)
+{
+	Mesh::setDepthScale(depth);
+	for (auto &mesh : meshes) {
+		mesh->setDepthScale(depth);
+	}
+}
+
 SerializableType Model::getSerializableType() {
 	return SModel;
 }

@@ -53,6 +53,7 @@ void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->setUseLight(useLight);
 	shader->setCastShadows(castShadows);
 	shader->setEmissiveFactor(emissiveFactor);
+	shader->setDepthScale(depthScale);
 }
 
 ShaderType Mesh::getShaderType() {
@@ -69,6 +70,12 @@ void Mesh::setRenderMode(GLuint renderMode) {
 void Mesh::setOpacity(float opacity) {
 	this->opacity = opacity;
 }
+
+void Mesh::setDepthScale(float depth)
+{
+	this->depthScale = depth;
+}
+
 
 void Mesh::drawSelf(Shader* shader, glm::mat4 world) {
 	if (culled) {
@@ -111,6 +118,7 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 	root["uiScale"] = uiScale;
 	root["renderMode"] = static_cast<int>(renderMode);
 	root["emissiveFactor"] = emissiveFactor;
+	root["depthScale"] = depthScale;
 	return root;
 }
 
@@ -124,6 +132,7 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setUiScale(root.get("uiScale", uiScale).asFloat());
 	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
 	setEmissiveFactor(root.get("emissiveFactor", emissiveFactor).asFloat());
+	setDepthScale(root.get("depthScale", depthScale).asFloat());
 }
 
 void Mesh::renderGui() {
@@ -132,7 +141,7 @@ void Mesh::renderGui() {
 		opaque = this->opaque,
 		culled = this->culled,
 		castShadows = this->castShadows;
-	float opacity = this->opacity, uiScale=this->uiScale, emissiveFactor=this->emissiveFactor;
+	float opacity = this->opacity, uiScale=this->uiScale, emissiveFactor=this->emissiveFactor, depthScale = this->depthScale;
 
 	ImGui::Checkbox("Use light", &useLight);
 	ImGui::Checkbox("Cast shadows", &castShadows);
@@ -140,6 +149,7 @@ void Mesh::renderGui() {
 	ImGui::SliderFloat("Opacity", &opacity, 0.0f, 1.0f);
 	ImGui::Checkbox("Culled", &culled);
 	ImGui::DragFloat("Emissive factor", &emissiveFactor, 0.05f, 0.0f, 100.0f);
+	ImGui::DragFloat("Depth Scale", &depthScale, 0.005f, 0.0f, 1.0f);
 	ImGui::DragFloat("Scale in UI", &uiScale, 0.01f);
 	if (useLight != this->useLight) {
 		setUseLight(useLight);
@@ -158,6 +168,9 @@ void Mesh::renderGui() {
 	}
 	if (culled != this->culled) {
 		setCulled(culled);
+	}
+	if (depthScale != this->depthScale) {
+		setDepthScale(depthScale);
 	}
 	if(uiScale != this->uiScale) {
 		setUiScale(uiScale);

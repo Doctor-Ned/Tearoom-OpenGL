@@ -22,6 +22,7 @@ public:
 	virtual void setEmissiveFactor(float emissiveFactor);
 	virtual void setOpaque(bool opaque);
 	virtual void setOpacity(float opacity);
+	virtual void setDepthScale(float depth);
 	void drawSelf(Shader *shader, glm::mat4 world);
 	GLuint getRenderMode();
 	virtual void setRenderMode(GLuint renderMode);
@@ -45,6 +46,7 @@ protected:
 	float opacity = 1.0f;
 	float uiScale = 1.0f;
 	float emissiveFactor = 1.0f;
+	float depthScale = 0.03f;
 	Mesh() : Mesh(STNone) {}
 	friend class Serializer;
 };
