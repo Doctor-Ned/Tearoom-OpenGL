@@ -77,6 +77,7 @@ public:
 	bool getKeyState(int key);
 	bool getKeyOnce(int key);
 	bool getMouseState(int key);
+	bool getMouseOnce(int key);
 	glm::vec2 getMousePosition() const;
 	glm::vec2 getUiRescaleVector() const;
 	glm::vec2 getScreenRescaleVector() const;
@@ -100,6 +101,7 @@ protected:
 	void mouseEvent(int key, bool pressed);
 	bool cursorLocked = false;
 	std::map<int, bool> mouseStates;
+	std::map<int, bool> mouseProcessed;
 	std::map<int, std::map<bool, std::vector<std::function<void()>>>> mouseCallbacks;
 	bool enableVsync = true;
 	glm::vec2 mousePosition;

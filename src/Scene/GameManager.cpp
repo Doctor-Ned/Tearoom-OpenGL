@@ -428,6 +428,28 @@ bool GameManager::getMouseState(const int key) {
 	return false;
 }
 
+bool GameManager::getMouseOnce(int key) {
+	auto pair = mouseStates.find(key);
+	if (pair != mouseStates.end()) {
+		if (!pair->second) {
+			return false;
+		}
+
+		auto processed = mouseProcessed.find(key);
+		if (processed == mouseProcessed.end()) {
+			mouseProcessed.emplace(key, true);
+			return true;
+		} else {
+			if (!processed->second) {
+				mouseProcessed[key] = true;
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
+}
+
 glm::vec2 GameManager::getMousePosition() const {
 	return mousePosition;
 }
@@ -556,6 +578,7 @@ void GameManager::mouse_button_callback(GLFWwindow* window, int butt, int action
 		if (getMouseState(butt)) {
 			setMouseState(butt, false);
 			mouseEvent(butt, false);
+			mouseProcessed[butt] = false;
 		}
 	}
 	if (action == GLFW_PRESS) {

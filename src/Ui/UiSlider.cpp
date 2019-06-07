@@ -33,6 +33,7 @@ void UiSlider::setCallback(std::function<void(float)> callback) {
 }
 
 void UiSlider::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (!active)return;
 	UiElement::mouse_callback(window, xpos, ypos);
 	if (button->getState() == Clicked) {
 		if (moving) {

@@ -20,14 +20,18 @@ void UiElement::render(Shader *shader) {
 }
 
 void UiElement::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	for (auto &child : children) {
-		child->mouse_callback(window, xpos, ypos);
+	if (active) {
+		for (auto &child : children) {
+			child->mouse_callback(window, xpos, ypos);
+		}
 	}
 }
 
 void UiElement::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	for (auto &child : children) {
-		child->mouse_button_callback(window, button, action, mods);
+	if (active) {
+		for (auto &child : children) {
+			child->mouse_button_callback(window, button, action, mods);
+		}
 	}
 }
 
@@ -126,8 +130,7 @@ void UiElement::setParent(UiElement* element) {
 }
 
 void UiElement::addChild(UiElement* element) {
-	if(element == nullptr)
-	{
+	if (element == nullptr) {
 		return;
 	}
 	for (auto &child : children) {

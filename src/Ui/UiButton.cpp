@@ -37,6 +37,7 @@ void UiButton::render(Shader *shader) {
 }
 
 void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (!active)return;
 	UiElement::mouse_callback(window, xpos, ypos);
 	glm::vec2 resPosition = getRescaledModeledPosition(), resSize = getRescaledModeledSize();
 	double minX = resPosition.x, maxX = resPosition.x + resSize.x, minY = resPosition.y, maxY = resPosition.y + resSize.y;
@@ -55,6 +56,7 @@ void UiButton::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void UiButton::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (!active)return;
 	UiElement::mouse_button_callback(window, button, action, mods);
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS && hover) {
