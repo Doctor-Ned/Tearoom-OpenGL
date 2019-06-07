@@ -231,7 +231,7 @@ int main(int argc, char** argv) {
 
 	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	gameManager->setCursorLocked(true);
+	gameManager->setCursorLocked(false);
 
 	//int imgWidth, imgHeight, imgChannels;
 	//unsigned char* imgData = stbi_load("res/ui/Cursor.png", &imgWidth, &imgHeight, &imgChannels, 0);
