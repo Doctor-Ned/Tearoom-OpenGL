@@ -40,8 +40,8 @@ void main() {
 	vec3 B = cross(T, N);
 	vs_out.TBN = mat3(T, B, N);
 
-	vs_out.TanViewPos = (vs_out.TBN) * viewPosition;
-	vs_out.TanFragPos = (vs_out.TBN) * vs_out.pos;
+	vs_out.TanViewPos = transpose(vs_out.TBN) * viewPosition;
+	vs_out.TanFragPos = transpose(vs_out.TBN) * vs_out.pos;
 	
 	for(int i=0;i<dirLights;i++) {
 		vs_out.fragDirSpaces[i] = dirLight[i].lightSpace * vec4(vs_out.pos, 1.0f);

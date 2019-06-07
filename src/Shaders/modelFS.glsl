@@ -37,7 +37,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	vec2 p = viewDir.xy * (height * 0.1f);
 	return texCoords - p;*/
 
-	float heightScale = 0.05f;
+	float heightScale = 0.03f;
 	// number of depth layers
 	const float minLayers = 8.0;
 	const float maxLayers = 32.0;
@@ -79,13 +79,11 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 void main() {
 	vec2 texCoords = fs_in.texCoords;
 	vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
-	//vec3 I = vec3(0.0f);
 	if (available[6]) {
 		//vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
 		vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
 		texCoords = ParallaxMapping(fs_in.texCoords, viewDir);
-		//V = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
-		//I = normalize(fs_in.TanFragPos - fs_in.TanViewPos);
+		V = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
 	}
 	vec4 albedo = texture(available[1] ? textures[1] : default_texture, texCoords);
 	vec3 albedoRGB = albedo.rgb;
