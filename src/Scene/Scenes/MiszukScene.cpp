@@ -191,7 +191,6 @@ MiszukScene::MiszukScene() {
 		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
 		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
 		node->getComponent<SkeletalAnimation>()->play(0.0f, true);
-
 	}
 	rootNode->updateDrawData();
 	rootUiElement->updateDrawData();

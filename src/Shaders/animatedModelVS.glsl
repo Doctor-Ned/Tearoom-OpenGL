@@ -32,6 +32,8 @@ out VS_OUT{
 	vec4 fragDirSpaces[MAX_LIGHTS_OF_TYPE];
 	vec4 fragSpotSpaces[MAX_LIGHTS_OF_TYPE];
 	mat3 TBN;
+	vec3 TanViewPos;
+	vec3 TanFragPos;
 } vs_out;
 
 void main() {

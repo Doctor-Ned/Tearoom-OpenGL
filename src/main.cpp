@@ -230,6 +230,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_CLAMP);
 
 	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	gameManager->setCursorLocked(false);
 
 	gameManager->setCursorLocked(false);
 
@@ -288,7 +289,6 @@ int main(int argc, char** argv) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		Profiler::getInstance()->clearFrameData();
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta, deltaSum = 100.0f;
 		static int lastFps = 0;
@@ -303,6 +303,7 @@ int main(int argc, char** argv) {
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
 		Profiler::getInstance()->update(timeDelta);
+		Profiler::getInstance()->clearFrameData();
 		gameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
@@ -318,12 +319,13 @@ int main(int argc, char** argv) {
 
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {
-		// apply two-pass gaussian blur to bright fragments
+			// apply two-pass gaussian blur to bright fragments
 			blurShader->use();
 			for (unsigned int i = 0; i < lightManager->bloomIterations; i++) {
 				if (!horizontal) {
 					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
-				} else {
+				}
+				else {
 					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
 				}
 				blurShader->setBool("horizontal", horizontal);
@@ -335,7 +337,6 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
-
 		glDisable(GL_DEPTH_TEST);
 
 		// Render UI to its framebuffer

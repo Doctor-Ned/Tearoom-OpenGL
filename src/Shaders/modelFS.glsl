@@ -17,6 +17,8 @@ in VS_OUT {
 	vec4 fragDirSpaces[MAX_LIGHTS_OF_TYPE];
 	vec4 fragSpotSpaces[MAX_LIGHTS_OF_TYPE];
 	mat3 TBN;
+	vec3 TanViewPos;
+	vec3 TanFragPos;
 } fs_in;
 
 uniform sampler2D default_texture;
@@ -32,19 +34,20 @@ uniform float emissiveFactor;
 //%lightComputations.glsl%
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	/*float height = texture(textures[6], texCoords).r;
-	vec2 p = viewDir.xy * (height * 0.15f);
+	vec2 p = viewDir.xy * (height * 0.1f);
 	return texCoords - p;*/
-	float heightScale = 0.2f;
+
+	float heightScale = 0.05f;
 	// number of depth layers
 	const float minLayers = 8.0;
-	const float maxLayers = 16.0;
+	const float maxLayers = 32.0;
 	float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));
 	// calculate the size of each layer
 	float layerDepth = 1.0 / numLayers;
 	// depth of current layer
 	float currentLayerDepth = 0.0;
 	// the amount to shift the texture coordinates per layer (from vector P)
-	vec2 P = viewDir.xy * heightScale;
+	vec2 P = viewDir.xy / viewDir.z * heightScale;
 	vec2 deltaTexCoords = P / numLayers;
 
 	vec2  currentTexCoords = texCoords;
@@ -74,17 +77,17 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 }
 
 void main() {
-	vec2 texCoords = vec2(0.0f);
+	vec2 texCoords = fs_in.texCoords;
+	vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
+	//vec3 I = vec3(0.0f);
 	if (available[6]) {
-		vec3 viewDir = normalize(fs_in.viewPosition - fs_in.pos);
-		viewDir = normalize(fs_in.TBN * viewDir);
+		//vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
+		vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
 		texCoords = ParallaxMapping(fs_in.texCoords, viewDir);
-	}
-	else {
-		texCoords = fs_in.texCoords;
+		//V = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
+		//I = normalize(fs_in.TanFragPos - fs_in.TanViewPos);
 	}
 	vec4 albedo = texture(available[1] ? textures[1] : default_texture, texCoords);
-	//float height = available[6] ? 1.0f - texture(textures[3], fs_in.texCoords).r : 0.0f;
 	vec3 albedoRGB = albedo.rgb;
 	float roughness = available[5] ? texture(textures[5], texCoords).r : 1.0f;
 	float metallic = available[3] ? texture(textures[3], texCoords).r : 0.0f;
@@ -100,12 +103,9 @@ void main() {
 		vec3 N = fs_in.normal;
 		if (available[4]) {
 			vec3 norm = texture(textures[4], texCoords).rgb;
-			norm = normalize(norm*2.0f - 1.0f);
+			norm = normalize(norm * 2.0f - 1.0f);
 			N = normalize(fs_in.TBN * norm);
 		}
-		vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
-		vec3 I = normalize(fs_in.pos - fs_in.viewPosition);
-
 		//%lightColorAddition.glsl%
 
 		FragColor = vec4(color, opac);
