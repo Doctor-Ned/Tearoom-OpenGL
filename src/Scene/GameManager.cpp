@@ -140,9 +140,9 @@ void GameManager::setup() {
 		//GLuint height = round(glm::max(1.0f, windowHeight * pow(0.5f, basePow + i)));
 		bloomFramebuffers[i].width = width;
 		bloomFramebuffers[i].height = height;
-		bloomFramebuffers[i].rescaler = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
-		bloomFramebuffers[i].horizontal = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
-		bloomFramebuffers[i].output = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
+		bloomFramebuffers[i].rescaler = createFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT);
+		bloomFramebuffers[i].horizontal = createFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT);
+		bloomFramebuffers[i].output = createFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT);
 	}
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
