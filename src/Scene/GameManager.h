@@ -33,7 +33,6 @@ struct GameFramebuffers {
 	MultitextureFramebuffer main;
 	Framebuffer ping;
 	Framebuffer pong;
-	Framebuffer ui;
 };
 
 class GameManager {
@@ -109,7 +108,7 @@ protected:
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	float fov = 65.0f;
-	Framebuffer uiFramebuffer, pingPongFramebuffers[2];
+	Framebuffer pingPongFramebuffers[2];
 	MultitextureFramebuffer mainFramebuffer;
 	GLuint renderbuffer;
 	GameManager() {}

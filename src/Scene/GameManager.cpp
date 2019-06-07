@@ -77,7 +77,6 @@ GameFramebuffers GameManager::getFramebuffers() {
 	result.main = mainFramebuffer;
 	result.ping = pingPongFramebuffers[0];
 	result.pong = pingPongFramebuffers[1];
-	result.ui = uiFramebuffer;
 	return result;
 }
 
@@ -137,7 +136,6 @@ void GameManager::setup() {
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	uiFramebuffer = createNonDepthFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
 	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 
@@ -218,8 +216,6 @@ GameManager::~GameManager() {
 
 	glDeleteBuffers(mainFramebuffer.textureAmount, reinterpret_cast<unsigned int *>(&mainFramebuffer.textures));
 	glDeleteFramebuffers(1, &mainFramebuffer.fbo);
-	glDeleteBuffers(1, &uiFramebuffer.texture);
-	glDeleteFramebuffers(1, &uiFramebuffer.fbo);
 	glDeleteBuffers(1, &pingPongFramebuffers[0].texture);
 	glDeleteFramebuffers(1, &pingPongFramebuffers[0].fbo);
 	glDeleteBuffers(1, &pingPongFramebuffers[1].texture);
