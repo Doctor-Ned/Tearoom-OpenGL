@@ -147,10 +147,10 @@ int main(int argc, char** argv) {
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		screenWidth = mode->width;
 		screenHeight = mode->height;
-		//if (!windowSizeDefined) {
+		if (!windowSizeDefined && !videoSettings.windowSizeDefined) {
 			videoSettings.windowWidth = screenWidth;
 			videoSettings.windowHeight = screenHeight;
-		//}
+		}
 	}
 
 	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight, false);
