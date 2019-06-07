@@ -37,6 +37,7 @@ private:
 	void renderGui() override;
 	void initialize();
 	void collect(CollectableObject *collectable);
+	GraphNode *shiningObject = nullptr;
 	Scene* scene;
 	float distance = 0.4f;
 	bool inventoryUI = false;

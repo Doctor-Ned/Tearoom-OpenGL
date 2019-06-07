@@ -16,7 +16,7 @@
 
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std::string& name)
-		: Component(_gameObject, name), scene(scene) {
+	: Component(_gameObject, name), scene(scene) {
 
 	if (camera == nullptr) {
 		camera = _gameObject->getComponent<Camera>();
@@ -41,53 +41,51 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 				col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 				col->getButton()->setPosition(glm::vec2(995.0f + (81.0f * i), 530.0f));
 			}
-            col->getButton()->setActive(true);
-            col->getIcon()->setActive(true);
+			col->getButton()->setActive(true);
+			col->getIcon()->setActive(true);
 
-            if(col->getI_type() == Letter || col->getI_type() == Photo) {
-                col->getButton()->addClickCallback([this, col]() {
-                    setButtonCallbackBody(col);
-                });
-            }
-            else if (col->getI_type() == DoorKey){
-                col->getButton()->addClickCallback([this, col]() {
-                    if (currentInteraction != nullptr) {
-                        AnimationController *anim = currentInteraction->getComponent<AnimationController>();
-                        if (anim->isComponentActive() && col->getDoorID() == anim->getDoorID()) {
-                            anim->open();
-                            inventoryUI = false;
-                            hideInventoryUi();
-                            gameManager->setCursorLocked(true);
-                            //this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
-                            for (int i = 0; i < inventory.size(); i++) {
-                                auto obj = inventory[i]->getComponent<CollectableObject>();
-                                if (obj->getDoorID() == anim->getDoorID()) {
-                                    inventory.erase(inventory.begin() + i);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+			if (col->getI_type() == Letter || col->getI_type() == Photo) {
+				col->getButton()->addClickCallback([this, col]() {
+					setButtonCallbackBody(col);
+				});
+			} else if (col->getI_type() == DoorKey) {
+				col->getButton()->addClickCallback([this, col]() {
+					if (currentInteraction != nullptr) {
+						AnimationController *anim = currentInteraction->getComponent<AnimationController>();
+						if (anim->isComponentActive() && col->getDoorID() == anim->getDoorID()) {
+							anim->open();
+							inventoryUI = false;
+							hideInventoryUi();
+							gameManager->setCursorLocked(true);
+							//this->scene->setCursorLocked(!(this->scene->getCursorLocked()));
+							for (int i = 0; i < inventory.size(); i++) {
+								auto obj = inventory[i]->getComponent<CollectableObject>();
+								if (obj->getDoorID() == anim->getDoorID()) {
+									inventory.erase(inventory.begin() + i);
+								}
+							}
+						}
+					}
+				});
+			}
 
-            canvas->addChild(col->getButton());
-            canvas->addChild(col->getIcon());
-            i++;
+			canvas->addChild(col->getButton());
+			canvas->addChild(col->getIcon());
+			i++;
+		} else {
+			col->getButton()->setActive(false);
+			col->getIcon()->setActive(false);
+			col->getButton()->clearCallbacks();
 		}
-		else {
-            col->getButton()->setActive(false);
-            col->getIcon()->setActive(false);
-            col->getButton()->clearCallbacks();
-        }
 	}
 }
 
 void Picking::initialize() {
 	UiElement *root = scene->getUiRoot();
 	//each canvas represents different inventory section
-	letterInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
-	photosInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
-	itemsInventoryCanvas =  new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	letterInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	photosInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+	itemsInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 
 	letterInventoryCanvas->setParent(root);
 	photosInventoryCanvas->setParent(root);
@@ -113,13 +111,13 @@ void Picking::initialize() {
 	photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
 	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
-    letterButton->setOpacity(0.0f);
-    itemsButton->setOpacity(0.0f);
-    photoButton->setOpacity(0.0f);
+	letterButton->setOpacity(0.0f);
+	itemsButton->setOpacity(0.0f);
+	photoButton->setOpacity(0.0f);
 
 	itemsButton->addClickCallback([this]() {
-        SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
-        SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
+		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
+		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
 		photosInventoryCanvas->setActive(false);
 		currentCanvas = itemsInventoryCanvas;
@@ -232,7 +230,7 @@ void Picking::collect(CollectableObject* collectable) {
 
 	collectable->takeObject();
 
-    //adding item to grid while opened
+	//adding item to grid while opened
 	if (inventoryUI) {
 		if (itemsInventory->isActive() && collectable->getI_type() == NormalItem) {
 			itemsInventoryCanvas->addChild(collectable->getButton());
@@ -300,8 +298,8 @@ void Picking::hidePreview() {
 }
 
 void Picking::showPreview() {
-    SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
-    SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+	SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
+	SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
 	previewCanvas->setActive(true);
 }
 
@@ -317,9 +315,11 @@ void Picking::update(float msec) {
 	GraphNode * object = CollisionSystem::getInstance()->castRay(camera->getGameObject()->worldTransform.getPosition(), camera->getGameObject()->getFrontVector(), distance, coll);
 	Profiler::getInstance()->addMeasure("raycast");
 	encouragementCanvas->setActive(false);
+	bool interactive = false;
 	if (object && object->isActive()) {
 		CollectableWatch *watch = object->getComponent<CollectableWatch>();
 		if (watch && watch->isComponentActive()) {
+			interactive = true;
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
@@ -333,6 +333,7 @@ void Picking::update(float msec) {
 		} else {
 			CollectableObject *collectable = object->getComponent<CollectableObject>();
 			if (collectable && collectable->isComponentActive()) {
+				interactive = true;
 				encouragementCanvas->setActive(true);
 				encouragementActivate->setActive(false);
 				encouragementPick->setActive(true);
@@ -347,6 +348,7 @@ void Picking::update(float msec) {
 		AnimationController* animController = object->getComponent<AnimationController>();
 
 		if (anim && anim->isComponentActive() && !anim->getIsPlaying() && !animController) {
+			interactive = true;
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
@@ -358,6 +360,7 @@ void Picking::update(float msec) {
 		}
 
 		if (animController && animController->isComponentActive()) {
+			interactive = true;
 			encouragementCanvas->setActive(true);
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
@@ -368,6 +371,23 @@ void Picking::update(float msec) {
 				setSwitch(!getSwitch());
 				showInventoryUi();
 				currentInteraction = object;
+			}
+		}
+	}
+	if(!interactive) {
+		object = nullptr;
+	}
+	if (shiningObject != object) {
+		if (shiningObject != nullptr) {
+			if (shiningObject->getMesh() != nullptr) {
+				shiningObject->getMesh()->setEmissiveFactor(0.0f);
+			}
+			shiningObject = nullptr;
+		}
+		if (object != nullptr) {
+			shiningObject = object;
+			if (object->getMesh() != nullptr) {
+				object->getMesh()->setEmissiveFactor(0.5f);
 			}
 		}
 	}
@@ -382,10 +402,10 @@ bool Picking::getShowHint() {
 
 void Picking::renderGui() {
 	Component::renderGui();
-	if(active) {
+	if (active) {
 		bool hint = showHint;
 		ImGui::Checkbox("Show hint", &hint);
-		if(hint != showHint) {
+		if (hint != showHint) {
 			setShowHint(hint);
 		}
 	}
