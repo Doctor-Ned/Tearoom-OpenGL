@@ -5,9 +5,11 @@ out vec4 outColor;
 in vec2 exPos;
 in vec2 exTexCoords;
 
+#define BLOOM_TEXTURES 4
+
 uniform sampler2D scene;
-uniform sampler2D bloomBlur;
 uniform sampler2D ui;
+uniform sampler2D bloom[BLOOM_TEXTURES];
 uniform float exposure;
 uniform float gamma;
 uniform bool useHdr;
@@ -90,9 +92,10 @@ void main() {
 	if (uiColor.a != 1.0) {
 		vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
 
-		vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;
 		if (useBloom) {
-			hdrColor += bloomColor;
+			for (int i = 0; i < BLOOM_TEXTURES; i++) {
+				hdrColor += texture(bloom[i], exTexCoords).rgb;
+			}
 		}
 		vec4 output;
 		if (useHdr) {

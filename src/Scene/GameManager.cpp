@@ -17,7 +17,7 @@ GameManager *GameManager::getInstance() {
 
 void GameManager::setCurrentScene(Scene * scene) {
 	/*
-    if (currentScene != scene) {
+	if (currentScene != scene) {
 		keyCallbacks.clear();
 		mouseCallbacks.clear();
 	} */
@@ -43,8 +43,7 @@ float GameManager::getWindowHeight() {
 	return windowHeight;
 }
 
-float GameManager::getFOV()
-{
+float GameManager::getFOV() {
 	return fov;
 }
 
@@ -75,8 +74,9 @@ EditorScene* GameManager::getEditorScene() {
 GameFramebuffers GameManager::getFramebuffers() {
 	GameFramebuffers result;
 	result.main = mainFramebuffer;
-	result.ping = pingPongFramebuffers[0];
-	result.pong = pingPongFramebuffers[1];
+	for (int i = 0; i < BLOOM_TEXTURES; i++) {
+		result.bloom[i] = bloomFramebuffers[i];
+	}
 	result.ui = uiFramebuffer;
 	return result;
 }
@@ -133,13 +133,22 @@ void GameManager::setup() {
 	AssetManager::getInstance()->setup();
 	LightManager::getInstance()->setup();
 
+	for (int i = 0; i < BLOOM_TEXTURES; i++) {
+		GLuint height, width = height = round(pow(2.0f, 7.0f - i));
+		//static const int basePow = 0;
+		//GLuint width = round(glm::max(1.0f, windowWidth * pow(0.5f, basePow + i)));
+		//GLuint height = round(glm::max(1.0f, windowHeight * pow(0.5f, basePow + i)));
+		bloomFramebuffers[i].width = width;
+		bloomFramebuffers[i].height = height;
+		bloomFramebuffers[i].rescaler = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
+		bloomFramebuffers[i].horizontal = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
+		bloomFramebuffers[i].output = createFilteredFramebuffer(GL_RGB16F, width, height, GL_RGB, GL_FLOAT, GL_LINEAR);
+	}
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	uiFramebuffer = createFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
-	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
-	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//menuScene = new MenuScene();
 	//goToMenu();
@@ -220,11 +229,14 @@ GameManager::~GameManager() {
 	glDeleteFramebuffers(1, &mainFramebuffer.fbo);
 	glDeleteBuffers(1, &uiFramebuffer.texture);
 	glDeleteFramebuffers(1, &uiFramebuffer.fbo);
-	glDeleteBuffers(1, &pingPongFramebuffers[0].texture);
-	glDeleteFramebuffers(1, &pingPongFramebuffers[0].fbo);
-	glDeleteBuffers(1, &pingPongFramebuffers[1].texture);
-	glDeleteFramebuffers(1, &pingPongFramebuffers[1].fbo);
-
+	for (int i = 0; i < BLOOM_TEXTURES; i++) {
+		glDeleteBuffers(1, &bloomFramebuffers[i].rescaler.texture);
+		glDeleteFramebuffers(1, &bloomFramebuffers[i].rescaler.fbo);
+		glDeleteBuffers(1, &bloomFramebuffers[i].horizontal.texture);
+		glDeleteFramebuffers(1, &bloomFramebuffers[i].horizontal.fbo);
+		glDeleteBuffers(1, &bloomFramebuffers[i].output.texture);
+		glDeleteFramebuffers(1, &bloomFramebuffers[i].output.fbo);
+	}
 }
 
 GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
@@ -236,15 +248,17 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 	return rbo;
 }
 
-Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
+Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border, GLenum filter) {
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_2D, result.texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if (filter != GL_NONE) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	}
 	if (clamp) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampMode);
@@ -267,6 +281,11 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
+}
+
+Framebuffer GameManager::createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
+	GLenum type, GLenum filter) {
+	return createFramebuffer(internalFormat, width, height, format, type, true, GL_CLAMP_TO_EDGE, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), filter);
 }
 
 SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,
@@ -356,27 +375,21 @@ bool GameManager::getKeyState(const int key) {
 	return false;
 }
 
-bool GameManager::getKeyOnce(int key)
-{
+bool GameManager::getKeyOnce(int key) {
 	auto pair = keyStates.find(key);
 	if (pair != keyStates.end()) {
-		if (!pair->second)
-		{
+		if (!pair->second) {
 			return false;
 		}
 
 		auto keyProcessed = keysProcessed.find(key);
-		if (keyProcessed == keysProcessed.end())
-		{
+		if (keyProcessed == keysProcessed.end()) {
 			keysProcessed.emplace(key, true);
 			//here is the place key is processed
 			return true;
-		}
-		else
-		{
+		} else {
 			//keyState is true but key was not processed
-			if (!keyProcessed->second)
-			{
+			if (!keyProcessed->second) {
 				keysProcessed[key] = true;
 				return true;
 			}
@@ -511,8 +524,7 @@ void GameManager::render() {
 void GameManager::renderUi() {
 	if (currentScene != nullptr) {
 		currentScene->renderUi();
-		if (Profiler::getInstance()->getEnabled())
-		{
+		if (Profiler::getInstance()->getEnabled()) {
 			Profiler::getInstance()->renderProfilerWindow();
 		}
 	}
