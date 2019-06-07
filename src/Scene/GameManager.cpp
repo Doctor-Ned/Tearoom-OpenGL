@@ -137,7 +137,7 @@ void GameManager::setup() {
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	uiFramebuffer = createFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
+	uiFramebuffer = createNonDepthFramebuffer(GL_RGBA, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE);
 	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 
@@ -254,6 +254,39 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+
+	glGenFramebuffers(1, &result.fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, result.texture, 0);
+	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+	GLenum status;
+	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		exit(6);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	return result;
+}
+
+Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
+	GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
+	int oldFbo;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	Framebuffer result;
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &result.texture);
+	glBindTexture(GL_TEXTURE_2D, result.texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if (clamp) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampMode);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampMode);
+		if (clampMode == GL_CLAMP_TO_BORDER) {
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, reinterpret_cast<float*>(&border));
+		}
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
 
 	glGenFramebuffers(1, &result.fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);

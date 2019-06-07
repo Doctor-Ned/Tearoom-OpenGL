@@ -261,7 +261,6 @@ int main(int argc, char** argv) {
 	postProcessingShader->use();
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
-	postProcessingShader->setInt("ui", 2);
 	postProcessingShader->setWindowSize(videoSettings.windowWidth, videoSettings.windowHeight);
 
 	Shader *blurShader = assetManager->getShader(STBlur);
@@ -337,25 +336,11 @@ int main(int argc, char** argv) {
 		}
 		glDisable(GL_DEPTH_TEST);
 
-		// Render UI to its framebuffer
-
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ui.fbo);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		gameManager->renderUi();
-		fpsPlaneShader->use();
-		fpsPlane->render(fpsPlaneShader);
-		fpsTextShader->use();
-		fpsText->render(fpsTextShader);
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		postProcessingShader->use();
-		ImGui::Render();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[0]);
 		glActiveTexture(GL_TEXTURE1);
@@ -364,9 +349,16 @@ int main(int argc, char** argv) {
 		} else {
 			glBindTexture(GL_TEXTURE_2D, framebuffers.pong.texture);
 		}
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, framebuffers.ui.texture);
 		dat.render();
+
+		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
+		gameManager->renderUi();
+		fpsPlaneShader->use();
+		fpsPlane->render(fpsPlaneShader);
+		fpsTextShader->use();
+		fpsText->render(fpsTextShader);
+
+		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);

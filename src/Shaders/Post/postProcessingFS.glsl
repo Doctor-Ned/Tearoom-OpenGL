@@ -7,7 +7,6 @@ in vec2 exTexCoords;
 
 uniform sampler2D scene;
 uniform sampler2D bloomBlur;
-uniform sampler2D ui;
 uniform float exposure;
 uniform float gamma;
 uniform bool useHdr;
@@ -43,7 +42,7 @@ vec3 getAntialiasedColor() {
 	float inverseDirAdjustment = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);
 
 	dir = min(vec2(fxaaSpanMax, fxaaSpanMax),
-		max(vec2(-fxaaSpanMax, -fxaaSpanMax), dir * inverseDirAdjustment)) * inverseScreenSize;
+			  max(vec2(-fxaaSpanMax, -fxaaSpanMax), dir * inverseDirAdjustment)) * inverseScreenSize;
 
 	vec3 result1 = (1.0 / 2.0) * (
 		texture2D(scene, exTexCoords + (dir * vec2(1.0 / 3.0 - 0.5))).rgb +
@@ -68,41 +67,33 @@ vec3 uncharted2Tonemap(vec3 x) {
 }
 
 vec4 applyTonemapping(vec3 texColor) {
-   texColor *= 16;  // Hardcoded Exposure Adjustment
+	texColor *= 16;  // Hardcoded Exposure Adjustment
 
-   vec3 curr = uncharted2Tonemap(exposure*texColor);
+	vec3 curr = uncharted2Tonemap(exposure*texColor);
 
-   vec3 whiteScale = uncharted2Tonemap(vec3(W, W, W));
-   whiteScale.r = 1.0f / whiteScale.r;
-   whiteScale.g = 1.0f / whiteScale.g;
-   whiteScale.b = 1.0f / whiteScale.b;
-   vec3 color = curr * whiteScale;
+	vec3 whiteScale = uncharted2Tonemap(vec3(W, W, W));
+	whiteScale.r = 1.0f / whiteScale.r;
+	whiteScale.g = 1.0f / whiteScale.g;
+	whiteScale.b = 1.0f / whiteScale.b;
+	vec3 color = curr * whiteScale;
 
-   color.r = pow(color.r, 1.0f / gamma);
-   color.g = pow(color.g, 1.0f / gamma);
-   color.b = pow(color.b, 1.0f / gamma);
+	color.r = pow(color.r, 1.0f / gamma);
+	color.g = pow(color.g, 1.0f / gamma);
+	color.b = pow(color.b, 1.0f / gamma);
 
-   return vec4(color, 1.0f);
+	return vec4(color, 1.0f);
 }
 
 void main() {
-	vec4 uiColor = texture(ui, exTexCoords);
-	if (uiColor.a < 1.0f) {
-		vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
+	vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
 
-		vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;
-		if (useBloom) {
-			hdrColor += bloomColor;
-		}
-		vec4 output;
-		if (useHdr) {
-			output = applyTonemapping(hdrColor);
-		} else {
-			output = vec4(hdrColor, 1.0);
-		}
-
-		outColor = uiColor + output * (1.0 - uiColor.a);
+	vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;
+	if (useBloom) {
+		hdrColor += bloomColor;
+	}
+	if (useHdr) {
+		outColor = applyTonemapping(hdrColor);
 	} else {
-		outColor = uiColor;
+		outColor = vec4(hdrColor, 1.0);
 	}
 }
