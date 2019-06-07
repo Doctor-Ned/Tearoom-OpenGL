@@ -13,8 +13,13 @@ Json::Value DataSerializer::serializeVideoSettings(VideoSettings videoSettings) 
 
 VideoSettings DataSerializer::deserializeVideoSettings(const Json::Value& root) {
 	VideoSettings result;
-	result.windowWidth = root.get("windowWidth", static_cast<float>(UI_REF_WIDTH)).asFloat();
-	result.windowHeight = root.get("windowHeight", static_cast<float>(UI_REF_HEIGHT)).asFloat();
+	result.windowWidth = root.get("windowWidth", -1.0f).asFloat();
+	result.windowHeight = root.get("windowHeight", -1.0f).asFloat();
+	result.windowSizeDefined = result.windowWidth > 0.0f && result.windowHeight > 0.0f;
+	if(!result.windowSizeDefined) {
+		result.windowWidth = static_cast<float>(UI_REF_WIDTH);
+		result.windowHeight = static_cast<float>(UI_REF_HEIGHT);
+	}
 	result.windowType = static_cast<WindowType>(root.get("windowType", static_cast<int>(Windowed)).asInt());
 	return result;
 }

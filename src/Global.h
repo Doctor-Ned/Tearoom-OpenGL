@@ -69,6 +69,7 @@ struct VideoSettings {
 	WindowType windowType;
 	float windowWidth;
 	float windowHeight;
+	bool windowSizeDefined;
 };
 
 union SSEfloat4

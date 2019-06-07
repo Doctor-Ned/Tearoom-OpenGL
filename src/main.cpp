@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		screenWidth = mode->width;
 		screenHeight = mode->height;
-		if (!windowSizeDefined) {
+		if (!windowSizeDefined && !videoSettings.windowSizeDefined) {
 			videoSettings.windowWidth = screenWidth;
 			videoSettings.windowHeight = screenHeight;
 		}
@@ -348,11 +348,11 @@ int main(int argc, char** argv) {
 		fpsPlane->render(fpsPlaneShader);
 		fpsTextShader->use();
 		fpsText->render(fpsTextShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
+		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		postProcessingShader->use();
 		ImGui::Render();
