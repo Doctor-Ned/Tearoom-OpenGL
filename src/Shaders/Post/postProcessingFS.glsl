@@ -87,7 +87,7 @@ vec4 applyTonemapping(vec3 texColor) {
 
 void main() {
 	vec4 uiColor = texture(ui, exTexCoords);
-	if (uiColor.a != 1.0) {
+	if (uiColor.a < 1.0f) {
 		vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
 
 		vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;

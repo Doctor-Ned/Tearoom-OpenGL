@@ -19,6 +19,7 @@
 #include "Scene/Components/BoxCollider.h"
 #include "Scene/Components/Camera.h"
 #include "Scene/Scripts/PlayerMovement.h"
+#include "Ui/UiColorPlane.h"
 
 TestScene::TestScene() : TestScene(false) {}
 
@@ -121,6 +122,9 @@ TestScene::TestScene(bool serialized) {
 	faces.emplace_back("res/skybox/test/bottom.jpg");
 	faces.emplace_back("res/skybox/test/front.jpg");
 	faces.emplace_back("res/skybox/test/back.jpg");
+
+	getUiRoot()->addChild(new UiColorPlane(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft));
+	getUiRoot()->addChild(new UiColorPlane(glm::vec4(0.0f, 1.0f, 0.0f, 0.5f), glm::vec2(UI_REF_WIDTH/2.0f, UI_REF_HEIGHT/2.0f), glm::vec2(200.0f, 100.0f), Center));
 
 
 	if (!serialized) {
