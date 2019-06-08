@@ -87,6 +87,9 @@ void Picking::initialize() {
 	photosInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	itemsInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 
+	buttonsCanvas = new  UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
+
+	buttonsCanvas->setParent(root);
 	letterInventoryCanvas->setParent(root);
 	photosInventoryCanvas->setParent(root);
 	itemsInventoryCanvas->setParent(root);
@@ -119,7 +122,7 @@ void Picking::initialize() {
 		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
-		photosInventoryCanvas->setActive(false);
+        photosInventoryCanvas->setActive(false);
 		currentCanvas = itemsInventoryCanvas;
 		showInventoryUi();
 	});
@@ -137,30 +140,23 @@ void Picking::initialize() {
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
-		currentCanvas = photosInventoryCanvas;
+        std::cout<<"click"<<std::endl;
+
+        currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
 	});
 
-	letterInventoryCanvas->addChild(itemsButton);
-	letterInventoryCanvas->addChild(letterButton);
-	letterInventoryCanvas->addChild(photoButton);
-	letterInventoryCanvas->addChild(descBackground);
+	buttonsCanvas->addChild(itemsButton);
+    buttonsCanvas->addChild(letterButton);
+    buttonsCanvas->addChild(photoButton);
+    buttonsCanvas->addChild(descBackground);
 
-	photosInventoryCanvas->addChild(itemsButton);
-	photosInventoryCanvas->addChild(letterButton);
-	photosInventoryCanvas->addChild(photoButton);
-	photosInventoryCanvas->addChild(descBackground);
-
-	itemsInventoryCanvas->addChild(itemsButton);
-	itemsInventoryCanvas->addChild(letterButton);
-	itemsInventoryCanvas->addChild(photoButton);
-	itemsInventoryCanvas->addChild(descBackground);
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
 	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
-	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Press E to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
@@ -174,10 +170,13 @@ void Picking::initialize() {
 		inventoryUI = !inventoryUI;
 		if (getSwitch()) {
 			previewCanvas->setActive(false);
-			showInventoryUi();
+            buttonsCanvas->setActive(true);
+            showInventoryUi();
 		} else {
 			hideInventoryUi();
-		}
+            buttonsCanvas->setActive(false);
+
+        }
 	});
 
 	// for demo purposes
@@ -208,10 +207,10 @@ void Picking::initialize() {
 
 	previewCanvas->addChild(colPhoto->getPreview());
 	previewCanvas->setActive(true);
-	letterInventoryCanvas->setActive(false);
+    buttonsCanvas->setActive(false);
+    letterInventoryCanvas->setActive(false);
 	photosInventoryCanvas->setActive(false);
 	itemsInventoryCanvas->setActive(false);
-
 }
 
 void Picking::collect(CollectableObject* collectable) {
@@ -274,10 +273,6 @@ void Picking::showInventoryUi() {
 	previewCanvas->setActive(false);
 	currentCanvas->setActive(true);
 
-	itemsButton->setActive(true);
-	letterButton->setActive(true);
-	photoButton->setActive(true);
-
 	if (letterInventoryCanvas->isActive()) {
 		placeInGrid(Letter, letterInventoryCanvas);
 	}
@@ -324,7 +319,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 			encouragementActivate->setText("Click to take the watch");
-			if (gameManager->getMouseState(0)) {
+			if (gameManager->getMouseOnce(GLFW_MOUSE_BUTTON_LEFT)) {
 				watch->pickup();
 				collect(watch->getCollectable());
 				previewCanvas->addChild(watch->getCollectable()->getPreview());
@@ -338,7 +333,7 @@ void Picking::update(float msec) {
 				encouragementActivate->setActive(false);
 				encouragementPick->setActive(true);
 
-				if (gameManager->getMouseState(0) && !collectable->getIsTaken()) {
+				if (gameManager->getMouseOnce(GLFW_MOUSE_BUTTON_LEFT) && !collectable->getIsTaken()) {
 					collect(collectable);
 				}
 			}
@@ -354,7 +349,7 @@ void Picking::update(float msec) {
 			encouragementPick->setActive(false);
 			encouragementActivate->setText("Click to interact");
 
-			if (gameManager->getMouseState(0)) {
+			if (gameManager->getMouseOnce(GLFW_MOUSE_BUTTON_LEFT)) {
 				anim->play();
 			}
 		}
@@ -365,7 +360,7 @@ void Picking::update(float msec) {
 			encouragementActivate->setActive(true);
 			encouragementPick->setActive(false);
 
-			if (gameManager->getMouseState(0)) {
+			if (gameManager->getMouseOnce(GLFW_MOUSE_BUTTON_LEFT)) {
 				encouragementActivate->setText("Oops.. I need a key");
 				gameManager->setCursorLocked(false);
 				setSwitch(!getSwitch());

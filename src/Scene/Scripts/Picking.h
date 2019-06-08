@@ -42,7 +42,7 @@ private:
 	float distance = 0.4f;
 	bool inventoryUI = false;
 	bool showHint = false;
-	UiCanvas *encouragementCanvas, *previewCanvas, *currentCanvas;
+	UiCanvas *encouragementCanvas, *previewCanvas, *currentCanvas,*buttonsCanvas;
 	UiCanvas *letterInventoryCanvas, *photosInventoryCanvas, *itemsInventoryCanvas;
 	Camera* camera;
 	std::vector<GraphNode*> inventory;
