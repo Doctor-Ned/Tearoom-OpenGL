@@ -13,6 +13,7 @@ uniform bool useHdr;
 uniform bool useBloom;
 uniform bool useAntialiasing;
 uniform vec2 inverseScreenSize;
+uniform vec2 screenSize;
 
 const float fxaaSpanMax = 8.0f;
 const float fxaaReduceMin = 1.0f / 128.0f;
@@ -84,8 +85,19 @@ vec4 applyTonemapping(vec3 texColor) {
 	return vec4(color, 1.0f);
 }
 
+vec4 vignette(vec4 color) {
+	vec2 position = (gl_FragCoord.xy / screenSize.xy) - vec2(0.5f);
+	float len = length(position);
+	float r = 0.94f;
+	float softness = 0.7f;
+
+	return color * vec4(vec3(smoothstep(r, r - softness, len)), 1.0);
+}
+
 void main() {
 	vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
+
+	
 
 	vec3 bloomColor = texture(bloomBlur, exTexCoords).rgb;
 	if (useBloom) {
@@ -96,4 +108,6 @@ void main() {
 	} else {
 		outColor = vec4(hdrColor, 1.0);
 	}
+
+	outColor = vignette(outColor);
 }

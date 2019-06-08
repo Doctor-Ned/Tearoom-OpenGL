@@ -262,6 +262,7 @@ int main(int argc, char** argv) {
 	postProcessingShader->setInt("scene", 0);
 	postProcessingShader->setInt("bloomBlur", 1);
 	postProcessingShader->setWindowSize(videoSettings.windowWidth, videoSettings.windowHeight);
+	postProcessingShader->setVec2("screenSize", glm::vec2(videoSettings.windowWidth, videoSettings.windowHeight));
 
 	Shader *blurShader = assetManager->getShader(STBlur);
 
@@ -335,7 +336,6 @@ int main(int argc, char** argv) {
 			}
 		}
 		glDisable(GL_DEPTH_TEST);
-
 		// Render to the default framebuffer (screen) with post-processing
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, screenWidth, screenHeight);
