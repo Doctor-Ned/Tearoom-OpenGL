@@ -8,11 +8,15 @@ layout (location = 4) in vec3 inBitangent;
 
 uniform mat4 model;
 uniform vec3 viewPosition;
+uniform float textureTileX;
+uniform float textureTileY;
 
 layout (std140) uniform ViewProjection {
 	mat4 view;
 	mat4 projection;
 };
+
+float density = 0.04f;
 
 //%lights.glsl%
 
@@ -26,10 +30,11 @@ out VS_OUT {
 	mat3 TBN;
 	vec3 TanViewPos;
 	vec3 TanFragPos;
+	float visibility;
 } vs_out;
 
 void main() {
-    vs_out.texCoords = inTexCoord;
+    vs_out.texCoords = vec2(inTexCoord.x * textureTileX, inTexCoord.y * textureTileY);
     vs_out.pos = vec3(model * vec4(inPosition, 1.0f));
 	vs_out.viewPosition = vec3(model * vec4(viewPosition, 1.0f));
 
@@ -49,5 +54,11 @@ void main() {
 	for(int i=0;i<spotLights;i++) {
 		vs_out.fragSpotSpaces[i] = spotLight[i].lightSpace * vec4(vs_out.pos, 1.0f);
 	}
-    gl_Position = projection * view * vec4(vs_out.pos, 1.0f);
+	//fog
+	vec4 positionRelativeToViewMat = view * vec4(vs_out.pos, 1.0f);
+	float distance = length(positionRelativeToViewMat.xyz);
+
+	vs_out.visibility = exp(-pow((distance * density), 2));
+
+	gl_Position = projection * positionRelativeToViewMat;
 }

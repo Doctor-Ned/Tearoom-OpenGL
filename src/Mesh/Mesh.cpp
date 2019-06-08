@@ -54,6 +54,8 @@ void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->setCastShadows(castShadows);
 	shader->setEmissiveFactor(emissiveFactor);
 	shader->setDepthScale(depthScale);
+	shader->setFloat("textureTileX", texTileX);
+	shader->setFloat("textureTileY", texTileY);
 }
 
 ShaderType Mesh::getShaderType() {
@@ -74,6 +76,16 @@ void Mesh::setOpacity(float opacity) {
 void Mesh::setDepthScale(float depth)
 {
 	this->depthScale = depth;
+}
+
+void Mesh::setTileX(float tile)
+{
+	texTileX = tile;
+}
+
+void Mesh::setTileY(float tile)
+{
+	texTileY = tile;
 }
 
 
@@ -119,6 +131,8 @@ Json::Value Mesh::serialize(Serializer* serializer) {
 	root["renderMode"] = static_cast<int>(renderMode);
 	root["emissiveFactor"] = emissiveFactor;
 	root["depthScale"] = depthScale;
+	root["texTileX"] = texTileX;
+	root["texTileY"] = texTileY;
 	return root;
 }
 
@@ -133,6 +147,8 @@ void Mesh::deserialize(Json::Value& root, Serializer* serializer) {
 	setRenderMode(static_cast<GLenum>(root.get("renderMode", static_cast<int>(renderMode)).asInt()));
 	setEmissiveFactor(root.get("emissiveFactor", emissiveFactor).asFloat());
 	setDepthScale(root.get("depthScale", depthScale).asFloat());
+	setTileX(root.get("texTileX", texTileX).asFloat());
+	setTileY(root.get("texTileY", texTileY).asFloat());
 }
 
 void Mesh::renderGui() {
@@ -141,8 +157,12 @@ void Mesh::renderGui() {
 		opaque = this->opaque,
 		culled = this->culled,
 		castShadows = this->castShadows;
-	float opacity = this->opacity, uiScale=this->uiScale, emissiveFactor=this->emissiveFactor, depthScale = this->depthScale;
-
+	float opacity = this->opacity, 
+		uiScale=this->uiScale, 
+		emissiveFactor=this->emissiveFactor, 
+		depthScale = this->depthScale,
+		texTileX = this->texTileX,
+		texTileY = this->texTileY;
 	ImGui::Checkbox("Use light", &useLight);
 	ImGui::Checkbox("Cast shadows", &castShadows);
 	ImGui::Checkbox("Opaque", &opaque);
@@ -151,6 +171,8 @@ void Mesh::renderGui() {
 	ImGui::DragFloat("Emissive factor", &emissiveFactor, 0.05f, 0.0f, 100.0f);
 	ImGui::DragFloat("Depth Scale", &depthScale, 0.005f, 0.0f, 1.0f);
 	ImGui::DragFloat("Scale in UI", &uiScale, 0.01f);
+	ImGui::DragFloat("Texture Tile X", &texTileX, 0.1f, 0.1f, 50.0f);
+	ImGui::DragFloat("Texture Tile Y", &texTileY, 0.1f, 0.1f, 50.0f);
 	if (useLight != this->useLight) {
 		setUseLight(useLight);
 	}
@@ -174,6 +196,14 @@ void Mesh::renderGui() {
 	}
 	if(uiScale != this->uiScale) {
 		setUiScale(uiScale);
+	}
+	if(texTileX != this->texTileX)
+	{
+		setTileX(texTileX);
+	}
+	if (texTileY != this->texTileY)
+	{
+		setTileY(texTileY);
 	}
 }
 

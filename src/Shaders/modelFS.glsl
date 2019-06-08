@@ -19,6 +19,7 @@ in VS_OUT {
 	mat3 TBN;
 	vec3 TanViewPos;
 	vec3 TanFragPos;
+	float visibility;
 } fs_in;
 
 uniform sampler2D default_texture;
@@ -31,7 +32,9 @@ uniform mat4 model;
 uniform float opacity;
 uniform float emissiveFactor;
 uniform float depthScale;
+
 //%lightComputations.glsl%
+
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	/*float height = texture(textures[6], texCoords).r;
 	vec2 p = viewDir.xy * (height * 0.1f);
@@ -76,6 +79,12 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	return finalTexCoords;
 }
 
+vec4 applyFog( vec4 rgb, float visibility) 
+{
+	vec4 skyColor = vec4(0.5f, 0.6f, 0.7f, 1.0f);
+	return mix(skyColor, rgb, visibility);
+	//return rgb * fs_in.visibility + skyColor * (1.0f -  visibility);
+}
 void main() {
 	vec2 texCoords = fs_in.texCoords;
 	vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
@@ -109,7 +118,8 @@ void main() {
 		FragColor = vec4(color, opac);
 	}
 
-	FragColor = FragColor + vec4(emissive, 0.0f);
+	FragColor = FragColor + vec4(emissive, 0.0f);	
+	FragColor = applyFog(FragColor, fs_in.visibility);
 
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0) {

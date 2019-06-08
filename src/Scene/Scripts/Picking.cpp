@@ -82,6 +82,8 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 
 void Picking::initialize() {
 	UiElement *root = scene->getUiRoot();
+	
+	root->addChild(new UiText(glm::vec2(UI_REF_CEN_X, UI_REF_CEN_Y), "+", 1.0f));
 	//each canvas represents different inventory section
 	letterInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	photosInventoryCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
@@ -266,7 +268,7 @@ void Picking::setButtonCallbackBody(CollectableObject *collectable) {
 
 void Picking::hideInventoryUi() {
 	currentCanvas->setActive(false);
-	currentCanvas = itemsInventoryCanvas;
+	//currentCanvas = itemsInventoryCanvas;
 }
 
 void Picking::showInventoryUi() {

@@ -27,6 +27,8 @@ public:
 	void setOpaque(bool opaque) override;
 	void setEmissiveFactor(float emissiveFactor) override;
 	void setDepthScale(float depth) override;
+	void setTileX(float tile) override;
+	void setTileY(float tile) override;
 	SerializableType getSerializableType() override;
 	Json::Value serialize(Serializer* serializer) override;
 	void deserialize(Json::Value& root, Serializer* serializer) override;

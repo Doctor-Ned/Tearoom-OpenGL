@@ -73,6 +73,22 @@ void Model::setDepthScale(float depth)
 	}
 }
 
+void Model::setTileX(float tile)
+{
+	Mesh::setTileX(tile);
+	for (auto &mesh : meshes) {
+		mesh->setTileX(tile);
+	}
+}
+
+void Model::setTileY(float tile)
+{
+	Mesh::setTileY(tile);
+	for (auto &mesh : meshes) {
+		mesh->setTileY(tile);
+	}
+}
+
 SerializableType Model::getSerializableType() {
 	return SModel;
 }

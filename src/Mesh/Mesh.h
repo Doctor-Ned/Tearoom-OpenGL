@@ -23,6 +23,8 @@ public:
 	virtual void setOpaque(bool opaque);
 	virtual void setOpacity(float opacity);
 	virtual void setDepthScale(float depth);
+	virtual void setTileX(float tile);
+	virtual void setTileY(float tile);
 	void drawSelf(Shader *shader, glm::mat4 world);
 	GLuint getRenderMode();
 	virtual void setRenderMode(GLuint renderMode);
@@ -47,6 +49,8 @@ protected:
 	float uiScale = 1.0f;
 	float emissiveFactor = 1.0f;
 	float depthScale = 0.03f;
+	float texTileX = 1.0f;
+	float texTileY = 1.0f;
 	Mesh() : Mesh(STNone) {}
 	friend class Serializer;
 };
