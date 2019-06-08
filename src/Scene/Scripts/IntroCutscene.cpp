@@ -29,22 +29,23 @@ IntroCutscene::IntroCutscene(Scene* scene, SunController *sunController, GraphNo
 void IntroCutscene::runIntro() {
 	gameManager->setCursorLocked(false);
     player->getComponent<Picking>()->hidePreview();
-	sunController->setComponentActive(false);
-	sunController->setClockVisibility(false);
+
+    if (sunController != nullptr) {
+        sunController->setComponentActive(false);
+        sunController->setClockVisibility(false);
+    }
     run = true;
 }
 
-void IntroCutscene::showNext(UiElement* uiElement) {
-    while (elapsed <= 1.0f) {
-        uiElement->setOpacity(elapsed);
-        elapsed += 0.01f;
-    }
-    elapsed = 0.0f;
+void IntroCutscene::switchToOutro() {
+    text1 =  new UiPlane("res/textures/Outro/outroLine1.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+    text2 =  new UiPlane("res/textures/Outro/outroLine2.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+    text3 =  new UiPlane("res/textures/Outro/outroLine3.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+    text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+    text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
 }
 
 void IntroCutscene::initialize() {
-	boxNode = new GraphNode(box, scene->getRootNode());
-	boxNode->localTransform.setPosition(glm::vec3(player->getPosition().x - 3.5f, player->getPosition().y - 1.0f, player->getPosition().z - 3.8f));
 	UiElement *root = scene->getUiRoot();
 	mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	root->addChild(mainCanvas);
@@ -62,7 +63,7 @@ void IntroCutscene::initialize() {
 	text3->setOpacity(0.0f);
 	text4->setOpacity(0.0f);
 	text5->setOpacity(0.0f);
-
+    phase = 0;
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
 		this->runIntro();
 	});
@@ -135,7 +136,6 @@ void IntroCutscene::update(float msec) {
                 } else {
                     elapsed = 1.0f;
                     phase = 7;
-                    boxNode->setActive(false);
                     player->getComponent<Picking>()->showPreview();
                 }
                 break;
