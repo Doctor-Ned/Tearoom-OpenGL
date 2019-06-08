@@ -35,6 +35,60 @@ uniform float depthScale;
 
 //%lightComputations.glsl%
 
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir);
+vec4 applyFog(vec4 rgb, float visibility, DirLight light, vec3 V);
+vec4 applyFog(vec4 rgb, float visibility);
+
+void main() {
+	vec2 texCoords = fs_in.texCoords;
+	vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
+
+	if (available[6]) {
+		vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
+		texCoords = ParallaxMapping(fs_in.texCoords, viewDir);
+	}
+	vec4 albedo = texture(available[1] ? textures[1] : default_texture, texCoords);
+	vec3 albedoRGB = albedo.rgb;
+	float roughness = available[5] ? texture(textures[5], texCoords).r : 1.0f;
+	float metallic = available[3] ? texture(textures[3], texCoords).r : 0.0f;
+	float ao = available[0] ? texture(textures[0], texCoords).r : 1.0f;
+	//vec3 emissive = available[2] ? texture(textures[2], texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
+	vec3 emissive = (available[2] ? texture(textures[2], texCoords).rgb : albedo.rgb) * emissiveFactor;
+	
+	vec3 color = initialAmbient * albedoRGB;
+	float opac = albedo.w * opacity;
+	if(useLight == 0 || !enableLights) {
+		FragColor = vec4(albedoRGB, opac);
+	} else {
+		vec3 N = fs_in.normal;
+		if (available[4]) {
+			vec3 norm = texture(textures[4], texCoords).rgb;
+			norm = normalize(norm * 2.0f - 1.0f);
+			N = normalize(fs_in.TBN * norm);
+		}
+		
+		//%lightColorAddition.glsl%
+
+		FragColor = vec4(color, opac);
+	}
+
+	FragColor = FragColor + vec4(emissive, 0.0f);	
+	
+	if (dirLight[0].enabled) {
+		FragColor = applyFog(FragColor, fs_in.visibility, dirLight[0], V);
+	}
+	else {
+		FragColor = applyFog(FragColor, fs_in.visibility);
+	}
+
+	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	if (brightness > 1.0) {
+		BrightColor = FragColor;
+	} else {
+		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive, 0.0f);
+	}
+}
+
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	/*float height = texture(textures[6], texCoords).r;
 	vec2 p = viewDir.xy * (height * 0.1f);
@@ -79,52 +133,23 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	return finalTexCoords;
 }
 
-vec4 applyFog( vec4 rgb, float visibility) 
+vec4 applyFog(vec4 rgb, float visibility, DirLight light, vec3 V)
+{
+	mat4 directionWorld = light.model;
+	directionWorld[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec3 L = normalize(vec3(directionWorld * -vec4(0.0f, 0.0f, -1.0f, 1.0f)));
+
+	float fogAmount = 1.0 - visibility;
+	float sunAmount = max(dot(V, L), 0.0f);
+
+	vec3 fogColor = mix(vec3(0.5f, 0.6f, 0.7f), vec3(1.0f, 0.9f, 0.7f),
+		pow(sunAmount, 8.0f));
+	return mix(rgb, vec4(fogColor, 1.0f), fogAmount);
+}
+
+vec4 applyFog(vec4 rgb, float visibility)
 {
 	vec4 skyColor = vec4(0.5f, 0.6f, 0.7f, 1.0f);
 	return mix(skyColor, rgb, visibility);
 	//return rgb * fs_in.visibility + skyColor * (1.0f -  visibility);
-}
-void main() {
-	vec2 texCoords = fs_in.texCoords;
-	vec3 V = normalize(fs_in.viewPosition - fs_in.pos);
-	if (available[6]) {
-		//vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
-		vec3 viewDir = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
-		texCoords = ParallaxMapping(fs_in.texCoords, viewDir);
-		V = normalize(fs_in.TanViewPos - fs_in.TanFragPos);
-	}
-	vec4 albedo = texture(available[1] ? textures[1] : default_texture, texCoords);
-	vec3 albedoRGB = albedo.rgb;
-	float roughness = available[5] ? texture(textures[5], texCoords).r : 1.0f;
-	float metallic = available[3] ? texture(textures[3], texCoords).r : 0.0f;
-	float ao = available[0] ? texture(textures[0], texCoords).r : 1.0f;
-	//vec3 emissive = available[2] ? texture(textures[2], texCoords).rgb : vec3(0.0f, 0.0f, 0.0f);
-	vec3 emissive = (available[2] ? texture(textures[2], texCoords).rgb : albedo.rgb) * emissiveFactor;
-	
-	vec3 color = initialAmbient * albedoRGB;
-	float opac = albedo.w * opacity;
-	if(useLight == 0 || !enableLights) {
-		FragColor = vec4(albedoRGB, opac);
-	} else {
-		vec3 N = fs_in.normal;
-		if (available[4]) {
-			vec3 norm = texture(textures[4], texCoords).rgb;
-			norm = normalize(norm * 2.0f - 1.0f);
-			N = normalize(fs_in.TBN * norm);
-		}
-		//%lightColorAddition.glsl%
-
-		FragColor = vec4(color, opac);
-	}
-
-	FragColor = FragColor + vec4(emissive, 0.0f);	
-	FragColor = applyFog(FragColor, fs_in.visibility);
-
-	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	if (brightness > 1.0) {
-		BrightColor = FragColor;
-	} else {
-		BrightColor = vec4(0.0, 0.0, 0.0, opac) + vec4(emissive, 0.0f);
-	}
 }

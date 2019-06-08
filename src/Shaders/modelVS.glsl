@@ -16,7 +16,7 @@ layout (std140) uniform ViewProjection {
 	mat4 projection;
 };
 
-float density = 0.04f;
+float density = 0.008f;
 
 //%lights.glsl%
 
@@ -36,7 +36,7 @@ out VS_OUT {
 void main() {
     vs_out.texCoords = vec2(inTexCoord.x * textureTileX, inTexCoord.y * textureTileY);
     vs_out.pos = vec3(model * vec4(inPosition, 1.0f));
-	vs_out.viewPosition = vec3(model * vec4(viewPosition, 1.0f));
+	vs_out.viewPosition = viewPosition;
 
 	vs_out.normal = normalize(transpose(inverse(mat3(model))) * inNormal);
 	vec3 T = normalize(vec3(model * vec4(inTangent, 0.0)));
@@ -57,8 +57,7 @@ void main() {
 	//fog
 	vec4 positionRelativeToViewMat = view * vec4(vs_out.pos, 1.0f);
 	float distance = length(positionRelativeToViewMat.xyz);
-
-	vs_out.visibility = exp(-pow((distance * density), 2));
+	vs_out.visibility = exp(-distance * density);
 
 	gl_Position = projection * positionRelativeToViewMat;
 }
