@@ -43,8 +43,11 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 			}
 			col->getButton()->setActive(true);
 			col->getIcon()->setActive(true);
-
-			if (col->getI_type() == Letter || col->getI_type() == Photo) {
+			if(col->getI_type() == NormalItem && col->getPreview() != nullptr) {
+				col->getButton()->addClickCallback([this, col]() {
+					setButtonCallbackBody(col);
+				});
+			} else if (col->getI_type() == Letter || col->getI_type() == Photo) {
 				col->getButton()->addClickCallback([this, col]() {
 					setButtonCallbackBody(col);
 				});
