@@ -77,7 +77,6 @@ GameFramebuffers GameManager::getFramebuffers() {
 	for (int i = 0; i < BLOOM_TEXTURES; i++) {
 		result.bloom[i] = bloomFramebuffers[i];
 	}
-	result.ui = uiFramebuffer;
 	return result;
 }
 
@@ -311,6 +310,11 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
 	return result;
+}
+
+Framebuffer GameManager::createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
+	GLenum type, GLenum filter) {
+	return createFramebuffer(internalFormat, width, height, format, type, true, GL_CLAMP_TO_EDGE, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), filter);
 }
 
 SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,

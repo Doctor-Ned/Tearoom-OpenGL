@@ -347,12 +347,11 @@ int main(int argc, char** argv) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		ImGui::Render();
 		postProcessingShader->use();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[0]);
 		for (int i = 0; i < BLOOM_TEXTURES; i++) {
-			glActiveTexture(GL_TEXTURE2 + i);
+			glActiveTexture(GL_TEXTURE1 + i);
 			glBindTexture(GL_TEXTURE_2D, framebuffers.bloom[i].output.texture);
 		}
 		dat.render();
