@@ -424,7 +424,6 @@ void LightManager::renderGui() {
 	ImGui::DragFloat("Initial ambient", &initialAmbient, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Blur amount", &blurAmount, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat("Light bleeding reduction", &lightBleedingReduction, 0.001f, 0.0f, 1.0f);
-	ImGui::DragInt("Bloom iterations", &bloomIterations, 1, 0, 1000);
 	//ImGui::DragFloat("Minimum variance", &minVariance, 0.00001f, 0.0f, 0.1f);
 	std::string dirText, spotText, pointText;
 	dirText = std::to_string(dirLightAmount) + " directional lights";
