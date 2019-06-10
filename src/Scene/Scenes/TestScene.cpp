@@ -137,9 +137,6 @@ TestScene::TestScene(bool serialized) {
 		camera = camNode->getComponent<Camera>();
 
 		skybox = new Skybox(faces);
-		Model *model = new Model("res/models/muro/muro.obj");
-		modelNode = new GraphNode(model, rootNode);
-		modelNode->localTransform.initialize(-5.0f, 0.0f, 0.0f, 0.01f);
 
 		GraphNode *rock = new GraphNode(new Model("res/models/pbr_rock/sharprockfree.obj"), rootNode);
 		rock->localTransform.setScale(0.01f);

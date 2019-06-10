@@ -320,6 +320,7 @@ void AssetManager::loadNextPendingResource() {
 			loadedResources = 0;
 			loadingStarted = true;
 		} else {
+			std::cout << resourcesToLoad.front() << std::endl;
 			loadResource(resourcesToLoad.front(), false);
 			resourcesToLoad.erase(resourcesToLoad.begin());
 			loadedResources++;

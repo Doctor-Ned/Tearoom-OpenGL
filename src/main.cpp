@@ -305,7 +305,6 @@ int main(int argc, char** argv) {
 		gameManager->update(timeDelta);
 
 		glEnable(GL_DEPTH_TEST);
-
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.main.fbo);
 		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
@@ -314,7 +313,6 @@ int main(int argc, char** argv) {
 		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
 		Profiler::getInstance()->addMeasure("Render calculations");
-
 		bool horizontal = true, first_iteration = true;
 		if (postProcessingShader->isBloomEnabled()) {
 			// apply two-pass gaussian blur to bright fragments
