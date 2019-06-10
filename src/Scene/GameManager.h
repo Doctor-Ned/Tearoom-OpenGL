@@ -14,18 +14,24 @@ struct Framebuffer {
 	GLuint fbo = 0;
 	GLuint depth = 0;
 	GLuint texture = 0;
+	GLuint width = 0;
+	GLuint height = 0;
 };
 
 struct SpecialFramebuffer {
 	GLuint fbo = 0;
 	GLuint rbo = 0;
 	GLuint texture = 0;
+	GLuint width = 0;
+	GLuint height = 0;
 };
 
 struct MultitextureFramebuffer {
 	GLuint fbo = 0;
 	GLuint depth = 0;
 	GLuint *textures;
+	GLuint width = 0;
+	GLuint height = 0;
 	unsigned int textureAmount = 0;
 };
 
@@ -85,7 +91,8 @@ public:
 	Camera* getCurrentCamera();
 	Camera *getCurrentNonEditorCamera();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
-	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GLenum filter = GL_LINEAR);
+	static Framebuffer createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLenum filter);
 	static Framebuffer createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f,0.0f,0.0f,0.0f));
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod = GL_CLAMP_TO_EDGE);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);

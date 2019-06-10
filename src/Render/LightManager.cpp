@@ -20,7 +20,7 @@ void LightManager::setup() {
 	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 	uboLights = assetManager->getUboLights();
 	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
-	blurFbo = GameManager::createFramebuffer(GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+	blurFbo = GameManager::createFilteredFramebuffer(GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {

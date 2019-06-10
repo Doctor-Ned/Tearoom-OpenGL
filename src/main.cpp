@@ -268,6 +268,8 @@ int main(int argc, char** argv) {
 
 	GameFramebuffers framebuffers = gameManager->getFramebuffers();
 
+	blurShader->use();
+	blurShader->setVec2("tex_offset", glm::vec2(1.0f / framebuffers.ping.width, 1.0f / framebuffers.ping.height));
 
 	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(0.08f * UI_REF_WIDTH, 0.04f * UI_REF_HEIGHT), TopLeft);
 	glm::vec2 planeCenter = fpsPlane->getPosition();
@@ -313,10 +315,17 @@ int main(int argc, char** argv) {
 		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
 		Profiler::getInstance()->addMeasure("Render calculations");
-		bool horizontal = true, first_iteration = true;
+		bool horizontal = true;
 		if (postProcessingShader->isBloomEnabled()) {
+			glViewport(0, 0, framebuffers.ping.width, framebuffers.ping.height);
 			// apply two-pass gaussian blur to bright fragments
 			blurShader->use();
+			blurShader->setBool("passthrough", true);
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
+			blurShader->setBool("horizontal", horizontal);
+			glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[1]);
+			dat.render();
+			blurShader->setBool("passthrough", false);
 			for (unsigned int i = 0; i < lightManager->bloomIterations; i++) {
 				if (!horizontal) {
 					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
@@ -325,12 +334,9 @@ int main(int argc, char** argv) {
 					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
 				}
 				blurShader->setBool("horizontal", horizontal);
-				glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
+				glBindTexture(GL_TEXTURE_2D, horizontal ? framebuffers.ping.texture : framebuffers.pong.texture);
 				dat.render();
 				horizontal = !horizontal;
-				if (first_iteration) {
-					first_iteration = false;
-				}
 			}
 		}
 		glDisable(GL_DEPTH_TEST);

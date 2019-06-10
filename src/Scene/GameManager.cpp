@@ -132,12 +132,12 @@ void GameManager::setup() {
 	AssetManager::getInstance()->setup();
 	LightManager::getInstance()->setup();
 
+	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth / 4, windowHeight / 4, GL_RGB, GL_FLOAT);
+	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth / 4, windowHeight / 4, GL_RGB, GL_FLOAT);
 	mainFramebuffer = createMultitextureFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT, 2);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFramebuffer.fbo);
 	renderbuffer = createDepthRenderbuffer(windowWidth, windowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	pingPongFramebuffers[0] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
-	pingPongFramebuffers[1] = createFramebuffer(GL_RGB16F, windowWidth, windowHeight, GL_RGB, GL_FLOAT);
 
 	//menuScene = new MenuScene();
 	//goToMenu();
@@ -232,15 +232,19 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 	return rbo;
 }
 
-Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
+Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border, GLenum filter) {
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
+	result.width = width;
+	result.height = height;
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_2D, result.texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if(filter != GL_NONE) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	}
 	if (clamp) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampMode);
@@ -265,11 +269,18 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	return result;
 }
 
+Framebuffer GameManager::createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
+	GLenum type, GLenum filter) {
+	return createFramebuffer(internalFormat, width, height, format, type, true, GL_CLAMP_TO_EDGE, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), filter);
+}
+
 Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
 	GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
+	result.width = width;
+	result.height = height;
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_2D, result.texture);
@@ -301,6 +312,8 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat,
 														 GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod) {
 	SpecialFramebuffer result;
+	result.width = width;
+	result.height = height;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenTextures(1, &result.texture);
@@ -349,6 +362,8 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	MultitextureFramebuffer result;
+	result.width = width;
+	result.height = height;
 	result.textureAmount = textureCount;
 	result.textures = new GLuint[textureCount];
 	glGenFramebuffers(1, &result.fbo);
