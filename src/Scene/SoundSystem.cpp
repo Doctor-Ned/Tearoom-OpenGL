@@ -56,7 +56,7 @@ void SoundSystem::loadSounds()
 		getInstance()->soundsMap.emplace(it.path().filename().stem().string(), getEngine()->getSoundSource(it.path().u8string().c_str()));
 	}
 
-	/*auto sound = getSound("Jigoku Shoujo Mitsuganae OST - Nigakute Amai Mizu");
-	sound->setDefaultVolume(0.03f);
-	getEngine()->play2D(sound);*/
+	auto sound = getSound("sao-meo-loop");
+	sound->setDefaultVolume(0.2f);
+	getEngine()->play2D(sound, true);
 }
