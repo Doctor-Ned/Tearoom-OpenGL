@@ -38,10 +38,10 @@ protected:
     UiColorPlane* backgroundPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);
     UiColorPlane* transitionPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);
 
-    UiPlane* text1 =  new UiPlane("res/textures/Outro/outroLine1.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    UiPlane* text2 =  new UiPlane("res/textures/Outro/outroLine2.PNG", glm::vec2(405.0f, 230.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    UiPlane* text3 =  new UiPlane("res/textures/Outro/outroLine3.PNG", glm::vec2(410.0f, 300.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    UiPlane* text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(405.0f, 390.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    UiPlane* text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(405.0f, 470.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+    UiPlane* text1 =  new UiPlane("res/textures/Outro/outroLine1.PNG", glm::vec2(400.0f, 100.0f), glm::vec2(500.0f, 85.0f), TopLeft);
+    UiPlane* text2 =  new UiPlane("res/textures/Outro/outroLine2.PNG", glm::vec2(400.0f, 180.0f), glm::vec2(520.0f, 120.0f), TopLeft);
+    UiPlane* text3 =  new UiPlane("res/textures/Outro/outroLine3.PNG", glm::vec2(400.0f, 290.0f), glm::vec2(515.0f, 92.0f), TopLeft);
+    UiPlane* text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(405.0f, 380.0f), glm::vec2(500.0f, 120.0f), TopLeft);
+    UiPlane* text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(400.0f, 520.0f), glm::vec2(480.0f, 75.0f), TopLeft);
 };
 #endif //TEAROOM_OUTROCUTSCENE_H

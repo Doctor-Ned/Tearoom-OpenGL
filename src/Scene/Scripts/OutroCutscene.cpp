@@ -47,7 +47,7 @@ void OutroCutscene::initialize() {
     text5->setOpacity(0.0f);
     phase = 0;
 
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_9, true, [this]() {
         this->runOutro();
     });
 }

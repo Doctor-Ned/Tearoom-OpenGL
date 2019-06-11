@@ -1,18 +1,7 @@
 //
 // Created by MB on 5/29/2019.
 //
-/*
- Skoro to czytasz, znaczy że już mnie nie ma. a mój dorobek na Ciebie czeka.
 
-Nigdy nie mieliśmy czasu by razem napić się herbaty.
-
-Zostawiam ci wszystko co posiadam w moim domu.
-
-Mój testament czeka na ciebie, w schowku który oznaczyłem na zdjęciu.
-
-Twój wujek,
-Yoshiro
- */
 #include <Scene/SoundSystem.h>
 #include "IntroCutscene.h"
 #include "CollectableObject.h"
@@ -38,11 +27,7 @@ void IntroCutscene::runIntro() {
 }
 
 void IntroCutscene::switchToOutro() {
-    text1 =  new UiPlane("res/textures/Outro/outroLine1.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    text2 =  new UiPlane("res/textures/Outro/outroLine2.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    text3 =  new UiPlane("res/textures/Outro/outroLine3.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
-    text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(400.0f, 150.0f), glm::vec2(500.0f, 90.0f), TopLeft);
+
 }
 
 void IntroCutscene::initialize() {
@@ -64,7 +49,9 @@ void IntroCutscene::initialize() {
 	text4->setOpacity(0.0f);
 	text5->setOpacity(0.0f);
     phase = 0;
+
 	GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+	    this->switchToOutro();
 		this->runIntro();
 	});
 }
