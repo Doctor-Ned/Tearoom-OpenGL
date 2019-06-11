@@ -387,7 +387,7 @@ void Picking::update(float msec) {
 		if (object != nullptr) {
 			shiningObject = object;
 			if (object->getMesh() != nullptr) {
-				object->getMesh()->setEmissiveFactor(0.5f);
+				object->getMesh()->setEmissiveFactor(0.25f);
 			}
 		}
 	}
