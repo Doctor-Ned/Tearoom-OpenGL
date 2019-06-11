@@ -300,10 +300,10 @@ int main(int argc, char** argv) {
 			deltaSum = 0.0f;
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
+
 		Profiler::getInstance()->update(timeDelta);
 		Profiler::getInstance()->clearFrameData();
 		gameManager->update(timeDelta);
-
 		glEnable(GL_DEPTH_TEST);
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.main.fbo);
@@ -335,6 +335,7 @@ int main(int argc, char** argv) {
 		}
 		glDisable(GL_DEPTH_TEST);
 		// Render to the default framebuffer (screen) with post-processing
+		Profiler::getInstance()->startCountingTime();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -348,14 +349,15 @@ int main(int argc, char** argv) {
 			glBindTexture(GL_TEXTURE_2D, framebuffers.pong.texture);
 		}
 		dat.render();
-
+		Profiler::getInstance()->addMeasure("PostProcessing");
+		Profiler::getInstance()->startCountingTime();
 		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		gameManager->renderUi();
 		fpsPlaneShader->use();
 		fpsPlane->render(fpsPlaneShader);
 		fpsTextShader->use();
 		fpsText->render(fpsTextShader);
-
+		Profiler::getInstance()->addMeasure("UI Render");
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

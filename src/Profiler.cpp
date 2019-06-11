@@ -90,6 +90,7 @@ void Profiler::renderProfilerWindow()
 	//overallUpdateTime *= 1000.0f; //in miliseconds
 	if(ImGui::Begin("Profiler", &enabled, 64))
 	{
+		ImGui::DragFloat("Refresh Rate", &timeDelta, 0.1f, 0.1f, 5.0f);
 		for(auto it : measuresMapBuffer)
 		{
 			ImGui::Text(it.first.c_str());
