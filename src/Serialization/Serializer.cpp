@@ -44,6 +44,7 @@
 #include "Scene/Scripts/SunTimeActivator.h"
 #include "Scene/Scripts/CollectableWatch.h"
 #include "Scene/Scripts/IntroCutscene.h"
+#include "Scene/Scripts/OutroCutscene.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -56,7 +57,7 @@ Serializer *Serializer::getInstance() {
 }
 
 void Serializer::setup() {
-	if(!fs::exists(SCENES_DIR)) {
+	if (!fs::exists(SCENES_DIR)) {
 		fs::create_directory(SCENES_DIR);
 	}
 	loadScenes();
@@ -106,7 +107,7 @@ Serializable* Serializer::getPointer(const int id) {
 
 std::vector<std::string> Serializer::getSceneNames() {
 	std::vector<std::string> result;
-	for(auto &pair : scenes) {
+	for (auto &pair : scenes) {
 		result.push_back(pair.first);
 	}
 	return result;
@@ -326,6 +327,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 		case SIntroCutscene:
 			deserializeAndIdentify(pointer, data, new IntroCutscene());
 			break;
+		case SOutroCutscene:
+			deserializeAndIdentify(pointer, data, new OutroCutscene());
+			break;
 	}
 	return pointer;
 }
@@ -333,7 +337,7 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 void Serializer::deserializeAndIdentify(SerializablePointer& pointer, Json::Value &data, Serializable* serializable) {
 	pointer.object = serializable;
 	ids.emplace(serializable, pointer.id);
-	if(pointer.id == 36) {
+	if (pointer.id == 36) {
 		printf("");
 	}
 	serializable->deserialize(data, this);

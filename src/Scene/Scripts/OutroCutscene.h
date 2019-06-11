@@ -5,13 +5,6 @@
 #ifndef TEAROOM_OUTROCUTSCENE_H
 #define TEAROOM_OUTROCUTSCENE_H
 
-//
-// Created by MB on 5/29/2019.
-//
-
-#ifndef TEAROOM_INTROCUTSCENE_H
-#define TEAROOM_INTROCUTSCENE_H
-
 #include <Ui/UiColorPlane.h>
 #include <Ui/UiPlane.h>
 #include <Ui/UiCanvas.h>
@@ -51,10 +44,4 @@ protected:
     UiPlane* text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(405.0f, 390.0f), glm::vec2(500.0f, 90.0f), TopLeft);
     UiPlane* text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(405.0f, 470.0f), glm::vec2(500.0f, 90.0f), TopLeft);
 };
-
-
-#endif //TEAROOM_INTROCUTSCENE_H
-
-
-
 #endif //TEAROOM_OUTROCUTSCENE_H

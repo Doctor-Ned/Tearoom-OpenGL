@@ -38,6 +38,7 @@
 #include "Scene/Scripts/SunTimeActivator.h"
 #include "Scene/Scripts/CollectableWatch.h"
 #include "Scene/Scripts/IntroCutscene.h"
+#include "Scene/Scripts/OutroCutscene.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -906,6 +907,10 @@ void EditorScene::renderUi() {
 				break;
 			case SIntroCutscene:
 				typeCreation->creationCallback(new IntroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+				break;
+			case SOutroCutscene:
+				typeCreation->creationCallback(new OutroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
 		}

@@ -147,7 +147,7 @@ void OutroCutscene::update(float msec) {
 OutroCutscene::~OutroCutscene() {}
 
 SerializableType OutroCutscene::getSerializableType() {
-    return SIntroCutscene;
+    return SOutroCutscene;
 }
 
 Json::Value OutroCutscene::serialize(Serializer* serializer) {
