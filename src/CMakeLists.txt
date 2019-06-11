@@ -24,7 +24,7 @@ file(COPY ${IRRKLANG_DIR}/irrKlang.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Scenes/MenuPreview.cpp Scene/Scenes/MenuPreview.h Scene/Scripts/IntroCutscene.cpp Scene/Scripts/IntroCutscene.h)
+add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Scenes/MenuPreview.cpp Scene/Scenes/MenuPreview.h Scene/Scripts/IntroCutscene.cpp Scene/Scripts/IntroCutscene.h Scene/Scripts/OutroCutscene.cpp Scene/Scripts/OutroCutscene.h)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # Define the include DIRs
