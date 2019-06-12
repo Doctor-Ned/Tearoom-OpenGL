@@ -9,6 +9,7 @@
 #include <Ui/UiPlane.h>
 #include <Ui/UiCanvas.h>
 #include <Ui/UiText.h>
+#include <Ui/UiButton.h>
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 
@@ -23,6 +24,7 @@ public:
     void deserialize(Json::Value &root, Serializer* serializer) override;
     void update(float msec) override;
     void runOutro();
+    void setMenuCallbacks();
 protected:
     void initialize();
     SunController *sunController;
@@ -43,5 +45,12 @@ protected:
     UiPlane* text3 =  new UiPlane("res/textures/Outro/outroLine3.PNG", glm::vec2(400.0f, 290.0f), glm::vec2(515.0f, 92.0f), TopLeft);
     UiPlane* text4 =  new UiPlane("res/textures/Outro/outroLine4.PNG", glm::vec2(405.0f, 380.0f), glm::vec2(500.0f, 120.0f), TopLeft);
     UiPlane* text5 =  new UiPlane("res/textures/Outro/outroLine5.PNG", glm::vec2(400.0f, 520.0f), glm::vec2(480.0f, 75.0f), TopLeft);
+    UiPlane* playAgainWindow = new UiPlane("res/textures/Outro/playAgainWindow.PNG", glm::vec2(400.0f, 220.0f), glm::vec2(480.0f, 250.0f), TopLeft);
+
+    UiButton* quit = new UiButton(glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
+    UiButton* playAgain = new UiButton(glm::vec2(500.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
+
+    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
+    UiColorPlane* playAgainHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(500.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
 };
 #endif //TEAROOM_OUTROCUTSCENE_H
