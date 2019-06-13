@@ -145,7 +145,6 @@ void Picking::initialize() {
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
-        std::cout<<"click"<<std::endl;
 
         currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
@@ -369,6 +368,7 @@ void Picking::update(float msec) {
 				encouragementActivate->setText("Oops.. I need a key");
 				gameManager->setCursorLocked(false);
 				setSwitch(!getSwitch());
+				currentCanvas = itemsInventoryCanvas;
 				showInventoryUi();
 				currentInteraction = object;
 			}

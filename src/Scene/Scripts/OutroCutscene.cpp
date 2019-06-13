@@ -26,6 +26,30 @@ void OutroCutscene::runOutro() {
     run = true;
 }
 
+void OutroCutscene::setMenuCallbacks() {
+    quit->addHoverCallback([this]() {
+        quitHover->setOpacity(0.3f);
+    });
+    quit->addLeaveCallback([this]() {
+        quitHover->setOpacity(0.0f);
+    });
+    quit->addClickCallback([this]() {
+
+    });
+
+    playAgain->addHoverCallback([this]() {
+        playAgainHover->setOpacity(0.3f);
+    });
+    playAgain->addLeaveCallback([this]() {
+        playAgainHover->setOpacity(0.0f);
+    });
+    
+    playAgain->addClickCallback([this]() {
+
+    });
+    std::cout<<"aaa"<<std::endl;
+
+}
 
 void OutroCutscene::initialize() {
     UiElement *root = scene->getUiRoot();
@@ -39,12 +63,24 @@ void OutroCutscene::initialize() {
     mainCanvas->addChild(text4);
     mainCanvas->addChild(text5);
     mainCanvas->addChild(transitionPlane);
+    mainCanvas->addChild(playAgainWindow);
+
+    mainCanvas->addChild(quit);
+    mainCanvas->addChild(playAgain);
+    mainCanvas->addChild(quitHover);
+    mainCanvas->addChild(playAgainHover);
+
     transitionPlane->setOpacity(1.0f);
     text1->setOpacity(0.0f);
     text2->setOpacity(0.0f);
     text3->setOpacity(0.0f);
     text4->setOpacity(0.0f);
     text5->setOpacity(0.0f);
+    playAgain->setOpacity(0.0f);
+    quit->setOpacity(0.0f);
+    playAgainWindow->setOpacity(0.0f);
+    quitHover->setOpacity(0.0f);
+    playAgainHover->setOpacity(0.0f);
     phase = 0;
 
     GameManager::getInstance()->addKeyCallback(GLFW_KEY_9, true, [this]() {
@@ -115,7 +151,7 @@ void OutroCutscene::update(float msec) {
                     transitionPlane->setOpacity(elapsed);
                     elapsed += 0.3f * msec;
                 } else {
-                    elapsed = 1.0f;
+                    elapsed = 0.0f;
                     phase = 7;
                     player->getComponent<Picking>()->showPreview();
                 }
@@ -128,16 +164,10 @@ void OutroCutscene::update(float msec) {
                 text4->setActive(false);
                 text5->setActive(false);
 
-                if (backgroundPlane->getOpacity() > 0.0f) {
-                    transitionPlane->setOpacity(elapsed);
-                    backgroundPlane->setOpacity(elapsed);
-                    elapsed -= 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    backgroundPlane->setActive(false);
-                    transitionPlane->setActive(false);
-                    run = false;
-                    gameManager->setCursorLocked(true);
+                if (playAgainWindow->getOpacity() < 1.0f) {
+                    playAgainWindow->setOpacity(elapsed);
+                    elapsed += 0.5f * msec;
+                    if(playAgainWindow->getOpacity() >= 1.0f) setMenuCallbacks();
                 }
                 break;
         }
