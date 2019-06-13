@@ -145,7 +145,6 @@ void Picking::initialize() {
 		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
 		letterInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
-        std::cout<<"click"<<std::endl;
 
         currentCanvas = photosInventoryCanvas;
 		showInventoryUi();
