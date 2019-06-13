@@ -369,6 +369,7 @@ void Picking::update(float msec) {
 				encouragementActivate->setText("Oops.. I need a key");
 				gameManager->setCursorLocked(false);
 				setSwitch(!getSwitch());
+				currentCanvas = itemsInventoryCanvas;
 				showInventoryUi();
 				currentInteraction = object;
 			}
