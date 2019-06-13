@@ -44,6 +44,7 @@ public:
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods);
+	void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	GLFWwindow* getWindow();
 	void quit();
 	GameManager(GameManager const&) = delete;
@@ -72,11 +73,13 @@ public:
 	void setVsync(bool enabled);
 	void addKeyCallback(int key, bool pressed, const std::function<void()>& callback);
 	void addMouseCallback(int key, bool pressed, const std::function<void()>& callback);
+	void addScrollCallback(bool up, const std::function<void(float)>& callback);
 	~GameManager();
 	bool getKeyState(int key);
 	bool getKeyOnce(int key);
 	bool getMouseState(int key);
 	bool getMouseOnce(int key);
+	float getScrollState();
 	glm::vec2 getMousePosition() const;
 	glm::vec2 getUiRescaleVector() const;
 	glm::vec2 getScreenRescaleVector() const;
@@ -103,6 +106,8 @@ protected:
 	std::map<int, bool> mouseStates;
 	std::map<int, bool> mouseProcessed;
 	std::map<int, std::map<bool, std::vector<std::function<void()>>>> mouseCallbacks;
+	float scrollState = 0.0f;
+	std::map<bool, std::vector<std::function<void(float)>>> scrollCallbacks;
 	bool enableVsync = true;
 	glm::vec2 mousePosition;
 	GLFWwindow *window;

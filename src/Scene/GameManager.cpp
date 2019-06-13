@@ -206,6 +206,17 @@ void GameManager::addMouseCallback(int key, bool pressed, const std::function<vo
 	mouseCallbacks.emplace(key, map);
 }
 
+void GameManager::addScrollCallback(bool up, const std::function<void(float)>& callback) {
+	auto map = scrollCallbacks.find(up);
+	if(map != scrollCallbacks.end()) {
+		map->second.push_back(callback);
+	} else {
+		auto v = std::vector<std::function<void(float)>>();
+		v.push_back(callback);
+		scrollCallbacks.emplace(up, v);
+	}
+}
+
 GameManager::~GameManager() {
 	if (currentScene == menuScene) {
 		setCurrentScene(nullptr);
@@ -479,6 +490,10 @@ bool GameManager::getMouseOnce(int key) {
 	return false;
 }
 
+float GameManager::getScrollState() {
+	return scrollState;
+}
+
 glm::vec2 GameManager::getMousePosition() const {
 	return mousePosition;
 }
@@ -573,6 +588,7 @@ void GameManager::update(double timeDelta) {
 	if (currentScene != nullptr) {
 		currentScene->update(timeDelta);
 	}
+	scrollState = 0.0f;
 }
 
 void GameManager::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -618,6 +634,18 @@ void GameManager::mouse_button_callback(GLFWwindow* window, int butt, int action
 	}
 	if (currentScene != nullptr) {
 		currentScene->mouse_button_callback(window, butt, action, mods);
+	}
+}
+
+void GameManager::mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	scrollState += yoffset;
+	if(abs(yoffset) > 0.01f) {
+		auto it = scrollCallbacks.find(yoffset > 0.0f);
+		if(it != scrollCallbacks.end()) {
+			for(auto callback : it->second) {
+				callback(yoffset);
+			}
+		}
 	}
 }
 

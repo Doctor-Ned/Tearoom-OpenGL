@@ -24,7 +24,7 @@ void SunController::initialize() {
 		sun->setTime(currentHour);
 	clockBack = new UiPlane("res/textures/watch_sprite.png", glm::vec2(50.0f, 583.0f), glm::vec2(250.0f, 250.0f), Left);
 	hint = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(clockBack->getPosition().x, clockBack->getPosition().y - 40.0f), glm::vec2(300.0f, 30.0f), TopLeft);
-	hint->addChild(new UiText(hint->getSize() / 2.0f - glm::vec2(20.0f, 0.0f), hint->getSize(), "Press 1 and 2 to use the watch", glm::vec3(1.0f,1.0f,1.0f), MatchHeight));
+	hint->addChild(new UiText(hint->getSize() / 2.0f - glm::vec2(20.0f, 0.0f), hint->getSize(), "Use the watch with mouse scroll", glm::vec3(1.0f,1.0f,1.0f), MatchHeight));
 	clockHand = new UiPlane("res/textures/watch_arrow_sprite.png", clockBack->getPosition() + clockBack->getSize() / 2.0f, glm::vec2(60.0f, 130.0f), Center);
 	clockHand->setRotationAnchor(Center);
 	clockHand->setActive(clockShown);
@@ -75,7 +75,7 @@ void SunController::update(float msec) {
 		gameManager->getCurrentNonEditorScene()->getUiRoot()->removeChild(hint);
 	}
 
-	if (gameManager->getKeyState(GLFW_KEY_1) && !timeTravel) {
+	if (gameManager->getScrollState() < -0.1f && !timeTravel) {
 		if (sun != nullptr) {
 			if (sun->getTime() != minHour && getFractionalPartOfHour() == 0.0f) {
 				//setClockVisibility(true);
@@ -86,7 +86,7 @@ void SunController::update(float msec) {
 		}
 	}
 
-	if (gameManager->getKeyState(GLFW_KEY_2) && !timeTravel) {
+	if (gameManager->getScrollState() > 0.1f && !timeTravel) {
 		if (sun != nullptr) {
 			if (sun->getTime() != maxHour && getFractionalPartOfHour() == 0.0f) {
 				//setClockVisibility(true);

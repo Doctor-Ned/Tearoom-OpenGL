@@ -49,6 +49,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void mouse_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
 	ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+	gameManager->mouse_scroll_callback(window, xoffset, yoffset);
 }
 
 void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {

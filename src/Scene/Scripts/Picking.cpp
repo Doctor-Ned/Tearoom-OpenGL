@@ -159,9 +159,9 @@ void Picking::initialize() {
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
-	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(720.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
-	encouragementPick = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
-	encouragementActivate = new UiText(glm::vec2(700.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(770.0f, 260.0f), glm::vec2(200.0f, 30.0f), Center);
+	encouragementPick = new UiText(glm::vec2(750.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
+	encouragementActivate = new UiText(glm::vec2(750.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
 	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
