@@ -16,8 +16,9 @@ MenuPreview::MenuPreview() {
     UiButton* options = new UiButton(glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* about = new UiButton(glm::vec2(98.0f, 410.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* quit = new UiButton(glm::vec2(98.0f, 510.0f), glm::vec2(170.0f,80.0f), Left);
-
     UiButton* backToMenu = new UiButton(glm::vec2(101.0f, 585.0f), glm::vec2(170.0f,80.0f), Left);
+
+    UiPlane*  mainTitle = new UiPlane("res/textures/mainTitle.PNG", glm::vec2(27.0f, 25.0f), glm::vec2(325.0f, 130.0f), TopLeft);
 
     options->setOpacity(0.0f);
     startGame->setOpacity(0.0f);
@@ -28,7 +29,7 @@ MenuPreview::MenuPreview() {
     UiColorPlane* startHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 210.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* optionsHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* aboutHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 405.0f), glm::vec2(170.0f,80.0f), Left);
-    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 503.0f), glm::vec2(170.0f,80.0f), Left);
+    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 503.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 586.0f), glm::vec2(170.0f,80.0f), Left);
 
     backToMenu->addHoverCallback([this, backHover]() {
@@ -55,8 +56,7 @@ MenuPreview::MenuPreview() {
     });
     startGame->addClickCallback([this]() {
         //GameManager::getInstance()->setCurrentScene(new MiszukScene());
-		GameManager::getInstance()->setCursorLocked(true);
-		GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
+        startTransition = true;
     });
     startGame->addHoverCallback([this, startHover](){
         startHover->setOpacity(0.3f);
@@ -84,7 +84,6 @@ MenuPreview::MenuPreview() {
        quitHover->setActive(false);
        about->setActive(false);
        aboutHover->setActive(false);
-
        backToMenu->setActive(true);
        backHover->setActive(true);
     });
@@ -121,7 +120,7 @@ MenuPreview::MenuPreview() {
     rootUiElement->addChild(options);
     rootUiElement->addChild(about);
     rootUiElement->addChild(quit);
-
+    rootUiElement->addChild(mainTitle);
     rootUiElement->addChild(menuAbout);
     rootUiElement->addChild(backToMenu);
     rootUiElement->addChild(backHover);
@@ -130,6 +129,8 @@ MenuPreview::MenuPreview() {
     rootUiElement->addChild(optionsHover);
     rootUiElement->addChild(aboutHover);
     rootUiElement->addChild(quitHover);
+
+    rootUiElement->addChild(transitionPlane);
 
     startHover->setOpacity(0.0f);
     optionsHover->setOpacity(0.0f);
@@ -143,7 +144,7 @@ MenuPreview::MenuPreview() {
 
 void MenuPreview::update(double deltaTime) {
 
-    if(elapsed > 1.0f) {
+    if(elapsed > 1.0f && runSlideShow) {
         if(currentPhoto == slidePhotos.size() - 1) {
             currentPhoto = 0;
             previousPhoto = slidePhotos.size() - 1;
@@ -158,7 +159,21 @@ void MenuPreview::update(double deltaTime) {
     slidePhotos[previousPhoto]->setOpacity(1.0f - elapsed);
     slidePhotos[currentPhoto]->setOpacity(elapsed);
 
-    elapsed += 0.01f;
+    elapsed += 0.3f * deltaTime;
+
+    //transition to demo game
+
+    if (startTransition) {
+        if (runSlideShow) {
+            elapsed = 0.0f;
+            runSlideShow = false;
+        }
+        transitionPlane->setOpacity(elapsed);
+        if (transitionPlane->getOpacity() >= 1.0f) {
+            GameManager::getInstance()->setCursorLocked(true);
+            GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
+        }
+    }
 }
 
 MenuPreview::~MenuPreview() {}
