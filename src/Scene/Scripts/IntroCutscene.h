@@ -9,6 +9,7 @@
 #include <Ui/UiPlane.h>
 #include <Ui/UiCanvas.h>
 #include <Ui/UiText.h>
+#include <Ui/UiButton.h>
 #include "Scene/Components/Component.h"
 #include "Scene/Scenes/Scene.h"
 
@@ -43,6 +44,8 @@ protected:
     UiPlane* text3 = new UiPlane("res/textures/text3.PNG", glm::vec2(410.0f, 300.0f), glm::vec2(500.0f, 90.0f), TopLeft);
     UiPlane* text4 = new UiPlane("res/textures/text4.PNG", glm::vec2(405.0f, 390.0f), glm::vec2(500.0f, 85.0f), TopLeft);
     UiPlane* text5 = new UiPlane("res/textures/text5.PNG", glm::vec2(405.0f, 470.0f), glm::vec2(130.0f, 90.0f), TopLeft);
+
+	UiPlane* skipSprite = new UiPlane("res/textures/skipSprite.PNG", glm::vec2(990.0f, 600.0f), glm::vec2(260.0f, 65.0f), TopLeft);
 };
 
 

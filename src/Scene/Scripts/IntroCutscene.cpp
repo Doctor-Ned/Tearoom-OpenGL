@@ -50,10 +50,19 @@ void IntroCutscene::initialize() {
 	text5->setOpacity(0.0f);
     phase = 0;
 
-	GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
+    mainCanvas->addChild(skipSprite);
+
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
 	    this->switchToOutro();
 		this->runIntro();
 	});
+
+    GameManager::getInstance()->addKeyCallback(GLFW_KEY_SPACE, true, [this]() {
+        phase = 6;
+        skipSprite->setActive(false);
+    });
+
+
 }
 
 void IntroCutscene::update(float msec) {
