@@ -302,6 +302,7 @@ int main(int argc, char** argv) {
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
 
+
 		Profiler::getInstance()->update(timeDelta);
 		Profiler::getInstance()->clearFrameData();
 		gameManager->update(timeDelta);

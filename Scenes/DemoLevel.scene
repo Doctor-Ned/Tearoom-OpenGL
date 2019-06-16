@@ -27,12 +27,12 @@
                   "object" : {
                      "active" : true,
                      "localLastTransformData" : {
-                        "eulerRotation" : [ -0.01745329238474369, 0.38397243618965149, -0.069813169538974762 ],
+                        "eulerRotation" : [ -0.01745329238474369, -0.52359879016876221, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0099999997764825821, 0.0 ]
                      },
                      "localTransformData" : {
-                        "eulerRotation" : [ -0.01745329238474369, 0.38397243618965149, -0.069813169538974762 ],
+                        "eulerRotation" : [ -0.01745329238474369, -0.52359879016876221, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
                         "translation" : [ 0.0, 0.0099999997764825821, 0.0 ]
                      },
@@ -94,19 +94,24 @@
                                              "far_plane" : 30.0,
                                              "lightSpace" : [
                                                 [
-                                                   0.096166834235191345,
-                                                   0.0090591376647353172,
-                                                   0.018487073481082916,
+                                                   0.096166826784610748,
+                                                   0.0090591432526707649,
+                                                   0.018487071618437767,
                                                    0.0
                                                 ],
-                                                [ 0.0, 0.094385303556919098, -0.023597557097673416, 0.0 ],
+                                                [ 0.0, 0.094385288655757904, -0.02359757199883461, 0.0 ],
                                                 [
                                                    0.027421537786722183,
-                                                   -0.031770229339599609,
-                                                   -0.064833827316761017,
+                                                   -0.031770247966051102,
+                                                   -0.06483381986618042,
                                                    0.0
                                                 ],
-                                                [ -0.0, -1.6689300252892281e-07, -0.42857146263122559, 1.0 ]
+                                                [
+                                                   -2.3841858265427618e-08,
+                                                   9.5367433061710472e-08,
+                                                   -0.028571367263793945,
+                                                   1.0
+                                                ]
                                              ],
                                              "model" : [
                                                 [
@@ -117,7 +122,7 @@
                                                 ],
                                                 [ 0.0, -0.93969267606735229, 0.34202000498771667, 0.0 ],
                                                 [ -0.25881907343864441, 0.33036595582962036, 0.9076734185218811, 0.0 ],
-                                                [ -2.5881898403167725, 3.3036594390869141, 9.0767345428466797, 1.0 ]
+                                                [ -4.0375761985778809, 5.1537089347839355, 14.159706115722656, 1.0 ]
                                              ],
                                              "near_plane" : 2.0,
                                              "proj_size" : 10.0,
@@ -133,12 +138,12 @@
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 3.1415927410125732, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, -10.0 ]
+                                 "translation" : [ 0.0, 0.0, -15.600000381469727 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 3.1415927410125732, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, -10.0 ]
+                                 "translation" : [ 0.0, 0.0, -15.600000381469727 ]
                               },
                               "mesh" : {
                                  "id" : 8,
@@ -204,25 +209,25 @@
                                              "far_plane" : 30.0,
                                              "lightSpace" : [
                                                 [
-                                                   -0.096166834235191345,
-                                                   0.0090591376647353172,
-                                                   -0.019171778112649918,
+                                                   -0.096166826784610748,
+                                                   0.0090591432526707649,
+                                                   -0.019171776250004768,
                                                    0.0
                                                 ],
-                                                [ 0.0, 0.094385303556919098, 0.024471540004014969, 0.0 ],
+                                                [ 0.0, 0.094385288655757904, 0.024471554905176163, 0.0 ],
+                                                [ -0.027421537786722183, -0.031770247966051102, 0.067235067486763, 0.0 ],
                                                 [
-                                                   -0.027421537786722183,
-                                                   -0.031770229339599609,
-                                                   0.067235074937343597,
-                                                   0.0
-                                                ],
-                                                [ 0.0, 1.6689300252892281e-07, -0.48148143291473389, 1.0 ]
+                                                   -2.3841858265427618e-08,
+                                                   -9.5367433061710472e-08,
+                                                   -0.066666603088378906,
+                                                   1.0
+                                                ]
                                              ],
                                              "model" : [
                                                 [ 0.96592581272125244, 0.088521271944046021, 0.24321030080318451, 0.0 ],
                                                 [ 0.0, -0.93969267606735229, 0.34202000498771667, 0.0 ],
                                                 [ 0.25881898403167725, -0.33036595582962036, -0.9076734185218811, 0.0 ],
-                                                [ 2.5881898403167725, -3.3036594390869141, -9.0767345428466797, 1.0 ]
+                                                [ 4.0375761985778809, -5.1537089347839355, -14.159706115722656, 1.0 ]
                                              ],
                                              "near_plane" : 3.0,
                                              "proj_size" : 10.0,
@@ -238,12 +243,12 @@
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, 10.0 ]
+                                 "translation" : [ 0.0, 0.0, 15.600000381469727 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
-                                 "translation" : [ 0.0, 0.0, 10.0 ]
+                                 "translation" : [ 0.0, 0.0, 15.600000381469727 ]
                               },
                               "mesh" : {
                                  "id" : 12,
@@ -330,7 +335,7 @@
                                  0.99729663133621216
                               ],
                               "rotationAngle" : 2.7925269603729248,
-                              "sunDistance" : 10.0,
+                              "sunDistance" : 15.600000381469727,
                               "time" : 13.0
                            },
                            "type" : 41
@@ -341,7 +346,7 @@
                               "active" : false,
                               "clockEnd" : 30.0,
                               "clockShown" : false,
-                              "clockStart" : 0.0,
+                              "clockStart" : 60.0,
                               "currentClockHour" : 30.0,
                               "currentHour" : 13.0,
                               "currentTimePercentage" : 0.0,
@@ -358,7 +363,7 @@
                                  "type" : 22
                               },
                               "showHint" : false,
-                              "startHour" : 12.0,
+                              "startHour" : 14.0,
                               "timeTravel" : false
                            },
                            "type" : 51
@@ -447,22 +452,22 @@
                                        },
                                        "name" : "Camera",
                                        "view" : [
-                                          [ 0.79775512218475342, 0.084781862795352936, -0.59699153900146484, 0.0 ],
-                                          [ -0.0, 0.99006593227386475, 0.14060437679290771, 0.0 ],
-                                          [ 0.60298168659210205, -0.11216786503791809, 0.78983008861541748, 0.0 ],
-                                          [ 0.21736547350883484, -0.47147339582443237, -1.0896556377410889, 1.0 ]
+                                          [ 0.77332758903503418, 0.094304054975509644, -0.62695401906967163, 0.0 ],
+                                          [ -0.0, 0.98887604475021362, 0.14874298870563507, 0.0 ],
+                                          [ 0.63400673866271973, -0.11502705514431, 0.76472502946853638, 0.0 ],
+                                          [ 0.25441333651542664, -0.49964341521263123, -1.1826765537261963, 1.0 ]
                                        ]
                                     },
                                     "type" : 23
                                  }
                               ],
                               "localLastTransformData" : {
-                                 "eulerRotation" : [ -0.14107182621955872, -13.213603973388672, 0.0 ],
+                                 "eulerRotation" : [ -0.14929701387882233, -6.9699087142944336, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
                               "localTransformData" : {
-                                 "eulerRotation" : [ -0.14107182621955872, -13.213603973388672, 0.0 ],
+                                 "eulerRotation" : [ -0.14929701387882233, -6.9699087142944336, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
@@ -535,7 +540,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ -0.7839471697807312, 0.17000000178813934, 0.67669117450714111, 1.0 ]
+                                 [ -0.8911101222038269, 0.2199999988079071, 0.68564999103546143, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 23,
@@ -594,12 +599,12 @@
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -0.7839471697807312, 0.0, 0.67669117450714111 ]
+                        "translation" : [ -0.8911101222038269, 0.05000000074505806, 0.68564999103546143 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ -0.7839471697807312, 0.0, 0.67669117450714111 ]
+                        "translation" : [ -0.8911101222038269, 0.05000000074505806, 0.68564999103546143 ]
                      },
                      "mesh" : {
                         "id" : -1,
@@ -1237,7 +1242,7 @@
                                           [ 1.0, 0.0, 0.0, 0.0 ],
                                           [ 0.0, 1.0, 0.0, 0.0 ],
                                           [ 0.0, 0.0, 1.0, 0.0 ],
-                                          [ 0.93954497575759888, 0.4287000298500061, 0.43549999594688416, 1.0 ]
+                                          [ 0.93954497575759888, 0.4287000298500061, 0.61541473865509033, 1.0 ]
                                        ],
                                        "mesh" : {
                                           "id" : 54,
@@ -1272,8 +1277,8 @@
                                  {
                                     "id" : 55,
                                     "object" : {
-                                       "active" : true,
-                                       "currentTime" : 0.0,
+                                       "active" : false,
+                                       "currentTime" : 1.5,
                                        "endTime" : 1.5,
                                        "gameObject" : {
                                           "id" : 52,
@@ -1313,12 +1318,12 @@
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
-                                       "startedPlaying" : false,
+                                       "startedPlaying" : true,
                                        "sun" : {
                                           "id" : 13,
                                           "type" : 41
                                        },
-                                       "targetTime" : -1
+                                       "targetTime" : 10
                                     },
                                     "type" : 53
                                  }
@@ -1326,12 +1331,12 @@
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 0.008500000461935997, 0.008500000461935997, 0.008500000461935997 ],
-                                 "translation" : [ 0.0, 0.0, 0.0 ]
+                                 "translation" : [ 0.0, 0.0, 0.17991477251052856 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 0.0, 0.0 ],
                                  "scale" : [ 0.008500000461935997, 0.008500000461935997, 0.008500000461935997 ],
-                                 "translation" : [ 0.0, 0.0, 0.0 ]
+                                 "translation" : [ 0.0, 0.0, 0.17991477251052856 ]
                               },
                               "mesh" : {
                                  "id" : 57,
@@ -5131,7 +5136,7 @@
                      "mesh" : {
                         "id" : 222,
                         "object" : {
-                           "castShadows" : true,
+                           "castShadows" : false,
                            "culled" : true,
                            "depthScale" : 0.029999999329447746,
                            "emissiveFactor" : 0.0,
@@ -6688,7 +6693,576 @@
                         },
                         "type" : 19
                      },
-                     "name" : "Node #2",
+                     "name" : "PillarBase5",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 289,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 3.4906585216522217, 0.71558499336242676, 0.0 ],
+                        "scale" : [ 60.0, 60.0, 60.0 ],
+                        "translation" : [ -40.0, -6.0999999046325684, 11.600000381469727 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 3.4906585216522217, 0.71558499336242676, 0.0 ],
+                        "scale" : [ 60.0, 60.0, 60.0 ],
+                        "translation" : [ -40.0, -6.0999999046325684, 11.600000381469727 ]
+                     },
+                     "mesh" : {
+                        "id" : 290,
+                        "object" : {
+                           "castShadows" : false,
+                           "culled" : true,
+                           "depthScale" : 0.0,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/mountain/mountain.FBX",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "mountain1",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 291,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 2.9845130443572998, 0.0, 0.0 ],
+                        "scale" : [ 40.0, 50.0, 40.0 ],
+                        "translation" : [ 22.299999237060547, -4.4000000953674316, -1.2999999523162842 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 2.9845130443572998, 0.0, 0.0 ],
+                        "scale" : [ 40.0, 50.0, 40.0 ],
+                        "translation" : [ 22.299999237060547, -4.4000000953674316, -1.2999999523162842 ]
+                     },
+                     "mesh" : {
+                        "id" : 292,
+                        "object" : {
+                           "castShadows" : false,
+                           "culled" : true,
+                           "depthScale" : 0.029999999329447746,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/mountain/mountain.FBX",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "mountain2",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 293,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 3.1415927410125732, 0.52359879016876221, 0.0 ],
+                        "scale" : [ 50.0, 60.0, 50.0 ],
+                        "translation" : [ 19.700000762939453, -6.1999998092651367, -7.3000001907348633 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 3.1415927410125732, 0.52359879016876221, 0.0 ],
+                        "scale" : [ 50.0, 60.0, 50.0 ],
+                        "translation" : [ 19.700000762939453, -6.1999998092651367, -7.3000001907348633 ]
+                     },
+                     "mesh" : {
+                        "id" : 294,
+                        "object" : {
+                           "castShadows" : false,
+                           "culled" : false,
+                           "depthScale" : 0.0,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/mountain/mountain.FBX",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "mountain3",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 295,
+                  "object" : {
+                     "active" : true,
+                     "children" : [
+                        {
+                           "id" : 296,
+                           "object" : {
+                              "active" : true,
+                              "components" : [
+                                 {
+                                    "id" : 297,
+                                    "object" : {
+                                       "active" : true,
+                                       "collisionType" : 0,
+                                       "gameObject" : {
+                                          "id" : 296,
+                                          "type" : 1
+                                       },
+                                       "halfDimensions" : [ 0.92000001668930054, 1.2899999618530273, 0.57999998331069946 ],
+                                       "isTrigger" : false,
+                                       "matrix" : [
+                                          [ 1.0, 0.0, 0.0, 0.0 ],
+                                          [ 0.0, 1.0, 0.0, 0.0 ],
+                                          [ 0.0, 0.0, 1.0, 0.0 ],
+                                          [ -0.36660689115524292, 1.4549999237060547, 7.6968154907226563, 1.0 ]
+                                       ],
+                                       "mesh" : {
+                                          "id" : 298,
+                                          "object" : {
+                                             "castShadows" : true,
+                                             "color" : [ 0.0, 1.0, 0.0, 1.0 ],
+                                             "culled" : true,
+                                             "depthScale" : 0.029999999329447746,
+                                             "emissive" : [ 0.0, 0.0, 0.0 ],
+                                             "emissiveFactor" : 1.0,
+                                             "max" : [ 0.92000001668930054, 1.2899999618530273, 0.57999998331069946 ],
+                                             "metallic" : 0.0,
+                                             "min" : [ -0.92000001668930054, -1.2899999618530273, -0.57999998331069946 ],
+                                             "opacity" : 1.0,
+                                             "opaque" : true,
+                                             "renderMode" : 3,
+                                             "roughness" : 1.0,
+                                             "shaderType" : 3,
+                                             "texTileX" : 1.0,
+                                             "texTileY" : 1.0,
+                                             "uiScale" : 1.0,
+                                             "useLight" : false
+                                          },
+                                          "type" : 4
+                                       },
+                                       "name" : "Box collider",
+                                       "positionOffset" : [ -0.40000000596046448, 1.0549999475479126, -0.25 ],
+                                       "type" : 1
+                                    },
+                                    "type" : 27
+                                 }
+                              ],
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 1.239183783531189, 0.0 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ 0.0, 0.40000000596046448, 7.4000000953674316 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 1.239183783531189, 0.0 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ 0.0, 0.40000000596046448, 7.4000000953674316 ]
+                              },
+                              "mesh" : {
+                                 "id" : 299,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree1.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 1.0,
+                                    "texTileY" : 1.0,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree1",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 300,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 5.0, 10.0 ],
+                                 "translation" : [ 7.8000001907348633, -0.40000000596046448, 0.89999997615814209 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 5.0, 10.0 ],
+                                 "translation" : [ 7.8000001907348633, -0.40000000596046448, 0.89999997615814209 ]
+                              },
+                              "mesh" : {
+                                 "id" : 301,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.090000003576278687,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree2.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 2.2999999523162842,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree2",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 302,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 10.0, 10.0 ],
+                                 "translation" : [ -0.40000000596046448, 0.0, -5.6999998092651367 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 10.0, 10.0 ],
+                                 "translation" : [ -0.40000000596046448, 0.0, -5.6999998092651367 ]
+                              },
+                              "mesh" : {
+                                 "id" : 303,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.004999999888241291,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree3.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.7000000476837158,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree3",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 304,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ 11.0, -0.30000001192092896, -0.20000000298023224 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ 11.0, -0.30000001192092896, -0.20000000298023224 ]
+                              },
+                              "mesh" : {
+                                 "id" : 305,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree1.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.6000000238418579,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree4",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 306,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 5.0, 10.0 ],
+                                 "translation" : [ 3.7999999523162842, -0.10000000149011612, 0.40000000596046448 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 5.0, 10.0 ],
+                                 "translation" : [ 3.7999999523162842, -0.10000000149011612, 0.40000000596046448 ]
+                              },
+                              "mesh" : {
+                                 "id" : 307,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.070000000298023224,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree2.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.6000000238418579,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree5",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 308,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ -0.069813169538974762, -1.5533430576324463, -0.19198623299598694 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ -3.5, -0.30000001192092896, -3.7000000476837158 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ -0.069813169538974762, -1.5533430576324463, -0.19198623299598694 ],
+                                 "scale" : [ 1.0, 1.0, 1.0 ],
+                                 "translation" : [ -3.5, -0.30000001192092896, -3.7000000476837158 ]
+                              },
+                              "mesh" : {
+                                 "id" : 309,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree1.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.6000000238418579,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree6",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 310,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.52359879016876221, -2.1293017864227295, 0.0 ],
+                                 "scale" : [ 10.0, 8.0, 10.0 ],
+                                 "translation" : [ -3.5, 0.0, -6.5 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.52359879016876221, -2.1293017864227295, 0.0 ],
+                                 "scale" : [ 10.0, 8.0, 10.0 ],
+                                 "translation" : [ -3.5, 0.0, -6.5 ]
+                              },
+                              "mesh" : {
+                                 "id" : 311,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree3.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.7000000476837158,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree7",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 312,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 8.0, 10.0 ],
+                                 "translation" : [ -4.4000000953674316, -0.10000000149011612, 12.5 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 8.0, 10.0 ],
+                                 "translation" : [ -4.4000000953674316, -0.10000000149011612, 12.5 ]
+                              },
+                              "mesh" : {
+                                 "id" : 313,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree2.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 1.0,
+                                    "texTileY" : 1.0,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "tree8",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 314,
+                           "object" : {
+                              "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 10.0, 10.0 ],
+                                 "translation" : [ 1.7000000476837158, 0.0, 12.899999618530273 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                                 "scale" : [ 10.0, 10.0, 10.0 ],
+                                 "translation" : [ 1.7000000476837158, 0.0, 12.899999618530273 ]
+                              },
+                              "mesh" : {
+                                 "id" : 315,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/trees/tree2.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 0.10000000149011612,
+                                    "texTileY" : 1.8999999761581421,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "Node #8",
+                              "parent" : {
+                                 "id" : 295,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        }
+                     ],
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 0.0 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 0.0 ]
+                     },
+                     "mesh" : {
+                        "id" : -1,
+                        "type" : 0
+                     },
+                     "name" : "trees",
                      "parent" : {
                         "id" : 1,
                         "type" : 1
@@ -6720,7 +7294,7 @@
          "type" : 1
       },
       "skybox" : {
-         "id" : 289,
+         "id" : 316,
          "object" : {
             "faces" : [
                "res/skybox/test/right.jpg",
