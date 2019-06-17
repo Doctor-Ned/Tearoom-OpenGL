@@ -131,6 +131,8 @@ MenuPreview::MenuPreview() {
     rootUiElement->addChild(aboutHover);
     rootUiElement->addChild(quitHover);
 
+	transitionPlane->setOpacity(0.0f);
+
     rootUiElement->addChild(transitionPlane);
 
     startHover->setOpacity(0.0f);
