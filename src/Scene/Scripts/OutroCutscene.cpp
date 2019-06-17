@@ -27,41 +27,29 @@ void OutroCutscene::runOutro() {
 }
 
 void OutroCutscene::setMenuCallbacks() {
-    UiButton* quitButton = new UiButton(glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
-    UiColorPlane* quitButtonHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
-    mainCanvas->addChild(quitButton);
-    mainCanvas->addChild(quitButtonHover);
-    quitButton->addHoverCallback([this, quitButtonHover]() {
-        quitButtonHover->setOpacity(0.3f);
-        std::cout<<"aaa"<<std::endl;
-    });
-
     quit->addHoverCallback([this]() {
         quitHover->setOpacity(0.3f);
-        std::cout<<"aaa"<<std::endl;
     });
     quit->addLeaveCallback([this]() {
         quitHover->setOpacity(0.0f);
     });
     quit->addClickCallback([this]() {
-        std::cout<<"ddd"<<std::endl;
 
     });
 
     playAgain->addHoverCallback([this]() {
         playAgainHover->setOpacity(0.3f);
-        std::cout<<"bbb"<<std::endl;
-
     });
     playAgain->addLeaveCallback([this]() {
         playAgainHover->setOpacity(0.0f);
     });
-
+    
     playAgain->addClickCallback([this]() {
-        std::cout<<"fff"<<std::endl;
 
     });
-    }
+    std::cout<<"aaa"<<std::endl;
+
+}
 
 void OutroCutscene::initialize() {
     UiElement *root = scene->getUiRoot();
@@ -76,10 +64,11 @@ void OutroCutscene::initialize() {
     mainCanvas->addChild(text5);
     mainCanvas->addChild(transitionPlane);
     mainCanvas->addChild(playAgainWindow);
-    root->addChild(quit);
-    root->addChild(playAgain);
-    root->addChild(quitHover);
-    root->addChild(playAgainHover);
+
+    mainCanvas->addChild(quit);
+    mainCanvas->addChild(playAgain);
+    mainCanvas->addChild(quitHover);
+    mainCanvas->addChild(playAgainHover);
 
     transitionPlane->setOpacity(1.0f);
     text1->setOpacity(0.0f);
@@ -87,9 +76,11 @@ void OutroCutscene::initialize() {
     text3->setOpacity(0.0f);
     text4->setOpacity(0.0f);
     text5->setOpacity(0.0f);
-    //playAgain->setOpacity(0.0f);
-    //quit->setOpacity(0.0f);
+    playAgain->setOpacity(0.0f);
+    quit->setOpacity(0.0f);
     playAgainWindow->setOpacity(0.0f);
+    quitHover->setOpacity(0.0f);
+    playAgainHover->setOpacity(0.0f);
     phase = 0;
 
     GameManager::getInstance()->addKeyCallback(GLFW_KEY_9, true, [this]() {

@@ -121,7 +121,8 @@ void IntroCutscene::update(float msec) {
                 } else {
                     elapsed = 0.0f;
                     phase = 6;
-                   //TODO: Door opening and closing sound
+                    SoundSystem::getSound("slidingCutsceneDoor")->setDefaultVolume(0.60f);
+                    SoundSystem::getEngine()->play2D(SoundSystem::getSound("slidingCutsceneDoor"));
                 }
                 break;
             case 6:
