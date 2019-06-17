@@ -29,12 +29,12 @@
                      "localLastTransformData" : {
                         "eulerRotation" : [ -0.01745329238474369, -0.52359879016876221, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ 0.0, 0.0099999997764825821, 0.0 ]
+                        "translation" : [ -0.89999997615814209, 0.05000000074505806, 0.0 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ -0.01745329238474369, -0.52359879016876221, 0.0 ],
                         "scale" : [ 1.0, 1.0, 1.0 ],
-                        "translation" : [ 0.0, 0.0099999997764825821, 0.0 ]
+                        "translation" : [ -0.89999997615814209, 0.05000000074505806, 0.0 ]
                      },
                      "mesh" : {
                         "id" : 3,
@@ -452,22 +452,22 @@
                                        },
                                        "name" : "Camera",
                                        "view" : [
-                                          [ 0.77332758903503418, 0.094304054975509644, -0.62695401906967163, 0.0 ],
-                                          [ -0.0, 0.98887604475021362, 0.14874298870563507, 0.0 ],
-                                          [ 0.63400673866271973, -0.11502705514431, 0.76472502946853638, 0.0 ],
-                                          [ 0.25441333651542664, -0.49964341521263123, -1.1826765537261963, 1.0 ]
+                                          [ 0.77021497488021851, 0.09598252922296524, -0.63052064180374146, 0.0 ],
+                                          [ -0.0, 0.98861098289489746, 0.15049368143081665, 0.0 ],
+                                          [ 0.63778442144393921, -0.11591248959302902, 0.76144295930862427, 0.0 ],
+                                          [ 0.24904945492744446, -0.49736297130584717, -1.1847774982452393, 1.0 ]
                                        ]
                                     },
                                     "type" : 23
                                  }
                               ],
                               "localLastTransformData" : {
-                                 "eulerRotation" : [ -0.14929701387882233, -6.9699087142944336, 0.0 ],
+                                 "eulerRotation" : [ -0.15106764435768127, -6.9748034477233887, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
                               "localTransformData" : {
-                                 "eulerRotation" : [ -0.14929701387882233, -6.9699087142944336, 0.0 ],
+                                 "eulerRotation" : [ -0.15106764435768127, -6.9748034477233887, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
@@ -4326,7 +4326,7 @@
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
-                           "depthScale" : 0.029999999329447746,
+                           "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
                            "model" : "res/models/pillar/pillar.obj",
                            "opacity" : 1.0,
@@ -4438,7 +4438,7 @@
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
-                           "depthScale" : 0.029999999329447746,
+                           "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
                            "model" : "res/models/pillar/pillar.obj",
                            "opacity" : 1.0,
@@ -4548,7 +4548,7 @@
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
-                           "depthScale" : 0.029999999329447746,
+                           "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
                            "model" : "res/models/pillar/pillar.obj",
                            "opacity" : 1.0,
@@ -4824,7 +4824,7 @@
                         "object" : {
                            "castShadows" : true,
                            "culled" : true,
-                           "depthScale" : 0.029999999329447746,
+                           "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
                            "model" : "res/models/pillar/pillar.obj",
                            "opacity" : 1.0,
@@ -7269,6 +7269,88 @@
                      }
                   },
                   "type" : 1
+               },
+               {
+                  "id" : 316,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 10.0, 10.0, 10.0 ],
+                        "translation" : [ 6.5, -0.0, -5.6999998092651367 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 10.0, 10.0, 10.0 ],
+                        "translation" : [ 6.5, -0.0, -5.6999998092651367 ]
+                     },
+                     "mesh" : {
+                        "id" : 317,
+                        "object" : {
+                           "castShadows" : true,
+                           "culled" : true,
+                           "depthScale" : 0.039999999105930328,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/ground/ground.obj",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 18.0,
+                           "texTileY" : 18.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "brickGround2",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 318,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 2.0, 1.0, 1.2999999523162842 ],
+                        "translation" : [ 2.5, 0.0, -0.05000000074505806 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 2.0, 1.0, 1.2999999523162842 ],
+                        "translation" : [ 2.5, 0.0, -0.05000000074505806 ]
+                     },
+                     "mesh" : {
+                        "id" : 319,
+                        "object" : {
+                           "castShadows" : true,
+                           "culled" : true,
+                           "depthScale" : 0.035000000149011612,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/ground/ground.obj",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 4.0,
+                           "texTileY" : 1.968000054359436,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "brickGround3",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
                }
             ],
             "localLastTransformData" : {
@@ -7294,7 +7376,7 @@
          "type" : 1
       },
       "skybox" : {
-         "id" : 316,
+         "id" : 320,
          "object" : {
             "faces" : [
                "res/skybox/test/right.jpg",

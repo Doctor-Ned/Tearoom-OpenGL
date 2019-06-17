@@ -48,7 +48,7 @@ protected:
 	float opacity = 1.0f;
 	float uiScale = 1.0f;
 	float emissiveFactor = 1.0f;
-	float depthScale = 0.03f;
+	float depthScale = 0.00f;
 	float texTileX = 1.0f;
 	float texTileY = 1.0f;
 	Mesh() : Mesh(STNone) {}
