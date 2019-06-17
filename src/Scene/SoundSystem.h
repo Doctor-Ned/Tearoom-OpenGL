@@ -1,7 +1,6 @@
 #ifndef SOUND_SYSTEM_H
 #define SOUND_SYSTEM_H
-#include "AL/al.h"
-#include "AL/alc.h"
+#include "SFML/Audio.hpp"
 #include <vector>
 #include <map>
 
