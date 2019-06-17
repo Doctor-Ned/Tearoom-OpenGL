@@ -1,21 +1,19 @@
 #ifndef SOUND_SYSTEM_H
 #define SOUND_SYSTEM_H
-#include "irrKlang.h"
+#include "SFML/Audio.hpp"
 #include <vector>
 #include <map>
 
-class SoundSystem
-{
+class SoundSystem {
 private:
-	irrklang::ISoundEngine* irrKlangEngine;
-	std::map<std::string, irrklang::ISoundSource*> soundsMap;
 	SoundSystem();
 	~SoundSystem();
+	std::map<std::string, std::string> simpleNamesToFilesMap;
 public:
 	static SoundSystem* getInstance();
-	static irrklang::ISoundEngine* getEngine();
-	static irrklang::ISoundSource* getSound(std::string name);
 	static void loadSounds();
+	static sf::Sound *getSound(const std::string& file);
+	static sf::Music *getMusic(const std::string& file);
 };
 
 #endif

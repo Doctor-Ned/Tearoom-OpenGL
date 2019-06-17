@@ -8,46 +8,16 @@ set(FREETYPE_INCLUDE_DIRS "${THIRDPARTY_DIR}/include")
 set(FREETYPE_LIBRARY "${FREETYPE_DIR}/freetype.lib")
 find_package(Freetype REQUIRED)
 
-# irrKlang
-set(IRRKLANG_DIR "${THIRDPARTY_DIR}/irrKlang-1.6.0")
+# OpenAL
+set(OPENAL_DIR "${THIRDPARTY_DIR}/openal")
+set(OPENAL_INCLUDE_DIR "${OPENAL_DIR}/include")
 
-FIND_PATH( IRRKLANG_INCLUDE_DIR NAMES irrKlang.h PATHS
-		   "${IRRKLANG_DIR}/include")
+include_directories("${OPENAL_INCLUDE_DIR}")
+#add_subdirectory("${OPENAL_DIR}")
 
-if(WIN32)
-	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-		MESSAGE(STATUS "Using MSVC!")
-		FIND_LIBRARY( IRRKLANG_LIBRARY NAMES irrKlang PATHS
-			"${THIRDPARTY_DIR}/irrKlang-1.6.0/lib/Win32-visualStudio")
-			SET(IRRCLANG_LIBRARY "${THIRDPARTY_DIR}/irrKlang-1.6.0/lib/Win32-visualStudio/irrKlang.lib")
-	elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-		MESSAGE(STATUS "Using GCC!")
-		FIND_LIBRARY( IRRKLANG_LIBRARY NAMES libirrKlang.a PATHS
-			"${THIRDPARTY_DIR}/irrKlang-1.6.0/lib/Win32-gcc")
-			SET(IRRCLANG_LIBRARY "${THIRDPARTY_DIR}/irrKlang-1.6.0/lib/Win32-gcc/libirrKlang.a")
-	endif()
-elseif(APPLE)
-	FIND_LIBRARY( IRRKLANG_LIBRARY NAMES libirrklang.dylib PATHS
-		"${THIRDPARTY_DIR}/irrKlang-1.6.0/bin/macosx-gcc")
-elseif(UNIX AND NOT APPLE)	
-	FIND_LIBRARY( IRRKLANG_LIBRARY NAMES IrrKlang PATHS
-			"${THIRDPARTY_DIR}/irrKlang-1.6.0/bin/linux-gcc") 
-endif()
-
-SET(IRRKLANG_FOUND "NO")
-IF(IRRKLANG_LIBRARY AND IRRKLANG_INCLUDE_DIR)
-	SET(IRRKLANG_FOUND "YES")
-	SET(IRRKLANG_INCLUDE_DIRS "${THIRDPARTY_DIR}/irrKlang-1.6.0/include")
-ENDIF(IRRKLANG_LIBRARY AND IRRKLANG_INCLUDE_DIR)
-
-if(IRRKLANG_FOUND)
-	MESSAGE(STATUS "IrrKlang Found!")
-	
-	MESSAGE(STATUS "IRRKLANG_LIBRARY = ${IRRKLANG_LIBRARY}")
-	MESSAGE(STATUS "IRRKLANG_INCLUDE_DIR = ${IRRKLANG_INCLUDE_DIR}")
-else()
-	MESSAGE(STATUS "IrrKlang NOT Found!")
-endif()
+# SFML
+set(SFML_DIR "${THIRDPARTY_DIR}/sfml")
+add_subdirectory("${SFML_DIR}")
 
 # assimp
 find_library(ASSIMP_LIBRARY "assimp" "/usr/lib" "/usr/local/lib")
