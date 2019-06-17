@@ -124,16 +124,18 @@ void Picking::initialize() {
 	photoButton->setOpacity(0.0f);
 
 	itemsButton->addClickCallback([this]() {
-		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
+		auto sound = SoundSystem::getSound("clickSound");
+		sound->setVolume(0.15f);
+		sound->play();
 		letterInventoryCanvas->setActive(false);
         photosInventoryCanvas->setActive(false);
 		currentCanvas = itemsInventoryCanvas;
 		showInventoryUi();
 	});
 	letterButton->addClickCallback([this]() {
-		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
+		auto sound = SoundSystem::getSound("clickSound");
+		sound->setVolume(0.15f);
+		sound->play();
 		itemsInventoryCanvas->setActive(false);
 		photosInventoryCanvas->setActive(false);
 		currentCanvas = letterInventoryCanvas;
@@ -141,8 +143,9 @@ void Picking::initialize() {
 
 	});
 	photoButton->addClickCallback([this]() {
-		SoundSystem::getSound("clickSound")->setDefaultVolume(0.15f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clickSound"));
+		auto sound = SoundSystem::getSound("clickSound");
+		sound->setVolume(0.15f);
+		sound->play();
 		letterInventoryCanvas->setActive(false);
 		itemsInventoryCanvas->setActive(false);
 
@@ -264,8 +267,9 @@ void Picking::setButtonCallbackBody(CollectableObject *collectable) {
 	}
 	previewCanvas->addChild(collectable->getPreview());
 	previewCanvas->setActive(true);
-	SoundSystem::getSound("previewSound")->setDefaultVolume(0.80f);
-	SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+	auto sound = SoundSystem::getSound("previewSound");
+	sound->setVolume(0.80f);
+	sound->play();
 }
 
 void Picking::hideInventoryUi() {
@@ -297,8 +301,9 @@ void Picking::hidePreview() {
 }
 
 void Picking::showPreview() {
-	SoundSystem::getSound("previewSound")->setDefaultVolume(0.15f);
-	SoundSystem::getEngine()->play2D(SoundSystem::getSound("previewSound"));
+	auto sound = SoundSystem::getSound("previewSound");
+	sound->setVolume(0.15f);
+	sound->play();
 	previewCanvas->setActive(true);
 }
 

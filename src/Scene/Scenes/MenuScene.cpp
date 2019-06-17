@@ -14,46 +14,41 @@ MenuScene::MenuScene() {
 	optionsScene = new OptionsScene(this);
 	UiColorPlane *background = new UiColorPlane(MENU_BACKGROUND_COLOR, glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
 	UiTextButton *miszukScene = new UiTextButton(glm::vec2(UI_REF_CEN_X, 3 * UI_REF_HEIGHT / 9.0f), "Miszuk scene");
-	miszukScene->addClickCallback([]()
-	{	SoundSystem::getSound("bow")->setDefaultVolume(0.05f);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+	miszukScene->addClickCallback([]() {
+		SoundSystem::getSound("bow")->play();
 		GameManager::getInstance()->setCurrentScene(new MiszukScene());
 	});
 	UiTextButton *newTestScene = new UiTextButton(glm::vec2(UI_REF_CEN_X, 4 * UI_REF_HEIGHT / 9.0f), "New test scene");
-	newTestScene->addClickCallback([]()
-	{
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+	newTestScene->addClickCallback([]() {
+		SoundSystem::getSound("bow")->play();
 		GameManager::getInstance()->setCurrentScene(new TestScene());
 	});
 	UiTextButton *loadTestScene = new UiTextButton(glm::vec2(UI_REF_CEN_X, 5 * UI_REF_HEIGHT / 9.0f), "Load test scene");
 	loadTestScene->addClickCallback([this]() {
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+		SoundSystem::getSound("bow")->play();
 		Scene *scene = Serializer::getInstance()->loadScene("test");
-		if(scene != nullptr) {
+		if (scene != nullptr) {
 			gameManager->setCurrentScene(scene);
 		}
 	});
 	UiTextButton *editorScene = new UiTextButton(glm::vec2(UI_REF_CEN_X, 6 * UI_REF_HEIGHT / 9.0f), "Editor scene");
-	editorScene->addClickCallback([]()
-	{
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
+	editorScene->addClickCallback([]() {
+		SoundSystem::getSound("bow")->play();
 		GameManager::getInstance()->setCurrentScene(new EditorScene());
 	});
 	UiTextButton *options = new UiTextButton(glm::vec2(UI_REF_CEN_X, 7 * UI_REF_HEIGHT / 9.0f), "Options");
-	options->addClickCallback([this]()
-	{
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow")); 
+	options->addClickCallback([this]() {
+		SoundSystem::getSound("bow")->play();
 		showOptions();
 	});
 	UiTextButton *quit = new UiTextButton(glm::vec2(UI_REF_CEN_X, 8 * UI_REF_HEIGHT / 9.0f), "Quit");
 	quit->addClickCallback([]() {GameManager::getInstance()->quit(); });
 
 	UiTextButton *menuPreview = new UiTextButton(glm::vec2(UI_REF_CEN_X * 1.7, 8 * UI_REF_HEIGHT / 9.0f), "Menu Preview");
-    menuPreview->addClickCallback([this]()
-    {
-        SoundSystem::getEngine()->play2D(SoundSystem::getSound("bow"));
-        GameManager::getInstance()->setCurrentScene(new MenuPreview());
-    });
+	menuPreview->addClickCallback([this]() {
+		SoundSystem::getSound("bow")->play();
+		GameManager::getInstance()->setCurrentScene(new MenuPreview());
+	});
 	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
 	rootUiElement->addChild(background);
 	rootUiElement->addChild(engineLogo);
@@ -70,7 +65,7 @@ MenuScene::MenuScene() {
 }
 
 void MenuScene::render() {
-	if(showingOptions) {
+	if (showingOptions) {
 		optionsScene->render();
 	} else {
 		Scene::render();
@@ -78,7 +73,7 @@ void MenuScene::render() {
 }
 
 void MenuScene::renderUi() {
-	if(showingOptions) {
+	if (showingOptions) {
 		optionsScene->renderUi();
 	} else {
 		Scene::renderUi();

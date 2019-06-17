@@ -4,18 +4,16 @@
 #include <vector>
 #include <map>
 
-class SoundSystem
-{
+class SoundSystem {
 private:
-	ALCdevice *device;
-	std::map<std::string, ALuint> soundsMap;
 	SoundSystem();
 	~SoundSystem();
+	std::map<std::string, std::string> simpleNamesToFilesMap;
 public:
 	static SoundSystem* getInstance();
-	static irrklang::ISoundEngine* getEngine();
-	static irrklang::ISoundSource* getSound(std::string name);
 	static void loadSounds();
+	static sf::Sound *getSound(const std::string& file);
+	static sf::Music *getMusic(const std::string& file);
 };
 
 #endif

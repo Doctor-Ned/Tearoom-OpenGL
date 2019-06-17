@@ -1,62 +1,57 @@
 #include "Scene/SoundSystem.h"
-#include <iostream>
 #include <filesystem>
+#include "Global.h"
+
 namespace fs = std::experimental::filesystem;
 
-SoundSystem::SoundSystem()
-{
-	irrKlangEngine = irrklang::createIrrKlangDevice();
-	if (!irrKlangEngine)
-	{
-		std::cout << "Sound Engine setup error" << std::endl;
-	}
+SoundSystem::SoundSystem() {
+
 }
 
-SoundSystem::~SoundSystem()
-{
-	irrKlangEngine->drop();
+SoundSystem::~SoundSystem() {
+
 }
 
-SoundSystem* SoundSystem::getInstance()
-{
+SoundSystem* SoundSystem::getInstance() {
 	static SoundSystem* soundSys;
-	if(!soundSys)
-	{
+	if (!soundSys) {
 		soundSys = new SoundSystem();
 	}
 	return soundSys;
 }
 
-irrklang::ISoundEngine* SoundSystem::getEngine()
-{
-	return getInstance()->irrKlangEngine;
+void SoundSystem::loadSounds() {
+	SoundSystem *ss = getInstance();
+	for (auto it : fs::recursive_directory_iterator("res\\sounds")) {
+		std::string fn = it.path().filename().u8string();
+		if (Global::getExtension(fn) == "wav" || Global::getExtension(fn) == "ogg") {
+			std::string noext = fn.substr(0, fn.find_last_of('.'));
+			ss->simpleNamesToFilesMap.emplace(noext, "res\\sounds\\" + fn);
+		}
+	}
+	sf::Music *music = getMusic("sao-meo-loop");
+	music->setLoop(true);
+	music->setVolume(0.2f);
+	music->play();
 }
 
-irrklang::ISoundSource* SoundSystem::getSound(std::string name)
-{
-	return getInstance()->soundsMap.at(name);
+sf::Music *SoundSystem::getMusic(const std::string& file) {
+	sf::Music *music = new sf::Music();
+	if (!music->openFromFile(getInstance()->simpleNamesToFilesMap[file])) {
+		delete music;
+		return nullptr;
+	}
+	return music;
 }
 
-void SoundSystem::loadSounds()
-{
-	fs::path currentPath = fs::current_path();
-	fs::path srcPath;
-	for (auto& it : currentPath)
-	{
-		srcPath /= it;
-		if (it == "src")
-			break;
+sf::Sound *SoundSystem::getSound(const std::string& file) {
+	sf::Sound *sound = new sf::Sound();
+	sf::SoundBuffer *buffer = new sf::SoundBuffer();
+	if (!buffer->loadFromFile(getInstance()->simpleNamesToFilesMap[file])) {
+		delete buffer;
+		delete sound;
+		return nullptr;
 	}
-	srcPath /= "res\\sounds";
-
-	for(auto it : fs::recursive_directory_iterator(srcPath))
-	{
-		std::cout << it.path().filename().stem() << std::endl;
-		getEngine()->addSoundSourceFromFile(it.path().u8string().c_str());
-		getInstance()->soundsMap.emplace(it.path().filename().stem().string(), getEngine()->getSoundSource(it.path().u8string().c_str()));
-	}
-
-	auto sound = getSound("sao-meo-loop");
-	sound->setDefaultVolume(0.2f);
-	getEngine()->play2D(sound, true);
+	sound->setBuffer(*buffer);
+	return sound;
 }

@@ -121,8 +121,9 @@ void IntroCutscene::update(float msec) {
                 } else {
                     elapsed = 0.0f;
                     phase = 6;
-                    SoundSystem::getSound("slidingCutsceneDoor")->setDefaultVolume(0.60f);
-                    SoundSystem::getEngine()->play2D(SoundSystem::getSound("slidingCutsceneDoor"));
+					auto sound = SoundSystem::getSound("slidingCutsceneDoor");
+                	sound->setVolume(0.60f);
+					sound->play();
                 }
                 break;
             case 6:

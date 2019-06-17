@@ -59,8 +59,9 @@ int AnimationController::getDoorID() {
 
 void AnimationController::open() {
 	setComponentActive(false);
-	SoundSystem::getSound("doorOpeningSound")->setDefaultVolume(0.15);
-	SoundSystem::getEngine()->play2D(SoundSystem::getSound("doorOpeningSound"));
+	auto sound = SoundSystem::getSound("doorOpeningSound");
+	sound->setVolume(0.15f);
+	sound->play();
 	anim->setComponentActive(true);
 	anim->play();
 }

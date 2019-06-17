@@ -39,14 +39,16 @@ void SunController::initializeTimeTravel(bool future) {
 	timeTravel = true;
 	startHour = sun->getTime();
 	if (!future) {
-		SoundSystem::getSound("clockSound")->setDefaultVolume(0.15);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clockSound"));
+		auto sound = SoundSystem::getSound("clockSound");
+		sound->setVolume(0.15f);
+		sound->play();
 		endHour = startHour - 1.0f;
 		clockStart = (startHour - 12.0f) * 30.0f;
 		clockEnd = clockStart - 30.0f;
 	} else {
-		SoundSystem::getSound("clockSound")->setDefaultVolume(0.15);
-		SoundSystem::getEngine()->play2D(SoundSystem::getSound("clockSound"));
+		auto sound = SoundSystem::getSound("clockSound");
+		sound->setVolume(0.15f);
+		sound->play();
 		endHour = startHour + 1.0f;
 		clockStart = (startHour - 12.0f) * 30.0f;
 		clockEnd = clockStart + 30.0f;

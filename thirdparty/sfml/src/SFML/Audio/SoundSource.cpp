@@ -72,7 +72,7 @@ void SoundSource::setPitch(float pitch)
 ////////////////////////////////////////////////////////////
 void SoundSource::setVolume(float volume)
 {
-    alCheck(alSourcef(m_source, AL_GAIN, volume * 0.01f));
+    alCheck(alSourcef(m_source, AL_GAIN, volume));
 }
 
 
