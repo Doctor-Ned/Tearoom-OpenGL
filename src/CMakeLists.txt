@@ -16,15 +16,9 @@ file(GLOB_RECURSE SHADER_FILES
 	 
 file(COPY ${FREETYPE_DIR}/freetype.dll
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-	 
-file(COPY ${IRRKLANG_DIR}/ikpMP3.dll
-	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-	 
-file(COPY ${IRRKLANG_DIR}/irrKlang.dll
-	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} Scene/Scenes/MenuPreview.cpp Scene/Scenes/MenuPreview.h Scene/Scripts/IntroCutscene.cpp Scene/Scripts/IntroCutscene.h Scene/Scripts/OutroCutscene.cpp Scene/Scripts/OutroCutscene.h)
+add_executable(${PROJECT_NAME} ${SHADER_FILES} ${HEADER_FILES} ${SOURCE_FILES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # Define the include DIRs
@@ -36,7 +30,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${GLM_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} PUBLIC "${IMGUI_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} PUBLIC "${STB_IMAGE_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} PUBLIC "${FREETYPE_INCLUDE_DIRS}")
-target_include_directories(${PROJECT_NAME} PUBLIC "${IRRKLANG_INCLUDE_DIRS}")
 
 target_link_libraries(${PROJECT_NAME} "${OPENGL_LIBRARY}")
 target_link_libraries(${PROJECT_NAME} "${ASSIMP_LIBRARY}")
@@ -45,7 +38,7 @@ target_link_libraries(${PROJECT_NAME} "${GLAD_LIBRARY}"      "${CMAKE_DL_LIBS}")
 target_link_libraries(${PROJECT_NAME} "${IMGUI_LIBRARY}"     "${CMAKE_DL_LIBS}")
 target_link_libraries(${PROJECT_NAME} "${STB_IMAGE_LIBRARY}" "${CMAKE_DL_LIBS}")
 target_link_libraries(${PROJECT_NAME} "${FREETYPE_LIBRARIES}")
-target_link_libraries(${PROJECT_NAME} "${IRRCLANG_LIBRARY}")
+target_link_libraries(${PROJECT_NAME} SFML)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")

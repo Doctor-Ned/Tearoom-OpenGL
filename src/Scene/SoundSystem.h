@@ -1,14 +1,15 @@
 #ifndef SOUND_SYSTEM_H
 #define SOUND_SYSTEM_H
-#include "irrKlang.h"
+#include "AL/al.h"
+#include "AL/alc.h"
 #include <vector>
 #include <map>
 
 class SoundSystem
 {
 private:
-	irrklang::ISoundEngine* irrKlangEngine;
-	std::map<std::string, irrklang::ISoundSource*> soundsMap;
+	ALCdevice *device;
+	std::map<std::string, ALuint> soundsMap;
 	SoundSystem();
 	~SoundSystem();
 public:
