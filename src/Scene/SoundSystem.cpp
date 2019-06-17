@@ -29,10 +29,7 @@ void SoundSystem::loadSounds() {
 			ss->simpleNamesToFilesMap.emplace(noext, "res\\sounds\\" + fn);
 		}
 	}
-	sf::Music *music = getMusic("sao-meo-loop");
-	music->setLoop(true);
-	music->setVolume(0.2f);
-	music->play();
+	restartMusic();
 }
 
 sf::Music *SoundSystem::getMusic(const std::string& file) {
@@ -42,6 +39,18 @@ sf::Music *SoundSystem::getMusic(const std::string& file) {
 		return nullptr;
 	}
 	return music;
+}
+
+void SoundSystem::restartMusic() {
+	SoundSystem *ss = getInstance();
+	if (ss->music == nullptr) {
+		ss->music = getMusic("sao-meo-loop");
+		ss->music->setLoop(true);
+		ss->music->setVolume(0.2f);
+	} else {
+		ss->music->stop();
+	}
+	ss->music->play();
 }
 
 sf::Sound *SoundSystem::getSound(const std::string& file) {

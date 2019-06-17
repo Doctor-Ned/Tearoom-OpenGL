@@ -8,6 +8,7 @@
 #include "MenuScene.h"
 #include "MiszukScene.h"
 #include "Serialization/Serializer.h"
+#include "Scene/SoundSystem.h"
 
 MenuPreview::MenuPreview() {
     UiPlane*  menuBackground = new UiPlane("res/textures/menuSideBar.PNG", glm::vec2(-1.0f, -10.0f), glm::vec2(380.0f, 800.0f), TopLeft);
@@ -172,6 +173,7 @@ void MenuPreview::update(double deltaTime) {
         if (transitionPlane->getOpacity() >= 1.0f) {
             GameManager::getInstance()->setCursorLocked(true);
             GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
+			SoundSystem::restartMusic();
         }
     }
 }
