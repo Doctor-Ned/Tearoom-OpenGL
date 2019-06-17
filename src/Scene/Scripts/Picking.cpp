@@ -30,7 +30,7 @@ void Picking::placeInGrid(ItemType itype, UiCanvas* canvas) {
 	int i = 0;
 	for (GraphNode *obj : inventory) {
 		CollectableObject *col = obj->getComponent<CollectableObject>();
-		if (col->getI_type() == itype || (col->getI_type() == DoorKey && itype == NormalItem)) {
+		if (col->getI_type() == itype || (col->getI_type() == NormalItem && itype == Letter)) {
 			if (i >= 8) {
 				col->getIcon()->setPosition(glm::vec2(995.0f + (81.0f * (i - 8)), 664.0f));
 				col->getButton()->setPosition(glm::vec2(995.0f + (81.0f * (i - 8)), 664.0f));
@@ -106,7 +106,7 @@ void Picking::initialize() {
 
 	photosInventory = new UiPlane("res/textures/photosChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 	itemsInventory = new UiPlane("res/textures/itemsChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
-	letterInventory = new UiPlane("res/textures/lettersChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
+	letterInventory = new UiPlane("res/textures/loreChosenInventory.PNG", glm::vec2(1285.0f, 580.0f), glm::vec2(390.0f, 300.0f), Right);
 
 	photosInventoryCanvas->addChild(photosInventory);
 	letterInventoryCanvas->addChild(letterInventory);
@@ -115,8 +115,8 @@ void Picking::initialize() {
 
 	//BUTTONS AND THEIR CALLBACKS
 	itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f, 40.0f), Right);
-	letterButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
-	photoButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
+	letterButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
+	photoButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
 	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
 	letterButton->setOpacity(0.0f);
@@ -154,7 +154,6 @@ void Picking::initialize() {
     buttonsCanvas->addChild(letterButton);
     buttonsCanvas->addChild(photoButton);
     buttonsCanvas->addChild(descBackground);
-
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
@@ -281,7 +280,7 @@ void Picking::showInventoryUi() {
 		placeInGrid(Letter, letterInventoryCanvas);
 	}
 	if (itemsInventoryCanvas->isActive()) {
-		placeInGrid(NormalItem, itemsInventoryCanvas);
+		placeInGrid(DoorKey, itemsInventoryCanvas);
 	}
 	if (photosInventoryCanvas->isActive()) {
 		placeInGrid(Photo, photosInventoryCanvas);
