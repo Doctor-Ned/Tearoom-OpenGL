@@ -5,6 +5,8 @@
 #include <map>
 //#include "Scenes/MenuScene.h"
 
+#define BLOOM_TEXTURES 4
+
 class MenuScene;
 class Scene;
 class Camera;
@@ -29,10 +31,17 @@ struct MultitextureFramebuffer {
 	unsigned int textureAmount = 0;
 };
 
+struct BloomFramebuffer {
+	Framebuffer rescaler;
+	Framebuffer horizontal;
+	Framebuffer output;
+	GLuint width;
+	GLuint height;
+};
+
 struct GameFramebuffers {
 	MultitextureFramebuffer main;
-	Framebuffer ping;
-	Framebuffer pong;
+	BloomFramebuffer bloom[BLOOM_TEXTURES];
 };
 
 class GameManager {
@@ -88,8 +97,9 @@ public:
 	Camera* getCurrentCamera();
 	Camera *getCurrentNonEditorCamera();
 	static GLuint createDepthRenderbuffer(GLsizei width, GLsizei height);
-	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+	static Framebuffer createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GLenum filter = GL_LINEAR);
 	static Framebuffer createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp = true, GLenum clampMode = GL_CLAMP_TO_EDGE, glm::vec4 border = glm::vec4(0.0f,0.0f,0.0f,0.0f));
+	static Framebuffer createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLenum filter);
 	static SpecialFramebuffer createSpecialFramebuffer(GLenum textureTarget, GLfloat filter, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod = GL_CLAMP_TO_EDGE);
 	static MultitextureFramebuffer createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, int textureCount);
 	bool drawColliders = false;
@@ -113,7 +123,7 @@ protected:
 	GLFWwindow *window;
 	float windowHeight, windowWidth, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	float fov = 65.0f;
-	Framebuffer pingPongFramebuffers[2];
+	BloomFramebuffer bloomFramebuffers[BLOOM_TEXTURES];
 	MultitextureFramebuffer mainFramebuffer;
 	GLuint renderbuffer;
 	GameManager() {}

@@ -198,7 +198,6 @@ public:
 	float minVariance = 0.00002f;
 	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.
 	float blurAmount = 1.0f;
-	int bloomIterations = 30;
 private:
 	LightManager() {}
 	void renderGui() override;

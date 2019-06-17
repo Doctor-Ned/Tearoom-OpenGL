@@ -258,17 +258,18 @@ int main(int argc, char** argv) {
 
 	gameManager->updateWindowSize(videoSettings.windowWidth, videoSettings.windowHeight, screenWidth, screenHeight);
 
+	GameFramebuffers framebuffers = gameManager->getFramebuffers();
+
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
 	postProcessingShader->use();
 	postProcessingShader->setInt("scene", 0);
-	postProcessingShader->setInt("bloomBlur", 1);
+	for (int i = 0; i < BLOOM_TEXTURES; i++) {
+		postProcessingShader->setInt(("bloom[" + std::to_string(i) + "]").c_str(), i + 1);
+	}
 	postProcessingShader->setWindowSize(videoSettings.windowWidth, videoSettings.windowHeight);
 	postProcessingShader->setVec2("screenSize", glm::vec2(videoSettings.windowWidth, videoSettings.windowHeight));
 
 	Shader *blurShader = assetManager->getShader(STBlur);
-
-	GameFramebuffers framebuffers = gameManager->getFramebuffers();
-
 
 	UiColorPlane *fpsPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.9f), glm::vec2(0.0f, 0.0f), glm::vec2(0.08f * UI_REF_WIDTH, 0.04f * UI_REF_HEIGHT), TopLeft);
 	glm::vec2 planeCenter = fpsPlane->getPosition();
@@ -279,7 +280,7 @@ int main(int argc, char** argv) {
 
 	fpsPlane->updateDrawData();
 
-	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType());
+	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture);
 
 	LightManager *lightManager = LightManager::getInstance();
 
@@ -315,27 +316,34 @@ int main(int argc, char** argv) {
 		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
 		Profiler::getInstance()->addMeasure("Render calculations");
-		bool horizontal = true, first_iteration = true;
+		
+		glDisable(GL_DEPTH_TEST);
+
 		if (postProcessingShader->isBloomEnabled()) {
-			// apply two-pass gaussian blur to bright fragments
-			blurShader->use();
-			for (unsigned int i = 0; i < lightManager->bloomIterations; i++) {
-				if (!horizontal) {
-					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.ping.fbo);
-				}
-				else {
-					glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.pong.fbo);
-				}
-				blurShader->setBool("horizontal", horizontal);
-				glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffers.main.textures[1] : (horizontal ? framebuffers.ping.texture : framebuffers.pong.texture));
+			for (int i = 0; i < BLOOM_TEXTURES; i++) {
+				screenTextShader->use();
+				BloomFramebuffer bl = framebuffers.bloom[i];
+				glViewport(0, 0, bl.width, bl.height);
+				glBindFramebuffer(GL_FRAMEBUFFER, bl.rescaler.fbo);
+				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+				glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[1]);
 				dat.render();
-				horizontal = !horizontal;
-				if (first_iteration) {
-					first_iteration = false;
-				}
+				blurShader->use();
+				glBindFramebuffer(GL_FRAMEBUFFER, bl.horizontal.fbo);
+				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+				glBindTexture(GL_TEXTURE_2D, bl.rescaler.texture);
+				blurShader->setBool("horizontal", true);
+				dat.render();
+				glBindFramebuffer(GL_FRAMEBUFFER, bl.output.fbo);
+				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+				glBindTexture(GL_TEXTURE_2D, bl.horizontal.texture);
+				blurShader->setBool("horizontal", false);
+				dat.render();
 			}
 		}
-		glDisable(GL_DEPTH_TEST);
 		// Render to the default framebuffer (screen) with post-processing
 		Profiler::getInstance()->startCountingTime();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -344,11 +352,9 @@ int main(int argc, char** argv) {
 		postProcessingShader->use();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[0]);
-		glActiveTexture(GL_TEXTURE1);
-		if (horizontal) {
-			glBindTexture(GL_TEXTURE_2D, framebuffers.ping.texture);
-		} else {
-			glBindTexture(GL_TEXTURE_2D, framebuffers.pong.texture);
+		for (int i = 0; i < BLOOM_TEXTURES; i++) {
+			glActiveTexture(GL_TEXTURE1 + i);
+			glBindTexture(GL_TEXTURE_2D, framebuffers.bloom[i].output.texture);
 		}
 		dat.render();
 		Profiler::getInstance()->addMeasure("PostProcessing");

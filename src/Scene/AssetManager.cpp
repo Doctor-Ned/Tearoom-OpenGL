@@ -192,6 +192,7 @@ void AssetManager::setup() {
 	shaders.emplace(STPostProcessing, ppShader);
 	shaders.emplace(STLight, new Shader("lightVS.glsl", "lightFS.glsl"));
 	shaders.emplace(STBlur, new Shader("Post/blurVS.glsl", "Post/blurFS.glsl"));
+	shaders.emplace(STScreenTexture, new Shader("screenTextureVS.glsl", "screenTextureFS.glsl"));
 	LightManager *lightManager = LightManager::getInstance();
 	uboLights = new UboLights(0.00f, 0, 0, 0, lightManager->enableLights, lightManager->enableShadowCasting, lightManager->lightBleedingReduction, lightManager->minVariance, lightManager->pointShadowSamples, nullptr, nullptr, nullptr);
 	uboTextureColor = new UboTextureColor(false, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
