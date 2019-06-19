@@ -407,6 +407,13 @@ bool Picking::getShowHint() {
 void Picking::renderGui() {
 	Component::renderGui();
 	if (active) {
+		float dist = distance;
+
+		ImGui::SliderFloat("Picking distance", &dist, 0.1f, 2.0f);
+		if(dist != distance)
+		{
+			distance = dist;
+		}
 		bool hint = showHint;
 		ImGui::Checkbox("Show hint", &hint);
 		if (hint != showHint) {
@@ -433,6 +440,7 @@ void Picking::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	camera = dynamic_cast<Camera*>(serializer->deserialize(root["camera"]).object);
 	scene = dynamic_cast<Scene*>(serializer->deserialize(root["scene"]).object);
+	distance = root.get("distance", distance).asFloat();
 	initialize();
 }
 Scene *Picking::getScene() const {
