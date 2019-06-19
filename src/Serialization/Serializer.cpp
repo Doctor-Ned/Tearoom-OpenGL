@@ -45,6 +45,7 @@
 #include "Scene/Scripts/CollectableWatch.h"
 #include "Scene/Scripts/IntroCutscene.h"
 #include "Scene/Scripts/OutroCutscene.h"
+#include "Scene/Components/SoundSource.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -329,6 +330,9 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 			break;
 		case SOutroCutscene:
 			deserializeAndIdentify(pointer, data, new OutroCutscene());
+			break;
+		case SSoundSource:
+			deserializeAndIdentify(pointer, data, new SoundSource());
 			break;
 	}
 	return pointer;

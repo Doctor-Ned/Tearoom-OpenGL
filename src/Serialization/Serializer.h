@@ -30,12 +30,12 @@ public:
 	Json::Value serialize(Serializable *ser);
 	Json::Value serialize(SerializablePointer ser);
 	SerializablePointer deserialize(Json::Value &root);
+	void loadScenes();
 private:
 	void deserializeAndIdentify(SerializablePointer &pointer, Json::Value &data, Serializable *serializable);
 	int idCounter;
 	std::map<Serializable*, int> ids;
 	Scene *deserializeScene(Json::Value &root);
-	void loadScenes();
 	Serializer() = default;
 	const std::string SCENES_DIR = "Scenes";
 	const std::string FORMAT = ".scene";

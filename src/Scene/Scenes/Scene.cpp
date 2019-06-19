@@ -15,10 +15,17 @@
 #include "Scene/Components/Camera.h"
 #include "EditorScene.h"
 #include "Profiler.h"
+#include "Scene/SoundSystem.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
 	if (camera != nullptr) {
+		glm::vec3 pos = camera->getGameObject()->getPosition();
+		sf::Listener::setPosition(pos.x, pos.y, pos.z);
+		glm::vec3 front = camera->getGameObject()->getFrontVector();
+		sf::Listener::setDirection(front.x, front.y, front.z);
+		glm::vec3 up = camera->getGameObject()->getUpVector();
+		sf::Listener::setUpVector(up.x, up.y, up.z);
 		rootNode->updateDrawData();
 		lightManager->renderAndUpdate([this](Shader *shader) {
 			renderNodesUsingRenderMap(shader, true);

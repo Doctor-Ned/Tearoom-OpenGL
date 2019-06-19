@@ -12,6 +12,15 @@ SoundSystem::~SoundSystem() {
 
 }
 
+std::vector<std::string> SoundSystem::getSoundFiles() {
+	SoundSystem *ss = getInstance();
+	std::vector<std::string> result;
+	for (auto pair : ss->simpleNamesToFilesMap) {
+		result.push_back(pair.first);
+	}
+	return result;
+}
+
 SoundSystem* SoundSystem::getInstance() {
 	static SoundSystem* soundSys;
 	if (!soundSys) {
@@ -26,7 +35,9 @@ void SoundSystem::loadSounds() {
 		std::string fn = it.path().filename().u8string();
 		if (Global::getExtension(fn) == "wav" || Global::getExtension(fn) == "ogg") {
 			std::string noext = fn.substr(0, fn.find_last_of('.'));
-			ss->simpleNamesToFilesMap.emplace(noext, "res\\sounds\\" + fn);
+			if (ss->simpleNamesToFilesMap.find(noext) == ss->simpleNamesToFilesMap.end()) {
+				ss->simpleNamesToFilesMap.emplace(noext, "res\\sounds\\" + fn);
+			}
 		}
 	}
 	restartMusic();
@@ -46,7 +57,7 @@ void SoundSystem::restartMusic() {
 	if (ss->music == nullptr) {
 		ss->music = getMusic("sao-meo-loop");
 		ss->music->setLoop(true);
-		ss->music->setVolume(0.2f);
+		ss->music->setVolume(0.15f);
 	} else {
 		ss->music->stop();
 	}

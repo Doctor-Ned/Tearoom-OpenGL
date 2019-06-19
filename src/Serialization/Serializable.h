@@ -62,7 +62,8 @@ enum SerializableType {
 	SSunTimeActivator,
 	SCollectableWatch,
 	SIntroCutscene,
-	SOutroCutscene
+	SOutroCutscene,
+	SSoundSource
 };
 
 const std::string SerializableTypeNames[] = {
@@ -124,7 +125,8 @@ const std::string SerializableTypeNames[] = {
 	"SSunTimeActivator",
 	"SCollectableWatch",
 	"SIntroCutscene",
-	"SOutroCutscene"
+	"SOutroCutscene",
+	"SSoundSource"
 };
 
 class Serializable {

@@ -47,7 +47,7 @@ public:
 	bool typeCreationExists(SerializableType type);
 	void deleteTypeCreation(TypeCreation *typeCreation);
 	bool doesAnyChildContain(GraphNode *node, GraphNode *target);
-	void loadTexturesModels();
+	void loadResources();
 	void setEditedScene(Scene *scene, bool deletePrevious = true);
 	void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) override;
@@ -69,14 +69,15 @@ public:
 	Camera *editorCamera, *playerCamera = nullptr;
 	UiText *cameraText;
 	SerializableType creatableTypes[2] = { SGraphNode, SSkybox };
-	SerializableType creatableComponents[22] = { SKeyFrameAnimation, SSkeletalAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
-		SDirLightComp, SSpotLightComp, SPointLightComp, SSun, SSunController, SColumnMoving, SAnimTimeSaver, SSunTimeActivator, SCollectableWatch, SIntroCutscene, SOutroCutscene};
+	SerializableType creatableComponents[23] = { SKeyFrameAnimation, SSkeletalAnimation, SAnimationController, SBillboard, SBoxCollider, SSphereCollider, SPhysicalObject, SRotatingObject, SCollectableObject, SPicking, SPlayerMovement,
+		SDirLightComp, SSpotLightComp, SPointLightComp, SSun, SSunController, SColumnMoving, SAnimTimeSaver, SSunTimeActivator, SCollectableWatch, SIntroCutscene, SOutroCutscene, SSoundSource};
 	SerializableType creatableMeshes[17] = { SModel, SAnimatedModel, SMeshBox, SMeshColorBox, SMeshColorCone, SMeshColorCylinder, SMeshColorPlane, SMeshColorSphere, SMeshColorTorus, SMeshCone, SMeshCylinder, SMeshPlane, SMeshRefBox, SMeshRefSphere,
 	SMeshSphere, SMeshTorus, SMeshText};
 	bool showSaveDialog = false, showLoadDialog = false;
 	std::function<void()> confirmationDialogCallback = nullptr;
 	std::function<void(GraphNode*)> nodeSelectionCallback = nullptr;
 	std::function<void(Texture)> textureSelectionCallback = nullptr;
+	std::function<void(std::string)> soundSelectionCallback = nullptr;
 	std::function<void(ShaderType)> shaderTypeSelectionCallback = nullptr;
 	std::function<void(SerializableType)> componentSelectionCallback = nullptr;
 	std::function<void(SerializableType)> meshSelectionCallback = nullptr;
@@ -88,6 +89,7 @@ public:
 	friend class Serializer;
 	std::vector<std::string> textures;
 	std::vector<std::string> models;
+	std::vector<std::string> sounds;
 	TransformData baseData;
 };
 

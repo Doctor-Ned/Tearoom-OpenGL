@@ -39,6 +39,8 @@
 #include "Scene/Scripts/CollectableWatch.h"
 #include "Scene/Scripts/IntroCutscene.h"
 #include "Scene/Scripts/OutroCutscene.h"
+#include "Scene/SoundSystem.h"
+#include "Scene/Components/SoundSource.h"
 
 EditorScene::EditorScene() {
 	baseData.translation = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -55,7 +57,7 @@ EditorScene::EditorScene() {
 	cameraText = new UiText(glm::vec2(0.0f, UI_REF_HEIGHT), glm::vec2(UI_REF_WIDTH, 80.0f), "-------------", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight, BottomLeft);
 	rootUiElement->addChild(cameraText);
 	setEditorCamera(useEditorCamera);
-	loadTexturesModels();
+	loadResources();
 	reinitializeRenderMap();
 }
 
@@ -82,9 +84,6 @@ void EditorScene::renderUi() {
 	if (meshSelectionCallback != nullptr && ImGui::Button("Stop selecting mesh")) {
 		meshSelectionCallback = nullptr;
 	}
-	if (nodeSelectionCallback != nullptr && ImGui::Button("Stop selecting graph node")) {
-		nodeSelectionCallback = nullptr;
-	}
 	if (textureSelectionCallback != nullptr && ImGui::Button("Stop selecting texture")) {
 		textureSelectionCallback = nullptr;
 	}
@@ -96,6 +95,9 @@ void EditorScene::renderUi() {
 	}
 	if (prefabSelectionCallback != nullptr && ImGui::Button("Stop selecting prefab")) {
 		prefabSelectionCallback = nullptr;
+	}
+	if (soundSelectionCallback != nullptr && ImGui::Button("Stop selecting sound")) {
+		soundSelectionCallback = nullptr;
 	}
 
 	ImGui::Checkbox("Draw colliders", &gameManager->drawColliders);
@@ -135,7 +137,8 @@ void EditorScene::renderUi() {
 	if (confirmationDialogCallback == nullptr && ImGui::Button("Reload resources")) {
 		confirmationDialogCallback = [this]() {
 			assetManager->reloadResources();
-			loadTexturesModels();
+			SoundSystem::loadSounds();
+			loadResources();
 		};
 	}
 	if (editedScene != nullptr) {
@@ -913,6 +916,33 @@ void EditorScene::renderUi() {
 				typeCreation->creationCallback(new OutroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 				break;
+			case SSoundSource:
+			{
+				static std::string sound;
+				if (typeCreation->typeCreationStarted) {
+					sound = "";
+				}
+				std::string title = "Sound: ";
+				if (sound.length() == 0) {
+					title += "-";
+				} else {
+					title += sound;
+				}
+				ImGui::Text(title.c_str());
+				if (soundSelectionCallback == nullptr) {
+					ImGui::SameLine();
+					if (ImGui::Button("Change...")) {
+						soundSelectionCallback = [&](std::string snd) {
+							sound = snd;
+						};
+					}
+				}
+				if (sound.length() > 0 && ImGui::Button("Create")) {
+					typeCreation->creationCallback(new SoundSource(sound, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
+			break;
 		}
 		typeCreation->typeCreationStarted = false;
 		if (ImGui::Button("CANCEL")) {
@@ -990,6 +1020,22 @@ void EditorScene::renderUi() {
 		ImGui::End();
 	}
 
+	if (soundSelectionCallback != nullptr) {
+		ImGui::Begin("SELECT SOUND", nullptr, 64);
+		for (auto &sound : sounds) {
+			ImGui::PushID(&sound);
+			if (ImGui::Button(sound.c_str())) {
+				soundSelectionCallback(sound);
+				soundSelectionCallback = nullptr;
+			}
+			ImGui::PopID();
+		}
+		if (ImGui::Button("CANCEL")) {
+			soundSelectionCallback = nullptr;
+		}
+		ImGui::End();
+	}
+
 	if (shaderTypeSelectionCallback != nullptr) {
 		ImGui::Begin("SELECT SHADER TYPE", nullptr, 64);
 		for (int i = 0; i < sizeof(ShaderTypeNames) / sizeof(*ShaderTypeNames); i++) {
@@ -1022,9 +1068,15 @@ void EditorScene::renderUi() {
 	}
 
 	if (showLoadDialog) {
+		static bool loadScenes = true;
+		static std::vector<std::string> scenes;
+		if(loadScenes) {
+			loadScenes = false;
+			serializer->loadScenes();
+			scenes = serializer->getSceneNames();
+		}
 		// flag reference: https://pyimgui.readthedocs.io/en/latest/reference/imgui.html
 		ImGui::Begin("Load a scene from file", nullptr, 64);
-		std::vector<std::string> scenes = serializer->getSceneNames();
 		if (scenes.empty()) {
 			ImGui::Text("No saved scene files detected.");
 		} else {
@@ -1036,12 +1088,14 @@ void EditorScene::renderUi() {
 						setEditedScene(serializer->loadScene(name));
 					};
 					showLoadDialog = false;
+					loadScenes = true;
 				}
 			}
 			ImGui::Unindent();
 		}
 		if (ImGui::Button("CLOSE")) {
 			showLoadDialog = false;
+			loadScenes = true;
 		}
 		ImGui::End();
 	}
@@ -1309,9 +1363,10 @@ bool EditorScene::typeCreationExists(SerializableType type) {
 	return false;
 }
 
-void EditorScene::loadTexturesModels() {
+void EditorScene::loadResources() {
 	textures = assetManager->getTextures();
 	models = assetManager->getModels();
+	sounds = SoundSystem::getSoundFiles();
 }
 
 void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {

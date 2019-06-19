@@ -11,6 +11,7 @@ private:
 	std::map<std::string, std::string> simpleNamesToFilesMap;
 	sf::Music *music = nullptr;
 public:
+	static std::vector<std::string> getSoundFiles();
 	static SoundSystem* getInstance();
 	static void loadSounds();
 	static sf::Sound *getSound(const std::string& file);
