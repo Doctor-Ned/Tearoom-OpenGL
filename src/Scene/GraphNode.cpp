@@ -78,7 +78,7 @@ void GraphNode::update(double timeDiff) {
 	if (!active) {
 		return;
 	}
-	if (mesh || !getComponents<Renderable>().empty()) {
+	if (mesh || getComponent<Renderable>() != nullptr) {
 		OctreeNode::toInsert2.insert(this);
 	}
 	for (Component* component : components) {

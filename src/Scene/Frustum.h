@@ -4,6 +4,7 @@
 #include "Scene/Plane.h"
 #include "Components/SphereCollider.h"
 #include "Components/BoxCollider.h"
+#include "Scene/OctreeNode.h"
 
 class Frustum
 {
@@ -20,6 +21,7 @@ public:
 	bool pointInFrustum(glm::vec3 point);
 	bool sphereInFrustum(SphereCollider* sphere);
 	bool boxInFrustum(BoxCollider* box);
+	bool boxInFrustum(const Box& box);
 };
 #endif
 

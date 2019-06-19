@@ -28,34 +28,26 @@ void OctreeNode::Calculate()
 
 	for (GraphNode* gameObject : gameObjects)
 	{
-		for (int i = 0; i < boxes.size(); i++)
+		auto colliders = gameObject->getComponents<Collider>();
+		if (!colliders.empty()) 
 		{
-			auto colliders = gameObject->getComponents<Collider>();
-			if(colliders.empty())
+			for (int i = 0; i < boxes.size(); i++)
 			{
-				if (containTest(gameObject->worldTransform.getPosition(), boxes[i]))
-				{
-					octList[i].push_back(gameObject);
-					deList.push_back(gameObject);
-					break;
-				}
-			}
-			else
-			{
-				std::vector<bool> collidersAreInBox(colliders.size());
-				for(Collider* collider : colliders)
+				std::vector<bool> collidersAreInBox;
+				for (Collider* collider : colliders)
 				{
 					collidersAreInBox.push_back(CollisionSystem::getInstance()->containTest(boxes[i].minPos, boxes[i].maxPos, collider));
 				}
 				unsigned int colliderInBoxCounter = 0;
-				for(int i = 0; i < collidersAreInBox.size(); i++)
+				for (int i = 0; i < collidersAreInBox.size(); i++)
 				{
-					if(collidersAreInBox[i] == true)
+					if (collidersAreInBox[i] == true)
 					{
 						colliderInBoxCounter++;
 					}
 				}
 				bool canPutIntoChildNode = colliderInBoxCounter == collidersAreInBox.size();
+				collidersAreInBox.clear();
 				if (canPutIntoChildNode)
 				{
 					octList[i].push_back(gameObject);
@@ -197,7 +189,8 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 
 	for(auto& node : nodes)
 	{
-		node.frustumCulling(frustum);
+		if(frustum.boxInFrustum(node.getBox()))
+			node.frustumCulling(frustum);
 	}
 }
 
