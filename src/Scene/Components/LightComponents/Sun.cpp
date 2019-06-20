@@ -118,6 +118,8 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 
 void Sun::recalculateMatrix() {
 	glm::vec4 light1Color = timeToColor(time, true), light2Color = timeToColor(time, false);
+	light1Color.a = 1.0f;
+	light2Color.a = 1.0f;
 	light1->color = light1Color;
 	light2->color = light2Color;
 	dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
