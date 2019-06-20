@@ -52,12 +52,14 @@ public:
     void setButton(UiButton* button);
     UiPlane* getPreview();
     int getDoorID();
-
+	int getPhotoID();
+	void setPhotoID(int ID);
 protected:
 	void renderGui() override;
 	CollectableObject(GraphNode* _gameObject);
 	void initializeUiPlanes();
     int doorID = 0;
+	int photoID;
 	std::string iconResource, previewResource;
 	glm::vec2 iconPos, iconSize, previewPos, previewSize;
     UiPlane* icon = nullptr;

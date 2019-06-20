@@ -60,6 +60,10 @@ Sun* AnimTimeSaver::getSun() {
 	return sun;
 }
 
+int AnimTimeSaver::getID() {
+	return ID;
+}
+
 KeyFrameAnimation* AnimTimeSaver::getAnimation() {
 	return animation;
 }
@@ -94,6 +98,7 @@ Json::Value AnimTimeSaver::serialize(Serializer* serializer) {
 	root["startedPlaying"] = startedPlaying;
 	root["retargetAllowed"] = retargetAllowed;
 	root["disableCollider"] = disableCollider;
+	root["ID"] = ID;
 	return root;
 }
 
@@ -105,6 +110,7 @@ void AnimTimeSaver::deserialize(Json::Value& root, Serializer* serializer) {
 	startedPlaying = root["startedPlaying"].asBool();
 	retargetAllowed = root["retargetAllowed"].asBool();
 	disableCollider = root.get("disableCollider", disableCollider).asBool();
+	ID = root.get("ID", ID).asInt();
 }
 
 AnimTimeSaver::AnimTimeSaver(GraphNode* _gameObject) : Component(_gameObject, "AnimTimeSaver") {

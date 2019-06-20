@@ -14,8 +14,10 @@ protected:
 	bool startedPlaying;
 	bool retargetAllowed;
 	bool disableCollider = false;
+	int ID;
 public:
 	void reset();
+	int getID();
 	Sun *getSun();
 	KeyFrameAnimation *getAnimation();
 	bool getDisableCollider();

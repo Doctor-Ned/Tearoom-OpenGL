@@ -61,6 +61,7 @@ Json::Value CollectableObject::serialize(Serializer* serializer) {
 	root["previewSize"] = DataSerializer::serializeVec2(previewSize);
 	root["desc"] = desc;
 	root["doorID"] = doorID;
+	root["photoID"] = photoID;
 	return root;
 }
 
@@ -78,6 +79,7 @@ void CollectableObject::deserialize(Json::Value& root, Serializer* serializer) {
 	desc = root["desc"].asString();
 	i_type = static_cast<ItemType>(root.get("i_type", 0).asInt());
 	doorID = root.get("doorID", doorID).asInt();
+	photoID = root.get("photoID", photoID).asInt();
 	initializeUiPlanes();
 }
 
@@ -136,6 +138,14 @@ void CollectableObject::renderGui() {
 			}
 		}
 	}
+}
+
+int CollectableObject::getPhotoID() {
+	return photoID;
+}
+
+void CollectableObject::setPhotoID(int ID) {
+	photoID = ID;
 }
 
 void CollectableObject::initializeUiPlanes() {

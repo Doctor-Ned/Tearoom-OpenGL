@@ -13,6 +13,7 @@
 #include "Scene/Components/Camera.h"
 #include "CollectableWatch.h"
 #include "Profiler.h"
+#include "AnimTimeSaver.h"
 
 
 Picking::Picking(GraphNode* _gameObject, Camera* camera, Scene* scene, const std::string& name)
@@ -190,6 +191,7 @@ void Picking::initialize() {
 	GraphNode* firstLetter = new GraphNode(nullptr, scene->getRootNode());
 
 	CollectableObject* colPhoto = new CollectableObject(firstPhoto, Photo, "res/textures/Photos/13thHour.jpg", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Photo from uncle Yoshiro", "res/textures/Photos/13thHour.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+    colPhoto->setPhotoID(1);
 	CollectableObject* colLetter = new CollectableObject(firstLetter, Letter, "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "Letter from uncle Yoshiro", "res/textures/Letter/firstLetterPreview.PNG", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 450.0f));
 	firstPhoto->addComponent(colPhoto);
 	firstLetter->addComponent(colLetter);
@@ -359,6 +361,9 @@ void Picking::update(float msec) {
 
 			if (gameManager->getMouseOnce(GLFW_MOUSE_BUTTON_LEFT)) {
 				anim->play();
+                if(object->getComponent<AnimTimeSaver>()) {
+                    removeUnusedItem(object->getComponent<AnimTimeSaver>()->getID());
+                }
 			}
 		}
 
@@ -396,6 +401,15 @@ void Picking::update(float msec) {
 		}
 	}
 }
+
+void Picking::removeUnusedItem(int ID) {
+    for(int i=0; i<inventory.size();i++) {
+        if(inventory[i]->getComponent<CollectableObject>()->getPhotoID() == ID) {
+            inventory.erase(inventory.begin() + i);
+        }
+    }
+}
+
 void Picking::setShowHint(bool showHint) {
 	this->showHint = showHint;
 }

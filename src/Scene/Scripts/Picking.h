@@ -34,7 +34,8 @@ public:
 	void setShowHint(bool showHint);
 	bool getShowHint();
 private:
-	void renderGui() override;
+    void removeUnusedItem(int ID);
+    void renderGui() override;
 	void initialize();
 	void collect(CollectableObject *collectable);
 	GraphNode *shiningObject = nullptr;
