@@ -171,6 +171,11 @@ void GameManager::setVsync(bool enabled) {
 	}
 }
 
+void GameManager::setFOV(float fov)
+{
+	this->fov = fov;
+}
+
 void GameManager::addKeyCallback(int key, bool pressed, const std::function<void()>& callback) {
 	for (auto &pair : keyCallbacks) {
 		if (pair.first == key) {

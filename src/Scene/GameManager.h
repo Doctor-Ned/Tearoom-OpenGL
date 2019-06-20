@@ -80,6 +80,7 @@ public:
 	Camera *getCamera() const;
 	bool isVsyncEnabled() const;
 	void setVsync(bool enabled);
+	void setFOV(float fov);
 	void addKeyCallback(int key, bool pressed, const std::function<void()>& callback);
 	void addMouseCallback(int key, bool pressed, const std::function<void()>& callback);
 	void addScrollCallback(bool up, const std::function<void(float)>& callback);

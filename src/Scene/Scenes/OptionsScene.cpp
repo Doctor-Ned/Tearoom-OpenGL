@@ -54,19 +54,26 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	tabs.push_back(generalTab);
 	tabs.push_back(screenTab);
 
-	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 2 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
-	enableLights->setCheckboxCallback([&manager = lightManager](bool enableLights) { manager->enableLights = enableLights; });
-	//enableLights->setRotationAnchor(TopLeft);
-	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 3 * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
-	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
-	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
+	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_CEN_X, 2 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
 								   "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity), MENU_TEXT_COLOR);
-	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
 											   PlayerMovement::mouseSensitivity, 0.1f, 10.0f);
 	sensitivitySlider->setCallback([sensitivityText](float sensitivity) {
 		PlayerMovement::mouseSensitivity = sensitivity;
 		sensitivityText->setText("Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
 	});
+
+	UiText *FOVText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
+		"FOV: " + std::to_string(GameManager::getInstance()->getFOV()), MENU_TEXT_COLOR);
+
+	UiSlider *FOVSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+		GameManager::getInstance()->getFOV(), 45.0f, 103.0f);
+
+	FOVSlider->setCallback([FOVText](float fov) {
+		GameManager::getInstance()->setFOV(fov);
+		FOVText->setText("FOV: " + std::to_string(GameManager::getInstance()->getFOV()));
+	});
+
 	UiText *samplesText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
 									 "Point shadow samples: " + std::to_string(lightManager->pointShadowSamples), MENU_TEXT_COLOR);
 	UiSliderInt *samplesSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
@@ -99,27 +106,35 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		gammaText->setText("Gamma: " + std::to_string(gamma));
 	});
 
-	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 13 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), Center);
+	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), Center);
 	useBloom->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setBloom(enabled);
 	});
 
-	UiCheckbox *enableVsync = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 14 * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->isVsyncEnabled(), Center);
+	UiCheckbox *enableVsync = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->isVsyncEnabled(), Center);
 	enableVsync->setCheckboxCallback([gameManager = gameManager](bool enabled) {
 		gameManager->setVsync(enabled);
 	});
 
-	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 15 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), Center);
+	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 15.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), Center);
 	enableAntialiasing->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setAntialiasing(enabled);
 	});
 
+	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
+	enableLights->setCheckboxCallback([&manager = lightManager](bool enableLights) { manager->enableLights = enableLights; });
+	//enableLights->setRotationAnchor(TopLeft);
+	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
+	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
+
 	generalTab->addChild(enableLights);
 	generalTab->addChild(enableShadowCasting);
 	generalTab->addChild(sensitivitySlider);
 	generalTab->addChild(sensitivityText);
+	generalTab->addChild(FOVSlider);
+	generalTab->addChild(FOVText);
 	generalTab->addChild(samplesSlider);
 	generalTab->addChild(samplesText);
 	generalTab->addChild(useHdr);
@@ -130,12 +145,12 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	generalTab->addChild(useBloom);
 	generalTab->addChild(enableVsync);
 	generalTab->addChild(enableAntialiasing);
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 2 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 13.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 14.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting", MENU_TEXT_COLOR));
 	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use HDR", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 13 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 14 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 15 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 13.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 14.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 15.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA", MENU_TEXT_COLOR));
 	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "GENERAL SETTINGS", MENU_TEXT_COLOR, MatchHeight));
 
 	UiText *windowType = new UiText(glm::vec2(UI_REF_CEN_X, 2.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Window type", MENU_TEXT_COLOR);
@@ -347,6 +362,7 @@ void OptionsScene::load() {
 	pps->setAntialiasing(root.get("useAntialiasing", pps->isAntialiasingEnabled()).asBool());
 	pps->setHdr(root.get("useHdr", pps->isHdrEnabled()).asBool());
 	pps->setBloom(root.get("useBloom", pps->isBloomEnabled()).asBool());
+	GameManager::getInstance()->setFOV(root.get("FOV", GameManager::getInstance()->getFOV()).asFloat());
 }
 
 void OptionsScene::save() {
@@ -361,6 +377,7 @@ void OptionsScene::save() {
 	root["useAntialiasing"] = pps->isAntialiasingEnabled();
 	root["useHdr"] = pps->isHdrEnabled();
 	root["useBloom"] = pps->isBloomEnabled();
+	root["FOV"] = GameManager::getInstance()->getFOV();
 	Global::saveToFile(SETTINGS_FILE, root);
 }
 
