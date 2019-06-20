@@ -28,6 +28,7 @@ protected:
 	glm::vec4 dawnColor, dayColor, duskColor, nightColor;
 	DirLight *light1, *light2;
 	DirLightComp *light1Comp, *light2Comp;
+	GraphNode *light1Node = nullptr, *light2Node = nullptr;
 	float sunDistance;
 	Sun(){}
 	friend class Serializer;

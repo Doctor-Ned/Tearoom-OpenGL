@@ -3,25 +3,29 @@
 #include "Mesh/MeshColorSphere.h"
 #include "Scene/GraphNode.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Scenes/EditorScene.h"
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
+		 glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject, DirLightComp *dirLightComp1, DirLightComp *dirLightComp2) : Component(gameObject, "Sun"), light1(light1), light2(light2),
 	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), light1Comp(dirLightComp1), light2Comp(dirLightComp2), rotationAngle(rotationAngle) {
 	setTime(initialTime);
 }
 
 Sun::Sun(DirLight* light1, DirLight* light2, glm::vec4 dawnColor, glm::vec4 dayColor, glm::vec4 duskColor,
-	glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject) : Component(gameObject, "Sun"), light1(light1), light2(light2),
+		 glm::vec4 nightColor, float sunDistance, float initialTime, float rotationAngle, GraphNode *gameObject) : Component(gameObject, "Sun"), light1(light1), light2(light2),
 	dawnColor(dawnColor), dayColor(dayColor), duskColor(duskColor), nightColor(nightColor), sunDistance(sunDistance), rotationAngle(rotationAngle) {
 	setTime(initialTime);
-	GraphNode *light1Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), gameObject);
+	GraphNode *l1 = new GraphNode(nullptr, gameObject);
+	GraphNode *l2 = new GraphNode(nullptr, gameObject);
+	light1Comp = new DirLightComp(light1, l1);
+	l1->addComponent(light1Comp);
+	light2Comp = new DirLightComp(light2, l2);
+	l2->addComponent(light2Comp);
+	light1Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), l1);
 	light1Node->getMesh()->setShaderType(STLight);
-	GraphNode *light2Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), gameObject);
+	light2Node = new GraphNode(new MeshColorSphere(0.25f, 30, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)), l2);
 	light2Node->getMesh()->setShaderType(STLight);
-	light1Comp = new DirLightComp(light1, light1Node);
-	light1Node->addComponent(light1Comp);
-	light2Comp = new DirLightComp(light2, light2Node);
-	light2Node->addComponent(light2Comp);
+
 	//light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
 	//light2Comp->getGameObject()->localTransform.initialize(0.0f, 0.0f, sunDistance);
 }
@@ -70,6 +74,29 @@ void Sun::renderGui() {
 		ImGui::ColorEdit3("Day color", reinterpret_cast<float*>(&dayColor));
 		ImGui::ColorEdit3("Dusk color", reinterpret_cast<float*>(&duskColor));
 		ImGui::ColorEdit3("Night color", reinterpret_cast<float*>(&nightColor));
+		ImGui::Text(("Light 1 node: " + (light1Node ? light1Node->getName() : "NONE")).c_str());
+		EditorScene *editor = gameManager->getEditorScene();
+		if(editor && editor->nodeSelectionCallback == nullptr) {
+			ImGui::SameLine();
+			ImGui::PushID("light1Node");
+			if(ImGui::Button("CHOOSE")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					light1Node = node;
+				};
+			}
+			ImGui::PopID();
+		}
+		ImGui::Text(("Light 2 node: " + (light2Node ? light2Node->getName() : "NONE")).c_str());
+		if(editor && editor->nodeSelectionCallback == nullptr) {
+			ImGui::SameLine();
+			ImGui::PushID("light2Node");
+			if (ImGui::Button("CHOOSE")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					light2Node = node;
+				};
+			}
+			ImGui::PopID();
+		}
 		dirty = true;
 	}
 }
@@ -96,6 +123,8 @@ Json::Value Sun::serialize(Serializer* serializer) {
 	root["light2"] = serializer->serialize(light2);
 	root["light1Comp"] = serializer->serialize(light1Comp);
 	root["light2Comp"] = serializer->serialize(light2Comp);
+	root["light1Node"] = serializer->serialize(light1Node);
+	root["light2Node"] = serializer->serialize(light2Node);
 	root["sunDistance"] = sunDistance;
 	return root;
 }
@@ -105,6 +134,12 @@ void Sun::deserialize(Json::Value& root, Serializer* serializer) {
 	light2 = dynamic_cast<DirLight*>(serializer->deserialize(root["light2"]).object);
 	light1Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light1Comp"]).object);
 	light2Comp = dynamic_cast<DirLightComp*>(serializer->deserialize(root["light2Comp"]).object);
+	if (root.isMember("light1Node")) {
+		light1Node = dynamic_cast<GraphNode*>(serializer->deserialize(root["light1Node"]).object);
+	}
+	if (root.isMember("light2Node")) {
+		light2Node = dynamic_cast<GraphNode*>(serializer->deserialize(root["light2Node"]).object);
+	}
 	Component::deserialize(root, serializer);
 	time = root["time"].asFloat();
 	rotationAngle = root["rotationAngle"].asFloat();
@@ -122,8 +157,18 @@ void Sun::recalculateMatrix() {
 	light2Color.a = 1.0f;
 	light1->color = light1Color;
 	light2->color = light2Color;
-	dynamic_cast<MeshSimple*>(light1Comp->getGameObject()->getMesh())->setColor(light1Color);
-	dynamic_cast<MeshSimple*>(light2Comp->getGameObject()->getMesh())->setColor(light2Color);
+	if (light1Node) {
+		MeshSimple* mesh = dynamic_cast<MeshSimple*>(light1Node->getMesh());
+		if(mesh) {
+			mesh->setColor(light1Color);
+		}
+	}
+	if (light2Node) {
+		MeshSimple* mesh = dynamic_cast<MeshSimple*>(light2Node->getMesh());
+		if (mesh) {
+			mesh->setColor(light2Color);
+		}
+	}
 	glm::vec4 position = gameObject->worldTransform.getMatrix()[3];
 	light1Comp->getGameObject()->localTransform.initializeDegrees(0.0f, 0.0f, -sunDistance, 1.0f, 0.0f, 180.0f, 0.0f);
 	light2Comp->getGameObject()->localTransform.initialize(0.0f, 0.0f, sunDistance);
