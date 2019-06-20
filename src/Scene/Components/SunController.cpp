@@ -102,6 +102,8 @@ void SunController::update(float msec) {
 	if (timeTravel) {
 		//clockHand->localTransform.rotateZ(0.8f * msec);
 		//moveSun(1.6f * msec);
+		if (GameManager::getInstance()->getKeyState(GLFW_KEY_LEFT_SHIFT))
+			msec *= 2.0f;
 		currentTimePercentage += msec;
 		interpolate();
 	}
