@@ -1,11 +1,27 @@
 #include "Scene/Scripts/ColumnMoving.h"
 #include "Scene/Scenes/EditorScene.h"
 #include "Serialization/Serializer.h"
+#include "Scene/Components/SoundSource.h"
 
 void ColumnMoving::update(float msec) {
+	lastPos = gameObject->localTransform.getPosition();
 	if (sun != nullptr) {
 		glm::vec3 pos = gameObject->localTransform.getPosition();
 		gameObject->localTransform.setPosition(glm::vec3(pos.x, getHeightForTime(sun->getTime()), pos.z));
+		if(getFractionalPartOfHour(sun->getTime()) == 0.0f)
+		{
+			 enableSound = true;
+		}
+
+		if(getFractionalPartOfHour(sun->getTime()) != 0.0f && enableSound && lastPos - gameObject->localTransform.getPosition() != glm::vec3(0))
+		{
+			SoundSource* sound = gameObject->getComponent<SoundSource>();
+			if (sound != nullptr)
+			{
+				sound->play();
+			}
+			enableSound = false;
+		}
 	}
 }
 

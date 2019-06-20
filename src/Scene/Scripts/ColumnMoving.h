@@ -8,6 +8,8 @@ class ColumnMoving : public Component
 protected:
 	Sun* sun = nullptr;
 	std::map<int, float> heightToHourMap;
+	glm::vec3 lastPos;
+	bool enableSound = false;
 	void renderGui() override;
 	float getFractionalPartOfHour(float hour);
 	float getHeightForTime(float time);
