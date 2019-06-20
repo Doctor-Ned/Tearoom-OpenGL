@@ -4,8 +4,8 @@
 #include "Scene/Plane.h"
 #include "Components/SphereCollider.h"
 #include "Components/BoxCollider.h"
-#include "Scene/OctreeNode.h"
 
+struct Box;
 class Frustum
 {
 public:

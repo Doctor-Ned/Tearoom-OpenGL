@@ -16,7 +16,8 @@ public:
 protected:
 	void renderGui() override;
 	void draw(Shader *shader, glm::mat4 world) override;
-	float roughness = 1.0f, metallic = 0.0f;
+	float roughness = 1.0f, metallic = 0.0f, speed = 1.0f, moveScale = 1.0f;
+	bool moving = false;
 	glm::vec3 emissive = glm::vec3(0.0f, 0.0f, 0.0f);
 	MeshProperty() {}
 	MeshProperty(ShaderType shaderType);

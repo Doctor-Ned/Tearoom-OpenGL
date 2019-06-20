@@ -25,12 +25,24 @@ uniform float roughness;
 uniform float metallic;
 uniform vec3 emissive;
 uniform float emissiveFactor;
+uniform float time;
+uniform float speed;
+uniform float moveScale;
+uniform bool moving;
 const float ao = 1.0f;
 
 //%lightComputations.glsl%
 
 void main() {
-	vec4 albedo = texture(texture_diffuse1, fs_in.texCoords);
+	vec2 texCoords;
+	if (moving) {
+		texCoords = vec2(fs_in.texCoords.x + (sin(time * speed) * moveScale) * (1.0f - fs_in.texCoords.y), fs_in.texCoords.y);
+	}
+	else {
+		texCoords = fs_in.texCoords;
+	}
+	
+	vec4 albedo = texture(texture_diffuse1, texCoords);
 	vec3 albedoRGB = albedo.rgb;
 	float opac = opacity * albedo.w;
 	vec3 color = initialAmbient * albedoRGB;

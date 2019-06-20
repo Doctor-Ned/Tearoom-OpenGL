@@ -1,4 +1,5 @@
 #include "Scene/Frustum.h"
+#include "Scene/OctreeNode.h"
 
 bool Frustum::pointInFrustum(glm::vec3 point)
 {
