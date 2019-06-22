@@ -75,6 +75,8 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	SPDLOG_DEBUG("Logger initialized! Warming up...");
+
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
 	serializer = Serializer::getInstance();

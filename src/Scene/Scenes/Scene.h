@@ -59,6 +59,7 @@ public:
 	bool getCursorLocked() const;
 	void setCursorLocked(bool locked) const;
 	void setPauseScene(Scene *scene);
+	void createPauseScene();
 protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
@@ -98,4 +99,5 @@ private:
 	float mouseMovementX, mouseMovementY;
 	bool initMouse = true;
 	friend class EditorScene;
+	friend class PauseScene;
 };

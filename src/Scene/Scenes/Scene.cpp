@@ -16,6 +16,7 @@
 #include "EditorScene.h"
 #include "Profiler.h"
 #include "Scene/SoundSystem.h"
+#include "PauseScene.h"
 
 void Scene::render() {
 	Camera *camera = getCamera();
@@ -458,6 +459,12 @@ void Scene::setCursorLocked(bool locked) const {
 
 void Scene::setPauseScene(Scene* scene) {
 	this->pauseScene = scene;
+}
+
+void Scene::createPauseScene() {
+	if(pauseScene == nullptr) {
+		setPauseScene(new PauseScene(this));
+	}
 }
 
 bool Scene::getKeyState(const int key) const {

@@ -96,7 +96,9 @@ Scene* Serializer::loadScene(const std::string& name) {
 	idCounter = 0;
 	ids.clear();
 	Json::Value root = Global::readJsonFile(location);
-	return deserializeScene(root);
+	Scene *result = deserializeScene(root);
+	result->createPauseScene();
+	return result;
 }
 
 Serializable* Serializer::getPointer(const int id) {
