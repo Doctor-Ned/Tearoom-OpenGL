@@ -12,9 +12,8 @@
 
 VideoSettings OptionsScene::videoSettings{};
 
-OptionsScene::OptionsScene(MenuScene* menuScene) {
+OptionsScene::OptionsScene() {
 	pps = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
-	this->menuScene = menuScene;
 	textRenderer = assetManager->getTextRenderer();
 	load();
 
@@ -221,8 +220,8 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	screenTab->addChild(applyButton);
 	screenTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "SCREEN SETTINGS", MENU_TEXT_COLOR, MatchHeight));
 
-	UiTextButton *back = new UiTextButton(glm::vec2(UI_REF_CEN_X, 17 * heightSeg), "Back to menu");
-	back->addClickCallback([this, menuScene]() { save(); menuScene->hideOptions(); });
+	UiTextButton *back = new UiTextButton(glm::vec2(UI_REF_CEN_X, 17 * heightSeg), "Back");
+	back->addClickCallback([&]() { save(); gameManager->setCurrentScene(returnScene); });
 
 	glm::vec2 arrowSize(back->getSize().y, back->getSize().y);
 	glm::vec2 arrowLeftPos(back->getPosition().x - arrowSize.x / 2.0f, back->getPosition().y);
@@ -260,7 +259,7 @@ void OptionsScene::update(double deltaTime) {
 void OptionsScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
-			menuScene->hideOptions();
+			gameManager->setCurrentScene(returnScene);
 		}
 	}
 }
@@ -271,6 +270,10 @@ void OptionsScene::updateWindowSize(float windowWidth, float windowHeight, float
 	addResolution(screenWidth, screenHeight);
 	sortResolutions();
 	refreshCurrentResolution();
+}
+
+void OptionsScene::setReturnScene(Scene* scene) {
+	this->returnScene = scene;
 }
 
 VideoSettings OptionsScene::loadVideoSettings() {

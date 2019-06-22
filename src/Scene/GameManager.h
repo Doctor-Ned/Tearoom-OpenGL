@@ -7,6 +7,7 @@
 
 #define BLOOM_TEXTURES 4
 
+class OptionsScene;
 class MenuScene;
 class Scene;
 class Camera;
@@ -74,6 +75,7 @@ public:
 	void setCursorLocked(bool locked);
 	bool getCursorLocked();
 	void updateRescaleVectors();
+	void goToOptions();
 	void goToMenu(bool destroyPreviousScene = true);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection = true);
 	void setup();
@@ -129,5 +131,6 @@ protected:
 	GLuint renderbuffer;
 	GameManager() {}
 	Scene* currentScene = nullptr;
+	OptionsScene* optionsScene = nullptr;
 	MenuScene* menuScene = nullptr;
 };

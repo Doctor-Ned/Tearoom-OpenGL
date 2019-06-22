@@ -94,9 +94,12 @@ MenuPreview::MenuPreview() {
     about->addLeaveCallback([this, aboutHover](){
         aboutHover->setOpacity(0.0f);
     });
+	options->addClickCallback([&]() {
+		gameManager->goToOptions();
+	});
     quit->addClickCallback([this]() {
         //GameManager::getInstance()->quit();
-        GameManager::getInstance()->setCurrentScene(new MenuScene()); //temporary
+		GameManager::getInstance()->goToMenu();
     });
     quit->addHoverCallback([this, quitHover](){
         quitHover->setOpacity(0.3f);

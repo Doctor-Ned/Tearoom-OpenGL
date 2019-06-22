@@ -396,6 +396,7 @@ int main(int argc, char** argv) {
 		}
 		if (loading && assetManager->isLoaded()) {
 			gameManager->goToMenu();
+			SoundSystem::restartMusic();
 		}
 	}
 

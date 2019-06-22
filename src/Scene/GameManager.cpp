@@ -6,6 +6,7 @@
 #include "Scenes/LoadingScene.h"
 #include "Scenes/EditorScene.h"
 #include "Profiler.h"
+#include "Scenes/OptionsScene.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -107,10 +108,11 @@ void GameManager::goToMenu(bool destroyPreviousScene) {
 	Scene* old = currentScene;
 	if (menuScene == nullptr) {
 		menuScene = new MenuScene();
+		optionsScene = new OptionsScene();
 	}
 	currentScene = menuScene;
 	setCursorLocked(false);
-	if (old != menuScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
+	if (old != menuScene && old != optionsScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
 		delete old;
 	}
 }
@@ -176,8 +178,7 @@ void GameManager::setVsync(bool enabled) {
 	}
 }
 
-void GameManager::setFOV(float fov)
-{
+void GameManager::setFOV(float fov) {
 	this->fov = fov;
 }
 
@@ -227,7 +228,7 @@ void GameManager::addMouseCallback(int key, bool pressed, const std::function<vo
 
 void GameManager::addScrollCallback(bool up, const std::function<void(float)>& callback) {
 	auto map = scrollCallbacks.find(up);
-	if(map != scrollCallbacks.end()) {
+	if (map != scrollCallbacks.end()) {
 		map->second.push_back(callback);
 	} else {
 		auto v = std::vector<std::function<void(float)>>();
@@ -268,7 +269,7 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 
 Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border, GLenum filter) {
 	int oldFbo;
-	SPDLOG_DEBUG("Creating new {}x{} framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}, F: {}", width, height, internalFormat ,format, type, clamp, clampMode, filter);
+	SPDLOG_DEBUG("Creating new {}x{} framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}, F: {}", width, height, internalFormat, format, type, clamp, clampMode, filter);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
@@ -303,7 +304,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 }
 
 Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
-	GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
+												   GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
 	int oldFbo;
 	SPDLOG_DEBUG("Creating new {}x{} non-depth framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}", width, height, internalFormat, format, type, clamp, clampMode);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
@@ -337,7 +338,7 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 }
 
 Framebuffer GameManager::createFilteredFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
-	GLenum type, GLenum filter) {
+												   GLenum type, GLenum filter) {
 	return createFramebuffer(internalFormat, width, height, format, type, true, GL_CLAMP_TO_EDGE, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), filter);
 }
 
@@ -564,6 +565,16 @@ Camera* GameManager::getCurrentNonEditorCamera() {
 	return sc->playerCamera;
 }
 
+void GameManager::goToOptions() {
+	if(currentScene == optionsScene && currentScene != nullptr) {
+		return;
+	}
+	SPDLOG_TRACE("Entered the options.");
+	optionsScene->setReturnScene(currentScene);
+	setCursorLocked(false);
+	setCurrentScene(optionsScene);
+}
+
 void GameManager::setMouseState(int key, bool pressed) {
 	auto pair = mouseStates.find(key);
 	if (pair != mouseStates.end()) {
@@ -666,10 +677,10 @@ void GameManager::mouse_button_callback(GLFWwindow* window, int butt, int action
 
 void GameManager::mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	scrollState += yoffset;
-	if(abs(yoffset) > 0.01f) {
+	if (abs(yoffset) > 0.01f) {
 		auto it = scrollCallbacks.find(yoffset > 0.0f);
-		if(it != scrollCallbacks.end()) {
-			for(auto callback : it->second) {
+		if (it != scrollCallbacks.end()) {
+			for (auto callback : it->second) {
 				callback(yoffset);
 			}
 		}

@@ -40,7 +40,6 @@ void SoundSystem::loadSounds() {
 			}
 		}
 	}
-	restartMusic();
 }
 
 sf::Music *SoundSystem::getMusic(const std::string& file) {
