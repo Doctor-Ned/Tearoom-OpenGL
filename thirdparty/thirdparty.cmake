@@ -19,6 +19,12 @@ include_directories("${OPENAL_INCLUDE_DIR}")
 set(SFML_DIR "${THIRDPARTY_DIR}/sfml")
 add_subdirectory("${SFML_DIR}")
 
+# SPDLOG
+set(SPDLOG_DIR "${THIRDPARTY_DIR}/spdlog")
+set(SPDLOG_INCLUDE_DIR "${SPDLOG_DIR}/include")
+add_subdirectory("${SPDLOG_DIR}")
+#find_package(spdlog REQUIRED)
+
 # assimp
 find_library(ASSIMP_LIBRARY "assimp" "/usr/lib" "/usr/local/lib")
 find_path(ASSIMP_INCLUDE_DIR "assimp/mesh.h" "/usr/include" "/usr/local/include")
