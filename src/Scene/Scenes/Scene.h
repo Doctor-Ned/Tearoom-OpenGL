@@ -58,7 +58,7 @@ public:
 	void setLights(Lights lights);
 	bool getCursorLocked() const;
 	void setCursorLocked(bool locked) const;
-
+	void setPauseScene(Scene *scene);
 protected:
 	bool getKeyState(int key) const;
 	bool getMouseState(int key) const;
@@ -80,6 +80,8 @@ protected:
 	AssetManager *assetManager;
 	float windowWidth, windowHeight, windowCenterX, windowCenterY, screenWidth, screenHeight;
 	UiCanvas *rootUiElement;
+	bool showPauseScene = false, wasMouseLocked;
+	Scene *pauseScene = nullptr;
 
 	//inventory
 	std::vector<UiPlane*> objectRepresentasions;

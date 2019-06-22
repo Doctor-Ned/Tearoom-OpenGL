@@ -104,6 +104,9 @@ void Scene::renderUiElement(UiElement* uiElement) {
 void Scene::renderUi() {
 	rootUiElement->updateDrawData();
 	renderUiElement(rootUiElement);
+	if (showPauseScene) {
+		pauseScene->renderUi();
+	}
 }
 
 Camera *Scene::getCamera() {
@@ -181,9 +184,9 @@ void Scene::updateRenderable(Renderable* renderable, bool addIfNotFound) {
 		}
 	}
 	if (found || addIfNotFound) {
-		if(found) {
-			for(auto i=renderMap[foundType]->begin();i!=renderMap[foundType]->end();) {
-				if(*i == renderable) {
+		if (found) {
+			for (auto i = renderMap[foundType]->begin(); i != renderMap[foundType]->end();) {
+				if (*i == renderable) {
 					renderMap[foundType]->erase(i);
 					break;
 				}
@@ -219,12 +222,12 @@ void Scene::removeComponent(GraphNode* node, Component* component) {
 			setLights(LightManager::getInstance()->getLights());
 		}
 		Camera *cam = dynamic_cast<Camera*>(component);
-		if(cam) {
-			if(camera == cam) {
+		if (cam) {
+			if (camera == cam) {
 				camera = nullptr;
 			}
 			EditorScene *editor = gameManager->getEditorScene();
-			if(editor && editor->playerCamera == cam) {
+			if (editor && editor->playerCamera == cam) {
 				editor->playerCamera = nullptr;
 				editor->setEditorCamera(true);
 			}
@@ -270,33 +273,32 @@ void Scene::reinitializeRenderMap() {
 }
 
 void Scene::update(double deltaTime) {
-	if (!rootNode->getChildren().empty()) {
-		Profiler::getInstance()->startCountingTime();
-		OctreeNode::getInstance().RebuildTree(50.0f);
-		Profiler::getInstance()->addMeasure("Octree rebuild");
-		
-		Profiler::getInstance()->startCountingTime();
-		OctreeNode::getInstance().Calculate();
-		Profiler::getInstance()->addMeasure("Octree calculation");
-
-		Profiler::getInstance()->startCountingTime();
-		OctreeNode::getInstance().CollisionTests();
-		Profiler::getInstance()->addMeasure("Collisions detection");
-
-		if (camera != nullptr) {
-			camera->RecalculateFrustum();
-			Frustum frustum = camera->getFrustum();
+	if (showPauseScene) {
+		pauseScene->update(deltaTime);
+	} else {
+		if (!rootNode->getChildren().empty()) {
 			Profiler::getInstance()->startCountingTime();
-			OctreeNode::getInstance().frustumCulling(frustum);
-			Profiler::getInstance()->addMeasure("Frustum Culling");
+			OctreeNode::getInstance().RebuildTree(50.0f);
+			Profiler::getInstance()->addMeasure("Octree rebuild");
+
+			Profiler::getInstance()->startCountingTime();
+			OctreeNode::getInstance().Calculate();
+			Profiler::getInstance()->addMeasure("Octree calculation");
+
+			Profiler::getInstance()->startCountingTime();
+			OctreeNode::getInstance().CollisionTests();
+			Profiler::getInstance()->addMeasure("Collisions detection");
+
+			if (camera != nullptr) {
+				camera->RecalculateFrustum();
+				Frustum frustum = camera->getFrustum();
+				Profiler::getInstance()->startCountingTime();
+				OctreeNode::getInstance().frustumCulling(frustum);
+				Profiler::getInstance()->addMeasure("Frustum Culling");
+			}
 		}
-	}
 
-	rootNode->update(deltaTime);
-
-	if(GameManager::getInstance()->getKeyOnce(GLFW_KEY_F3))
-	{
-		Profiler::getInstance()->setEnable(!Profiler::getInstance()->getEnabled());
+		rootNode->update(deltaTime);
 	}
 }
 
@@ -310,25 +312,37 @@ void Scene::updateWindowSize(float windowWidth, float windowHeight, float screen
 	projection = glm::perspective(glm::radians(fov), windowWidth / windowHeight, 0.1f, 100.0f);
 }
 
-void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
+void Scene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (showPauseScene) {
+		pauseScene->keyboard_callback(window, key, scancode, action, mods);
+	}
+}
 
 void Scene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	if (initMouse) {
-		mouseX = xpos;
-		mouseY = ypos;
-		initMouse = false;
+	if (showPauseScene) {
+		pauseScene->mouse_callback(window, xpos, ypos);
 	} else {
-		mouseMovementX += xpos - mouseX;
-		mouseMovementY += ypos - mouseY;
-		mouseX = xpos;
-		mouseY = ypos;
-	}
+		if (initMouse) {
+			mouseX = xpos;
+			mouseY = ypos;
+			initMouse = false;
+		} else {
+			mouseMovementX += xpos - mouseX;
+			mouseMovementY += ypos - mouseY;
+			mouseX = xpos;
+			mouseY = ypos;
+		}
 
-	rootUiElement->mouse_callback(window, xpos, ypos);
+		rootUiElement->mouse_callback(window, xpos, ypos);
+	}
 }
 
 void Scene::mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
-	rootUiElement->mouse_button_callback(window, butt, action, mods);
+	if (!showPauseScene) {
+		rootUiElement->mouse_button_callback(window, butt, action, mods);
+	} else {
+		pauseScene->mouse_button_callback(window, butt, action, mods);
+	}
 }
 
 Scene::Scene() {
@@ -442,6 +456,10 @@ void Scene::setCursorLocked(bool locked) const {
 	gameManager->setCursorLocked(locked);
 }
 
+void Scene::setPauseScene(Scene* scene) {
+	this->pauseScene = scene;
+}
+
 bool Scene::getKeyState(const int key) const {
 	return gameManager->getKeyState(key);
 }
@@ -450,9 +468,34 @@ bool Scene::getMouseState(const int key) const {
 	return gameManager->getMouseState(key);
 }
 
-void Scene::keyEvent(int key, bool pressed) {}
+void Scene::keyEvent(int key, bool pressed) {
+	if (pauseScene) {
+		if (key == GLFW_KEY_ESCAPE && pressed) {
+			showPauseScene = !showPauseScene;
+			if (showPauseScene) {
+				wasMouseLocked = getCursorLocked();
+				setCursorLocked(false);
+			} else {
+				setCursorLocked(wasMouseLocked);
+				initMouse = true;
+			}
+		}
+	} else {
+		if (showPauseScene) {
+			pauseScene->keyEvent(key, pressed);
+		} else {
+			if (key == GLFW_KEY_F3 && pressed) {
+				Profiler::getInstance()->setEnable(!Profiler::getInstance()->getEnabled());
+			}
+		}
+	}
+}
 
-void Scene::mouseEvent(int key, bool pressed) {}
+void Scene::mouseEvent(int key, bool pressed) {
+	if (showPauseScene) {
+		pauseScene->mouseEvent(key, pressed);
+	}
+}
 
 void Scene::addToRenderMap(GraphNode* node, bool recurse, bool checkIfExists) {
 	Renderable *r = dynamic_cast<Renderable*>(node);
