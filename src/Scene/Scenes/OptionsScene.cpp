@@ -74,13 +74,13 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 		FOVText->setText("FOV: " + std::to_string(GameManager::getInstance()->getFOV()));
 	});
 
-	UiText *samplesText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-									 "Point shadow samples: " + std::to_string(lightManager->pointShadowSamples), MENU_TEXT_COLOR);
-	UiSliderInt *samplesSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
-												 lightManager->pointShadowSamples, 1, 250);
-	samplesSlider->setCallback([&manager = lightManager, samplesText](int samples) {
-		manager->pointShadowSamples = samples;
-		samplesText->setText("Point shadow samples: " + std::to_string(manager->pointShadowSamples));
+	UiText *shadowsText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
+									 LightQualities[lightManager->getLightQuality()], MENU_TEXT_COLOR);
+	UiSliderInt *shadowSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+												static_cast<int>(lightManager->getLightQuality()), static_cast<int>(LQLow), static_cast<int>(LQUltra));
+	shadowSlider->setCallback([&manager = lightManager, shadowsText](int quality) {
+		manager->setLightQuality(static_cast<LightQuality>(quality));
+		shadowsText->setText(LightQualities[quality]);
 	});
 
 	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), Center);
@@ -135,8 +135,8 @@ OptionsScene::OptionsScene(MenuScene* menuScene) {
 	generalTab->addChild(sensitivityText);
 	generalTab->addChild(FOVSlider);
 	generalTab->addChild(FOVText);
-	generalTab->addChild(samplesSlider);
-	generalTab->addChild(samplesText);
+	generalTab->addChild(shadowSlider);
+	generalTab->addChild(shadowsText);
 	generalTab->addChild(useHdr);
 	generalTab->addChild(exposureText);
 	generalTab->addChild(exposureSlider);

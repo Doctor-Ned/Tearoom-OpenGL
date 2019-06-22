@@ -195,13 +195,17 @@ struct Lights {
 };
 
 enum LightQuality {
-	LQTerrible,
 	LQLow,
 	LQMedium,
 	LQHigh,
-	LQVeryHigh,
-	LQUltra,
-	LQExtreme
+	LQUltra
+};
+
+static const std::string LightQualities[] {
+	"Shadows: Low",
+	"Shadows: Medium",
+	"Shadows: High",
+	"Shadows: Ultra"
 };
 
 class LightManager : public GuiConfigurable {
@@ -260,5 +264,5 @@ private:
 	PointLightData pointLights[MAX_LIGHTS_OF_TYPE];
 	int dirLightAmount = 0, spotLightAmount = 0, pointLightAmount = 0;
 	float initialAmbient = 0.01f;
-	LightQuality lightQuality;
+	LightQuality lightQuality = LQMedium;
 };

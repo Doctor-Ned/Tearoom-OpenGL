@@ -448,17 +448,13 @@ int LightManager::toShadowSize(LightQuality quality) {
 	switch(quality) {
 		default:
 			throw std::exception("Unknown LightQuality provided!");
-		case LQTerrible:
-			return 256;
 		case LQLow:
-			return 512;
-		case LQMedium:
 			return 1024;
-		case LQHigh:
+		case LQMedium:
 			return 2048;
-		case LQUltra:
+		case LQHigh:
 			return 4096;
-		case LQExtreme:
+		case LQUltra:
 			return 8192;
 	}
 }
