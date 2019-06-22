@@ -20,7 +20,8 @@ void LightManager::setup() {
 	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 	uboLights = assetManager->getUboLights();
 	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
-	blurFbo = GameManager::createFramebuffer(GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+	GLuint shadowSize = toShadowSize(lightQuality);
+	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
@@ -28,7 +29,8 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 
 		int oldFbo;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
-		glm::vec3 xBlur(blurAmount / SHADOW_SIZE, 0.0f, 0.0f), yBlur(0.0f, blurAmount / SHADOW_SIZE, 0.0f);
+		GLuint shadowSize = toShadowSize(lightQuality);
+		glm::vec3 xBlur(blurAmount / shadowSize, 0.0f, 0.0f), yBlur(0.0f, blurAmount / shadowSize, 0.0f);
 
 		for (int i = 0; i < dirLightAmount; i++) {
 			depthShader->use();
@@ -418,6 +420,49 @@ LightManager::~LightManager() {
 	glDeleteFramebuffers(1, &blurFbo.fbo);
 }
 
+LightQuality LightManager::getLightQuality() {
+	return lightQuality;
+}
+
+void LightManager::setLightQuality(LightQuality quality) {
+	lightQuality = quality;
+	GLuint shadowSize = toShadowSize(lightQuality);
+	glDeleteBuffers(1, &blurFbo.texture);
+	glDeleteFramebuffers(1, &blurFbo.fbo);
+	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+	for(int i=0;i<dirLightAmount;i++) {
+		dispose(dirLights[i].data);
+		dirLights[i].data = createDirShadowData();
+	}
+	for (int i = 0; i < spotLightAmount; i++) {
+		dispose(spotLights[i].data);
+		spotLights[i].data = createSpotShadowData();
+	}
+	for (int i = 0; i < pointLightAmount; i++) {
+		dispose(pointLights[i].data);
+		pointLights[i].data = createPointShadowData();
+	}
+}
+
+int LightManager::toShadowSize(LightQuality quality) {
+	switch(quality) {
+		default:
+			throw std::exception("Unknown LightQuality provided!");
+		case LQTerrible:
+			return 256;
+		case LQLow:
+			return 512;
+		case LQMedium:
+			return 1024;
+		case LQHigh:
+			return 2048;
+		case LQUltra:
+			return 4096;
+		case LQExtreme:
+			return 8192;
+	}
+}
+
 void LightManager::renderGui() {
 	ImGui::Checkbox("Enable lights", &enableLights);
 	ImGui::Checkbox("Enable shadow casting", &enableShadowCasting);
@@ -470,9 +515,10 @@ void LightManager::dispose(LightShadowData data) {
 
 LightShadowData LightManager::createDirShadowData() {
 	LightShadowData result;
-	result.width = SHADOW_SIZE;
-	result.height = SHADOW_SIZE;
-	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, SHADOW_SIZE, SHADOW_SIZE, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
+	GLuint shadowSize = toShadowSize(lightQuality);
+	result.width = shadowSize;
+	result.height = shadowSize;
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, shadowSize, shadowSize, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
 	result.fbo = fb.fbo;
 	result.texture = fb.texture;
 	result.rbo = fb.rbo;
@@ -485,15 +531,16 @@ LightShadowData LightManager::createSpotShadowData() {
 
 LightShadowData LightManager::createPointShadowData() {
 	LightShadowData result;
-	result.width = SHADOW_SIZE;
-	result.height = SHADOW_SIZE;
+	GLuint shadowSize = toShadowSize(lightQuality);
+	result.width = shadowSize;
+	result.height = shadowSize;
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenFramebuffers(1, &result.fbo);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, result.texture);
 	for (unsigned int i = 0; i < 6; ++i)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_SIZE, SHADOW_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, shadowSize, shadowSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

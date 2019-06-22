@@ -165,6 +165,43 @@ struct Lights {
 	std::vector<DirLight*> dirLights;
 	std::vector<SpotLight*> spotLights;
 	std::vector<PointLight*> pointLights;
+	bool operator==(const Lights &l) const {
+		if (dirLights.size() != l.dirLights.size()) {
+			return false;
+		}
+		if (spotLights.size() != l.spotLights.size()) {
+			return false;
+		}
+		if (pointLights.size() != l.pointLights.size()) {
+			return false;
+		}
+		for (int i = 0; i < dirLights.size(); i++) {
+			if (dirLights[i] != l.dirLights[i]) {
+				return false;
+			}
+		}
+		for (int i = 0; i < spotLights.size(); i++) {
+			if (dirLights[i] != l.dirLights[i]) {
+				return false;
+			}
+		}
+		for (int i = 0; i < pointLights.size(); i++) {
+			if (dirLights[i] != l.dirLights[i]) {
+				return false;
+			}
+		}
+		return false;
+	}
+};
+
+enum LightQuality {
+	LQTerrible,
+	LQLow,
+	LQMedium,
+	LQHigh,
+	LQVeryHigh,
+	LQUltra,
+	LQExtreme
 };
 
 class LightManager : public GuiConfigurable {
@@ -198,6 +235,9 @@ public:
 	float minVariance = 0.00002f;
 	int pointShadowSamples = 20;          // 20 is nice but we can experiment with some other values.
 	float blurAmount = 1.0f;
+	LightQuality getLightQuality();
+	void setLightQuality(LightQuality quality);
+	static int toShadowSize(LightQuality quality);
 private:
 	LightManager() {}
 	void renderGui() override;
@@ -220,5 +260,5 @@ private:
 	PointLightData pointLights[MAX_LIGHTS_OF_TYPE];
 	int dirLightAmount = 0, spotLightAmount = 0, pointLightAmount = 0;
 	float initialAmbient = 0.01f;
-	const int SHADOW_SIZE = 2048;
+	LightQuality lightQuality;
 };

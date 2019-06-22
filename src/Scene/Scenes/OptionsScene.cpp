@@ -351,6 +351,7 @@ void OptionsScene::swap(std::pair<int, int>& a, std::pair<int, int>& b) {
 
 void OptionsScene::load() {
 	Json::Value root = Global::readJsonFile(SETTINGS_FILE);
+	lightManager->setLightQuality(static_cast<LightQuality>(root.get("lightQuality", static_cast<int>(LQHigh)).asInt()));
 	lightManager->pointShadowSamples = root.get("pointShadowSamples", lightManager->pointShadowSamples).asInt();
 	PlayerMovement::mouseSensitivity = root.get("mouseSensitivity", PlayerMovement::mouseSensitivity).asFloat();
 	lightManager->enableLights = root.get("enableLights", lightManager->enableLights).asBool();
@@ -367,6 +368,7 @@ void OptionsScene::load() {
 
 void OptionsScene::save() {
 	Json::Value root;
+	root["lightQuality"] = static_cast<int>(lightManager->getLightQuality());
 	root["pointShadowSamples"] = lightManager->pointShadowSamples;
 	root["mouseSensitivity"] = PlayerMovement::mouseSensitivity;
 	root["enableLights"] = lightManager->enableLights;
