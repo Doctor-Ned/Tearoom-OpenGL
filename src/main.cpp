@@ -20,6 +20,8 @@
 #include "Scene/SoundSystem.h"
 #include "Scene/Scenes/OptionsScene.h"
 #include "Profiler.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -58,6 +60,21 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 }
 
 int main(int argc, char** argv) {
+	try {
+		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		console_sink->set_level(spdlog::level::debug);
+		console_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
+		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt", true);
+		file_sink->set_level(spdlog::level::debug);
+		file_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
+		spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ console_sink, file_sink })));
+		spdlog::set_level(spdlog::level::debug);
+
+	} catch (const spdlog::spdlog_ex& ex) {
+		printf("Failed to initialize the logger! %s\n", ex.what());
+		return 1;
+	}
+
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
 	serializer = Serializer::getInstance();
@@ -302,7 +319,6 @@ int main(int argc, char** argv) {
 			deltaSum = 0.0f;
 		}
 		timeDelta <= 0.5 ? timeDelta : timeDelta = 1.0 / 120; //for debugging game loop
-
 
 		Profiler::getInstance()->update(timeDelta);
 		Profiler::getInstance()->clearFrameData();

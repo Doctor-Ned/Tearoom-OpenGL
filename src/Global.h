@@ -40,6 +40,8 @@
 #include "json/json.h"
 #include <xmmintrin.h>
 #include "assimp/matrix4x4.h"
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+#include "spdlog/spdlog.h"
 
 enum WindowType {
 	ExclusiveFullscreen,
@@ -72,8 +74,7 @@ struct VideoSettings {
 	bool windowSizeDefined;
 };
 
-union SSEfloat4
-{
+union SSEfloat4 {
 	union __m128 f4;
 	glm::vec4 v;
 };
@@ -122,5 +123,4 @@ public:
 private:
 	static const std::string WHITESPACE;
 };
-
 #endif
