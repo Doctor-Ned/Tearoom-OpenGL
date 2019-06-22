@@ -32,9 +32,13 @@ void GameManager::setCurrentScene(Scene * scene) {
 }
 
 void GameManager::setCurrentSceneAndDeletePrevious(Scene* scene) {
+	SPDLOG_DEBUG("Switching scene...");
 	Scene* old = currentScene;
 	setCurrentScene(scene);
-	delete old;
+	if (old != menuScene && old != optionsScene) {
+		SPDLOG_DEBUG("Deleting previous scene...");
+		delete old;
+	}
 }
 
 float GameManager::getWindowWidth() {
@@ -566,7 +570,7 @@ Camera* GameManager::getCurrentNonEditorCamera() {
 }
 
 void GameManager::goToOptions() {
-	if(currentScene == optionsScene && currentScene != nullptr) {
+	if (currentScene == optionsScene && currentScene != nullptr) {
 		return;
 	}
 	SPDLOG_TRACE("Entered the options.");

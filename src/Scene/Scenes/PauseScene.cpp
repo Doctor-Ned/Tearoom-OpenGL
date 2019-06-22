@@ -9,8 +9,9 @@ PauseScene::PauseScene(Scene * returnScene) {
 	}
 	UiColorPlane *background = new UiColorPlane(glm::vec4(0.0f,0.0f, 0.0f, 0.5f), glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
 	UiTextButton *resumeButton = new UiTextButton(glm::vec2(UI_REF_CEN_X, 4 * UI_REF_HEIGHT / 9.0f), "Resume");
-	resumeButton->addClickCallback([&]() {
+	resumeButton->addClickCallback([=]() {
 		returnScene->showPauseScene = false;
+		returnScene->setCursorLocked(returnScene->wasMouseLocked);
 	});
 	UiTextButton *optionsButton = new UiTextButton(glm::vec2(UI_REF_CEN_X, 5 * UI_REF_HEIGHT / 9.0f), "Options");
 	optionsButton->addClickCallback([&]() {
