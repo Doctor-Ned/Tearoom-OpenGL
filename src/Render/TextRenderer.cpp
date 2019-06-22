@@ -118,6 +118,7 @@ void TextRenderer::renderText(Shader* shader, std::string text, GLfloat x, GLflo
 	glm::vec2 size = getTextSize(text, scaleX, scaleY);
 	switch (anchor) {
 		default:
+			SPDLOG_ERROR("Unsupported UiAnchor value provided!");
 			throw std::exception("Unsupported UiAnchor value provided!");
 		case TopLeft:
 			//nothing to change
@@ -196,6 +197,7 @@ glm::vec2 TextRenderer::getScaleToFitSize(std::string text, glm::vec2 size, UiRe
 	float multX = size.x / actualSize.x;
 	switch (rescaleMode) {
 		default:
+			SPDLOG_ERROR("Unsupported UiRescaleMode provided!");
 			throw std::exception("Unsupported UiRescaleMode provided!");
 		case None:
 		case Fit:

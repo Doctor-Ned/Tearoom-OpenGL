@@ -21,6 +21,7 @@ void GameManager::setCurrentScene(Scene * scene) {
 		keyCallbacks.clear();
 		mouseCallbacks.clear();
 	} */
+	SPDLOG_TRACE("Scene changed.");
 	currentScene = scene;
 	if (currentScene != nullptr) {
 		currentScene->updateWindowSize(windowWidth, windowHeight, screenWidth, screenHeight, fov);
@@ -102,6 +103,7 @@ void GameManager::updateRescaleVectors() {
 }
 
 void GameManager::goToMenu(bool destroyPreviousScene) {
+	SPDLOG_TRACE("Entered the menu.");
 	Scene* old = currentScene;
 	if (menuScene == nullptr) {
 		menuScene = new MenuScene();
@@ -114,6 +116,7 @@ void GameManager::goToMenu(bool destroyPreviousScene) {
 }
 
 void GameManager::updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection) {
+	SPDLOG_DEBUG("Window size updated with: {}x{}, {}x{}, {}", windowWidth, windowHeight, screenWidth, screenHeight, updateUiProjection);
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 	windowCenterX = windowWidth / 2.0f;
@@ -127,6 +130,7 @@ void GameManager::updateWindowSize(float windowWidth, float windowHeight, float 
 }
 
 void GameManager::setup() {
+	SPDLOG_DEBUG("Setting up GameManager...");
 	setVsync(enableVsync);
 
 	AssetManager::getInstance()->setup();
@@ -150,6 +154,7 @@ void GameManager::setup() {
 
 	//menuScene = new MenuScene();
 	//goToMenu();
+	SPDLOG_DEBUG("GameManager setup finished!");
 	setCurrentScene(new LoadingScene());
 }
 
@@ -253,6 +258,7 @@ GameManager::~GameManager() {
 
 GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 	GLuint rbo;
+	SPDLOG_DEBUG("Creating new {}x{} depth renderbuffer...", width, height);
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
@@ -262,6 +268,7 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 
 Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border, GLenum filter) {
 	int oldFbo;
+	SPDLOG_DEBUG("Creating new {}x{} framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}, F: {}", width, height, internalFormat ,format, type, clamp, clampMode, filter);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
@@ -288,7 +295,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -298,6 +305,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format,
 	GLenum type, bool clamp, GLenum clampMode, glm::vec4 border) {
 	int oldFbo;
+	SPDLOG_DEBUG("Creating new {}x{} non-depth framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}", width, height, internalFormat, format, type, clamp, clampMode);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
@@ -321,7 +329,7 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -337,6 +345,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 														 GLsizei width, GLsizei height, GLenum format, bool clamp, GLenum attachment, GLenum clampMethod) {
 	SpecialFramebuffer result;
 	int oldFbo;
+	SPDLOG_DEBUG("Creating special {}x{} framebuffer. TT: {}, F: {}, IF: {}, F: {}, C: {}, CM: {}, A: {}", width, height, textureTarget, filter, internalFormat, format, clamp, clampMethod, attachment);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenTextures(1, &result.texture);
 	glBindTexture(textureTarget, result.texture);
@@ -371,7 +380,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glDrawBuffers(1, &drawBuffer);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -382,6 +391,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint internalFormat, GLsizei width, GLsizei height,
 																   GLenum format, GLenum type, int textureCount) {
 	int oldFbo;
+	SPDLOG_DEBUG("Creating new multitexture {}x{} framebuffer. IF: {}, F: {}, T: {}, TC: {}", width, height, internalFormat, format, type, textureCount);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	MultitextureFramebuffer result;
 	result.textureAmount = textureCount;
@@ -405,7 +415,7 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	glDrawBuffers(textureCount, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		fprintf(stderr, "glCheckFramebufferStatus: error %u", status);
+		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);

@@ -15,7 +15,9 @@ Json::Value Skybox::serialize(Serializer* serializer) {
 
 void Skybox::deserialize(Json::Value& root, Serializer* serializer) {
 	if(root["faces"].type() != Json::arrayValue || root["faces"].size() < 6) {
-		throw std::exception("Invalid skybox deserialization data!");
+		SPDLOG_ERROR("Invalid skybox deserialization data!");
+		
+		std::exception("Invalid skybox deserialization data!");
 	}
 	for(int i=0;i<6;i++) {
 		faces.push_back(root["faces"][i].asString());

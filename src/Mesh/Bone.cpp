@@ -62,6 +62,7 @@ void Bone::setID(bool init) {
 		}
 	}
 	if(ID > MAX_BONE_TRANSFORMS) {
+		SPDLOG_ERROR("MAX_BONE_TRANSFORMS was lower than the ID of current bone!");
 		throw std::exception("MAX_BONE_TRANSFORMS was lower than the ID of current bone!");
 	}
 }

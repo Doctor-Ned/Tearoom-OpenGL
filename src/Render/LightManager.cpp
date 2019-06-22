@@ -13,6 +13,7 @@ LightManager *LightManager::getInstance() {
 }
 
 void LightManager::setup() {
+	SPDLOG_DEBUG("Setting up LightManager...");
 	gameManager = GameManager::getInstance();
 	AssetManager *assetManager = AssetManager::getInstance();
 	depthShader = assetManager->getShader(STDepth);
@@ -206,8 +207,10 @@ Lights LightManager::getLights() {
 }
 
 Lights LightManager::recreateLights(int dirs, int spots, int points) {
+	SPDLOG_DEBUG("Reworking lights! {}|{}|{} -> {}|{}|{}", dirLightAmount, spotLightAmount, pointLightAmount, dirs, spots, points);
 	disposeLights();
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to create too many lights!");
 		throw "Attempted to create too many lights!";
 	}
 	for (int i = 0; i < dirs; i++) {
@@ -223,6 +226,7 @@ Lights LightManager::recreateLights(int dirs, int spots, int points) {
 }
 
 Lights LightManager::createUnmanagedLights(int dirs, int spots, int points) {
+	SPDLOG_DEBUG("Creating a set of {}|{}|{} unmanaged lights...", dirs, spots, points);
 	Lights lights;
 	for (int i = 0; i < dirs; i++) {
 		lights.dirLights.push_back(new DirLight());
@@ -237,8 +241,10 @@ Lights LightManager::createUnmanagedLights(int dirs, int spots, int points) {
 }
 
 void LightManager::replaceLights(Lights lights) {
+	SPDLOG_DEBUG("Replacing lights! {}|{}|{} -> {}|{}|{}", dirLightAmount, spotLightAmount, pointLightAmount, lights.dirLights.size(), lights.spotLights.size(), lights.pointLights.size());
 	disposeLights();
 	if (std::max(lights.pointLights.size(), std::max(lights.spotLights.size(), lights.dirLights.size())) > MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many lights!");
 		throw "Attempted to add too many lights!";
 	}
 	for (auto dir : lights.dirLights) {
@@ -254,6 +260,7 @@ void LightManager::replaceLights(Lights lights) {
 
 SpotLight* LightManager::addSpotLight() {
 	if (spotLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many spot lights!");
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = new SpotLight();
@@ -263,6 +270,7 @@ SpotLight* LightManager::addSpotLight() {
 
 DirLight* LightManager::addDirLight() {
 	if (dirLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many dir lights!");
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = new DirLight();
@@ -272,6 +280,7 @@ DirLight* LightManager::addDirLight() {
 
 PointLight* LightManager::addPointLight() {
 	if (pointLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many point lights!");
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = new PointLight();
@@ -305,6 +314,7 @@ void LightManager::addSpotLight(SpotLight* light) {
 		}
 	}
 	if (spotLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many spot lights!");
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = light;
@@ -319,6 +329,7 @@ void LightManager::addDirLight(DirLight* light) {
 		}
 	}
 	if (dirLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many dir lights!");
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = light;
@@ -333,6 +344,7 @@ void LightManager::addPointLight(PointLight* light) {
 		}
 	}
 	if (pointLightAmount == MAX_LIGHTS_OF_TYPE) {
+		SPDLOG_ERROR("Attempted to add to many point lights!");
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = light;
@@ -349,6 +361,7 @@ void LightManager::remove(DirLight * light) {
 		}
 	}
 	if (index == -1) {
+		SPDLOG_ERROR("Attempted to remove a light that is NOT registered in the LightManager!");
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
@@ -369,6 +382,7 @@ void LightManager::remove(PointLight * light) {
 		}
 	}
 	if (index == -1) {
+		SPDLOG_ERROR("Attempted to remove a light that is NOT registered in the LightManager!");
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
@@ -389,6 +403,7 @@ void LightManager::remove(SpotLight* light) {
 		}
 	}
 	if (index == -1) {
+		SPDLOG_ERROR("Attempted to remove a light that is NOT registered in the LightManager!");
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
@@ -425,12 +440,13 @@ LightQuality LightManager::getLightQuality() {
 }
 
 void LightManager::setLightQuality(LightQuality quality) {
+	SPDLOG_DEBUG("Settings light quality to {}.", LightQualities[quality]);
 	lightQuality = quality;
 	GLuint shadowSize = toShadowSize(lightQuality);
 	glDeleteBuffers(1, &blurFbo.texture);
 	glDeleteFramebuffers(1, &blurFbo.fbo);
 	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
-	for(int i=0;i<dirLightAmount;i++) {
+	for (int i = 0; i < dirLightAmount; i++) {
 		dispose(dirLights[i].data);
 		dirLights[i].data = createDirShadowData();
 	}
@@ -445,8 +461,9 @@ void LightManager::setLightQuality(LightQuality quality) {
 }
 
 int LightManager::toShadowSize(LightQuality quality) {
-	switch(quality) {
+	switch (quality) {
 		default:
+			SPDLOG_ERROR("Unknown LightQuality provided!");
 			throw std::exception("Unknown LightQuality provided!");
 		case LQLow:
 			return 1024;
@@ -510,6 +527,7 @@ void LightManager::dispose(LightShadowData data) {
 }
 
 LightShadowData LightManager::createDirShadowData() {
+	SPDLOG_DEBUG("Creating new dir shadow data...");
 	LightShadowData result;
 	GLuint shadowSize = toShadowSize(lightQuality);
 	result.width = shadowSize;
@@ -522,10 +540,20 @@ LightShadowData LightManager::createDirShadowData() {
 }
 
 LightShadowData LightManager::createSpotShadowData() {
-	return createDirShadowData();
+	SPDLOG_DEBUG("Creating new spot shadow data...");
+	LightShadowData result;
+	GLuint shadowSize = toShadowSize(lightQuality);
+	result.width = shadowSize;
+	result.height = shadowSize;
+	SpecialFramebuffer fb = GameManager::createSpecialFramebuffer(GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, shadowSize, shadowSize, GL_RGBA, true, GL_COLOR_ATTACHMENT0);
+	result.fbo = fb.fbo;
+	result.texture = fb.texture;
+	result.rbo = fb.rbo;
+	return result;
 }
 
 LightShadowData LightManager::createPointShadowData() {
+	SPDLOG_DEBUG("Creating new point shadow data...");
 	LightShadowData result;
 	GLuint shadowSize = toShadowSize(lightQuality);
 	result.width = shadowSize;

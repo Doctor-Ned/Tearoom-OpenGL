@@ -40,6 +40,7 @@ void UiElement::setPosition(glm::vec2 position, UiAnchor anchor) {
 	glm::vec2 pos = position;
 	switch (anchor) {
 		default:
+			SPDLOG_ERROR("Unsupported UiAnchor provided!");
 			throw std::exception("Unsupported UiAnchor provided!");
 		case TopLeft:
 		//already set	

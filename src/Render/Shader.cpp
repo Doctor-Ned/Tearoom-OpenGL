@@ -21,7 +21,7 @@ Shader::Shader(char* vertexPath, char* fragmentPath, bool initialise) {
 				std::istreambuf_iterator<char>());
 			sharedData.emplace(entry.path().filename().string(), str);
 		} else {
-			printf("Cannot read shared shader file %s!", entry.path().filename().string().c_str());
+			SPDLOG_ERROR("Cannot read shared shader file '{}'!", entry.path().filename().string().c_str());
 			exit(5);
 		}
 	}
@@ -256,12 +256,12 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 			errorLog = new char[maxLength];
 			glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog);
-			fprintf(stderr, "An error occurred while compiling shader from file '%s'. %s\n", file, errorLog);
+			SPDLOG_ERROR("Unable to compile the shader '{}'! {}", file, errorLog);
 			exit(1);
 		}
 		return shader;
 	}
-	printf("Unable to read the shader file '%s'.", fullFile);
+	SPDLOG_ERROR("Unable to read the shader file '{}'!", fullFile);
 	delete[] fullFile;
 	exit(1);
 }
@@ -278,7 +278,7 @@ void Shader::linkShaderProgram() {
 		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
 		errorLog = new char[maxLength];
 		glGetProgramInfoLog(id, maxLength, &maxLength, errorLog);
-		fprintf(stderr, "An error occurred while linking the shader program. %s\n", errorLog);
+		SPDLOG_ERROR("Unable to link the shader program! {}", errorLog);
 		delete errorLog;
 		exit(1);
 	}

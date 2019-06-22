@@ -81,6 +81,7 @@ void Serializer::saveScene(Scene* scene, const std::string& name) {
 }
 
 Scene* Serializer::loadScene(const std::string& name) {
+	SPDLOG_DEBUG("Attempting to load scene {}...", name);
 	std::string location;
 	for (auto &pair : scenes) {
 		if (name == pair.first) {
@@ -89,6 +90,7 @@ Scene* Serializer::loadScene(const std::string& name) {
 		}
 	}
 	if (location.length() == 0) {
+		SPDLOG_ERROR("Could not find the desired file!");
 		return nullptr;
 	}
 	idCounter = 0;
@@ -158,10 +160,13 @@ Json::Value Serializer::serialize(SerializablePointer ser) {
 }
 
 Scene* Serializer::deserializeScene(Json::Value& root) {
+	SPDLOG_DEBUG("Deserializing scene...");
 	SerializablePointer pointer = deserialize(root);
 	if (pointer.object == nullptr) {
+		SPDLOG_WARN("Deserialized scene was null. Was that planned?");
 		return nullptr;
 	}
+	SPDLOG_DEBUG("Scene seems to be valid!");
 	return dynamic_cast<Scene*>(pointer.object);
 }
 
@@ -182,6 +187,7 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 	Json::Value data = root["object"];
 	switch (type) {
 		default:
+			SPDLOG_ERROR("Unsupported SerializableType encountered!");
 			throw std::exception("Unsupported SerializableType encountered!");
 		// remember to always emplace the pointer in the 'ids' map before calling serialize (which can recursively go down the tree)!
 		case SGraphNode:
@@ -341,18 +347,17 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 void Serializer::deserializeAndIdentify(SerializablePointer& pointer, Json::Value &data, Serializable* serializable) {
 	pointer.object = serializable;
 	ids.emplace(serializable, pointer.id);
-	if (pointer.id == 36) {
-		printf("");
-	}
 	serializable->deserialize(data, this);
 }
 
 void Serializer::loadScenes() {
 	scenes.clear();
+	SPDLOG_DEBUG("Gathering scenes...");
 	for (auto &entry : fs::directory_iterator(SCENES_DIR)) {
 		std::string filename = entry.path().filename().u8string();
 		if (Global::endsWith(filename, FORMAT)) {
 			scenes.emplace(filename.substr(0, filename.length() - FORMAT.length()), entry.path().u8string());
 		}
 	}
+	SPDLOG_DEBUG("Found {} scenes!", scenes.size());
 }

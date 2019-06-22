@@ -29,7 +29,7 @@ extern "C" {
 }
 
 static void glfw_error_callback(int error, const char* description) {
-	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+	SPDLOG_ERROR("GLFW error {}: {}", error, description);
 }
 
 static GameManager* gameManager;
@@ -202,6 +202,7 @@ int main(int argc, char** argv) {
 			window = glfwCreateWindow(screenWidth, screenHeight, "Tearoom", nullptr, nullptr);
 			break;
 		default:
+			SPDLOG_ERROR("Unknown window type provided!");
 			throw std::exception("Unknown window type provided.");
 	}
 	if (window == nullptr) {
@@ -221,7 +222,7 @@ int main(int argc, char** argv) {
 	bool err = !gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 #endif
 	if (err) {
-		fprintf(stderr, "Failed to initialize OpenGL loader!\n");
+		SPDLOG_ERROR("Failed to initialize OpenGL loader!");
 		return 1;
 	}
 
@@ -300,6 +301,8 @@ int main(int argc, char** argv) {
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture);
 
 	LightManager *lightManager = LightManager::getInstance();
+
+	SPDLOG_DEBUG("Starting the game loop!");
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -395,6 +398,8 @@ int main(int argc, char** argv) {
 			gameManager->goToMenu();
 		}
 	}
+
+	SPDLOG_DEBUG("Game loop closed! Shutting down...");
 
 	delete gameManager;
 	delete assetManager;

@@ -219,5 +219,6 @@ glm::vec4 Sun::timeToColor(float time, bool light1) {
 				return factor2 * duskColor + factor1 * nightColor;
 		}
 	}
+	SPDLOG_ERROR("The precalculated quarter is out of the expected range! This should NEVER happen.");
 	throw std::exception("The precalculated quarter is out of the expected range! This should NEVER happen.");
 }

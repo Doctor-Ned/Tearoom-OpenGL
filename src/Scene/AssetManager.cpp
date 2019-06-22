@@ -27,6 +27,7 @@ AssetManager *AssetManager::getInstance() {
 // -Z (back)
 GLuint AssetManager::createCubemap(std::vector<std::string> faces) {
 	GLuint textureID;
+	SPDLOG_DEBUG("Creating a new cubemap...");
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
@@ -38,7 +39,7 @@ GLuint AssetManager::createCubemap(std::vector<std::string> faces) {
 						 data);
 			stbi_image_free(data);
 		} else {
-			printf("Cubemap texture failed to load at path '%s'!\n", faces[i].c_str());
+			SPDLOG_ERROR("Cubemap texture failed to load at path '{}'!", faces[i].c_str());
 			stbi_image_free(data);
 		}
 	}
@@ -58,7 +59,7 @@ Texture AssetManager::createTexture(const char* textureFile) {
 	int imgWidth, imgHeight, imgChannels;
 	unsigned char* imgData = stbi_load(textureFile, &imgWidth, &imgHeight, &imgChannels, 0);
 	if (!imgData) {
-		fprintf(stderr, "Failed to load texture from file \"%s\"!", textureFile);
+		SPDLOG_ERROR("Failed to load texture from file \{}\!", textureFile);
 		exit(1);
 	}
 	GLenum format;
@@ -76,7 +77,8 @@ Texture AssetManager::createTexture(const char* textureFile) {
 			format = GL_RGBA;
 			break;
 		default:
-			throw std::exception("Unexptected channel amount!");
+			SPDLOG_ERROR("Unexpected channel amount!");
+			throw std::exception("Unexpected channel amount!");
 	}
 	GLuint imgTexture;
 	glGenTextures(1, &imgTexture);
@@ -111,6 +113,7 @@ Texture AssetManager::getTexture(std::string path) {
 			return texture;
 		}
 	}
+	SPDLOG_ERROR("An object tried to access an unknown texture: " + path);
 	throw "Critial error! An object tried to access an unknown texture: " + path;
 }
 
@@ -124,7 +127,7 @@ ModelData* AssetManager::getModelData(std::string path) {
 			return &pair.second->simpleData;
 		}
 	}
-
+	SPDLOG_ERROR("An object tried to access an unknown model: " + path);
 	throw "Critical error! An object tried to access an unknown model: " + path;
 }
 
@@ -134,8 +137,8 @@ AnimatedModelData* AssetManager::getAnimatedModelData(std::string path) {
 			return &pair.second->animatedData;
 		}
 	}
-
-	throw "Critical error! An object tried to access an unknown model : " + path;
+	SPDLOG_ERROR("An object tried to access an unknown animated model: " + path);
+	throw "Critical error! An object tried to access an unknown animated model : " + path;
 }
 
 Bone *AssetManager::getBoneHierarchy(std::string path) {
@@ -170,6 +173,7 @@ bool AssetManager::endsWith(std::string const &fullString, std::string const &en
 }
 
 void AssetManager::setup() {
+	SPDLOG_DEBUG("Setting up AssetManager...");
 	shaders.emplace(STUiText, new Shader("Ui/uitextVS.glsl", "Ui/uitextFS.glsl"));
 	shaders.emplace(STText, new Shader("textVS.glsl", "textFS.glsl"));
 	textRenderer = new TextRenderer(0.5f);
@@ -262,6 +266,7 @@ std::vector<std::string> AssetManager::getModels() {
 }
 
 void AssetManager::reloadResources() {
+	SPDLOG_DEBUG("Reloading resources...");
 	gameManager = GameManager::getInstance();
 	for (const auto & entry : fs::recursive_directory_iterator("res")) {
 		std::string path = entry.path().u8string();
@@ -290,6 +295,7 @@ void AssetManager::reloadResources() {
 void AssetManager::loadNextPendingResource() {
 	if (!loaded) {
 		if (!loadingStarted) {
+			SPDLOG_DEBUG("Gathering loading data...");
 			std::vector<std::string> textures;
 			std::vector<std::string> models;
 			for (const auto & entry : fs::recursive_directory_iterator("res")) {
@@ -321,11 +327,12 @@ void AssetManager::loadNextPendingResource() {
 			loadedResources = 0;
 			loadingStarted = true;
 		} else {
-			std::cout << resourcesToLoad.front() << std::endl;
+			SPDLOG_DEBUG("Loading '{}'...", resourcesToLoad.front());
 			loadResource(resourcesToLoad.front(), false);
 			resourcesToLoad.erase(resourcesToLoad.begin());
 			loadedResources++;
 			if (resourcesToLoad.empty()) {
+				SPDLOG_DEBUG("Loading finished!");
 				loaded = true;
 			}
 		}

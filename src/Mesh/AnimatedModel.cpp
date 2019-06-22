@@ -155,7 +155,7 @@ FullModelData* AnimatedModel::createModelData(std::string path) {
 	const aiScene* scene = importer.ReadFile(
 		path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		printf("Assimp could not properly load the model. %s\n", importer.GetErrorString());
+		SPDLOG_ERROR("Assimp could not properly load the model '{}': {}!", path, importer.GetErrorString());
 		exit(1);
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
