@@ -21,20 +21,7 @@ void LightManager::setup() {
 	depthPointShader = dynamic_cast<GeometryShader*>(assetManager->getShader(STDepthPoint));
 	uboLights = assetManager->getUboLights();
 	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
-	GLuint shadowSize = toShadowSize(lightQuality);
-	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
-	for (int i = 0; i < MAX_LIGHTS_OF_TYPE; i++) {
-		for (int j = 0; j < LQHigh + 1; j++) {
-			lightQuality = static_cast<LightQuality>(j);
-			LightShadowData data = createDirShadowData();
-			dirData[i][j] = data;
-			data = createSpotShadowData();
-			spotData[i][j] = data;
-			data = createPointShadowData();
-			pointData[i][j] = data;
-		}
-	}
-	setLightQuality(LQMedium);
+	//setLightQuality(LQMedium);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
@@ -64,15 +51,15 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			renderCallback(depthShader);
 
 			gausBlurShader->use();
-			glBindFramebuffer(GL_FRAMEBUFFER, blurFbo.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, currentBlurFbo.fbo);
 			glBindTexture(GL_TEXTURE_2D, data.data.texture);
 			gausBlurShader->setGausBlurAmount(xBlur);
 			fullscreenQuad->render();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, data.data.texture, 0);
-			glBindTexture(GL_TEXTURE_2D, blurFbo.texture);
+			glBindTexture(GL_TEXTURE_2D, currentBlurFbo.texture);
 			gausBlurShader->setGausBlurAmount(yBlur);
 			fullscreenQuad->render();
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurFbo.texture, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentBlurFbo.texture, 0);
 		}
 
 
@@ -96,15 +83,15 @@ void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCall
 			renderCallback(depthShader);
 
 			gausBlurShader->use();
-			glBindFramebuffer(GL_FRAMEBUFFER, blurFbo.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, currentBlurFbo.fbo);
 			glBindTexture(GL_TEXTURE_2D, data.data.texture);
 			gausBlurShader->setGausBlurAmount(xBlur);
 			fullscreenQuad->render();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, data.data.texture, 0);
-			glBindTexture(GL_TEXTURE_2D, blurFbo.texture);
+			glBindTexture(GL_TEXTURE_2D, currentBlurFbo.texture);
 			gausBlurShader->setGausBlurAmount(yBlur);
 			fullscreenQuad->render();
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurFbo.texture, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentBlurFbo.texture, 0);
 		}
 
 		depthPointShader->use();
@@ -276,6 +263,11 @@ SpotLight* LightManager::addSpotLight() {
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = new SpotLight();
+	if (!spotData[spotLightAmount][lightQuality].prepared) {
+		spotData[spotLightAmount][lightQuality].prepared = true;
+		spotData[spotLightAmount][lightQuality].data = createSpotShadowData();
+	}
+	spotLights[spotLightAmount].data = spotData[spotLightAmount][lightQuality].data;
 	return spotLights[spotLightAmount++].light;
 }
 
@@ -285,6 +277,11 @@ DirLight* LightManager::addDirLight() {
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = new DirLight();
+	if (!dirData[dirLightAmount][lightQuality].prepared) {
+		dirData[dirLightAmount][lightQuality].prepared = true;
+		dirData[dirLightAmount][lightQuality].data = createDirShadowData();
+	}
+	dirLights[dirLightAmount].data = dirData[dirLightAmount][lightQuality].data;
 	return dirLights[dirLightAmount++].light;
 }
 
@@ -294,6 +291,11 @@ PointLight* LightManager::addPointLight() {
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = new PointLight();
+	if (!pointData[pointLightAmount][lightQuality].prepared) {
+		pointData[pointLightAmount][lightQuality].prepared = true;
+		pointData[pointLightAmount][lightQuality].data = createPointShadowData();
+	}
+	pointLights[pointLightAmount].data = pointData[pointLightAmount][lightQuality].data;
 	return pointLights[pointLightAmount++].light;
 }
 
@@ -327,6 +329,11 @@ void LightManager::addSpotLight(SpotLight* light) {
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = light;
+	if (!spotData[spotLightAmount][lightQuality].prepared) {
+		spotData[spotLightAmount][lightQuality].prepared = true;
+		spotData[spotLightAmount][lightQuality].data = createSpotShadowData();
+	}
+	spotLights[spotLightAmount].data = spotData[spotLightAmount][lightQuality].data;
 	spotLightAmount++;
 }
 
@@ -341,6 +348,11 @@ void LightManager::addDirLight(DirLight* light) {
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = light;
+	if (!dirData[dirLightAmount][lightQuality].prepared) {
+		dirData[dirLightAmount][lightQuality].prepared = true;
+		dirData[dirLightAmount][lightQuality].data = createDirShadowData();
+	}
+	dirLights[dirLightAmount].data = dirData[dirLightAmount][lightQuality].data;
 	dirLightAmount++;
 }
 
@@ -355,6 +367,11 @@ void LightManager::addPointLight(PointLight* light) {
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = light;
+	if(!pointData[pointLightAmount][lightQuality].prepared) {
+		pointData[pointLightAmount][lightQuality].prepared = true;
+		pointData[pointLightAmount][lightQuality].data = createPointShadowData();
+	}
+	pointLights[pointLightAmount].data = pointData[pointLightAmount][lightQuality].data;
 	pointLightAmount++;
 }
 
@@ -437,8 +454,8 @@ LightManager::~LightManager() {
 	disposeLights();
 	fullscreenQuad->dispose();
 	delete fullscreenQuad;
-	glDeleteBuffers(1, &blurFbo.texture);
-	glDeleteFramebuffers(1, &blurFbo.fbo);
+	glDeleteBuffers(1, &currentBlurFbo.texture);
+	glDeleteFramebuffers(1, &currentBlurFbo.fbo);
 }
 
 LightQuality LightManager::getLightQuality() {
@@ -448,11 +465,33 @@ LightQuality LightManager::getLightQuality() {
 void LightManager::setLightQuality(LightQuality quality) {
 	SPDLOG_DEBUG("Setting light quality to {}.", LightQualities[quality]);
 	lightQuality = quality;
-	for(int i=0;i<MAX_LIGHTS_OF_TYPE;i++) {
-		dirLights[i].data = dirData[i][lightQuality];
-		spotLights[i].data = spotData[i][lightQuality];
-		pointLights[i].data = pointData[i][lightQuality];
+	for (int i = 0; i < dirLightAmount; i++) {
+		if (!dirData[i][lightQuality].prepared) {
+			dirData[i][lightQuality].prepared = true;
+			dirData[i][lightQuality].data = createDirShadowData();
+		}
+		dirLights[i].data = dirData[i][lightQuality].data;
 	}
+	for (int i = 0; i < spotLightAmount; i++) {
+		if (!spotData[i][lightQuality].prepared) {
+			spotData[i][lightQuality].prepared = true;
+			spotData[i][lightQuality].data = createSpotShadowData();
+		}
+		spotLights[i].data = spotData[i][lightQuality].data;
+	}
+	for (int i = 0; i < pointLightAmount; i++) {
+		if (!pointData[i][lightQuality].prepared) {
+			pointData[i][lightQuality].prepared = true;
+			pointData[i][lightQuality].data = createPointShadowData();
+		}
+		pointLights[i].data = pointData[i][lightQuality].data;
+	}
+	if(!blurFbos[lightQuality].prepared) {
+		blurFbos[lightQuality].prepared = true;
+		GLuint shadowSize = toShadowSize(lightQuality);
+		blurFbos[lightQuality].framebuffer = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+	}
+	currentBlurFbo = blurFbos[lightQuality].framebuffer;
 }
 
 int LightManager::toShadowSize(LightQuality quality) {

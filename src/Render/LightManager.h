@@ -161,6 +161,16 @@ struct PointLightData {
 	LightShadowData data;
 };
 
+struct PreparedLightShadowData {
+	LightShadowData data;
+	bool prepared = false;
+};
+
+struct PreparedFramebuffer {
+	Framebuffer framebuffer;
+	bool prepared = false;
+};
+
 struct Lights {
 	std::vector<DirLight*> dirLights;
 	std::vector<SpotLight*> spotLights;
@@ -252,7 +262,7 @@ private:
 	LightShadowData createDirShadowData();
 	LightShadowData createSpotShadowData();
 	LightShadowData createPointShadowData();
-	Framebuffer blurFbo;
+	Framebuffer currentBlurFbo;
 	Shader *depthShader, *gausBlurShader;
 	GeometryShader *depthPointShader;
 	GameManager *gameManager;
@@ -260,9 +270,10 @@ private:
 	DirLightData dirLights[MAX_LIGHTS_OF_TYPE];
 	SpotLightData spotLights[MAX_LIGHTS_OF_TYPE];
 	PointLightData pointLights[MAX_LIGHTS_OF_TYPE];
-	LightShadowData dirData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
-	LightShadowData spotData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
-	LightShadowData pointData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	PreparedLightShadowData dirData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	PreparedLightShadowData spotData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	PreparedLightShadowData pointData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	PreparedFramebuffer blurFbos[LQHigh + 1];
 	int dirLightAmount = 0, spotLightAmount = 0, pointLightAmount = 0;
 	float initialAmbient = 0.01f;
 	LightQuality lightQuality = LQMedium;
