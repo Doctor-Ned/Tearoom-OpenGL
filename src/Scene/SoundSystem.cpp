@@ -12,6 +12,16 @@ SoundSystem::~SoundSystem() {
 
 }
 
+sf::Music *SoundSystem::getMenuMusic() {
+	SoundSystem *ss = getInstance();
+	if(ss->music == nullptr) {
+		ss->music = getMusic("sao-meo-loop");
+		ss->music->setLoop(true);
+		ss->music->setVolume(0.15f);
+	}
+	return ss->music;
+}
+
 std::vector<std::string> SoundSystem::getSoundFiles() {
 	SoundSystem *ss = getInstance();
 	std::vector<std::string> result;
@@ -51,16 +61,17 @@ sf::Music *SoundSystem::getMusic(const std::string& file) {
 	return music;
 }
 
+float SoundSystem::getMusicVolume() {
+	return getMenuMusic()->getVolume();
+}
+
+void SoundSystem::setMusicVolume(float volume) {
+	getMenuMusic()->setVolume(volume);
+}
+
 void SoundSystem::restartMusic() {
-	SoundSystem *ss = getInstance();
-	if (ss->music == nullptr) {
-		ss->music = getMusic("sao-meo-loop");
-		ss->music->setLoop(true);
-		ss->music->setVolume(0.15f);
-	} else {
-		ss->music->stop();
-	}
-	ss->music->play();
+	getMenuMusic()->stop();
+	getMenuMusic()->play();
 }
 
 sf::Sound *SoundSystem::getSound(const std::string& file) {

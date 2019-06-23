@@ -9,6 +9,8 @@
 #include "Ui/UiSlider.h"
 #include "Render/LightManager.h"
 #include "Scene/Scripts/PlayerMovement.h"
+#include "SFML/Audio/Listener.hpp"
+#include "Scene/SoundSystem.h"
 
 VideoSettings OptionsScene::videoSettings{};
 
@@ -53,42 +55,44 @@ OptionsScene::OptionsScene() {
 	tabs.push_back(generalTab);
 	tabs.push_back(screenTab);
 
-	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_CEN_X, 2 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-								   "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity), MENU_TEXT_COLOR);
-	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 3 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+	const float COL_WIDTH = 0.4f * UI_REF_WIDTH;
+
+	UiText *sensitivityText = new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 2 * heightSeg), glm::vec2(COL_WIDTH, heightSeg),
+										 "Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity), MENU_TEXT_COLOR);
+	UiSlider *sensitivitySlider = new UiSlider(glm::vec2(UI_REF_WIDTH / 4.0f, 3 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f,
 											   PlayerMovement::mouseSensitivity, 0.1f, 10.0f);
 	sensitivitySlider->setCallback([sensitivityText](float sensitivity) {
 		PlayerMovement::mouseSensitivity = sensitivity;
 		sensitivityText->setText("Mouse sensitivity: " + std::to_string(PlayerMovement::mouseSensitivity));
 	});
 
-	UiText *FOVText = new UiText(glm::vec2(UI_REF_CEN_X, 4 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
-		"FOV: " + std::to_string(GameManager::getInstance()->getFOV()), MENU_TEXT_COLOR);
+	UiText *FOVText = new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 4 * heightSeg), glm::vec2(COL_WIDTH, heightSeg),
+								 "FOV: " + std::to_string(GameManager::getInstance()->getFOV()), MENU_TEXT_COLOR);
 
-	UiSlider *FOVSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 5 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
-		GameManager::getInstance()->getFOV(), 45.0f, 103.0f);
+	UiSlider *FOVSlider = new UiSlider(glm::vec2(UI_REF_WIDTH / 4.0f, 5 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f,
+									   GameManager::getInstance()->getFOV(), 45.0f, 103.0f);
 
 	FOVSlider->setCallback([FOVText](float fov) {
 		GameManager::getInstance()->setFOV(fov);
 		FOVText->setText("FOV: " + std::to_string(GameManager::getInstance()->getFOV()));
 	});
 
-	UiText *shadowsText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
+	UiText *shadowsText = new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 6 * heightSeg), glm::vec2(COL_WIDTH, heightSeg),
 									 LightQualities[lightManager->getLightQuality()], MENU_TEXT_COLOR);
-	UiSliderInt *shadowSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+	UiSliderInt *shadowSlider = new UiSliderInt(glm::vec2(UI_REF_WIDTH / 4.0f, 7 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f,
 												static_cast<int>(lightManager->getLightQuality()), static_cast<int>(LQLow), static_cast<int>(LQHigh));
 	shadowSlider->setCallback([&manager = lightManager, shadowsText](int quality) {
 		manager->setLightQuality(static_cast<LightQuality>(quality));
 		shadowsText->setText(LightQualities[quality]);
 	});
 
-	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), Center);
+	UiCheckbox *useHdr = new UiCheckbox(glm::vec2(UI_REF_WIDTH / 4.0f - checkboxShift, 8 * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isHdrEnabled(), Center);
 	useHdr->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setHdr(enabled);
 	});
-	UiText *exposureText = new UiText(glm::vec2(UI_REF_CEN_X, 9 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Exposure: " + std::to_string(pps->getExposure()), MENU_TEXT_COLOR);
-	UiSlider *exposureSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 10 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+	UiText *exposureText = new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 9 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), "Exposure: " + std::to_string(pps->getExposure()), MENU_TEXT_COLOR);
+	UiSlider *exposureSlider = new UiSlider(glm::vec2(UI_REF_WIDTH / 4.0f, 10 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f,
 											pps->getExposure(), 0.0f, 10.0f);
 	exposureSlider->setCallback([pps = pps, exposureText](float exposure) {
 		pps->use();
@@ -96,8 +100,8 @@ OptionsScene::OptionsScene() {
 		exposureText->setText("Exposure: " + std::to_string(exposure));
 	});
 
-	UiText *gammaText = new UiText(glm::vec2(UI_REF_CEN_X, 11 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg), "Gamma: " + std::to_string(pps->getGamma()), MENU_TEXT_COLOR);
-	UiSlider *gammaSlider = new UiSlider(glm::vec2(UI_REF_CEN_X, 12 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
+	UiText *gammaText = new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 11 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), "Gamma: " + std::to_string(pps->getGamma()), MENU_TEXT_COLOR);
+	UiSlider *gammaSlider = new UiSlider(glm::vec2(UI_REF_WIDTH / 4.0f, 12 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f,
 										 pps->getGamma(), 0.0f, 10.0f);
 	gammaSlider->setCallback([pps = pps, gammaText](float gamma) {
 		pps->use();
@@ -105,27 +109,41 @@ OptionsScene::OptionsScene() {
 		gammaText->setText("Gamma: " + std::to_string(gamma));
 	});
 
-	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), Center);
+	UiText *audioText = new UiText(glm::vec2(UI_REF_WIDTH * 3.0f / 4.0f, 2 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), "Overall volume: " + std::to_string(sf::Listener::getGlobalVolume()), MENU_TEXT_COLOR);
+	UiSlider *audioSlider = new UiSlider(glm::vec2(UI_REF_WIDTH * 3.0f / 4.0f, 3 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f, sf::Listener::getGlobalVolume(), 0.0f, 1.0f);
+	audioSlider->setCallback([audioText](float vol) {
+		sf::Listener::setGlobalVolume(vol);
+		audioText->setText("Overall volume: " + std::to_string(sf::Listener::getGlobalVolume()));
+	});
+
+	UiText *musicText = new UiText(glm::vec2(UI_REF_WIDTH * 3.0f / 4.0f, 4 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), "Music volume: " + std::to_string(SoundSystem::getMusicVolume()), MENU_TEXT_COLOR);
+	UiSlider *musicSlider = new UiSlider(glm::vec2(UI_REF_WIDTH * 3.0f / 4.0f, 5 * heightSeg), glm::vec2(COL_WIDTH, heightSeg), heightSeg / 2.0f, SoundSystem::getMusicVolume(), 0.0f, 1.0f);
+	musicSlider->setCallback([musicText](float vol) {
+		SoundSystem::setMusicVolume(vol);
+		musicText->setText("Music volume: " + std::to_string(SoundSystem::getMusicVolume()));
+	});
+
+	UiCheckbox *useBloom = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift + UI_REF_WIDTH / 8.0f, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isBloomEnabled(), Center);
 	useBloom->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setBloom(enabled);
 	});
 
-	UiCheckbox *enableVsync = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->isVsyncEnabled(), Center);
+	UiCheckbox *enableVsync = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift + UI_REF_WIDTH / 8.0f, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), gameManager->isVsyncEnabled(), Center);
 	enableVsync->setCheckboxCallback([gameManager = gameManager](bool enabled) {
 		gameManager->setVsync(enabled);
 	});
 
-	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift, 15.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), Center);
+	UiCheckbox *enableAntialiasing = new UiCheckbox(glm::vec2(UI_REF_CEN_X / 2 - checkboxShift + UI_REF_WIDTH / 8.0f, 15.5f * heightSeg), glm::vec2(heightSeg, heightSeg), pps->isAntialiasingEnabled(), Center);
 	enableAntialiasing->setCheckboxCallback([pps = pps](bool enabled) {
 		pps->use();
 		pps->setAntialiasing(enabled);
 	});
 
-	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
+	UiCheckbox *enableLights = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift + UI_REF_WIDTH / 8.0f, 13.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableLights, Center);
 	enableLights->setCheckboxCallback([&manager = lightManager](bool enableLights) { manager->enableLights = enableLights; });
 	//enableLights->setRotationAnchor(TopLeft);
-	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
+	UiCheckbox *enableShadowCasting = new UiCheckbox(glm::vec2(UI_REF_CEN_X - checkboxShift + UI_REF_WIDTH / 8.0f, 14.5f * heightSeg), glm::vec2(heightSeg, heightSeg), lightManager->enableShadowCasting, Center);
 	enableShadowCasting->setCheckboxCallback([&manager = lightManager](bool enableShadowCasting) { manager->enableShadowCasting = enableShadowCasting; });
 
 	generalTab->addChild(enableLights);
@@ -141,15 +159,19 @@ OptionsScene::OptionsScene() {
 	generalTab->addChild(exposureSlider);
 	generalTab->addChild(gammaText);
 	generalTab->addChild(gammaSlider);
+	generalTab->addChild(audioText);
+	generalTab->addChild(audioSlider);
+	generalTab->addChild(musicText);
+	generalTab->addChild(musicSlider);
 	generalTab->addChild(useBloom);
 	generalTab->addChild(enableVsync);
 	generalTab->addChild(enableAntialiasing);
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 13.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 14.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use HDR", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 13.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 14.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync", MENU_TEXT_COLOR));
-	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2, 15.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X + UI_REF_WIDTH / 8.0f, 13.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable lights", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X + UI_REF_WIDTH / 8.0f, 14.5 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable shadow casting", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_WIDTH / 4.0f, 8 * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use HDR", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2 + UI_REF_WIDTH / 8.0f, 13.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Use bloom", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2 + UI_REF_WIDTH / 8.0f, 14.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable VSync", MENU_TEXT_COLOR));
+	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X / 2 + UI_REF_WIDTH / 8.0f, 15.5f * heightSeg), glm::vec2(2.0f*checkboxShift, BASE_BTN_SIZE*UI_REF_WIDTH), "Enable FXAA", MENU_TEXT_COLOR));
 	generalTab->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 0.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "GENERAL SETTINGS", MENU_TEXT_COLOR, MatchHeight));
 
 	UiText *windowType = new UiText(glm::vec2(UI_REF_CEN_X, 2.5f * heightSeg), glm::vec2(UI_REF_WIDTH, 1.5f * heightSeg), "Window type", MENU_TEXT_COLOR);
@@ -367,6 +389,8 @@ void OptionsScene::load() {
 	pps->setHdr(root.get("useHdr", pps->isHdrEnabled()).asBool());
 	pps->setBloom(root.get("useBloom", pps->isBloomEnabled()).asBool());
 	GameManager::getInstance()->setFOV(root.get("FOV", GameManager::getInstance()->getFOV()).asFloat());
+	SoundSystem::setMusicVolume(root.get("musicVolume", 0.15f).asFloat());
+	sf::Listener::setGlobalVolume(root.get("audioVolume", 1.0f).asFloat());
 }
 
 void OptionsScene::save() {
@@ -383,6 +407,8 @@ void OptionsScene::save() {
 	root["useHdr"] = pps->isHdrEnabled();
 	root["useBloom"] = pps->isBloomEnabled();
 	root["FOV"] = GameManager::getInstance()->getFOV();
+	root["musicVolume"] = SoundSystem::getMusicVolume();
+	root["audioVolume"] = sf::Listener::getGlobalVolume();
 	Global::saveToFile(SETTINGS_FILE, root);
 }
 

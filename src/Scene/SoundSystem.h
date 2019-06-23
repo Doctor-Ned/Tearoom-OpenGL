@@ -10,12 +10,15 @@ private:
 	~SoundSystem();
 	std::map<std::string, std::string> simpleNamesToFilesMap;
 	sf::Music *music = nullptr;
+	static sf::Music *getMenuMusic();
 public:
 	static std::vector<std::string> getSoundFiles();
 	static SoundSystem* getInstance();
 	static void loadSounds();
 	static sf::Sound *getSound(const std::string& file);
 	static sf::Music *getMusic(const std::string& file);
+	static float getMusicVolume();
+	static void setMusicVolume(float volume);
 	static void restartMusic();
 };
 

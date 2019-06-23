@@ -154,7 +154,7 @@ int AudioDevice::getFormatFromChannelCount(unsigned int channelCount)
 void AudioDevice::setGlobalVolume(float volume)
 {
     if (audioContext)
-        alCheck(alListenerf(AL_GAIN, volume * 0.01f));
+        alCheck(alListenerf(AL_GAIN, volume));
 
     listenerVolume = volume;
 }

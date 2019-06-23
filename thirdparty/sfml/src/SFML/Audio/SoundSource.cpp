@@ -127,7 +127,7 @@ float SoundSource::getVolume() const
     ALfloat gain;
     alCheck(alGetSourcef(m_source, AL_GAIN, &gain));
 
-    return gain * 100.f;
+    return gain;
 }
 
 
