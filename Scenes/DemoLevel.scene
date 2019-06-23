@@ -1405,6 +1405,7 @@
                                  {
                                     "id" : 58,
                                     "object" : {
+                                       "ID" : 0,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 57,
@@ -1580,6 +1581,7 @@
                                  {
                                     "id" : 65,
                                     "object" : {
+                                       "ID" : 0,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 62,
@@ -2293,6 +2295,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1055625939,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2360,6 +2363,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1053825753,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom3.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2485,6 +2489,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1056442088,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom2.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2610,6 +2615,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1053975661,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom1.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2818,6 +2824,7 @@
                         {
                            "id" : 115,
                            "object" : {
+                              "ID" : 1050304053,
                               "active" : true,
                               "animation" : {
                                  "id" : 114,
@@ -2955,6 +2962,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1057308588,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Letter/room7letter.PNG",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3105,6 +3113,7 @@
                         {
                            "id" : 127,
                            "object" : {
+                              "ID" : 1065353216,
                               "active" : true,
                               "animation" : {
                                  "id" : 126,
@@ -3242,6 +3251,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1056442091,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Letter/clockLetterPreview.PNG",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3379,6 +3389,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1057616450,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/keyPhoto.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3504,6 +3515,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1056805967,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/extraSecretPhoto1.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3629,6 +3641,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1055654162,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/extraSecretPhoto2.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3787,6 +3800,7 @@
                         {
                            "id" : 155,
                            "object" : {
+                              "ID" : 1065019349,
                               "active" : true,
                               "animation" : {
                                  "id" : 154,
@@ -3924,6 +3938,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
+                                       "photoID" : 1057308588,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Letter/room15letter.PNG",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -4082,6 +4097,7 @@
                         {
                            "id" : 167,
                            "object" : {
+                              "ID" : 1065353216,
                               "active" : true,
                               "animation" : {
                                  "id" : 166,
@@ -5211,6 +5227,7 @@
                                  {
                                     "id" : 220,
                                     "object" : {
+                                       "ID" : 0,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 219,
@@ -5752,6 +5769,7 @@
                                                 "isHitByRay" : false,
                                                 "isTaken" : false,
                                                 "name" : "Component",
+                                                "photoID" : 1057616449,
                                                 "previewPos" : [ 1200.0, 430.0 ],
                                                 "previewResource" : "res/textures/Letter/hall8letter.PNG",
                                                 "previewSize" : [ 300.0, 500.0 ]
@@ -5910,6 +5928,7 @@
                                  {
                                     "id" : 250,
                                     "object" : {
+                                       "ID" : 0,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 249,
@@ -6025,6 +6044,7 @@
                                                 "isHitByRay" : false,
                                                 "isTaken" : false,
                                                 "name" : "Component",
+                                                "photoID" : 1057178225,
                                                 "previewPos" : [ 0.0, 0.0 ],
                                                 "previewResource" : "",
                                                 "previewSize" : [ 0.0, 0.0 ]
@@ -6225,6 +6245,7 @@
                                  {
                                     "id" : 263,
                                     "object" : {
+                                       "ID" : 0,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 262,
@@ -6395,6 +6416,7 @@
                                                          "isHitByRay" : false,
                                                          "isTaken" : false,
                                                          "name" : "Component",
+                                                         "photoID" : -1082944132,
                                                          "previewPos" : [ 1200.0, 430.0 ],
                                                          "previewResource" : "res/textures/Letter/hall12letter.PNG",
                                                          "previewSize" : [ 300.0, 500.0 ]
@@ -6545,6 +6567,7 @@
                                           {
                                              "id" : 277,
                                              "object" : {
+                                                "ID" : 0,
                                                 "active" : true,
                                                 "animation" : {
                                                    "id" : 276,
@@ -6670,7 +6693,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ 3.0, 0.12999999523162842, -4.0500001907348633, 1.0 ]
+                                 [ 3.0, 0.0098999999463558197, -4.0500001907348633, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 281,
@@ -6708,13 +6731,13 @@
                      ],
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 3.0, -0.5, -4.0500001907348633 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 3.0, 0.0, -4.0500001907348633 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 3.0, -0.5, -4.0500001907348633 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 3.0, 0.0, -4.0500001907348633 ]
                      },
                      "mesh" : {
                         "id" : 282,
@@ -6723,7 +6746,7 @@
                            "culled" : true,
                            "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
-                           "model" : "res/models/podstawaFilaru/podstawaFilaru.obj",
+                           "model" : "res/models/pillarBase/pillarBase.obj",
                            "opacity" : 1.0,
                            "opaque" : true,
                            "renderMode" : 4,
@@ -6763,7 +6786,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ 6.0999999046325684, 0.0040000081062316895, -3.5999999046325684, 1.0 ]
+                                 [ 6.0999999046325684, 0.0079200007021427155, -3.5999999046325684, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 285,
@@ -6801,13 +6824,13 @@
                      ],
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 6.0999999046325684, -0.5, -3.5999999046325684 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 6.0999999046325684, 0.0, -3.5999999046325684 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 6.0999999046325684, -0.5, -3.5999999046325684 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 6.0999999046325684, 0.0, -3.5999999046325684 ]
                      },
                      "mesh" : {
                         "id" : 286,
@@ -6816,7 +6839,7 @@
                            "culled" : true,
                            "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
-                           "model" : "res/models/podstawaFilaru/podstawaFilaru.obj",
+                           "model" : "res/models/pillarBase/pillarBase.obj",
                            "opacity" : 1.0,
                            "opaque" : true,
                            "renderMode" : 4,
@@ -6856,7 +6879,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ 5.3000001907348633, 0.066999971866607666, -3.2000000476837158, 1.0 ]
+                                 [ 5.3000001907348633, 0.0089100003242492676, -3.2000000476837158, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 289,
@@ -6894,13 +6917,13 @@
                      ],
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 5.3000001907348633, -0.5, -3.2000000476837158 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 5.3000001907348633, 0.0, -3.2000000476837158 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 5.3000001907348633, -0.5, -3.2000000476837158 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 5.3000001907348633, 0.0, -3.2000000476837158 ]
                      },
                      "mesh" : {
                         "id" : 290,
@@ -6909,7 +6932,7 @@
                            "culled" : true,
                            "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
-                           "model" : "res/models/podstawaFilaru/podstawaFilaru.obj",
+                           "model" : "res/models/pillarBase/pillarBase.obj",
                            "opacity" : 1.0,
                            "opaque" : true,
                            "renderMode" : 4,
@@ -6949,7 +6972,7 @@
                                  [ 1.0, 0.0, 0.0, 0.0 ],
                                  [ 0.0, 1.0, 0.0, 0.0 ],
                                  [ 0.0, 0.0, 1.0, 0.0 ],
-                                 [ 4.8000001907348633, 0.080999970436096191, -4.1999998092651367, 1.0 ]
+                                 [ 4.8000001907348633, 0.0091300001367926598, -4.1999998092651367, 1.0 ]
                               ],
                               "mesh" : {
                                  "id" : 293,
@@ -6987,13 +7010,13 @@
                      ],
                      "localLastTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 4.8000001907348633, -0.5, -4.1999998092651367 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 4.8000001907348633, 0.0, -4.1999998092651367 ]
                      },
                      "localTransformData" : {
                         "eulerRotation" : [ 0.0, 0.0, 0.0 ],
-                        "scale" : [ 0.89999997615814209, 1.3999999761581421, 0.89999997615814209 ],
-                        "translation" : [ 4.8000001907348633, -0.5, -4.1999998092651367 ]
+                        "scale" : [ 0.02199999988079071, 0.02199999988079071, 0.02199999988079071 ],
+                        "translation" : [ 4.8000001907348633, 0.0, -4.1999998092651367 ]
                      },
                      "mesh" : {
                         "id" : 294,
@@ -7002,7 +7025,7 @@
                            "culled" : true,
                            "depthScale" : 0.0,
                            "emissiveFactor" : 0.0,
-                           "model" : "res/models/podstawaFilaru/podstawaFilaru.obj",
+                           "model" : "res/models/pillarBase/pillarBase.obj",
                            "opacity" : 1.0,
                            "opaque" : true,
                            "renderMode" : 4,
