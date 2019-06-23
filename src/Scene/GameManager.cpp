@@ -334,11 +334,10 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 		}
 		CHECK_GL_ERROR();
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
-	CHECK_GL_ERROR();
-
 	glGenFramebuffers(1, &result.fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
+	CHECK_GL_ERROR();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, result.texture, 0);
 	CHECK_GL_ERROR();
 	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
