@@ -507,17 +507,17 @@ void LightManager::disposeLights() {
 }
 
 void LightManager::dispose(DirLightData data) {
-	delete data.light;
+	//delete data.light;
 	dispose(data.data);
 }
 
 void LightManager::dispose(SpotLightData data) {
-	delete data.light;
+	//delete data.light;
 	dispose(data.data);
 }
 
 void LightManager::dispose(PointLightData data) {
-	delete data.light;
+	//delete data.light;
 	dispose(data.data);
 }
 

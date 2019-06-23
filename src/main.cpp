@@ -62,13 +62,13 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 int main(int argc, char** argv) {
 	try {
 		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-		console_sink->set_level(spdlog::level::debug);
+		console_sink->set_level(spdlog::level::trace);
 		console_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
 		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt", true);
-		file_sink->set_level(spdlog::level::debug);
+		file_sink->set_level(spdlog::level::trace);
 		file_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
 		spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ console_sink, file_sink })));
-		spdlog::set_level(spdlog::level::debug);
+		spdlog::set_level(spdlog::level::trace);
 
 	} catch (const spdlog::spdlog_ex& ex) {
 		printf("Failed to initialize the logger! %s\n", ex.what());

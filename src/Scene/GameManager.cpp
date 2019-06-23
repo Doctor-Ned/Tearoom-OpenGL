@@ -570,13 +570,14 @@ Camera* GameManager::getCurrentNonEditorCamera() {
 }
 
 void GameManager::goToOptions() {
+	SPDLOG_TRACE("Attempting to enter the options...");
 	if (currentScene == optionsScene && currentScene != nullptr) {
 		return;
 	}
-	SPDLOG_TRACE("Entered the options.");
 	optionsScene->setReturnScene(currentScene);
 	setCursorLocked(false);
 	setCurrentScene(optionsScene);
+	SPDLOG_TRACE("Entered the options.");
 }
 
 void GameManager::setMouseState(int key, bool pressed) {
