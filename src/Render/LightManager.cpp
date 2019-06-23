@@ -489,7 +489,7 @@ void LightManager::setLightQuality(LightQuality quality) {
 	if(!blurFbos[lightQuality].prepared) {
 		blurFbos[lightQuality].prepared = true;
 		GLuint shadowSize = toShadowSize(lightQuality);
-		blurFbos[lightQuality].framebuffer = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+		blurFbos[lightQuality].framebuffer = GameManager::createNonDepthFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, true, GL_CLAMP_TO_BORDER);
 	}
 	currentBlurFbo = blurFbos[lightQuality].framebuffer;
 }
