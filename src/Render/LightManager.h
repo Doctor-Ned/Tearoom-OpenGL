@@ -197,15 +197,13 @@ struct Lights {
 enum LightQuality {
 	LQLow,
 	LQMedium,
-	LQHigh,
-	LQUltra
+	LQHigh
 };
 
 static const std::string LightQualities[] {
 	"Shadows: Low",
 	"Shadows: Medium",
-	"Shadows: High",
-	"Shadows: Ultra"
+	"Shadows: High"
 };
 
 class LightManager : public GuiConfigurable {

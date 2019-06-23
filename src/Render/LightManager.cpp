@@ -471,8 +471,6 @@ int LightManager::toShadowSize(LightQuality quality) {
 			return 2048;
 		case LQHigh:
 			return 4096;
-		case LQUltra:
-			return 8192;
 	}
 }
 

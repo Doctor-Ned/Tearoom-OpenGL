@@ -76,7 +76,7 @@ OptionsScene::OptionsScene() {
 	UiText *shadowsText = new UiText(glm::vec2(UI_REF_CEN_X, 6 * heightSeg), glm::vec2(UI_REF_WIDTH, heightSeg),
 									 LightQualities[lightManager->getLightQuality()], MENU_TEXT_COLOR);
 	UiSliderInt *shadowSlider = new UiSliderInt(glm::vec2(UI_REF_CEN_X, 7 * heightSeg), glm::vec2(UI_REF_WIDTH / 2.0f, heightSeg), heightSeg / 2.0f,
-												static_cast<int>(lightManager->getLightQuality()), static_cast<int>(LQLow), static_cast<int>(LQUltra));
+												static_cast<int>(lightManager->getLightQuality()), static_cast<int>(LQLow), static_cast<int>(LQHigh));
 	shadowSlider->setCallback([&manager = lightManager, shadowsText](int quality) {
 		manager->setLightQuality(static_cast<LightQuality>(quality));
 		shadowsText->setText(LightQualities[quality]);
