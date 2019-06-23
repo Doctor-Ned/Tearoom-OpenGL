@@ -208,7 +208,9 @@ Lights LightManager::getLights() {
 
 Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	SPDLOG_DEBUG("Reworking lights! {}|{}|{} -> {}|{}|{}", dirLightAmount, spotLightAmount, pointLightAmount, dirs, spots, points);
+	CHECK_GL_ERROR();
 	disposeLights();
+	CHECK_GL_ERROR();
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		SPDLOG_ERROR("Attempted to create too many lights!");
 		throw "Attempted to create too many lights!";

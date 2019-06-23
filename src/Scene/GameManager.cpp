@@ -268,6 +268,7 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	CHECK_GL_ERROR();
 	return rbo;
 }
 
@@ -275,6 +276,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	int oldFbo;
 	SPDLOG_DEBUG("Creating new {}x{} framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}, F: {}", width, height, internalFormat, format, type, clamp, clampMode, filter);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	CHECK_GL_ERROR();
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &result.texture);
@@ -289,13 +291,17 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 		if (clampMode == GL_CLAMP_TO_BORDER) {
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, reinterpret_cast<float*>(&border));
 		}
+		CHECK_GL_ERROR();
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-
 	glGenFramebuffers(1, &result.fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
+	CHECK_GL_ERROR();
+	result.rbo = createDepthRenderbuffer(width, height);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	//CHECK_GL_ERROR();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, result.texture, 0);
+	CHECK_GL_ERROR();
 	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
@@ -304,6 +310,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 	return result;
 }
 
@@ -312,6 +319,7 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 	int oldFbo;
 	SPDLOG_DEBUG("Creating new {}x{} non-depth framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}", width, height, internalFormat, format, type, clamp, clampMode);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	CHECK_GL_ERROR();
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &result.texture);
@@ -324,12 +332,15 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 		if (clampMode == GL_CLAMP_TO_BORDER) {
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, reinterpret_cast<float*>(&border));
 		}
+		CHECK_GL_ERROR();
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
+	CHECK_GL_ERROR();
 
 	glGenFramebuffers(1, &result.fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, result.texture, 0);
+	CHECK_GL_ERROR();
 	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
@@ -338,6 +349,7 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 	return result;
 }
 
@@ -353,18 +365,19 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	SPDLOG_DEBUG("Creating special {}x{} framebuffer. TT: {}, F: {}, IF: {}, F: {}, C: {}, CM: {}, A: {}", width, height, textureTarget, filter, internalFormat, format, clamp, clampMethod, attachment);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenTextures(1, &result.texture);
+	CHECK_GL_ERROR();
 	glBindTexture(textureTarget, result.texture);
 	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+	CHECK_GL_ERROR();
 	if (clamp) {
 		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, clampMethod);
 		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, clampMethod);
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
 	glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
-
+	CHECK_GL_ERROR();
 	GLenum drawBuffer = GL_NONE;
 
 	bool hasDepth = false;
@@ -377,6 +390,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glGenFramebuffers(1, &result.fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, result.texture, 0);
+	CHECK_GL_ERROR();
 
 	if (!hasDepth) {
 		result.rbo = createDepthRenderbuffer(width, height);
@@ -389,6 +403,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 
 	return result;
 }
@@ -398,6 +413,7 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	int oldFbo;
 	SPDLOG_DEBUG("Creating new multitexture {}x{} framebuffer. IF: {}, F: {}, T: {}, TC: {}", width, height, internalFormat, format, type, textureCount);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	CHECK_GL_ERROR();
 	MultitextureFramebuffer result;
 	result.textureAmount = textureCount;
 	result.textures = new GLuint[textureCount];
@@ -405,6 +421,7 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(textureCount, result.textures);
+	CHECK_GL_ERROR();
 	GLenum *drawBuffers = new GLenum[textureCount];
 	for (int i = 0; i < textureCount; i++) {
 		glBindTexture(GL_TEXTURE_2D, result.textures[i]);
@@ -413,9 +430,11 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
+		CHECK_GL_ERROR();
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, result.textures[i], 0);
 		drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+		CHECK_GL_ERROR();
 	}
 	glDrawBuffers(textureCount, drawBuffers);
 	GLenum status;
@@ -424,6 +443,7 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 	return result;
 }
 

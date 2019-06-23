@@ -227,6 +227,7 @@ int main(int argc, char** argv) {
 		SPDLOG_ERROR("Failed to initialize OpenGL loader!");
 		return 1;
 	}
+	CHECK_GL_ERROR();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -241,14 +242,24 @@ int main(int argc, char** argv) {
 
 	glfwMakeContextCurrent(window);
 
+	CHECK_GL_ERROR();
+
 	glFrontFace(GL_CCW);
+	CHECK_GL_ERROR();
 	glEnable(GL_CULL_FACE);
+	CHECK_GL_ERROR();
 	glCullFace(GL_BACK);
+	CHECK_GL_ERROR();
 	glEnable(GL_BLEND);
+	CHECK_GL_ERROR();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.01f);
+	CHECK_GL_ERROR();
+	//glEnable(GL_ALPHA_TEST);
+	//CHECK_GL_ERROR();
+	//glAlphaFunc(GL_GREATER, 0.01f);
+	//CHECK_GL_ERROR();
 	glEnable(GL_DEPTH_CLAMP);
+	CHECK_GL_ERROR();
 
 	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	gameManager->setCursorLocked(false);
@@ -267,6 +278,7 @@ int main(int argc, char** argv) {
 	glfwSetKeyCallback(window, keyboard_callback);
 	glfwSetScrollCallback(window, mouse_scroll_callback);
 	glfwSetCharCallback(window, char_callback);
+	CHECK_GL_ERROR();
 
 	QuadData dat = UiTexturedElement::createFullscreenTexturedQuad();
 

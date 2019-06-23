@@ -3,6 +3,7 @@
 #include "Scene/AssetManager.h"
 
 QuadData UiTexturedElement::createFullscreenTexturedQuad() {
+	CHECK_GL_ERROR();
 	QuadData result;
 
 	UiTextureVertex vertices[4];
@@ -29,6 +30,7 @@ QuadData UiTexturedElement::createFullscreenTexturedQuad() {
 	glBindVertexArray(result.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, result.vbo);
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(UiTextureVertex), &data[0], GL_STATIC_DRAW);
+	CHECK_GL_ERROR();
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex), static_cast<void*>(nullptr));
@@ -37,8 +39,10 @@ QuadData UiTexturedElement::createFullscreenTexturedQuad() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(UiTextureVertex),
 						  reinterpret_cast<void*>(offsetof(UiTextureVertex, TexCoords)));
 
+	CHECK_GL_ERROR();
 	data.clear();
 	glBindVertexArray(0);
+	CHECK_GL_ERROR();
 	return result;
 }
 

@@ -15,6 +15,7 @@ class EditorScene;
 
 struct Framebuffer {
 	GLuint fbo = 0;
+	GLuint rbo = 0;
 	GLuint depth = 0;
 	GLuint texture = 0;
 };

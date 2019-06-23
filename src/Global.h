@@ -40,8 +40,16 @@
 #include "json/json.h"
 #include <xmmintrin.h>
 #include "assimp/matrix4x4.h"
+#define ENABLE_GL_ERROR_CHECK
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include "spdlog/spdlog.h"
+#include <csignal>
+
+#ifdef ENABLE_GL_ERROR_CHECK
+#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); std::raise(SIGINT); } } while(false)
+#else
+#define CHECK_GL_ERROR()
+#endif
 
 enum WindowType {
 	ExclusiveFullscreen,
