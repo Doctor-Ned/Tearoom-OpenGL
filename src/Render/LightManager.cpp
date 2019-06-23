@@ -23,6 +23,18 @@ void LightManager::setup() {
 	fullscreenQuad = new QuadData(UiTexturedElement::createFullscreenTexturedQuad());
 	GLuint shadowSize = toShadowSize(lightQuality);
 	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
+	for (int i = 0; i < MAX_LIGHTS_OF_TYPE; i++) {
+		for (int j = 0; j < LQHigh + 1; j++) {
+			lightQuality = static_cast<LightQuality>(j);
+			LightShadowData data = createDirShadowData();
+			dirData[i][j] = data;
+			data = createSpotShadowData();
+			spotData[i][j] = data;
+			data = createPointShadowData();
+			pointData[i][j] = data;
+		}
+	}
+	setLightQuality(LQMedium);
 }
 
 void LightManager::renderAndUpdate(const std::function<void(Shader*)> renderCallback, std::vector<Shader*> updatableShaders) {
@@ -208,9 +220,7 @@ Lights LightManager::getLights() {
 
 Lights LightManager::recreateLights(int dirs, int spots, int points) {
 	SPDLOG_DEBUG("Reworking lights! {}|{}|{} -> {}|{}|{}", dirLightAmount, spotLightAmount, pointLightAmount, dirs, spots, points);
-	CHECK_GL_ERROR();
-	disposeLights();
-	CHECK_GL_ERROR();
+	pointLightAmount = spotLightAmount = dirLightAmount = 0;
 	if (glm::max(glm::max(dirs, spots), points) > MAX_LIGHTS_OF_TYPE) {
 		SPDLOG_ERROR("Attempted to create too many lights!");
 		throw "Attempted to create too many lights!";
@@ -244,7 +254,7 @@ Lights LightManager::createUnmanagedLights(int dirs, int spots, int points) {
 
 void LightManager::replaceLights(Lights lights) {
 	SPDLOG_DEBUG("Replacing lights! {}|{}|{} -> {}|{}|{}", dirLightAmount, spotLightAmount, pointLightAmount, lights.dirLights.size(), lights.spotLights.size(), lights.pointLights.size());
-	disposeLights();
+	pointLightAmount = spotLightAmount = dirLightAmount = 0;
 	if (std::max(lights.pointLights.size(), std::max(lights.spotLights.size(), lights.dirLights.size())) > MAX_LIGHTS_OF_TYPE) {
 		SPDLOG_ERROR("Attempted to add to many lights!");
 		throw "Attempted to add too many lights!";
@@ -266,7 +276,6 @@ SpotLight* LightManager::addSpotLight() {
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = new SpotLight();
-	spotLights[spotLightAmount].data = createSpotShadowData();
 	return spotLights[spotLightAmount++].light;
 }
 
@@ -276,7 +285,6 @@ DirLight* LightManager::addDirLight() {
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = new DirLight();
-	dirLights[dirLightAmount].data = createDirShadowData();
 	return dirLights[dirLightAmount++].light;
 }
 
@@ -286,7 +294,6 @@ PointLight* LightManager::addPointLight() {
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = new PointLight();
-	pointLights[pointLightAmount].data = createPointShadowData();
 	return pointLights[pointLightAmount++].light;
 }
 
@@ -320,7 +327,6 @@ void LightManager::addSpotLight(SpotLight* light) {
 		throw "Attempted to add too many spot lights!";
 	}
 	spotLights[spotLightAmount].light = light;
-	spotLights[spotLightAmount].data = createSpotShadowData();
 	spotLightAmount++;
 }
 
@@ -335,7 +341,6 @@ void LightManager::addDirLight(DirLight* light) {
 		throw "Attempted to add too many dir lights!";
 	}
 	dirLights[dirLightAmount].light = light;
-	dirLights[dirLightAmount].data = createDirShadowData();
 	dirLightAmount++;
 }
 
@@ -350,7 +355,6 @@ void LightManager::addPointLight(PointLight* light) {
 		throw "Attempted to add too many point lights!";
 	}
 	pointLights[pointLightAmount].light = light;
-	pointLights[pointLightAmount].data = createPointShadowData();
 	pointLightAmount++;
 }
 
@@ -367,7 +371,7 @@ void LightManager::remove(DirLight * light) {
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
-	dispose(dirLights[index]);
+	//dispose(dirLights[index]);
 	for (int i = index + 1; i < dirLightAmount; i++) {
 		dirLights[i - 1] = dirLights[i];
 	}
@@ -388,7 +392,7 @@ void LightManager::remove(PointLight * light) {
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
-	dispose(pointLights[index]);
+	//dispose(pointLights[index]);
 	for (int i = index + 1; i < pointLightAmount; i++) {
 		pointLights[i - 1] = pointLights[i];
 	}
@@ -409,7 +413,7 @@ void LightManager::remove(SpotLight* light) {
 		throw "Attempted to remove a light that is NOT registered in the LightManager!";
 	}
 
-	dispose(spotLights[index]);
+	//dispose(spotLights[index]);
 	for (int i = index + 1; i < spotLightAmount; i++) {
 		spotLights[i - 1] = spotLights[i];
 	}
@@ -442,23 +446,12 @@ LightQuality LightManager::getLightQuality() {
 }
 
 void LightManager::setLightQuality(LightQuality quality) {
-	SPDLOG_DEBUG("Settings light quality to {}.", LightQualities[quality]);
+	SPDLOG_DEBUG("Setting light quality to {}.", LightQualities[quality]);
 	lightQuality = quality;
-	GLuint shadowSize = toShadowSize(lightQuality);
-	glDeleteBuffers(1, &blurFbo.texture);
-	glDeleteFramebuffers(1, &blurFbo.fbo);
-	blurFbo = GameManager::createFramebuffer(GL_RG32F, shadowSize, shadowSize, GL_RGBA, GL_UNSIGNED_BYTE, GL_CLAMP_TO_BORDER);
-	for (int i = 0; i < dirLightAmount; i++) {
-		dispose(dirLights[i].data);
-		dirLights[i].data = createDirShadowData();
-	}
-	for (int i = 0; i < spotLightAmount; i++) {
-		dispose(spotLights[i].data);
-		spotLights[i].data = createSpotShadowData();
-	}
-	for (int i = 0; i < pointLightAmount; i++) {
-		dispose(pointLights[i].data);
-		pointLights[i].data = createPointShadowData();
+	for(int i=0;i<MAX_LIGHTS_OF_TYPE;i++) {
+		dirLights[i].data = dirData[i][lightQuality];
+		spotLights[i].data = spotData[i][lightQuality];
+		pointLights[i].data = pointData[i][lightQuality];
 	}
 }
 

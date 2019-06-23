@@ -200,7 +200,7 @@ enum LightQuality {
 	LQHigh
 };
 
-static const std::string LightQualities[] {
+static const std::string LightQualities[]{
 	"Shadows: Low",
 	"Shadows: Medium",
 	"Shadows: High"
@@ -260,6 +260,9 @@ private:
 	DirLightData dirLights[MAX_LIGHTS_OF_TYPE];
 	SpotLightData spotLights[MAX_LIGHTS_OF_TYPE];
 	PointLightData pointLights[MAX_LIGHTS_OF_TYPE];
+	LightShadowData dirData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	LightShadowData spotData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
+	LightShadowData pointData[MAX_LIGHTS_OF_TYPE][LQHigh + 1];
 	int dirLightAmount = 0, spotLightAmount = 0, pointLightAmount = 0;
 	float initialAmbient = 0.01f;
 	LightQuality lightQuality = LQMedium;
