@@ -189,7 +189,7 @@ void OctreeNode::frustumCulling(Frustum& frustum)
 
 	for(auto& node : nodes)
 	{
-		if(frustum.boxInFrustum(node.getBox()))
+		//if(frustum.boxInFrustum(node.getBox()))
 			node.frustumCulling(frustum);
 	}
 }
