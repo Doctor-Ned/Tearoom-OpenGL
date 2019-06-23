@@ -306,7 +306,7 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
+		SPDLOG_CRITICAL("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -345,7 +345,7 @@ Framebuffer GameManager::createNonDepthFramebuffer(GLint internalFormat, GLsizei
 	glDrawBuffers(1, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
+		SPDLOG_CRITICAL("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -399,7 +399,7 @@ SpecialFramebuffer GameManager::createSpecialFramebuffer(GLenum textureTarget, G
 	glDrawBuffers(1, &drawBuffer);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
+		SPDLOG_CRITICAL("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
@@ -439,7 +439,7 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	glDrawBuffers(textureCount, drawBuffers);
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-		SPDLOG_DEBUG("Invalid framebuffer status! {}", status);
+		SPDLOG_CRITICAL("Invalid framebuffer status! {}", status);
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
