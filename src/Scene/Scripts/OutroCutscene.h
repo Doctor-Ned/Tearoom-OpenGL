@@ -38,7 +38,6 @@ protected:
     bool run = false;
     UiPlane* paperTexture = new UiPlane("res/textures/cutscenePaper.PNG", glm::vec2(350.0f, 50.0f), glm::vec2(600.0f, 600.0f), TopLeft);;
     UiColorPlane* backgroundPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);
-    UiColorPlane* transitionPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);
 
     UiPlane* text1 =  new UiPlane("res/textures/Outro/outroLine1.PNG", glm::vec2(400.0f, 100.0f), glm::vec2(500.0f, 85.0f), TopLeft);
     UiPlane* text2 =  new UiPlane("res/textures/Outro/outroLine2.PNG", glm::vec2(400.0f, 180.0f), glm::vec2(520.0f, 120.0f), TopLeft);
