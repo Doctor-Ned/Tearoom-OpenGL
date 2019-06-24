@@ -74,6 +74,14 @@ void SoundSystem::restartMusic() {
 	getMenuMusic()->play();
 }
 
+void SoundSystem::playPickingSound() {
+	SoundSystem *ss = getInstance();
+	if(ss->pickingSound == nullptr) {
+		ss->pickingSound = getSound("pickSound");
+	}
+	ss->pickingSound->play();
+}
+
 sf::Sound *SoundSystem::getSound(const std::string& file) {
 	sf::Sound *sound = new sf::Sound();
 	sf::SoundBuffer *buffer = new sf::SoundBuffer();
