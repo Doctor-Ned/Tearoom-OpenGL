@@ -2549,40 +2549,32 @@
                               ],
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 1.5707963705062866, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.5, 0.5 ],
                                  "translation" : [ 0.89999997615814209, 2.5, -1.7000000476837158 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 1.5707963705062866, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.5, 0.5 ],
                                  "translation" : [ 0.89999997615814209, 2.5, -1.7000000476837158 ]
                               },
                               "mesh" : {
                                  "id" : 105,
                                  "object" : {
                                     "castShadows" : true,
-                                    "color" : [ 0.34799998998641968, 0.26530000567436218, 0.18250000476837158, 1.0 ],
                                     "culled" : true,
-                                    "depthScale" : 0.029999999329447746,
-                                    "emissive" : [ 0.044100001454353333, 0.024700000882148743, 0.011500000022351742 ],
-                                    "emissiveFactor" : 1.0,
-                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
-                                    "metallic" : 0.0,
-                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
-                                    "moveScale" : 1.0,
-                                    "moving" : false,
+                                    "depthScale" : 0.0,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/photoMain/photo.obj",
                                     "opacity" : 1.0,
                                     "opaque" : true,
                                     "renderMode" : 4,
-                                    "roughness" : 1.0,
-                                    "shaderType" : 3,
-                                    "speed" : 1.0,
+                                    "shaderType" : 4,
                                     "texTileX" : 1.0,
                                     "texTileY" : 1.0,
                                     "uiScale" : 1.0,
                                     "useLight" : true
                                  },
-                                 "type" : 4
+                                 "type" : 19
                               },
                               "name" : "Node",
                               "parent" : {
@@ -3399,40 +3391,32 @@
                               ],
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, -0.38397246599197388, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.5, 0.5 ],
                                  "translation" : [ 2.2000000476837158, 3.9000000953674316, 2.0 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, -0.38397246599197388, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.5, 0.5 ],
                                  "translation" : [ 2.2000000476837158, 3.9000000953674316, 2.0 ]
                               },
                               "mesh" : {
                                  "id" : 140,
                                  "object" : {
                                     "castShadows" : true,
-                                    "color" : [ 0.34803920984268188, 0.26529452204704285, 0.18254996836185455, 1.0 ],
                                     "culled" : true,
-                                    "depthScale" : 0.029999999329447746,
-                                    "emissive" : [ 0.044117629528045654, 0.02473955973982811, 0.011461934074759483 ],
-                                    "emissiveFactor" : 1.0,
-                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
-                                    "metallic" : 0.0,
-                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
-                                    "moveScale" : 1.0,
-                                    "moving" : false,
+                                    "depthScale" : 0.0,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/photoMain/photo.obj",
                                     "opacity" : 1.0,
                                     "opaque" : true,
                                     "renderMode" : 4,
-                                    "roughness" : 1.0,
-                                    "shaderType" : 3,
-                                    "speed" : 1.0,
+                                    "shaderType" : 4,
                                     "texTileX" : 1.0,
                                     "texTileY" : 1.0,
                                     "uiScale" : 1.0,
                                     "useLight" : true
                                  },
-                                 "type" : 4
+                                 "type" : 19
                               },
                               "name" : "Node #1",
                               "parent" : {
@@ -3948,40 +3932,32 @@
                               ],
                               "localLastTransformData" : {
                                  "eulerRotation" : [ 0.0, 1.8151425123214722, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.40000000596046448, 0.5 ],
                                  "translation" : [ 0.0, 2.2999999523162842, 1.7000000476837158 ]
                               },
                               "localTransformData" : {
                                  "eulerRotation" : [ 0.0, 1.8151425123214722, 0.0 ],
-                                 "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
+                                 "scale" : [ 0.5, 0.40000000596046448, 0.5 ],
                                  "translation" : [ 0.0, 2.2999999523162842, 1.7000000476837158 ]
                               },
                               "mesh" : {
                                  "id" : 162,
                                  "object" : {
                                     "castShadows" : true,
-                                    "color" : [ 0.34799998998641968, 0.26530000567436218, 0.18250000476837158, 1.0 ],
                                     "culled" : true,
-                                    "depthScale" : 0.029999999329447746,
-                                    "emissive" : [ 0.044100001454353333, 0.024700000882148743, 0.011500000022351742 ],
-                                    "emissiveFactor" : 1.0,
-                                    "max" : [ 0.5, 0.125, 0.30000001192092896 ],
-                                    "metallic" : 0.0,
-                                    "min" : [ -0.5, -0.125, -0.30000001192092896 ],
-                                    "moveScale" : 1.0,
-                                    "moving" : false,
+                                    "depthScale" : 0.0,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/letter/letter.obj",
                                     "opacity" : 1.0,
                                     "opaque" : true,
                                     "renderMode" : 4,
-                                    "roughness" : 1.0,
-                                    "shaderType" : 3,
-                                    "speed" : 1.0,
+                                    "shaderType" : 4,
                                     "texTileX" : 1.0,
                                     "texTileY" : 1.0,
                                     "uiScale" : 1.0,
                                     "useLight" : true
                                  },
-                                 "type" : 4
+                                 "type" : 19
                               },
                               "name" : "Node",
                               "parent" : {
@@ -5716,7 +5692,7 @@
                                                    [ 1.0, 0.0, 0.0, 0.0 ],
                                                    [ 0.0, 1.0, 0.0, 0.0 ],
                                                    [ 0.0, 0.0, 1.0, 0.0 ],
-                                                   [ 1.752000093460083, 0.2839999794960022, -4.9580001831054688, 1.0 ]
+                                                   [ 1.7320001125335693, 0.2839999794960022, -4.9580001831054688, 1.0 ]
                                                 ],
                                                 "mesh" : {
                                                    "id" : 243,
@@ -5779,40 +5755,32 @@
                                        ],
                                        "localLastTransformData" : {
                                           "eulerRotation" : [ 0.0, 1.3613568544387817, 0.0 ],
-                                          "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
-                                          "translation" : [ 4.9000000953674316, 2.4000000953674316, -0.80000001192092896 ]
+                                          "scale" : [ 0.5, 0.5, 0.5 ],
+                                          "translation" : [ 2.9000000953674316, 2.4000000953674316, -0.80000001192092896 ]
                                        },
                                        "localTransformData" : {
                                           "eulerRotation" : [ 0.0, 1.3613568544387817, 0.0 ],
-                                          "scale" : [ 4.1999998092651367, 4.1999998092651367, 4.1999998092651367 ],
-                                          "translation" : [ 4.9000000953674316, 2.4000000953674316, -0.80000001192092896 ]
+                                          "scale" : [ 0.5, 0.5, 0.5 ],
+                                          "translation" : [ 2.9000000953674316, 2.4000000953674316, -0.80000001192092896 ]
                                        },
                                        "mesh" : {
                                           "id" : 245,
                                           "object" : {
                                              "castShadows" : true,
-                                             "color" : [ 0.34799998998641968, 0.26530000567436218, 0.18250000476837158, 1.0 ],
                                              "culled" : true,
-                                             "depthScale" : 0.029999999329447746,
-                                             "emissive" : [ 0.044100001454353333, 0.024700000882148743, 0.011500000022351742 ],
-                                             "emissiveFactor" : 1.0,
-                                             "max" : [ 0.5, 0.125, 0.30000001192092896 ],
-                                             "metallic" : 0.0,
-                                             "min" : [ -0.5, -0.125, -0.30000001192092896 ],
-                                             "moveScale" : 1.0,
-                                             "moving" : false,
+                                             "depthScale" : 0.0,
+                                             "emissiveFactor" : 0.0,
+                                             "model" : "res/models/letter/letter.obj",
                                              "opacity" : 1.0,
                                              "opaque" : true,
                                              "renderMode" : 4,
-                                             "roughness" : 1.0,
-                                             "shaderType" : 3,
-                                             "speed" : 1.0,
+                                             "shaderType" : 4,
                                              "texTileX" : 1.0,
                                              "texTileY" : 1.0,
                                              "uiScale" : 1.0,
                                              "useLight" : true
                                           },
-                                          "type" : 4
+                                          "type" : 19
                                        },
                                        "name" : "Node",
                                        "parent" : {

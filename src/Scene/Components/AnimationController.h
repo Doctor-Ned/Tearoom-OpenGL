@@ -18,6 +18,7 @@ protected:
 	Animation* anim = nullptr;
 	OutroCutscene *outro = nullptr;
 	int doorID = 0;
+	GraphNode* lockToHide = nullptr;
 	void renderGui() override;
 public:
 	SerializableType getSerializableType() override;

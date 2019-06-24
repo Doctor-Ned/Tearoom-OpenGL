@@ -31,6 +31,15 @@ void AnimationController::renderGui() {
 			anim = gameObject->getComponent<Animation>();
 		}
 
+		ImGui::Text(("Lock acquired from: " + (lockToHide == nullptr ? "None" : lockToHide->getName())).c_str());
+		if (editor && editor->nodeSelectionCallback == nullptr) {
+			if (ImGui::Button("CHOOSE LOCK OBJECT")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					lockToHide = node;
+				};
+			}
+		}
+
 		ImGui::Text(("Outro acquired from: " + (outro == nullptr ? "None" : outro->getGameObject()->getName())).c_str());
 		if (editor && editor->nodeSelectionCallback == nullptr) {
 			ImGui::SameLine();
@@ -53,6 +62,7 @@ Json::Value AnimationController::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["doorID"] = doorID;
 	root["anim"] = serializer->serialize(anim);
+	root["lockToHide"] = serializer->serialize(lockToHide);
 	root["outro"] = serializer->serialize(outro);
 	return root;
 }
@@ -62,6 +72,7 @@ void AnimationController::deserialize(Json::Value& root, Serializer* serializer)
 	doorID = root["doorID"].asInt();
 	anim = dynamic_cast<Animation*>(serializer->deserialize(root["anim"]).object);
 	outro = dynamic_cast<OutroCutscene*>(serializer->deserialize(root["outro"]).object);
+	lockToHide = dynamic_cast<GraphNode*>(serializer->deserialize(root["lockToHide"]).object);
 }
 
 AnimationController::AnimationController(GraphNode* _gameObject) : Component(_gameObject, "Animation Controller") {}
@@ -81,6 +92,9 @@ void AnimationController::open() {
 	anim->play();
 	if (outro) {
 		outro->runOutro();
+	}
+	if (lockToHide != nullptr) {
+		lockToHide->setActive(false);
 	}
 }
 
