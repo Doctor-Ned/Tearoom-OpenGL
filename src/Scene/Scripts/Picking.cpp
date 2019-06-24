@@ -118,7 +118,6 @@ void Picking::initialize() {
 	itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f, 40.0f), Right);
 	letterButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
 	photoButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
-	descBackground = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(1295.0f, 355.0f), glm::vec2(400.0f, 150.0f), Right);
 
 	letterButton->setOpacity(0.0f);
 	itemsButton->setOpacity(0.0f);
@@ -157,7 +156,6 @@ void Picking::initialize() {
 	buttonsCanvas->addChild(itemsButton);
     buttonsCanvas->addChild(letterButton);
     buttonsCanvas->addChild(photoButton);
-    buttonsCanvas->addChild(descBackground);
 
 	encouragementCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
 	encouragementCanvas->setParent(root);
@@ -165,7 +163,6 @@ void Picking::initialize() {
 	encouragementPick = new UiText(glm::vec2(750.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to pick up", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 	encouragementActivate = new UiText(glm::vec2(750.0f, 260.0f), glm::vec2(60.0f, 30.0f), "Click to interact", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight);
 
-	descBackground->setActive(false);
 	encouragementCanvas->setActive(false);
 	encouragementCanvas->addChild(encouragementBackground);
 	encouragementCanvas->addChild(encouragementPick);
@@ -225,15 +222,6 @@ void Picking::collect(CollectableObject* collectable) {
 	inventory.push_back(collectable->getGameObject());
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	collectable->getButton()->setOpacity(0.0f);
-
-	collectable->getButton()->addHoverCallback([this, collectable]() {
-		descBackground->setActive(true);
-		descBackground->addChild(collectable->getDescription());
-	});
-	collectable->getButton()->addLeaveCallback([this, collectable]() {
-		descBackground->setActive(false);
-		descBackground->removeChild(collectable->getDescription());
-	});
 
 	collectable->takeObject();
 
