@@ -1,6 +1,9 @@
 #pragma once
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Scene/Components/LightComponents/Sun.h"
+#include "Serialization/Serializer.h"
+
+class SoundSource;
 
 class AnimTimeSaver : public Component
 {
@@ -10,6 +13,7 @@ protected:
 	void renderGui() override;
 	Sun *sun = nullptr;
 	KeyFrameAnimation *animation = nullptr;
+	SoundSource *sound = nullptr;
 	int targetTime;
 	bool startedPlaying;
 	bool retargetAllowed;

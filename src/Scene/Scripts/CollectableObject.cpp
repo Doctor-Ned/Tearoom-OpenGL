@@ -114,6 +114,7 @@ void CollectableObject::renderGui() {
 	Component::renderGui();
 	if(active) {
 		ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+		ImGui::DragInt("Photo ID", &photoID, 1, 0, 100);
 		ImGui::Text(("Icon: " + iconResource).c_str());
 		EditorScene *editor = gameManager->getEditorScene();
 		if(editor && editor->textureSelectionCallback == nullptr) {

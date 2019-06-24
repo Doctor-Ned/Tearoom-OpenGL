@@ -5,11 +5,13 @@
 #include "SunTimeActivator.h"
 #include "Scene/Components/Collider.h"
 #include "Scene/Components/AnimationController.h"
+#include "Scene/Components/SoundSource.h"
 
 void AnimTimeSaver::renderGui() {
 	Component::renderGui();
 	if (active) {
 		ImGui::Text(("Saved anim time: " + std::to_string(targetTime)).c_str());
+		ImGui::DragInt("Cache ID", &ID, 1, 0, 100);
 		ImGui::Text(("Sun acquired from: " + (sun == nullptr ? "None" : sun->getGameObject()->getName())).c_str());
 		EditorScene *editor = gameManager->getEditorScene();
 		if (editor && editor->nodeSelectionCallback == nullptr) {
@@ -17,6 +19,15 @@ void AnimTimeSaver::renderGui() {
 			if (ImGui::Button("CHOOSE SUN")) {
 				editor->nodeSelectionCallback = [this](GraphNode *node) {
 					this->setSun(node->getComponent<Sun>());
+				};
+			}
+		}
+		ImGui::Text(("Sound acquired from: " + (sound == nullptr ? "None" : sound->getGameObject()->getName())).c_str());
+		if (editor && editor->nodeSelectionCallback == nullptr) {
+			ImGui::SameLine();
+			if (ImGui::Button("CHOOSE SOUND")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					this->sound = node->getComponent<SoundSource>();
 				};
 			}
 		}
@@ -99,6 +110,7 @@ Json::Value AnimTimeSaver::serialize(Serializer* serializer) {
 	root["retargetAllowed"] = retargetAllowed;
 	root["disableCollider"] = disableCollider;
 	root["ID"] = ID;
+	root["sound"] = serializer->serialize(sound);
 	return root;
 }
 
@@ -111,6 +123,7 @@ void AnimTimeSaver::deserialize(Json::Value& root, Serializer* serializer) {
 	retargetAllowed = root["retargetAllowed"].asBool();
 	disableCollider = root.get("disableCollider", disableCollider).asBool();
 	ID = root.get("ID", ID).asInt();
+	sound = dynamic_cast<SoundSource*>(serializer->deserialize(root["sound"]).object);
 }
 
 AnimTimeSaver::AnimTimeSaver(GraphNode* _gameObject) : Component(_gameObject, "AnimTimeSaver") {
@@ -123,6 +136,9 @@ void AnimTimeSaver::update(float msec) {
 			if (!startedPlaying || retargetAllowed) {
 				startedPlaying = true;
 				targetTime = round(sun->getTime());
+				if(sound) {
+					sound->play();
+				}
 			}
 		} else {
 			if (startedPlaying) {

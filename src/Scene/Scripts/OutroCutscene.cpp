@@ -18,6 +18,7 @@ OutroCutscene::OutroCutscene(Scene* scene, SunController *sunController, GraphNo
 void OutroCutscene::runOutro() {
     gameManager->setCursorLocked(false);
     player->getComponent<Picking>()->hidePreview();
+	elapsed = 0.0f;
 
     if (sunController != nullptr) {
         sunController->setComponentActive(false);
