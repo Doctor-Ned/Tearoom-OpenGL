@@ -22,6 +22,9 @@
 #include "Profiler.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include <filesystem>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 //comment extern below if you don't have NVidia GPU
 extern "C" {
@@ -37,7 +40,10 @@ static AssetManager* assetManager;
 static Serializer* serializer;
 static bool showUi = true;
 static bool uiButtonPressed = false;
-static const int SHOW_UI_BUTTON = GLFW_KEY_F1;
+static bool ssPressed = false;
+static bool uiSsPressed = false;
+static const int SHOW_UI_BUTTON = GLFW_KEY_F1, SS_BUTTON = GLFW_KEY_F5, SS_UI_BUTTON = GLFW_KEY_F6;
+static bool takeScreenshot = false, takeUiScreenshot = false;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == SHOW_UI_BUTTON) {
@@ -46,6 +52,22 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
 			showUi = !showUi;
 		} else if (action == GLFW_RELEASE && uiButtonPressed) {
 			uiButtonPressed = false;
+		}
+	}
+	if (key == SS_BUTTON) {
+		if (action == GLFW_PRESS && !ssPressed) {
+			ssPressed = true;
+			takeScreenshot = true;
+		} else if (action == GLFW_RELEASE && ssPressed) {
+			ssPressed = false;
+		}
+	}
+	if (key == SS_UI_BUTTON) {
+		if (action == GLFW_PRESS && !uiSsPressed) {
+			uiSsPressed = true;
+			takeUiScreenshot = true;
+		} else if (action == GLFW_RELEASE && uiSsPressed) {
+			uiSsPressed = false;
 		}
 	}
 	gameManager->keyboard_callback(window, key, scancode, action, mods);
@@ -253,6 +275,10 @@ int main(int argc, char** argv) {
 
 	glfwMakeContextCurrent(window);
 
+	if (!std::experimental::filesystem::is_directory("Screenshots") || !std::experimental::filesystem::exists("Screenshots")) {
+		std::experimental::filesystem::create_directory("Screenshots");
+	}
+
 	CHECK_GL_ERROR();
 
 	glFrontFace(GL_CCW);
@@ -331,7 +357,7 @@ int main(int argc, char** argv) {
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		if (showUi) {
+		if (showUi && !takeUiScreenshot) {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
@@ -404,7 +430,7 @@ int main(int argc, char** argv) {
 		}
 		dat.render();
 		Profiler::getInstance()->addMeasure("PostProcessing");
-		if (showUi) {
+		if (showUi && !takeUiScreenshot) {
 			Profiler::getInstance()->startCountingTime();
 			glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 			gameManager->renderUi();
@@ -415,6 +441,37 @@ int main(int argc, char** argv) {
 			Profiler::getInstance()->addMeasure("UI Render");
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
+
+		if (takeScreenshot || takeUiScreenshot) {
+			if (takeUiScreenshot) {
+				SPDLOG_DEBUG("Creating a new screenshot without UI...");
+			} else {
+				SPDLOG_DEBUG("Creating a new standard screenshot...");
+			}
+			int totalSize = 3 * videoSettings.windowWidth * videoSettings.windowHeight;
+			unsigned char *data = new unsigned char[totalSize];
+			unsigned char *targetData = new unsigned char[totalSize];
+			glReadPixels(0, 0, videoSettings.windowWidth, videoSettings.windowHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
+			int width = videoSettings.windowWidth * 3;
+			for (int i = 0; i < width; ++i) {
+				for (int j = 0; j < videoSettings.windowHeight; ++j) {
+					int target = videoSettings.windowHeight - 1 - j;
+					targetData[target*width + i] = data[j*width + i];
+				}
+			}
+			delete[] data;
+			time_t rawtime;
+			struct tm * timeinfo;
+			char buffer[80];
+			time(&rawtime);
+			timeinfo = localtime(&rawtime);
+			strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
+			std::string timeString(buffer);
+			stbi_write_jpg(("Screenshots\\screenshot_" + timeString + ".jpg").c_str(), videoSettings.windowWidth, videoSettings.windowHeight, 3, targetData, 100);
+			SPDLOG_DEBUG(("Saved a new screenshot to 'screenshot_" + timeString + ".jpg'!").c_str());
+			takeScreenshot = takeUiScreenshot = false;
+			delete[] targetData;
 		}
 
 		glfwSwapBuffers(window);
