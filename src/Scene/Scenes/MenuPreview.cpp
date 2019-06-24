@@ -138,6 +138,7 @@ MenuPreview::MenuPreview() {
     rootUiElement->addChild(optionsHover);
     rootUiElement->addChild(aboutHover);
     rootUiElement->addChild(quitHover);
+	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH * 0.7f, 2.0f * UI_REF_HEIGHT / 9.0f), "Press F4 for control hints", glm::vec3(1.0f, 1.0f, 1.0f), MatchWidth));
 
 	transitionPlane->setOpacity(0.0f);
 
@@ -150,7 +151,6 @@ MenuPreview::MenuPreview() {
     backHover->setOpacity(0.0f);
     menuAbout->setActive(false);
     backToMenu->setActive(false);
-
 }
 
 void MenuPreview::update(double deltaTime) {

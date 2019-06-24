@@ -728,5 +728,6 @@ GLFWwindow* GameManager::getWindow() {
 }
 
 void GameManager::quit() {
+	SPDLOG_DEBUG("Quitting the game...");
 	glfwSetWindowShouldClose(window, true);
 }
