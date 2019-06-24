@@ -57,6 +57,7 @@ MenuPreview::MenuPreview() {
     });
     startGame->addClickCallback([this]() {
         //GameManager::getInstance()->setCurrentScene(new MiszukScene());
+		stopTransition();
         startTransition = true;
     });
     startGame->addHoverCallback([this, startHover](){
@@ -75,6 +76,7 @@ MenuPreview::MenuPreview() {
 
     about->addClickCallback([this, menuAbout, menuBackground, startGame, startHover,
                              options, optionsHover, quit, quitHover, about, aboutHover, backToMenu, backHover]() {
+		stopTransition();
        menuBackground->setActive(false);
        menuAbout->setActive(true);
        startGame->setActive(false);
@@ -95,6 +97,7 @@ MenuPreview::MenuPreview() {
         aboutHover->setOpacity(0.0f);
     });
 	options->addClickCallback([&]() {
+		stopTransition();
 		gameManager->goToOptions();
 	});
     quit->addClickCallback([this]() {
@@ -178,12 +181,10 @@ void MenuPreview::update(double deltaTime) {
         }
         transitionPlane->setOpacity(elapsed);
         if (transitionPlane->getOpacity() >= 1.0f) {
+			stopTransition();
             GameManager::getInstance()->setCursorLocked(true);
             GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
 			SoundSystem::restartMusic();
-			transitionPlane->setOpacity(0.0f);
-			elapsed = 0.0f;
-			startTransition = false;
         }
     }
 }
@@ -191,8 +192,15 @@ void MenuPreview::update(double deltaTime) {
 void MenuPreview::keyEvent(int key, bool pressed) {
 	Scene::keyEvent(key, pressed);
 	if(key == GLFW_KEY_D && !pressed) {
+		stopTransition();
 		gameManager->goToDebugMenu();
 	}
+}
+
+void MenuPreview::stopTransition() {
+	transitionPlane->setOpacity(0.0f);
+	elapsed = 0.0f;
+	startTransition = false;
 }
 
 MenuPreview::~MenuPreview() {}
