@@ -225,16 +225,6 @@ void Picking::collect(CollectableObject* collectable) {
 	inventory.push_back(collectable->getGameObject());
 	collectable->setButton(new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(60.0f, 60.0f), Right));
 	collectable->getButton()->setOpacity(0.0f);
-
-	collectable->getButton()->addHoverCallback([this, collectable]() {
-		descBackground->setActive(true);
-		descBackground->addChild(collectable->getDescription());
-	});
-	collectable->getButton()->addLeaveCallback([this, collectable]() {
-		descBackground->setActive(false);
-		descBackground->removeChild(collectable->getDescription());
-	});
-
 	collectable->takeObject();
 
 	//adding item to grid while opened
