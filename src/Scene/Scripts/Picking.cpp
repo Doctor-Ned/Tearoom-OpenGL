@@ -409,7 +409,7 @@ void Picking::removeUnusedItem(int ID) {
             inventory.erase(inventory.begin() + i);
 			photosInventoryCanvas->removeChild(obj->getIcon());
 			if(obj->getPreview()) {
-				photosInventoryCanvas->removeChild(obj->getPreview());
+				previewCanvas->removeChild(obj->getPreview());
 			}
         }
     }
