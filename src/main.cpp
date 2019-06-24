@@ -35,8 +35,19 @@ static void glfw_error_callback(int error, const char* description) {
 static GameManager* gameManager;
 static AssetManager* assetManager;
 static Serializer* serializer;
+static bool showUi = true;
+static bool uiButtonPressed = false;
+static const int SHOW_UI_BUTTON = GLFW_KEY_F1;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == SHOW_UI_BUTTON) {
+		if (action == GLFW_PRESS && !uiButtonPressed) {
+			uiButtonPressed = true;
+			showUi = !showUi;
+		} else if (action == GLFW_RELEASE && uiButtonPressed) {
+			uiButtonPressed = false;
+		}
+	}
 	gameManager->keyboard_callback(window, key, scancode, action, mods);
 	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
 }
@@ -320,9 +331,11 @@ int main(int argc, char** argv) {
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		if (showUi) {
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+		}
 		// Rendering
 		static double currentTime, lastTime = 0.0, timeDelta, deltaSum = 100.0f;
 		static int lastFps = 0;
@@ -349,7 +362,7 @@ int main(int argc, char** argv) {
 		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
 		Profiler::getInstance()->addMeasure("Render calculations");
-		
+
 		glDisable(GL_DEPTH_TEST);
 
 		if (postProcessingShader->isBloomEnabled()) {
@@ -391,16 +404,18 @@ int main(int argc, char** argv) {
 		}
 		dat.render();
 		Profiler::getInstance()->addMeasure("PostProcessing");
-		Profiler::getInstance()->startCountingTime();
-		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
-		gameManager->renderUi();
-		fpsPlaneShader->use();
-		fpsPlane->render(fpsPlaneShader);
-		fpsTextShader->use();
-		fpsText->render(fpsTextShader);
-		Profiler::getInstance()->addMeasure("UI Render");
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		if (showUi) {
+			Profiler::getInstance()->startCountingTime();
+			glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
+			gameManager->renderUi();
+			fpsPlaneShader->use();
+			fpsPlane->render(fpsPlaneShader);
+			fpsTextShader->use();
+			fpsText->render(fpsTextShader);
+			Profiler::getInstance()->addMeasure("UI Render");
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 
 		glfwSwapBuffers(window);
 
