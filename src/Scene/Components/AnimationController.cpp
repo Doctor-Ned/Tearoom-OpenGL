@@ -26,9 +26,19 @@ void AnimationController::renderGui() {
 				};
 			}
 		}
-		if(ImGui::Button("ACQUIRE OWN")) {
+		if (ImGui::Button("ACQUIRE OWN")) {
 			anim = gameObject->getComponent<Animation>();
 		}
+
+		ImGui::Text(("Lock acquired from: " + (lockToHide == nullptr ? "None" : lockToHide->getName())).c_str());
+		if (editor && editor->nodeSelectionCallback == nullptr) {
+			if (ImGui::Button("CHOOSE LOCK OBJECT")) {
+				editor->nodeSelectionCallback = [this](GraphNode *node) {
+					lockToHide = node;
+				};
+			}
+		}
+		
 	}
 }
 
@@ -40,6 +50,7 @@ Json::Value AnimationController::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["doorID"] = doorID;
 	root["anim"] = serializer->serialize(anim);
+	root["lockToHide"] = serializer->serialize(lockToHide);
 	return root;
 }
 
@@ -47,6 +58,7 @@ void AnimationController::deserialize(Json::Value& root, Serializer* serializer)
 	Component::deserialize(root, serializer);
 	doorID = root["doorID"].asInt();
 	anim = dynamic_cast<Animation*>(serializer->deserialize(root["anim"]).object);
+	lockToHide = dynamic_cast<GraphNode*>(serializer->deserialize(root["lockToHide"]).object);
 }
 
 AnimationController::AnimationController(GraphNode* _gameObject) : Component(_gameObject, "Animation Controller") {}
@@ -64,5 +76,9 @@ void AnimationController::open() {
 	sound->play();
 	anim->setComponentActive(true);
 	anim->play();
+	if (lockToHide != nullptr)
+	{
+		lockToHide->setActive(false);
+	}
 }
 

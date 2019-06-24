@@ -15,6 +15,7 @@ protected:
 	AnimationController() {}
 	Animation* anim = nullptr;
 	int doorID = 0;
+	GraphNode* lockToHide = nullptr;
 	void renderGui() override;
 public:
 	SerializableType getSerializableType() override;
