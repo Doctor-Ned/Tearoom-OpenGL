@@ -451,27 +451,26 @@ int main(int argc, char** argv) {
 			}
 			int totalSize = 3 * videoSettings.windowWidth * videoSettings.windowHeight;
 			unsigned char *data = new unsigned char[totalSize];
-			unsigned char *targetData = new unsigned char[totalSize];
 			glReadPixels(0, 0, videoSettings.windowWidth, videoSettings.windowHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
 			int width = videoSettings.windowWidth * 3;
 			for (int i = 0; i < width; ++i) {
-				for (int j = 0; j < videoSettings.windowHeight; ++j) {
+				for (int j = 0; j < static_cast<int>(videoSettings.windowHeight / 2); ++j) {
 					int target = videoSettings.windowHeight - 1 - j;
-					targetData[target*width + i] = data[j*width + i];
+					unsigned char temp = data[target*width + i];
+					data[target*width + i] = data[j*width + i];
+					data[j*width + i] = temp;
 				}
 			}
-			delete[] data;
 			time_t rawtime;
-			struct tm * timeinfo;
 			char buffer[80];
 			time(&rawtime);
-			timeinfo = localtime(&rawtime);
+			struct tm* timeinfo = localtime(&rawtime);
 			strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
 			std::string timeString(buffer);
-			stbi_write_jpg(("Screenshots\\screenshot_" + timeString + ".jpg").c_str(), videoSettings.windowWidth, videoSettings.windowHeight, 3, targetData, 100);
+			stbi_write_jpg(("Screenshots\\screenshot_" + timeString + ".jpg").c_str(), videoSettings.windowWidth, videoSettings.windowHeight, 3, data, 100);
 			SPDLOG_DEBUG(("Saved a new screenshot to 'screenshot_" + timeString + ".jpg'!").c_str());
 			takeScreenshot = takeUiScreenshot = false;
-			delete[] targetData;
+			delete[] data;
 		}
 
 		glfwSwapBuffers(window);
