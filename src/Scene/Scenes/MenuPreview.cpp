@@ -108,10 +108,10 @@ MenuPreview::MenuPreview() {
         quitHover->setOpacity(0.0f);
     });
 
-    UiPlane* screen1 = new UiPlane("res/textures/MenuSlides/screen1.png", glm::vec2(0.0f, 0.0f), glm::vec2(1300.0f, 800.0f), TopLeft);
-    UiPlane* screen2 = new UiPlane("res/textures/MenuSlides/screen2.png", glm::vec2(0.0f, 0.0f), glm::vec2(1300.0f, 800.0f), TopLeft);
-    UiPlane* screen3 = new UiPlane("res/textures/MenuSlides/screen3.png", glm::vec2(0.0f, 0.0f), glm::vec2(1300.0f, 800.0f), TopLeft);
-    UiPlane* screen4 = new UiPlane("res/textures/MenuSlides/screen4.png", glm::vec2(0.0f, 0.0f), glm::vec2(1300.0f, 800.0f), TopLeft);
+    UiPlane* screen1 = new UiPlane("res/textures/MenuSlides/screen1.png", glm::vec2(0.0f, 0.0f), glm::vec2(1600.0f, 900.0f), TopLeft);
+    UiPlane* screen2 = new UiPlane("res/textures/MenuSlides/screen2.png", glm::vec2(0.0f, 0.0f), glm::vec2(1600.0f, 900.0f), TopLeft);
+    UiPlane* screen3 = new UiPlane("res/textures/MenuSlides/screen3.png", glm::vec2(0.0f, 0.0f), glm::vec2(1600.0f, 900.0f), TopLeft);
+    UiPlane* screen4 = new UiPlane("res/textures/MenuSlides/screen4.png", glm::vec2(0.0f, 0.0f), glm::vec2(1600.0f, 900.0f), TopLeft);
 
     slidePhotos.push_back(screen3);
     slidePhotos.push_back(screen2);
