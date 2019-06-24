@@ -404,10 +404,16 @@ void Picking::update(float msec) {
 
 void Picking::removeUnusedItem(int ID) {
     for(int i=0; i<inventory.size();i++) {
-        if(inventory[i]->getComponent<CollectableObject>()->getPhotoID() == ID) {
+		CollectableObject * obj = inventory[i]->getComponent<CollectableObject>();
+    	if(obj->getPhotoID() == ID) {
             inventory.erase(inventory.begin() + i);
+			photosInventoryCanvas->removeChild(obj->getIcon());
+			if(obj->getPreview()) {
+				photosInventoryCanvas->removeChild(obj->getPreview());
+			}
         }
     }
+	//showInventoryUi();
 }
 
 void Picking::setShowHint(bool showHint) {

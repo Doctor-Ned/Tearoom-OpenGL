@@ -18,7 +18,7 @@ protected:
 	bool startedPlaying;
 	bool retargetAllowed;
 	bool disableCollider = false;
-	int ID;
+	int ID = 0;
 public:
 	void reset();
 	int getID();
