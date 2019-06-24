@@ -7,6 +7,7 @@
 #include "Scenes/EditorScene.h"
 #include "Profiler.h"
 #include "Scenes/OptionsScene.h"
+#include "Scenes/MenuPreview.h"
 
 GameManager *GameManager::getInstance() {
 	static GameManager* instance = nullptr;
@@ -111,12 +112,23 @@ void GameManager::goToMenu(bool destroyPreviousScene) {
 	SPDLOG_TRACE("Entered the menu.");
 	Scene* old = currentScene;
 	if (menuScene == nullptr) {
-		menuScene = new MenuScene();
+		menuScene = new MenuPreview();
+		debugMenuScene = new MenuScene();
 		optionsScene = new OptionsScene();
 	}
 	currentScene = menuScene;
 	setCursorLocked(false);
-	if (old != menuScene && old != optionsScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
+	if (old != menuScene && old != debugMenuScene && old != optionsScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
+		delete old;
+	}
+}
+
+void GameManager::goToDebugMenu(bool destroyPreviousScene) {
+	SPDLOG_TRACE("Entered the debug menu.");
+	Scene* old = currentScene;
+	currentScene = debugMenuScene;
+	setCursorLocked(false);
+	if (old != menuScene && old != debugMenuScene && old != optionsScene && destroyPreviousScene && reinterpret_cast<int>(old) != 0xCDCDCDCD) {
 		delete old;
 	}
 }

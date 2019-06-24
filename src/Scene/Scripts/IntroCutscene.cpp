@@ -26,10 +26,6 @@ void IntroCutscene::runIntro() {
     run = true;
 }
 
-void IntroCutscene::switchToOutro() {
-
-}
-
 void IntroCutscene::initialize() {
 	UiElement *root = scene->getUiRoot();
 	mainCanvas = new UiCanvas(glm::vec2(0.0f, 0.0f), root->getSize());
@@ -52,11 +48,6 @@ void IntroCutscene::initialize() {
 
     mainCanvas->addChild(skipSprite);
 
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_8, true, [this]() {
-	    this->switchToOutro();
-		this->runIntro();
-	});
-
     GameManager::getInstance()->addKeyCallback(GLFW_KEY_SPACE, true, [this]() {
         phase = 6;
         skipSprite->setActive(false);
@@ -66,7 +57,10 @@ void IntroCutscene::initialize() {
 }
 
 void IntroCutscene::update(float msec) {
-
+	if(!started) {
+		runIntro();
+		started = true;
+	}
     if(run) {
         switch (phase) {
             case 0:
@@ -152,6 +146,7 @@ void IntroCutscene::update(float msec) {
                     elapsed = 0.0f;
                     backgroundPlane->setActive(false);
                     transitionPlane->setActive(false);
+					skipSprite->setActive(false);
                     run = false;
 					gameManager->setCursorLocked(true);
                 }

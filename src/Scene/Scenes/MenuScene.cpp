@@ -46,7 +46,7 @@ MenuScene::MenuScene() {
 	UiTextButton *menuPreview = new UiTextButton(glm::vec2(UI_REF_CEN_X * 1.7, 8 * UI_REF_HEIGHT / 9.0f), "Menu Preview");
 	menuPreview->addClickCallback([this]() {
 		SoundSystem::getSound("bow")->play();
-		GameManager::getInstance()->setCurrentScene(new MenuPreview());
+		GameManager::getInstance()->goToMenu();
 	});
 	engineLogo = new UiPlane("res/textures/capybaraLogo.PNG", glm::vec2(220.0f, 590.0f), glm::vec2(300.0f, 150.0f), Center);
 	rootUiElement->addChild(background);

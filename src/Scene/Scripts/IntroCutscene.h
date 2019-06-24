@@ -24,7 +24,6 @@ public:
     void deserialize(Json::Value &root, Serializer* serializer) override;
     void update(float msec) override;
     void runIntro();
-    void switchToOutro();
 protected:
 	void initialize();
 	SunController *sunController;
@@ -35,6 +34,7 @@ protected:
     float elapsed = 1.0f;
     short phase = 0;
     UiCanvas* mainCanvas;
+	bool started = false;
     bool run = false;
     UiPlane* paperTexture = new UiPlane("res/textures/cutscenePaper.PNG", glm::vec2(350.0f, 50.0f), glm::vec2(600.0f, 600.0f), TopLeft);;
     UiColorPlane* backgroundPlane = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1280.0f, 800.0f), TopLeft);

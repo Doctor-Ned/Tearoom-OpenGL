@@ -98,8 +98,8 @@ MenuPreview::MenuPreview() {
 		gameManager->goToOptions();
 	});
     quit->addClickCallback([this]() {
-        //GameManager::getInstance()->quit();
-		GameManager::getInstance()->goToMenu();
+        GameManager::getInstance()->quit();
+		//GameManager::getInstance()->goToMenu();
     });
     quit->addHoverCallback([this, quitHover](){
         quitHover->setOpacity(0.3f);
@@ -181,8 +181,18 @@ void MenuPreview::update(double deltaTime) {
             GameManager::getInstance()->setCursorLocked(true);
             GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
 			SoundSystem::restartMusic();
+			transitionPlane->setOpacity(0.0f);
+			elapsed = 0.0f;
+			startTransition = false;
         }
     }
+}
+
+void MenuPreview::keyEvent(int key, bool pressed) {
+	Scene::keyEvent(key, pressed);
+	if(key == GLFW_KEY_D && !pressed) {
+		gameManager->goToDebugMenu();
+	}
 }
 
 MenuPreview::~MenuPreview() {}
