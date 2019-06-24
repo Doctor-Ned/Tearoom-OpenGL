@@ -1442,6 +1442,10 @@
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
+                                       "sound" : {
+                                          "id" : -1,
+                                          "type" : 0
+                                       },
                                        "startedPlaying" : true,
                                        "sun" : {
                                           "id" : 15,
@@ -1516,20 +1520,61 @@
                   "id" : 61,
                   "object" : {
                      "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
+                        "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
+                        "translation" : [ 0.93000000715255737, 0.41999998688697815, -0.11999999731779099 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
+                        "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
+                        "translation" : [ 0.93000000715255737, 0.41999998688697815, -0.11999999731779099 ]
+                     },
+                     "mesh" : {
+                        "id" : 62,
+                        "object" : {
+                           "castShadows" : true,
+                           "culled" : true,
+                           "depthScale" : 0.029999999329447746,
+                           "emissiveFactor" : 0.0,
+                           "model" : "res/models/lock/lock.obj",
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 4,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 19
+                     },
+                     "name" : "Lock",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 63,
+                  "object" : {
+                     "active" : true,
                      "children" : [
                         {
-                           "id" : 62,
+                           "id" : 64,
                            "object" : {
                               "active" : true,
                               "components" : [
                                  {
-                                    "id" : 63,
+                                    "id" : 65,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 2.0,
                                        "gameObject" : {
-                                          "id" : 62,
+                                          "id" : 64,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -1553,12 +1598,12 @@
                                     "type" : 34
                                  },
                                  {
-                                    "id" : 64,
+                                    "id" : 66,
                                     "object" : {
                                        "active" : true,
                                        "collisionType" : 0,
                                        "gameObject" : {
-                                          "id" : 62,
+                                          "id" : 64,
                                           "type" : 1
                                        },
                                        "halfDimensions" : [ 0.0099999997764825821, 0.43000000715255737, 0.16500000655651093 ],
@@ -1570,7 +1615,7 @@
                                           [ 0.93999999761581421, 0.43450000882148743, -0.25999999046325684, 1.0 ]
                                        ],
                                        "mesh" : {
-                                          "id" : 65,
+                                          "id" : 67,
                                           "object" : {
                                              "castShadows" : true,
                                              "color" : [ 0.0, 1.0, 0.0, 1.0 ],
@@ -1603,21 +1648,25 @@
                                     "type" : 27
                                  },
                                  {
-                                    "id" : 66,
+                                    "id" : 68,
                                     "object" : {
                                        "ID" : 0,
                                        "active" : true,
                                        "animation" : {
-                                          "id" : 63,
+                                          "id" : 65,
                                           "type" : 34
                                        },
                                        "disableCollider" : false,
                                        "gameObject" : {
-                                          "id" : 62,
+                                          "id" : 64,
                                           "type" : 1
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
+                                       "sound" : {
+                                          "id" : -1,
+                                          "type" : 0
+                                       },
                                        "startedPlaying" : false,
                                        "sun" : {
                                           "id" : 15,
@@ -1628,57 +1677,20 @@
                                     "type" : 53
                                  },
                                  {
-                                    "id" : 67,
+                                    "id" : 69,
                                     "object" : {
                                        "active" : true,
                                        "anim" : {
-                                          "id" : 63,
+                                          "id" : 65,
                                           "type" : 34
                                        },
                                        "doorID" : 1,
                                        "gameObject" : {
-                                          "id" : 62,
+                                          "id" : 64,
                                           "type" : 1
                                        },
                                        "lockToHide" : {
-                                          "id" : 68,
-                                          "object" : {
-                                             "active" : true,
-                                             "localLastTransformData" : {
-                                                "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
-                                                "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
-                                                "translation" : [ 0.93000000715255737, 0.41999998688697815, -0.11999999731779099 ]
-                                             },
-                                             "localTransformData" : {
-                                                "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
-                                                "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
-                                                "translation" : [ 0.93000000715255737, 0.41999998688697815, -0.11999999731779099 ]
-                                             },
-                                             "mesh" : {
-                                                "id" : 69,
-                                                "object" : {
-                                                   "castShadows" : true,
-                                                   "culled" : true,
-                                                   "depthScale" : 0.029999999329447746,
-                                                   "emissiveFactor" : 0.0,
-                                                   "model" : "res/models/lock/lock.obj",
-                                                   "opacity" : 1.0,
-                                                   "opaque" : true,
-                                                   "renderMode" : 4,
-                                                   "shaderType" : 4,
-                                                   "texTileX" : 1.0,
-                                                   "texTileY" : 1.0,
-                                                   "uiScale" : 1.0,
-                                                   "useLight" : true
-                                                },
-                                                "type" : 19
-                                             },
-                                             "name" : "Lock",
-                                             "parent" : {
-                                                "id" : 1,
-                                                "type" : 1
-                                             }
-                                          },
+                                          "id" : 61,
                                           "type" : 1
                                        },
                                        "name" : "Animation Controller",
@@ -1721,7 +1733,7 @@
                               },
                               "name" : "door",
                               "parent" : {
-                                 "id" : 61,
+                                 "id" : 63,
                                  "type" : 1
                               }
                            },
@@ -2432,7 +2444,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1053825753,
+                                       "photoID" : 7,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom3.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2558,7 +2570,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1056442088,
+                                       "photoID" : 6,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom2.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2676,7 +2688,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1053975661,
+                                       "photoID" : 5,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/photoColumnRoom1.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -2885,7 +2897,7 @@
                         {
                            "id" : 118,
                            "object" : {
-                              "ID" : 1050304053,
+                              "ID" : 2,
                               "active" : true,
                               "animation" : {
                                  "id" : 117,
@@ -2898,6 +2910,10 @@
                               },
                               "name" : "AnimTimeSaver",
                               "retargetAllowed" : false,
+                              "sound" : {
+                                 "id" : -1,
+                                 "type" : 0
+                              },
                               "startedPlaying" : false,
                               "sun" : {
                                  "id" : 15,
@@ -3174,7 +3190,7 @@
                         {
                            "id" : 130,
                            "object" : {
-                              "ID" : 1065353216,
+                              "ID" : 3,
                               "active" : true,
                               "animation" : {
                                  "id" : 129,
@@ -3187,6 +3203,10 @@
                               },
                               "name" : "AnimTimeSaver",
                               "retargetAllowed" : false,
+                              "sound" : {
+                                 "id" : -1,
+                                 "type" : 0
+                              },
                               "startedPlaying" : false,
                               "sun" : {
                                  "id" : 15,
@@ -3450,7 +3470,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1057616450,
+                                       "photoID" : 2,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/keyPhoto.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3568,7 +3588,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1056805967,
+                                       "photoID" : 3,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/extraSecretPhoto1.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3694,7 +3714,7 @@
                                        "isHitByRay" : false,
                                        "isTaken" : false,
                                        "name" : "Component",
-                                       "photoID" : 1055654162,
+                                       "photoID" : 4,
                                        "previewPos" : [ 1200.0, 430.0 ],
                                        "previewResource" : "res/textures/Photos/extraSecretPhoto2.jpg",
                                        "previewSize" : [ 300.0, 500.0 ]
@@ -3853,7 +3873,7 @@
                         {
                            "id" : 158,
                            "object" : {
-                              "ID" : 1065019349,
+                              "ID" : 1,
                               "active" : true,
                               "animation" : {
                                  "id" : 157,
@@ -3866,6 +3886,10 @@
                               },
                               "name" : "AnimTimeSaver",
                               "retargetAllowed" : false,
+                              "sound" : {
+                                 "id" : -1,
+                                 "type" : 0
+                              },
                               "startedPlaying" : false,
                               "sun" : {
                                  "id" : 15,
@@ -4142,7 +4166,7 @@
                         {
                            "id" : 170,
                            "object" : {
-                              "ID" : 1065353216,
+                              "ID" : 4,
                               "active" : true,
                               "animation" : {
                                  "id" : 169,
@@ -4155,6 +4179,10 @@
                               },
                               "name" : "AnimTimeSaver",
                               "retargetAllowed" : false,
+                              "sound" : {
+                                 "id" : -1,
+                                 "type" : 0
+                              },
                               "startedPlaying" : false,
                               "sun" : {
                                  "id" : 15,
@@ -4446,10 +4474,6 @@
                         "type" : 1
                      }
                   },
-                  "type" : 1
-               },
-               {
-                  "id" : 68,
                   "type" : 1
                },
                {
@@ -5204,15 +5228,56 @@
                            "id" : 219,
                            "object" : {
                               "active" : true,
+                              "localLastTransformData" : {
+                                 "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
+                                 "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
+                                 "translation" : [ 9.6049995422363281, 0.38999998569488525, -9.0799999237060547 ]
+                              },
+                              "localTransformData" : {
+                                 "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
+                                 "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
+                                 "translation" : [ 9.6049995422363281, 0.38999998569488525, -9.0799999237060547 ]
+                              },
+                              "mesh" : {
+                                 "id" : 220,
+                                 "object" : {
+                                    "castShadows" : true,
+                                    "culled" : true,
+                                    "depthScale" : 0.029999999329447746,
+                                    "emissiveFactor" : 0.0,
+                                    "model" : "res/models/lock/lock.obj",
+                                    "opacity" : 1.0,
+                                    "opaque" : true,
+                                    "renderMode" : 4,
+                                    "shaderType" : 4,
+                                    "texTileX" : 1.0,
+                                    "texTileY" : 1.0,
+                                    "uiScale" : 1.0,
+                                    "useLight" : true
+                                 },
+                                 "type" : 19
+                              },
+                              "name" : "HallDoorLock",
+                              "parent" : {
+                                 "id" : 218,
+                                 "type" : 1
+                              }
+                           },
+                           "type" : 1
+                        },
+                        {
+                           "id" : 221,
+                           "object" : {
+                              "active" : true,
                               "components" : [
                                  {
-                                    "id" : 220,
+                                    "id" : 222,
                                     "object" : {
                                        "active" : false,
                                        "currentTime" : 0.0,
                                        "endTime" : 1.0,
                                        "gameObject" : {
-                                          "id" : 219,
+                                          "id" : 221,
                                           "type" : 1
                                        },
                                        "isPlaying" : false,
@@ -5233,21 +5298,25 @@
                                     "type" : 34
                                  },
                                  {
-                                    "id" : 221,
+                                    "id" : 223,
                                     "object" : {
                                        "ID" : 0,
                                        "active" : true,
                                        "animation" : {
-                                          "id" : 220,
+                                          "id" : 222,
                                           "type" : 34
                                        },
                                        "disableCollider" : false,
                                        "gameObject" : {
-                                          "id" : 219,
+                                          "id" : 221,
                                           "type" : 1
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
+                                       "sound" : {
+                                          "id" : -1,
+                                          "type" : 0
+                                       },
                                        "startedPlaying" : false,
                                        "sun" : {
                                           "id" : 15,
@@ -5258,57 +5327,20 @@
                                     "type" : 53
                                  },
                                  {
-                                    "id" : 222,
+                                    "id" : 224,
                                     "object" : {
                                        "active" : true,
                                        "anim" : {
-                                          "id" : 220,
+                                          "id" : 222,
                                           "type" : 34
                                        },
                                        "doorID" : 2,
                                        "gameObject" : {
-                                          "id" : 219,
+                                          "id" : 221,
                                           "type" : 1
                                        },
                                        "lockToHide" : {
-                                          "id" : 223,
-                                          "object" : {
-                                             "active" : true,
-                                             "localLastTransformData" : {
-                                                "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
-                                                "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
-                                                "translation" : [ 9.6049995422363281, 0.38999998569488525, -9.0799999237060547 ]
-                                             },
-                                             "localTransformData" : {
-                                                "eulerRotation" : [ 3.1415927410125732, 0.0, 0.0 ],
-                                                "scale" : [ 0.019999999552965164, 0.019999999552965164, 0.019999999552965164 ],
-                                                "translation" : [ 9.6049995422363281, 0.38999998569488525, -9.0799999237060547 ]
-                                             },
-                                             "mesh" : {
-                                                "id" : 224,
-                                                "object" : {
-                                                   "castShadows" : true,
-                                                   "culled" : true,
-                                                   "depthScale" : 0.029999999329447746,
-                                                   "emissiveFactor" : 0.0,
-                                                   "model" : "res/models/lock/lock.obj",
-                                                   "opacity" : 1.0,
-                                                   "opaque" : true,
-                                                   "renderMode" : 4,
-                                                   "shaderType" : 4,
-                                                   "texTileX" : 1.0,
-                                                   "texTileY" : 1.0,
-                                                   "uiScale" : 1.0,
-                                                   "useLight" : true
-                                                },
-                                                "type" : 19
-                                             },
-                                             "name" : "HallDoorLock",
-                                             "parent" : {
-                                                "id" : 218,
-                                                "type" : 1
-                                             }
-                                          },
+                                          "id" : 219,
                                           "type" : 1
                                        },
                                        "name" : "Animation Controller",
@@ -5325,7 +5357,7 @@
                                        "active" : true,
                                        "collisionType" : 0,
                                        "gameObject" : {
-                                          "id" : 219,
+                                          "id" : 221,
                                           "type" : 1
                                        },
                                        "halfDimensions" : [ 0.004999999888241291, 0.375, 0.13500000536441803 ],
@@ -5405,10 +5437,6 @@
                                  "type" : 1
                               }
                            },
-                           "type" : 1
-                        },
-                        {
-                           "id" : 223,
                            "type" : 1
                         }
                      ],
@@ -5936,7 +5964,7 @@
                                  {
                                     "id" : 251,
                                     "object" : {
-                                       "ID" : 0,
+                                       "ID" : 7,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 250,
@@ -5949,6 +5977,10 @@
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
+                                       "sound" : {
+                                          "id" : -1,
+                                          "type" : 0
+                                       },
                                        "startedPlaying" : false,
                                        "sun" : {
                                           "id" : 15,
@@ -6253,7 +6285,7 @@
                                  {
                                     "id" : 264,
                                     "object" : {
-                                       "ID" : 0,
+                                       "ID" : 6,
                                        "active" : true,
                                        "animation" : {
                                           "id" : 263,
@@ -6266,6 +6298,10 @@
                                        },
                                        "name" : "AnimTimeSaver",
                                        "retargetAllowed" : false,
+                                       "sound" : {
+                                          "id" : -1,
+                                          "type" : 0
+                                       },
                                        "startedPlaying" : false,
                                        "sun" : {
                                           "id" : 15,
@@ -6575,7 +6611,7 @@
                                           {
                                              "id" : 278,
                                              "object" : {
-                                                "ID" : 0,
+                                                "ID" : 5,
                                                 "active" : true,
                                                 "animation" : {
                                                    "id" : 277,
@@ -6588,6 +6624,10 @@
                                                 },
                                                 "name" : "AnimTimeSaver",
                                                 "retargetAllowed" : false,
+                                                "sound" : {
+                                                   "id" : -1,
+                                                   "type" : 0
+                                                },
                                                 "startedPlaying" : false,
                                                 "sun" : {
                                                    "id" : 15,
