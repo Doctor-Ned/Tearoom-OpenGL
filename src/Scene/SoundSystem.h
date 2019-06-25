@@ -10,6 +10,7 @@ private:
 	~SoundSystem();
 	std::map<std::string, std::string> simpleNamesToFilesMap;
 	sf::Music *music = nullptr;
+	sf::Sound *pickingSound = nullptr;
 	static sf::Music *getMenuMusic();
 public:
 	static std::vector<std::string> getSoundFiles();
@@ -20,6 +21,7 @@ public:
 	static float getMusicVolume();
 	static void setMusicVolume(float volume);
 	static void restartMusic();
+	static void playPickingSound();
 };
 
 #endif

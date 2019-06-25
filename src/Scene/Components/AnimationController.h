@@ -8,12 +8,15 @@
 #include "Mesh/Mesh.h"
 #include "Render/Renderable.h"
 
+class OutroCutscene;
+
 class AnimationController : public Component {
 
 protected:
 	friend class Serializer;
 	AnimationController() {}
 	Animation* anim = nullptr;
+	OutroCutscene *outro = nullptr;
 	int doorID = 0;
 	GraphNode* lockToHide = nullptr;
 	void renderGui() override;

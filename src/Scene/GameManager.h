@@ -7,6 +7,7 @@
 
 #define BLOOM_TEXTURES 4
 
+class MenuPreview;
 class OptionsScene;
 class MenuScene;
 class Scene;
@@ -78,6 +79,7 @@ public:
 	void updateRescaleVectors();
 	void goToOptions();
 	void goToMenu(bool destroyPreviousScene = true);
+	void goToDebugMenu(bool destroyPreviousScene = true);
 	void updateWindowSize(float windowWidth, float windowHeight, float screenWidth, float screenHeight, bool updateUiProjection = true);
 	void setup();
 	Camera *getCamera() const;
@@ -133,5 +135,6 @@ protected:
 	GameManager() {}
 	Scene* currentScene = nullptr;
 	OptionsScene* optionsScene = nullptr;
-	MenuScene* menuScene = nullptr;
+	MenuPreview* menuScene = nullptr;
+	MenuScene* debugMenuScene = nullptr;
 };

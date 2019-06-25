@@ -57,6 +57,7 @@ MenuPreview::MenuPreview() {
     });
     startGame->addClickCallback([this]() {
         //GameManager::getInstance()->setCurrentScene(new MiszukScene());
+		stopTransition();
         startTransition = true;
     });
     startGame->addHoverCallback([this, startHover](){
@@ -75,6 +76,7 @@ MenuPreview::MenuPreview() {
 
     about->addClickCallback([this, menuAbout, menuBackground, startGame, startHover,
                              options, optionsHover, quit, quitHover, about, aboutHover, backToMenu, backHover]() {
+		stopTransition();
        menuBackground->setActive(false);
        menuAbout->setActive(true);
        startGame->setActive(false);
@@ -95,11 +97,12 @@ MenuPreview::MenuPreview() {
         aboutHover->setOpacity(0.0f);
     });
 	options->addClickCallback([&]() {
+		stopTransition();
 		gameManager->goToOptions();
 	});
     quit->addClickCallback([this]() {
-        //GameManager::getInstance()->quit();
-		GameManager::getInstance()->goToMenu();
+        GameManager::getInstance()->quit();
+		//GameManager::getInstance()->goToMenu();
     });
     quit->addHoverCallback([this, quitHover](){
         quitHover->setOpacity(0.3f);
@@ -135,6 +138,7 @@ MenuPreview::MenuPreview() {
     rootUiElement->addChild(optionsHover);
     rootUiElement->addChild(aboutHover);
     rootUiElement->addChild(quitHover);
+	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH * 0.7f, 2.0f * UI_REF_HEIGHT / 9.0f), "Press F4 for control hints", glm::vec3(1.0f, 1.0f, 1.0f), MatchWidth));
 
 	transitionPlane->setOpacity(0.0f);
 
@@ -147,7 +151,6 @@ MenuPreview::MenuPreview() {
     backHover->setOpacity(0.0f);
     menuAbout->setActive(false);
     backToMenu->setActive(false);
-
 }
 
 void MenuPreview::update(double deltaTime) {
@@ -178,11 +181,26 @@ void MenuPreview::update(double deltaTime) {
         }
         transitionPlane->setOpacity(elapsed);
         if (transitionPlane->getOpacity() >= 1.0f) {
+			stopTransition();
             GameManager::getInstance()->setCursorLocked(true);
             GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
 			SoundSystem::restartMusic();
         }
     }
+}
+
+void MenuPreview::keyEvent(int key, bool pressed) {
+	Scene::keyEvent(key, pressed);
+	if(key == GLFW_KEY_D && !pressed) {
+		stopTransition();
+		gameManager->goToDebugMenu();
+	}
+}
+
+void MenuPreview::stopTransition() {
+	transitionPlane->setOpacity(0.0f);
+	elapsed = 0.0f;
+	startTransition = false;
 }
 
 MenuPreview::~MenuPreview() {}

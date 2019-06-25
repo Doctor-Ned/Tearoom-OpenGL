@@ -9,7 +9,7 @@
 #include "Scene/Components/SunController.h"
 #include "Serialization/Serializer.h"
 
-OutroCutscene::OutroCutscene(Scene* scene, SunController *sunController, GraphNode* player) : Component(player, "Intro Cutscene"), sunController(sunController) {
+OutroCutscene::OutroCutscene(Scene* scene, SunController *sunController, GraphNode* player) : Component(player, "Outro Cutscene"), sunController(sunController) {
     this->scene = scene;
     this->player = player;
     initialize();
@@ -18,6 +18,7 @@ OutroCutscene::OutroCutscene(Scene* scene, SunController *sunController, GraphNo
 void OutroCutscene::runOutro() {
     gameManager->setCursorLocked(false);
     player->getComponent<Picking>()->hidePreview();
+	elapsed = 0.0f;
 
     if (sunController != nullptr) {
         sunController->setComponentActive(false);
@@ -47,7 +48,6 @@ void OutroCutscene::setMenuCallbacks() {
     playAgain->addClickCallback([this]() {
 
     });
-    std::cout<<"aaa"<<std::endl;
 
 }
 
@@ -62,15 +62,14 @@ void OutroCutscene::initialize() {
     mainCanvas->addChild(text3);
     mainCanvas->addChild(text4);
     mainCanvas->addChild(text5);
-    mainCanvas->addChild(transitionPlane);
     mainCanvas->addChild(playAgainWindow);
 
     mainCanvas->addChild(quit);
     mainCanvas->addChild(playAgain);
     mainCanvas->addChild(quitHover);
     mainCanvas->addChild(playAgainHover);
-
-    transitionPlane->setOpacity(1.0f);
+	backgroundPlane->setOpacity(0.0f);
+	paperTexture->setOpacity(0.0f);
     text1->setOpacity(0.0f);
     text2->setOpacity(0.0f);
     text3->setOpacity(0.0f);
@@ -82,10 +81,6 @@ void OutroCutscene::initialize() {
     quitHover->setOpacity(0.0f);
     playAgainHover->setOpacity(0.0f);
     phase = 0;
-
-    GameManager::getInstance()->addKeyCallback(GLFW_KEY_9, true, [this]() {
-        this->runOutro();
-    });
 }
 
 void OutroCutscene::update(float msec) {
@@ -93,9 +88,10 @@ void OutroCutscene::update(float msec) {
     if(run) {
         switch (phase) {
             case 0:
-                if (transitionPlane->getOpacity() > 0.0f) {
-                    transitionPlane->setOpacity(elapsed);
-                    elapsed -= 0.3f * msec;
+                if (backgroundPlane->getOpacity()  < 1.0f) {
+					backgroundPlane->setOpacity(elapsed);
+					paperTexture->setOpacity(elapsed);
+                    elapsed += 0.3f * msec;
                 } else {
                     elapsed = 0.0f;
                     phase = 1;
@@ -144,19 +140,10 @@ void OutroCutscene::update(float msec) {
                 } else {
                     elapsed = 0.0f;
                     phase = 6;
+					player->getComponent<Picking>()->showPreview();
                 }
                 break;
             case 6:
-                if (transitionPlane->getOpacity() < 1.0f) {
-                    transitionPlane->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 7;
-                    player->getComponent<Picking>()->showPreview();
-                }
-                break;
-            case 7:
                 paperTexture->setActive(false);
                 text1->setActive(false);
                 text2->setActive(false);

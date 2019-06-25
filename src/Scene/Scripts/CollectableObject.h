@@ -59,7 +59,7 @@ protected:
 	CollectableObject(GraphNode* _gameObject);
 	void initializeUiPlanes();
     int doorID = 0;
-	int photoID;
+	int photoID = 0;
 	std::string iconResource, previewResource;
 	glm::vec2 iconPos, iconSize, previewPos, previewSize;
     UiPlane* icon = nullptr;

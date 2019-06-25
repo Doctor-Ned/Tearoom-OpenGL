@@ -26,6 +26,7 @@ PauseScene::PauseScene(Scene * returnScene) {
 	rootUiElement->addChild(optionsButton);
 	rootUiElement->addChild(menuButton);
 	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 1.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH, 2.0f * UI_REF_HEIGHT / 9.0f), "GAME PAUSED", glm::vec3(1.0f, 1.0f, 1.0f), MatchHeight));
+	rootUiElement->addChild(new UiText(glm::vec2(UI_REF_CEN_X, 8.0f * UI_REF_HEIGHT / 9.0f), glm::vec2(UI_REF_WIDTH * 0.7f, 2.0f * UI_REF_HEIGHT / 9.0f), "Press F4 for control hints", glm::vec3(1.0f, 1.0f, 1.0f), MatchWidth));
 
 	reinitializeRenderMap();
 }

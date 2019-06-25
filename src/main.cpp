@@ -39,11 +39,10 @@ static GameManager* gameManager;
 static AssetManager* assetManager;
 static Serializer* serializer;
 static bool showUi = true;
-static bool uiButtonPressed = false;
-static bool ssPressed = false;
-static bool uiSsPressed = false;
-static const int SHOW_UI_BUTTON = GLFW_KEY_F1, SS_BUTTON = GLFW_KEY_F5, SS_UI_BUTTON = GLFW_KEY_F6;
+static bool uiButtonPressed = false, ssPressed = false, uiSsPressed = false, fpsPressed = false, keysPressed = false;
+static const int SHOW_UI_BUTTON = GLFW_KEY_F1, SS_BUTTON = GLFW_KEY_F5, SS_UI_BUTTON = GLFW_KEY_F6, FPS_BUTTON = GLFW_KEY_F2, SHOW_KEYS_BUTTON = GLFW_KEY_F4;
 static bool takeScreenshot = false, takeUiScreenshot = false;
+static bool showFps = true, showKeys = false;
 
 void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == SHOW_UI_BUTTON) {
@@ -63,11 +62,27 @@ void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, in
 		}
 	}
 	if (key == SS_UI_BUTTON) {
-		if (action == GLFW_PRESS && !uiSsPressed) {
-			uiSsPressed = true;
+		if (action == GLFW_PRESS && !ssPressed) {
+			ssPressed = true;
 			takeUiScreenshot = true;
-		} else if (action == GLFW_RELEASE && uiSsPressed) {
-			uiSsPressed = false;
+		} else if (action == GLFW_RELEASE && ssPressed) {
+			ssPressed = false;
+		}
+	}
+	if (key == FPS_BUTTON) {
+		if (action == GLFW_PRESS && !fpsPressed) {
+			fpsPressed = true;
+			showFps = !showFps;
+		} else if (action == GLFW_RELEASE && fpsPressed) {
+			fpsPressed = false;
+		}
+	}
+	if (key == SHOW_KEYS_BUTTON) {
+		if (action == GLFW_PRESS && !keysPressed) {
+			keysPressed = true;
+			showKeys = !showKeys;
+		} else if (action == GLFW_RELEASE && keysPressed) {
+			keysPressed = false;
 		}
 	}
 	gameManager->keyboard_callback(window, key, scancode, action, mods);
@@ -349,7 +364,10 @@ int main(int argc, char** argv) {
 
 	fpsPlane->updateDrawData();
 
-	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture);
+	UiPlane *keysPlane = nullptr;
+
+	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture),
+	*uiTexShader = assetManager->getShader(STUiTexture);
 
 	LightManager *lightManager = LightManager::getInstance();
 
@@ -434,10 +452,16 @@ int main(int argc, char** argv) {
 			Profiler::getInstance()->startCountingTime();
 			glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 			gameManager->renderUi();
-			fpsPlaneShader->use();
-			fpsPlane->render(fpsPlaneShader);
-			fpsTextShader->use();
-			fpsText->render(fpsTextShader);
+			if (showFps) {
+				fpsPlaneShader->use();
+				fpsPlane->render(fpsPlaneShader);
+				fpsTextShader->use();
+				fpsText->render(fpsTextShader);
+			}
+			if(showKeys && keysPlane != nullptr) {
+				uiTexShader->use();
+				keysPlane->render(uiTexShader);
+			}
 			Profiler::getInstance()->addMeasure("UI Render");
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -480,6 +504,7 @@ int main(int argc, char** argv) {
 			assetManager->loadNextPendingResource();
 		}
 		if (loading && assetManager->isLoaded()) {
+			keysPlane = new UiPlane("res/textures/keyboardHints.PNG", glm::vec2(0.0f, 0.0f), glm::vec2(440.0f, 781.0f)* 0.7f, TopLeft);
 			gameManager->goToMenu();
 			SoundSystem::restartMusic();
 		}
