@@ -40,7 +40,8 @@ OptionsScene::OptionsScene() {
 		addResolution(res.first, res.second);
 	}
 
-	UiColorPlane *background = new UiColorPlane(MENU_BACKGROUND_COLOR, glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
+	//UiColorPlane *background = new UiColorPlane(MENU_BACKGROUND_COLOR, glm::vec2(0.0f, 0.0f), glm::vec2(UI_REF_WIDTH, UI_REF_HEIGHT), TopLeft);
+	UiPlane *background = new UiPlane("res/textures/pejper.jpg", glm::vec2(-50.0f, 0.0f), glm::vec2(UI_REF_WIDTH + 50.0f, UI_REF_HEIGHT), TopLeft);
 
 	addResolution(videoSettings.windowWidth, videoSettings.windowHeight);
 	addResolution(windowWidth, windowHeight);
