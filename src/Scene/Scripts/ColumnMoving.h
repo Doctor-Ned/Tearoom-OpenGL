@@ -2,11 +2,13 @@
 #define COLUMN_MOVING_H
 #include "Scene/Components/Component.h"
 #include "Scene/Components/LightComponents/Sun.h"
+#include "Scene/Components/SoundSource.h"
 
 class ColumnMoving : public Component
 {
 protected:
 	Sun* sun = nullptr;
+	SoundSource* sound = nullptr;
 	std::map<int, float> heightToHourMap;
 	glm::vec3 lastPos;
 	bool enableSound = false;

@@ -15,7 +15,6 @@ void ColumnMoving::update(float msec) {
 
 		if(getFractionalPartOfHour(sun->getTime()) != 0.0f && enableSound && lastPos - gameObject->localTransform.getPosition() != glm::vec3(0))
 		{
-			SoundSource* sound = gameObject->getComponent<SoundSource>();
 			if (sound != nullptr)
 			{
 				sound->play();
@@ -43,6 +42,15 @@ void ColumnMoving::renderGui() {
 		if (editor->nodeSelectionCallback == nullptr && ImGui::Button("Choose sun component")) {
 			editor->nodeSelectionCallback = [this](GraphNode* node) {
 				setSun(node->getComponent<Sun>());
+			};
+		}
+	}
+
+	ImGui::Text(("Sound acquired from: " + (sound == nullptr ? "None" : sound->getGameObject()->getName())).c_str());
+	if (editor && editor->nodeSelectionCallback == nullptr) {
+		if (ImGui::Button("CHOOSE SOUND OBJECT")) {
+			editor->nodeSelectionCallback = [this](GraphNode *node) {
+				sound = node->getComponent<SoundSource>();
 			};
 		}
 	}
@@ -121,6 +129,7 @@ Json::Value ColumnMoving::serialize(Serializer* serializer) {
 	Json::Value root = Component::serialize(serializer);
 	root["sun"] = serializer->serialize(sun);
 	root["heightToHourMap"] = DataSerializer::serializeIntFloatMap(heightToHourMap);
+	root["sound"] = serializer->serialize(sound);
 	return root;
 }
 
@@ -128,6 +137,7 @@ void ColumnMoving::deserialize(Json::Value& root, Serializer* serializer) {
 	Component::deserialize(root, serializer);
 	sun = dynamic_cast<Sun*>(serializer->deserialize(root["sun"]).object);
 	heightToHourMap = DataSerializer::deserializeIntFloatMap(root["heightToHourMap"]);
+	sound = dynamic_cast<SoundSource*>(serializer->deserialize(root["sound"]).object);
 }
 
 void ColumnMoving::updateWorld() {}
