@@ -406,7 +406,7 @@
                               "active" : false,
                               "clockEnd" : 30.0,
                               "clockShown" : false,
-                              "clockStart" : 60.0,
+                              "clockStart" : 0.0,
                               "currentClockHour" : 30.0,
                               "currentHour" : 13.0,
                               "currentTimePercentage" : 0.0,
@@ -423,7 +423,7 @@
                                  "type" : 22
                               },
                               "showHint" : false,
-                              "startHour" : 14.0,
+                              "startHour" : 12.0,
                               "timeTravel" : false
                            },
                            "type" : 51
@@ -512,22 +512,22 @@
                                        },
                                        "name" : "Camera",
                                        "view" : [
-                                          [ 0.74872928857803345, 0.156809002161026, -0.6440616250038147, 0.0 ],
-                                          [ -0.0, 0.97161722183227539, 0.23655861616134644, 0.0 ],
-                                          [ 0.66287589073181152, -0.17711836099624634, 0.7274782657623291, 0.0 ],
-                                          [ 0.15553498268127441, -0.40178042650222778, -1.1820464134216309, 1.0 ]
+                                          [ 0.79102843999862671, 0.098841570317745209, -0.60374200344085693, 0.0 ],
+                                          [ -0.0, 0.98686230182647705, 0.16156405210494995, 0.0 ],
+                                          [ 0.61177945137023926, -0.12780176103115082, 0.78063607215881348, 0.0 ],
+                                          [ 0.22503301501274109, -0.49303817749023438, -1.1353967189788818, 1.0 ]
                                        ]
                                     },
                                     "type" : 23
                                  }
                               ],
                               "localLastTransformData" : {
-                                 "eulerRotation" : [ -0.23882241547107697, -19.574209213256836, 0.0 ],
+                                 "eulerRotation" : [ -0.1622752845287323, -19.507863998413086, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
                               "localTransformData" : {
-                                 "eulerRotation" : [ -0.23882241547107697, -19.574209213256836, 0.0 ],
+                                 "eulerRotation" : [ -0.1622752845287323, -19.507863998413086, 0.0 ],
                                  "scale" : [ 1.0, 1.0, 1.0 ],
                                  "translation" : [ 0.0, 0.62000000476837158, 0.0 ]
                               },
@@ -4597,7 +4597,7 @@
                            "id" : 192,
                            "object" : {
                               "active" : true,
-                              "attenuation" : 1.0,
+                              "attenuation" : 3.0,
                               "gameObject" : {
                                  "id" : 188,
                                  "type" : 1
@@ -4607,7 +4607,7 @@
                               "minDistance" : 0.20000000298023224,
                               "name" : "Sound source",
                               "soundName" : "pilarSound",
-                              "volume" : 10.0
+                              "volume" : 4.0
                            },
                            "type" : 59
                         }
@@ -4730,7 +4730,7 @@
                            "id" : 198,
                            "object" : {
                               "active" : true,
-                              "attenuation" : 1.0,
+                              "attenuation" : 3.0,
                               "gameObject" : {
                                  "id" : 194,
                                  "type" : 1
@@ -4740,7 +4740,7 @@
                               "minDistance" : 0.20000000298023224,
                               "name" : "Sound source",
                               "soundName" : "pilarSound",
-                              "volume" : 10.0
+                              "volume" : 4.0
                            },
                            "type" : 59
                         }
@@ -4861,7 +4861,7 @@
                            "id" : 204,
                            "object" : {
                               "active" : true,
-                              "attenuation" : 1.0,
+                              "attenuation" : 3.0,
                               "gameObject" : {
                                  "id" : 200,
                                  "type" : 1
@@ -4871,7 +4871,7 @@
                               "minDistance" : 0.20000000298023224,
                               "name" : "Sound source",
                               "soundName" : "pilarSound",
-                              "volume" : 10.0
+                              "volume" : 4.0
                            },
                            "type" : 59
                         }
@@ -5158,7 +5158,7 @@
                            "id" : 218,
                            "object" : {
                               "active" : true,
-                              "attenuation" : 1.0,
+                              "attenuation" : 3.0,
                               "gameObject" : {
                                  "id" : 214,
                                  "type" : 1
@@ -5168,7 +5168,7 @@
                               "minDistance" : 0.20000000298023224,
                               "name" : "Sound source",
                               "soundName" : "pilarSound",
-                              "volume" : 10.0
+                              "volume" : 4.0
                            },
                            "type" : 59
                         }
