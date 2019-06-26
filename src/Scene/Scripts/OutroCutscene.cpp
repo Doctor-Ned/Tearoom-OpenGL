@@ -35,7 +35,7 @@ void OutroCutscene::setMenuCallbacks() {
         quitHover->setOpacity(0.0f);
     });
     quit->addClickCallback([this]() {
-
+		gameManager->goToMenu();
     });
 
     playAgain->addHoverCallback([this]() {
@@ -46,8 +46,11 @@ void OutroCutscene::setMenuCallbacks() {
     });
     
     playAgain->addClickCallback([this]() {
-
+		GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
     });
+
+	GameManager::getInstance()->setCursorLocked(false);
+
 
 }
 
@@ -83,84 +86,93 @@ void OutroCutscene::initialize() {
     phase = 0;
 }
 
+
 void OutroCutscene::update(float msec) {
 
-    if(run) {
-        switch (phase) {
-            case 0:
-                if (backgroundPlane->getOpacity()  < 1.0f) {
-					backgroundPlane->setOpacity(elapsed);
-					paperTexture->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 1;
-                }
-                break;
-            case 1:
-                if (text1->getOpacity() < 1.0f) {
-                    text1->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 2;
-                }
-                break;
-            case 2:
-                if (text2->getOpacity() < 1.0f) {
-                    text2->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 3;
-                }
-                break;
-            case 3:
-                if (text3->getOpacity() < 1.0f) {
-                    text3->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 4;
-                }
-                break;
-            case 4:
-                if (text4->getOpacity() < 1.0f) {
-                    text4->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 5;
-                }
-                break;
-            case 5:
-                if (text5->getOpacity() < 1.0f) {
-                    text5->setOpacity(elapsed);
-                    elapsed += 0.3f * msec;
-                } else {
-                    elapsed = 0.0f;
-                    phase = 6;
-					player->getComponent<Picking>()->showPreview();
-                }
-                break;
-            case 6:
-                paperTexture->setActive(false);
-                text1->setActive(false);
-                text2->setActive(false);
-                text3->setActive(false);
-                text4->setActive(false);
-                text5->setActive(false);
+	if (run) {
+		switch (phase) {
+		case 0:
+			if (backgroundPlane->getOpacity() < 1.0f) {
+				backgroundPlane->setOpacity(elapsed);
+				paperTexture->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 1;
+			}
+			break;
+		case 1:
+			if (text1->getOpacity() < 1.0f) {
+				text1->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 2;
+			}
+			break;
+		case 2:
+			if (text2->getOpacity() < 1.0f) {
+				text2->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 3;
+			}
+			break;
+		case 3:
+			if (text3->getOpacity() < 1.0f) {
+				text3->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 4;
+			}
+			break;
+		case 4:
+			if (text4->getOpacity() < 1.0f) {
+				text4->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 5;
+			}
+			break;
+		case 5:
+			if (text5->getOpacity() < 1.0f) {
+				text5->setOpacity(elapsed);
+				elapsed += 0.3f * msec;
+			}
+			else {
+				elapsed = 0.0f;
+				phase = 6;
+				player->getComponent<Picking>()->showPreview();
+			}
+			break;
+		case 6:
+			paperTexture->setActive(false);
+			text1->setActive(false);
+			text2->setActive(false);
+			text3->setActive(false);
+			text4->setActive(false);
+			text5->setActive(false);
 
-                if (playAgainWindow->getOpacity() < 1.0f) {
-                    playAgainWindow->setOpacity(elapsed);
-                    elapsed += 0.5f * msec;
-                    if(playAgainWindow->getOpacity() >= 1.0f) setMenuCallbacks();
-                }
-                break;
-        }
-    }
+			if (playAgainWindow->getOpacity() < 1.0f) {
+				playAgainWindow->setOpacity(elapsed);
+				elapsed += 0.5f * msec;
+
+				if (playAgainWindow->getOpacity() >= 1.0f) {
+					setMenuCallbacks();
+				}
+				break;
+			}
+		}
+	}
 }
-
 OutroCutscene::~OutroCutscene() {}
 
 SerializableType OutroCutscene::getSerializableType() {

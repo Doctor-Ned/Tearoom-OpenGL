@@ -49,7 +49,8 @@ protected:
     UiButton* quit = new UiButton(glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
     UiButton* playAgain = new UiButton(glm::vec2(500.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
 
-    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(680.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
-    UiColorPlane* playAgainHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(500.0f, 380.0f), glm::vec2(100.0f,60.0f), Left);
+    UiColorPlane* playAgainHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(492.0f, 378.0f), glm::vec2(100.0f,52.0f), Left);
+	UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(681.0f, 377.0f), glm::vec2(100.0f, 50.0f), Left);
+
 };
 #endif //TEAROOM_OUTROCUTSCENE_H
