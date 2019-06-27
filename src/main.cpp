@@ -369,8 +369,6 @@ int main(int argc, char** argv) {
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture),
 	*uiTexShader = assetManager->getShader(STUiTexture);
 
-	LightManager *lightManager = LightManager::getInstance();
-
 	SPDLOG_DEBUG("Starting the game loop!");
 
 	while (!glfwWindowShouldClose(window)) {

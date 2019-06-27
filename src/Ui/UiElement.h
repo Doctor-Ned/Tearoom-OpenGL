@@ -57,6 +57,7 @@ public:
 	void removeChild(UiElement* element);
 	void setParent(UiElement *element);
 	void addChild(UiElement *element);
+	void insertChild(UiElement *element, int index);
 	UiElement *getChild(int index);
 	std::vector<UiElement*> getChildren();
 	void updateDrawData();

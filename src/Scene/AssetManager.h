@@ -126,6 +126,7 @@ public:
 	void loadNextPendingResource();
 	Texture getDefaultTexture();
 	float getLoadingProgress();
+	void addPreloadCallback(const std::string& resource, const std::function<void()>& callback);
 private:
 	ResourceType getResourceTypeByExtension(const std::string& extension);
 	int loadableResources = 1, loadedResources = 0;
@@ -138,9 +139,10 @@ private:
 	Texture createTexture(const char * textureFile);
 	std::map <std::string, ResourceType> resourceExtensionMap;
 	std::map <std::string, FullModelData*> models;
-	std::map < std::string, Bone*> boneHierarchies;
-	std::map < std::string, SkeletalAnimation> animations;
+	std::map <std::string, Bone*> boneHierarchies;
+	std::map <std::string, SkeletalAnimation> animations;
 	std::map<ShaderType, Shader*> shaders;
+	std::map<std::string, std::function<void()>> preloadCallbacks;
 	std::vector<Texture> textures;
 	AssetManager() {}
 	TextRenderer* textRenderer;

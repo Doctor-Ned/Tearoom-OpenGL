@@ -323,12 +323,36 @@ void AssetManager::loadNextPendingResource() {
 			for (auto &str : models) {
 				resourcesToLoad.push_back(str);
 			}
+			int index = 0;
+			for (auto &pair : preloadCallbacks) {
+				bool found = false;
+				for (auto i = resourcesToLoad.begin(); i != resourcesToLoad.end();) {
+					if (*i == pair.first) {
+						found = true;
+						resourcesToLoad.erase(i);
+						break;
+					}
+					++i;
+				}
+				if (!found) {
+					SPDLOG_ERROR("Resource '{}' could NOT be preloaded because it doesn't exist!", pair.first.c_str());
+					throw std::exception();
+				}
+				resourcesToLoad.insert(resourcesToLoad.begin() + index, pair.first);
+				index++;
+			}
 			loadableResources = resourcesToLoad.size();
 			loadedResources = 0;
 			loadingStarted = true;
 		} else {
-			SPDLOG_DEBUG("Loading '{}'...", resourcesToLoad.front());
-			loadResource(resourcesToLoad.front(), false);
+			std::string current = resourcesToLoad.front();
+			SPDLOG_DEBUG("Loading '{}'...", current);
+			loadResource(current, false);
+			auto preload = preloadCallbacks.find(current);
+			if(preload != preloadCallbacks.end()) {
+				SPDLOG_DEBUG("Running preload callback of '{}'...", current.c_str());
+				preload->second();
+			}
 			resourcesToLoad.erase(resourcesToLoad.begin());
 			loadedResources++;
 			if (resourcesToLoad.empty()) {
@@ -345,6 +369,17 @@ Texture AssetManager::getDefaultTexture() {
 
 float AssetManager::getLoadingProgress() {
 	return static_cast<float>(loadedResources) / static_cast<float>(loadableResources);
+}
+
+void AssetManager::addPreloadCallback(const std::string& resource, const std::function<void()>& callback) {
+	for (auto &pair : preloadCallbacks) {
+		if (pair.first == resource) {
+			SPDLOG_ERROR(("Attempted to add to many preload callbacks to '" + resource + "'!").c_str());
+			throw std::exception(("Attempted to add to many preload callbacks to '" + resource + "'!").c_str());
+		}
+	}
+	SPDLOG_DEBUG("Added a preload callback for '{}'.", resource);
+	preloadCallbacks.emplace(resource, callback);
 }
 
 ResourceType AssetManager::getResourceTypeByExtension(const std::string& extension) {

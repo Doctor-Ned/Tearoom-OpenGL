@@ -146,6 +146,26 @@ void UiElement::addChild(UiElement* element) {
 	children.push_back(element);
 }
 
+void UiElement::insertChild(UiElement* element, int index) {
+	if(element == nullptr) {
+		return;
+	}
+	for(auto &child : children) {
+		if(child == element) {
+			return;
+		}
+	}
+	if(element->parent != nullptr) {
+		element->parent->removeChild(element);
+	}
+	element->parent = this;
+	if(index >= children.size() || index < 0) {
+		children.push_back(element);
+	} else {
+		children.insert(children.begin() + index, element);
+	}
+}
+
 UiElement* UiElement::getChild(int index) {
 	if (index >= 0 && index < children.size()) {
 		return children[index];
