@@ -17,7 +17,7 @@ MenuPreview::MenuPreview() {
     UiButton* options = new UiButton(glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* about = new UiButton(glm::vec2(98.0f, 410.0f), glm::vec2(170.0f,80.0f), Left);
     UiButton* quit = new UiButton(glm::vec2(98.0f, 510.0f), glm::vec2(170.0f,80.0f), Left);
-    UiButton* backToMenu = new UiButton(glm::vec2(101.0f, 585.0f), glm::vec2(170.0f,80.0f), Left);
+    UiButton* backToMenu = new UiButton(glm::vec2(102.0f, 578.0f), glm::vec2(170.0f,80.0f), Left);
 
     UiPlane*  mainTitle = new UiPlane("res/textures/mainTitle.PNG", glm::vec2(27.0f, 25.0f), glm::vec2(325.0f, 130.0f), TopLeft);
 
@@ -28,10 +28,10 @@ MenuPreview::MenuPreview() {
     backToMenu->setOpacity(0.0f);
 
     UiColorPlane* startHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 210.0f), glm::vec2(170.0f,80.0f), Left);
-    UiColorPlane* optionsHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 310.0f), glm::vec2(170.0f,80.0f), Left);
+    UiColorPlane* optionsHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 307.0f), glm::vec2(170.0f,80.0f), Left);
     UiColorPlane* aboutHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 405.0f), glm::vec2(170.0f,80.0f), Left);
-    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 503.0f), glm::vec2(170.0f,80.0f), Left);
-    UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 586.0f), glm::vec2(170.0f,80.0f), Left);
+    UiColorPlane* quitHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(98.0f, 500.0f), glm::vec2(170.0f,80.0f), Left);
+    UiColorPlane* backHover = new UiColorPlane(glm::vec4(0.0f, 0.0f, 0.0f, 0.8f), glm::vec2(100.0f, 579.0f), glm::vec2(170.0f,80.0f), Left);
 
     backToMenu->addHoverCallback([this, backHover]() {
         backHover->setOpacity(0.3f);

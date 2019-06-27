@@ -114,7 +114,7 @@ void Picking::initialize() {
 	itemsInventoryCanvas->addChild(itemsInventory);
 	currentCanvas = itemsInventoryCanvas; //!!!
 
-	//BUTTONS AND THEIR CALLBACKS
+	//BUTTONS
 	itemsButton = new UiButton(glm::vec2(1006.0f, 475.0f), glm::vec2(80.0f, 40.0f), Right);
 	letterButton = new UiButton(glm::vec2(1246.0f, 475.0f), glm::vec2(100.0f, 40.0f), Right);
 	photoButton = new UiButton(glm::vec2(1126.0f, 475.0f), glm::vec2(90.0f, 40.0f), Right);
