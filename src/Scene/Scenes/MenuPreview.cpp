@@ -185,6 +185,7 @@ void MenuPreview::update(double deltaTime) {
             GameManager::getInstance()->setCursorLocked(true);
             GameManager::getInstance()->setCurrentScene(Serializer::getInstance()->loadScene("DemoLevel"));
 			SoundSystem::restartMusic();
+			runSlideShow = true;
         }
     }
 }
