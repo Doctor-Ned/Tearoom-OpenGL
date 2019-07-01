@@ -46,6 +46,7 @@ public:
 	Collision getCollisionType();
 	bool getIsTrigger();
 	void setMatrix(glm::mat4 mat);
+	void setPosition(glm::vec3& pos);
 	void setIsTrigger(bool _isTrigger);
 	std::vector < std::function<void(Collider*)>> getCallbackFunctions();
 	void setPositionOffset(glm::vec3 positionOffset);

@@ -31,7 +31,7 @@ private:
 	inline void divideSpace(std::vector<Box>& boxes);
 public:
 	static OctreeNode& getInstance();
-	static GraphNode* findObjectByRayPoint(const glm::vec3& rayPos, static OctreeNode& node, Collider* toIgnore = nullptr);
+	static GraphNode* findObjectByRayPoint(Collider* sphere, static OctreeNode& node, Collider* toIgnore = nullptr);
 	static std::vector<GraphNode*> frustumContainer;
 	static std::set<GraphNode*> toInsert2;
 	static inline bool containTest(glm::vec3& point, Box& box);

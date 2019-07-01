@@ -117,6 +117,13 @@ void Collider::setMatrix(glm::mat4 mat)
 	matrix = mat;
 }
 
+void Collider::setPosition(glm::vec3& pos)
+{
+	matrix[3][0] = pos.x;
+	matrix[3][1] = pos.y;
+	matrix[3][2] = pos.z;
+}
+
 void Collider::setIsTrigger(bool _isTrigger)
 {
 	isTrigger = _isTrigger;
