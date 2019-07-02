@@ -21,7 +21,9 @@ UiCheckbox::UiCheckbox(glm::vec2 position, glm::vec2 size, bool checked, UiAncho
 	UiCheckbox(BTN_SHORT_IDLE, BTN_SHORT_HOVER, BTN_SHORT_CLICKED, BTN_TICK_IDLE, BTN_TICK_HOVER, BTN_TICK_CLICKED, position, size, checked, anchor) {}
 
 void UiCheckbox::render(Shader *shader) {
+	CHECK_GL_ERROR();
 	UiTexturedElement::render(shader);
+	CHECK_GL_ERROR();
 	Texture* txt;
 	switch (state) {
 		default:
@@ -37,9 +39,13 @@ void UiCheckbox::render(Shader *shader) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, txt->id);
 	glBindVertexArray(vao);
+	CHECK_GL_ERROR();
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
+	CHECK_GL_ERROR();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	CHECK_GL_ERROR();
 	glBindVertexArray(0);
+	CHECK_GL_ERROR();
 	
 }
 

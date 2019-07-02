@@ -180,7 +180,7 @@ glm::vec3* Global::createHorizontalTransformArray(const int width, const int len
 	return result;
 }
 
-void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb,
+void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo,
 						   const std::function<void(glm::mat4, glm::mat4)> renderCallback) {
 	CHECK_GL_ERROR();
 	int oldFbo;

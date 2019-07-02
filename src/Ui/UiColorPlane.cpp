@@ -8,12 +8,18 @@ UiColorPlane(glm::vec4 color, glm::vec2 position, glm::vec2 size, UiAnchor ancho
 }
 
 void UiColorPlane::render(Shader *shader) {
+	CHECK_GL_ERROR();
 	UiElement::render(shader);
+	CHECK_GL_ERROR();
 	shader->setColor(color);
 	glBindVertexArray(vao);
+	CHECK_GL_ERROR();
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiVertex));
+	CHECK_GL_ERROR();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	CHECK_GL_ERROR();
 	glBindVertexArray(0);
+	CHECK_GL_ERROR();
 	
 }
 

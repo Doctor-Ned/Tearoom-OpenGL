@@ -86,14 +86,14 @@ void Scene::render() {
 		}
 		uboViewProjection->inject(camera->getView(), projection);
 		CHECK_GL_ERROR();
-		renderNodesUsingRenderMap(nullptr, false, true);
+		renderNodesUsingRenderMap(nullptr, false, false);
 		CHECK_GL_ERROR();
 		if (skybox != nullptr) {
 			static Shader *skyboxShader = assetManager->getShader(STSkybox);
 			skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 		}
 		CHECK_GL_ERROR();
-		renderNodesUsingTransparentRenderMap(nullptr, false, true);
+		renderNodesUsingTransparentRenderMap(nullptr, false, false);
 		CHECK_GL_ERROR();
 	}
 }

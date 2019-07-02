@@ -15,6 +15,7 @@ UiElement::UiElement(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : size
 
 void UiElement::render(Shader *shader) {
 	//shader->setProjection(projection);
+	CHECK_GL_ERROR();
 	shader->setModel(worldTransform.getMatrix());
 	shader->setOpacity(opacity);
 }

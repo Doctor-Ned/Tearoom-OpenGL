@@ -27,8 +27,8 @@ void TestScene::render() {
 	rootNode->updateDrawData();
 
 	lightManager->renderAndUpdate([this](Shader *shader) {
-		renderNodesUsingRenderMap(shader, true);
-		renderNodesUsingTransparentRenderMap(shader, true);
+		renderNodesUsingRenderMap(shader, true, true);
+		renderNodesUsingTransparentRenderMap(shader, true, true);
 	}, updatableShaders);
 
 	pointLightSphere->setColor(lights.pointLights[0]->color);
@@ -42,12 +42,12 @@ void TestScene::render() {
 	}
 	uboViewProjection->inject(camera->getView(), projection);
 
-	renderNodesUsingRenderMap();
+	renderNodesUsingRenderMap(nullptr, false, false);
 
 	static Shader *skyboxShader = assetManager->getShader(STSkybox);
 	skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 
-	renderNodesUsingTransparentRenderMap();
+	renderNodesUsingTransparentRenderMap(nullptr, false, false);
 }
 
 void TestScene::renderUi() {

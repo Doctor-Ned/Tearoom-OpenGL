@@ -15,7 +15,9 @@ UiButton::UiButton(glm::vec2 position, UiAnchor anchor) : UiButton(position, cre
 UiButton::UiButton(glm::vec2 position, glm::vec2 size, UiAnchor anchor) : UiButton(BTN_LONG_IDLE, BTN_LONG_HOVER, BTN_LONG_CLICKED, position, size, anchor) {}
 
 void UiButton::render(Shader *shader) {
+	CHECK_GL_ERROR();
 	UiTexturedElement::render(shader);
+	CHECK_GL_ERROR();
 	Texture* txt;
 	switch (state) {
 		default:
@@ -30,9 +32,13 @@ void UiButton::render(Shader *shader) {
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, txt->id);
+	CHECK_GL_ERROR();
 	glBindVertexArray(vao);
+	CHECK_GL_ERROR();
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
+	CHECK_GL_ERROR();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	CHECK_GL_ERROR();
 	glBindVertexArray(0);
 }
 

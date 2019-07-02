@@ -45,14 +45,17 @@
 #include <csignal>
 
 #ifdef ENABLE_GL_ERROR_CHECK
-#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); __asm int 3 } } while(false)
-#else
-#define CHECK_GL_ERROR()
-#endif
 
-#ifdef ENABLE_GL_ERROR_CHECK
+#ifdef ENABLE_GL_ERROR_BREAK
+#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); __asm int 3 } } while(false)
 #define CHECK_GL_ERROR_LAMBDA() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); std::raise(SIGINT); } } while(false)
 #else
+#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); } } while(false)
+#define CHECK_GL_ERROR_LAMBDA() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); } } while(false)
+#endif
+
+#else
+#define CHECK_GL_ERROR()
 #define CHECK_GL_ERROR_LAMBDA()
 #endif
 
@@ -97,7 +100,7 @@ struct Texture {
 	std::string path;
 };
 
-static const glm::ivec2 ENVMAP_SIZE(256, 256);
+static const glm::ivec2 ENVMAP_SIZE(512, 512);
 
 static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED = "res/ui/ButtonClicked.png", *BTN_SHORT_HOVER = "res/ui/ButtonHover.png",
 *BTN_LONG_IDLE = "res/ui/ButtonLongIdle.png", *BTN_LONG_CLICKED = "res/ui/ButtonLongClicked.png", *BTN_LONG_HOVER = "res/ui/ButtonLongHover.png",
@@ -129,7 +132,7 @@ public:
 	static glm::vec4 planeEquationOfPoints(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 	static float distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2);
 	static glm::vec3* createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max, const float yPosition = 0.0f);
-	static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb, const std::function<void(glm::mat4, glm::mat4)> renderCallback);
+	static void drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, const std::function<void(glm::mat4, glm::mat4)> renderCallback);
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static float remap(const float value, const float sourceMin, const float sourceMax, float targetMin, float targetMax, const bool revertTarget, const bool snapIfInvalid);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);

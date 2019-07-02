@@ -591,10 +591,12 @@ LightShadowData LightManager::createPointShadowData() {
 	result.width = shadowSize;
 	result.height = shadowSize;
 	int oldFbo;
+	CHECK_GL_ERROR();
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glGenFramebuffers(1, &result.fbo);
 	glGenTextures(1, &result.texture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, result.texture);
+	CHECK_GL_ERROR();
 	for (unsigned int i = 0; i < 6; ++i)
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, shadowSize, shadowSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -603,10 +605,13 @@ LightShadowData LightManager::createPointShadowData() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glBindFramebuffer(GL_FRAMEBUFFER, result.fbo);
+	CHECK_GL_ERROR();
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, result.texture, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+	CHECK_GL_ERROR();
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 	return result;
 }

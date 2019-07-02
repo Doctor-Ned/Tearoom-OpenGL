@@ -10,13 +10,19 @@ void UiPlane::setTexture(const char* texture) {
 }
 
 void UiPlane::render(Shader *shader) {
+	CHECK_GL_ERROR();
 	UiTexturedElement::render(shader);
+	CHECK_GL_ERROR();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glBindVertexArray(vao);
+	CHECK_GL_ERROR();
 	glBindVertexBuffer(0, vbo, 0, sizeof(UiTextureVertex));
+	CHECK_GL_ERROR();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	CHECK_GL_ERROR();
 	glBindVertexArray(0);
+	CHECK_GL_ERROR();
 }
 
 void UiPlane::setup() {
