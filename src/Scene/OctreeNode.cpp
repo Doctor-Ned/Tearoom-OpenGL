@@ -329,9 +329,9 @@ OctreeNode::~OctreeNode()
 	nodes.clear();
 }
 
-GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static OctreeNode& node, Collider* toIgnore)
+GraphNode* OctreeNode::findObjectByRayPoint(Collider* sphere, static OctreeNode& node, Collider* toIgnore)
 {
-	if (containTest(glm::vec3(rayPos), node.boxPos)) 
+	if (containTest(sphere->getPosition(), node.boxPos)) 
 	{
 		for (GraphNode* game_object : node.gameObjects) {
 			auto colliders = game_object->getComponents<Collider>();
@@ -341,7 +341,7 @@ GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static Octr
 				{
 					if (collider != toIgnore && collider->isComponentActive())
 					{
-						if (CollisionSystem::getInstance()->containTest(rayPos, collider))
+						if (CollisionSystem::getInstance()->checkCollision(sphere, collider))
 						{
 							return game_object;
 						}
@@ -351,7 +351,7 @@ GraphNode* OctreeNode::findObjectByRayPoint(const glm::vec3& rayPos, static Octr
 		}
 		for (auto& octreeNode : node.nodes) 
 		{
-			GraphNode* gameObject = findObjectByRayPoint(rayPos, octreeNode, toIgnore);
+			GraphNode* gameObject = findObjectByRayPoint(sphere, octreeNode, toIgnore);
 			if (gameObject != nullptr) {
 				return gameObject;
 			}
