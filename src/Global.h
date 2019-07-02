@@ -40,7 +40,6 @@
 #include "json/json.h"
 #include <xmmintrin.h>
 #include "assimp/matrix4x4.h"
-#define ENABLE_GL_ERROR_CHECK
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include "spdlog/spdlog.h"
 #include <csignal>

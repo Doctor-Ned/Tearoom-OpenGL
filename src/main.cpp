@@ -1,3 +1,4 @@
+//#define ENABLE_GL_ERROR_CHECK
 #include "Global.h"
 #include <cstdio>
 #include <glm/glm.hpp>
