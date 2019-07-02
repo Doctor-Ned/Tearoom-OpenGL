@@ -30,7 +30,7 @@ void Scene::render() {
 		CHECK_GL_ERROR();
 		rootNode->updateDrawData();
 		lightManager->renderAndUpdate([this](Shader *shader) {
-			renderNodesUsingRenderMap(shader, true, false, true);
+			renderNodesUsingRenderMap(shader, true, false); // set the last argument to true if you want refractive/reflective objects to cast shadows
 			//renderNodesUsingTransparentRenderMap(shader, true);
 		}, updatableShaders);
 		CHECK_GL_ERROR();
@@ -70,9 +70,9 @@ void Scene::render() {
 					skybox->draw(skyboxShader, v, projection);
 				}
 				CHECK_GL_ERROR_LAMBDA();
-				renderNodesUsingRenderMap(nullptr, false, false, true);
+				renderNodesUsingRenderMap(nullptr, false, true);
 				CHECK_GL_ERROR_LAMBDA();
-				renderNodesUsingTransparentRenderMap(nullptr, false, false, true);
+				renderNodesUsingTransparentRenderMap(nullptr, false, true);
 				CHECK_GL_ERROR_LAMBDA();
 			});
 		}
@@ -86,14 +86,14 @@ void Scene::render() {
 		}
 		uboViewProjection->inject(camera->getView(), projection);
 		CHECK_GL_ERROR();
-		renderNodesUsingRenderMap();
+		renderNodesUsingRenderMap(nullptr, false, true);
 		CHECK_GL_ERROR();
 		if (skybox != nullptr) {
 			static Shader *skyboxShader = assetManager->getShader(STSkybox);
 			skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 		}
 		CHECK_GL_ERROR();
-		renderNodesUsingTransparentRenderMap();
+		renderNodesUsingTransparentRenderMap(nullptr, false, true);
 		CHECK_GL_ERROR();
 	}
 }
@@ -152,12 +152,12 @@ void Scene::removeNode(GraphNode* node, bool recurse) {
 	removeFromRenderMap(node, false);
 }
 
-void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
-	renderFromMap(true, shader, ignoreLight, frustumCulling, ignoreRefractive);
+void Scene::renderNodesUsingRenderMap(Shader* shader, bool ignoreLight, bool ignoreRefractive) {
+	renderFromMap(true, shader, ignoreLight, ignoreRefractive);
 }
 
-void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
-	renderFromMap(false, shader, ignoreLight, frustumCulling, ignoreRefractive);
+void Scene::renderNodesUsingTransparentRenderMap(Shader* shader, bool ignoreLight,  bool ignoreRefractive) {
+	renderFromMap(false, shader, ignoreLight, ignoreRefractive);
 }
 
 void Scene::addComponent(GraphNode* node, Component* component) {
@@ -561,7 +561,7 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 	}
 }
 
-void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
+void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool ignoreRefractive) {
 	CHECK_GL_ERROR();
 	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
 	auto octree = OctreeNode::getInstance();

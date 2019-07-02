@@ -26,8 +26,8 @@ public:
 	void setCamera(Camera *camera);
 	void addRenderedNode(GraphNode* node, GraphNode* parent = nullptr, bool recurse = true);
 	void removeNode(GraphNode* node, bool recurse = true);
-	void renderNodesUsingRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling = true, bool ignoreRefractive=false);
-	void renderNodesUsingTransparentRenderMap(Shader *shader = nullptr, bool ignoreLight = false, bool frustumCulling=true, bool ignoreRefractive=false);
+	void renderNodesUsingRenderMap(Shader *shader, bool ignoreLight, bool ignoreRefractive);
+	void renderNodesUsingTransparentRenderMap(Shader *shader, bool ignoreLight, bool ignoreRefractive);
 	void addComponent(GraphNode* node, Component *component);
 	void addToRenderMap(GraphNode *node, bool recurse = true);
 	void addToRenderMap(Renderable *renderable);
@@ -65,7 +65,7 @@ protected:
 	bool getMouseState(int key) const;
 	void addToRenderMap(GraphNode *node, bool recurse, bool checkIfExists);
 	void addToRenderMap(Renderable *renderable, bool checkIfExists);
-	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight, bool frustumCulling = true, bool ignoreRefractive = false);
+	void renderFromMap(bool opaque, Shader *shader, bool ignoreLight, bool ignoreRefractive);
 	std::map<ShaderType, Shader*> shaders;
 	std::map<ShaderType, std::vector<Renderable*>*> renderMap;
 	std::map<ShaderType, std::vector<Renderable*>*> transparentRenderMap;
