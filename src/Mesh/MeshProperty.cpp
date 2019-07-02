@@ -2,6 +2,7 @@
 
 void MeshProperty::draw(Shader *shader, glm::mat4 world) {
 	Mesh::draw(shader, world);
+	CHECK_GL_ERROR();
 	shader->setRoughness(roughness);
 	shader->setMetallic(metallic);
 	shader->setEmissive(emissive);

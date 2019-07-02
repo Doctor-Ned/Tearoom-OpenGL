@@ -285,9 +285,10 @@ GLuint GameManager::createDepthRenderbuffer(GLsizei width, GLsizei height) {
 }
 
 Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, bool clamp, GLenum clampMode, glm::vec4 border, GLenum filter) {
-	int oldFbo;
+	int oldFbo, oldRbo;
 	SPDLOG_DEBUG("Creating new {}x{} framebuffer. IF: {}, F: {}, T: {}, C: {}, CM: {}, F: {}", width, height, internalFormat, format, type, clamp, clampMode, filter);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
+	glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRbo);
 	CHECK_GL_ERROR();
 	Framebuffer result;
 	glActiveTexture(GL_TEXTURE0);
@@ -322,6 +323,8 @@ Framebuffer GameManager::createFramebuffer(GLint internalFormat, GLsizei width, 
 		exit(6);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
+	glBindRenderbuffer(GL_RENDERBUFFER, oldRbo);
 	CHECK_GL_ERROR();
 	return result;
 }

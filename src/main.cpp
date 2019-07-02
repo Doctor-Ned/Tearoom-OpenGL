@@ -394,15 +394,19 @@ int main(int argc, char** argv) {
 
 		Profiler::getInstance()->update(timeDelta);
 		Profiler::getInstance()->clearFrameData();
+		CHECK_GL_ERROR();
 		gameManager->update(timeDelta);
+		CHECK_GL_ERROR();
 		glEnable(GL_DEPTH_TEST);
 		// Render to a separate framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.main.fbo);
 		glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		CHECK_GL_ERROR();
 		Profiler::getInstance()->startCountingTime();
 		gameManager->render();
+		CHECK_GL_ERROR();
 		Profiler::getInstance()->addMeasure("Render calculations");
 
 		glDisable(GL_DEPTH_TEST);
@@ -416,20 +420,26 @@ int main(int argc, char** argv) {
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[1]);
+				CHECK_GL_ERROR();
 				dat.render();
+				CHECK_GL_ERROR();
 				blurShader->use();
 				glBindFramebuffer(GL_FRAMEBUFFER, bl.horizontal.fbo);
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glBindTexture(GL_TEXTURE_2D, bl.rescaler.texture);
+				CHECK_GL_ERROR();
 				blurShader->setBool("horizontal", true);
 				dat.render();
+				CHECK_GL_ERROR();
 				glBindFramebuffer(GL_FRAMEBUFFER, bl.output.fbo);
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glBindTexture(GL_TEXTURE_2D, bl.horizontal.texture);
+				CHECK_GL_ERROR();
 				blurShader->setBool("horizontal", false);
 				dat.render();
+				CHECK_GL_ERROR();
 			}
 		}
 		// Render to the default framebuffer (screen) with post-processing
@@ -437,32 +447,41 @@ int main(int argc, char** argv) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		CHECK_GL_ERROR();
 		postProcessingShader->use();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, framebuffers.main.textures[0]);
+		CHECK_GL_ERROR();
 		for (int i = 0; i < BLOOM_TEXTURES; i++) {
 			glActiveTexture(GL_TEXTURE1 + i);
 			glBindTexture(GL_TEXTURE_2D, framebuffers.bloom[i].output.texture);
+			CHECK_GL_ERROR();
 		}
 		dat.render();
+		CHECK_GL_ERROR();
 		Profiler::getInstance()->addMeasure("PostProcessing");
 		if (showUi && !takeUiScreenshot) {
 			Profiler::getInstance()->startCountingTime();
 			glViewport(0, 0, videoSettings.windowWidth, videoSettings.windowHeight);
+			CHECK_GL_ERROR();
 			gameManager->renderUi();
+			CHECK_GL_ERROR();
 			if (showFps) {
 				fpsPlaneShader->use();
 				fpsPlane->render(fpsPlaneShader);
 				fpsTextShader->use();
 				fpsText->render(fpsTextShader);
 			}
+			CHECK_GL_ERROR();
 			if(showKeys && keysPlane != nullptr) {
 				uiTexShader->use();
 				keysPlane->render(uiTexShader);
 			}
+			CHECK_GL_ERROR();
 			Profiler::getInstance()->addMeasure("UI Render");
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			CHECK_GL_ERROR();
 		}
 
 		if (takeScreenshot || takeUiScreenshot) {
@@ -495,6 +514,7 @@ int main(int argc, char** argv) {
 			delete[] data;
 		}
 
+		CHECK_GL_ERROR();
 		glfwSwapBuffers(window);
 
 		bool loading = !assetManager->isLoaded();

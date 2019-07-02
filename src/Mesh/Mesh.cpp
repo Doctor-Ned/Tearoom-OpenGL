@@ -56,6 +56,7 @@ void Mesh::draw(Shader *shader, glm::mat4 world) {
 	shader->setDepthScale(depthScale);
 	shader->setFloat("textureTileX", texTileX);
 	shader->setFloat("textureTileY", texTileY);
+	CHECK_GL_ERROR();
 }
 
 ShaderType Mesh::getShaderType() {
@@ -90,6 +91,7 @@ void Mesh::setTileY(float tile)
 
 
 void Mesh::drawSelf(Shader* shader, glm::mat4 world) {
+	CHECK_GL_ERROR();
 	if (culled) {
 		draw(shader, world);
 	} else {
@@ -97,6 +99,7 @@ void Mesh::drawSelf(Shader* shader, glm::mat4 world) {
 		draw(shader, world);
 		glEnable(GL_CULL_FACE);
 	}
+	CHECK_GL_ERROR();
 }
 
 float Mesh::getOpacity() const {

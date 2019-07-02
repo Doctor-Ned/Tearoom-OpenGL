@@ -46,9 +46,15 @@
 #include <csignal>
 
 #ifdef ENABLE_GL_ERROR_CHECK
-#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); std::raise(SIGINT); } } while(false)
+#define CHECK_GL_ERROR() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); __asm int 3 } } while(false)
 #else
 #define CHECK_GL_ERROR()
+#endif
+
+#ifdef ENABLE_GL_ERROR_CHECK
+#define CHECK_GL_ERROR_LAMBDA() do { GLuint error=glGetError(); if(error != GL_NO_ERROR) { SPDLOG_ERROR("Encountered OpenGL error {}!", error); std::raise(SIGINT); } } while(false)
+#else
+#define CHECK_GL_ERROR_LAMBDA()
 #endif
 
 enum WindowType {
@@ -92,7 +98,7 @@ struct Texture {
 	std::string path;
 };
 
-static const glm::ivec2 ENVMAP_SIZE(2048.0f, 2048.0f);
+static const glm::ivec2 ENVMAP_SIZE(256, 256);
 
 static const char *BTN_SHORT_IDLE = "res/ui/ButtonIdle.png", *BTN_SHORT_CLICKED = "res/ui/ButtonClicked.png", *BTN_SHORT_HOVER = "res/ui/ButtonHover.png",
 *BTN_LONG_IDLE = "res/ui/ButtonLongIdle.png", *BTN_LONG_CLICKED = "res/ui/ButtonLongClicked.png", *BTN_LONG_HOVER = "res/ui/ButtonLongHover.png",

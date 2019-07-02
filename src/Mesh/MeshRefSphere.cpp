@@ -33,7 +33,6 @@ void MeshRefSphere::renderGui() {
 
 void MeshRefSphere::draw(Shader *shader, glm::mat4 world) {
 	MeshRef::draw(shader, world);
-	//glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
 	glDrawArrays(renderMode, 0, vertexAmount);
 	glBindVertexArray(0);

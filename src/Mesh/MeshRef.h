@@ -14,6 +14,7 @@ protected:
 	MeshRef(bool reflective);
 	GLuint environmentMap;
 	GLuint fbo, rb;
+	friend class Scene;
 };
 
 #endif

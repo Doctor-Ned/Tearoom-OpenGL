@@ -8,10 +8,16 @@ in VS_OUT {
 	vec3 pos;
 	vec3 normal;
 	vec3 viewPosition;
-	vec3 refraction;
 } fs_in;
 
 void main() {
-	BrightColor = vec4(0.0, 0.0, 0.0, 0.0);
-	FragColor = vec4(texture(environmentMap, fs_in.refraction).rgb, 1.0);
+	vec3 viewDirection = normalize(fs_in.pos - fs_in.viewPosition);
+	vec3 refraction = refract(viewDirection, fs_in.normal, 1.00/1.52);
+	FragColor = vec4(texture(environmentMap, refraction).rgb, 1.0);
+	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	if (brightness > 1.0) {
+		BrightColor = FragColor;
+	} else {
+		BrightColor = vec4(0.0, 0.0, 0.0, 0.0);
+	}
 }

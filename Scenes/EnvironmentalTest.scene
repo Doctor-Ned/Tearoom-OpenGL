@@ -1,0 +1,236 @@
+{
+   "id" : 0,
+   "object" : {
+      "camera" : {
+         "id" : -1,
+         "type" : 0
+      },
+      "rootNode" : {
+         "id" : 1,
+         "object" : {
+            "active" : true,
+            "children" : [
+               {
+                  "id" : 2,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 1.7999999523162842, 0.0 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 1.7999999523162842, 0.0 ]
+                     },
+                     "mesh" : {
+                        "id" : 3,
+                        "object" : {
+                           "baseCenter" : [ 0.0, 0.0, 0.0 ],
+                           "castShadows" : true,
+                           "culled" : true,
+                           "depthScale" : 0.0,
+                           "emissiveFactor" : 1.0,
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "precision" : 126,
+                           "radius" : 0.20000000298023224,
+                           "renderMode" : 4,
+                           "shaderType" : 6,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 15
+                     },
+                     "name" : "Node #2",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 4,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 2.0999999046325684 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 2.0999999046325684 ]
+                     },
+                     "mesh" : {
+                        "id" : 5,
+                        "object" : {
+                           "castShadows" : true,
+                           "color" : [ 0.43529412150382996, 0.69803923368453979, 0.086274512112140656, 1.0 ],
+                           "culled" : true,
+                           "depthScale" : 0.0,
+                           "emissive" : [ 0.0, 0.0, 0.0 ],
+                           "emissiveFactor" : 1.0,
+                           "max" : [ 0.5, 0.05000000074505806, 0.5 ],
+                           "metallic" : 0.0,
+                           "min" : [ -0.5, -0.05000000074505806, -0.5 ],
+                           "moveScale" : 1.0,
+                           "moving" : false,
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "roughness" : 1.0,
+                           "shaderType" : 3,
+                           "speed" : 1.0,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 4
+                     },
+                     "name" : "Node #3",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 6,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 0.0 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ 0.0, 0.0, 0.0 ]
+                     },
+                     "mesh" : {
+                        "id" : 7,
+                        "object" : {
+                           "castShadows" : true,
+                           "culled" : true,
+                           "depthScale" : 0.0,
+                           "emissiveFactor" : 1.0,
+                           "max" : [ 0.5, 0.5, 0.5 ],
+                           "min" : [ -0.5, -0.5, -0.5 ],
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "renderMode" : 4,
+                           "shaderType" : 7,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 14
+                     },
+                     "name" : "Node #4",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               },
+               {
+                  "id" : 8,
+                  "object" : {
+                     "active" : true,
+                     "localLastTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ -1.7000000476837158, 0.0, -1.7999999523162842 ]
+                     },
+                     "localTransformData" : {
+                        "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+                        "scale" : [ 1.0, 1.0, 1.0 ],
+                        "translation" : [ -1.7000000476837158, 0.0, -1.7999999523162842 ]
+                     },
+                     "mesh" : {
+                        "id" : 9,
+                        "object" : {
+                           "baseCenter" : [ 0.0, 0.0, 0.0 ],
+                           "castShadows" : true,
+                           "color" : [ 1.0, 0.0, 0.16862745583057404, 1.0 ],
+                           "culled" : true,
+                           "depthScale" : 0.0,
+                           "emissive" : [ 0.0, 0.0, 0.0 ],
+                           "emissiveFactor" : 1.0,
+                           "metallic" : 0.0,
+                           "moveScale" : 1.0,
+                           "moving" : false,
+                           "opacity" : 1.0,
+                           "opaque" : true,
+                           "precision" : 25,
+                           "radius" : 0.5,
+                           "renderMode" : 4,
+                           "roughness" : 1.0,
+                           "shaderType" : 3,
+                           "speed" : 1.0,
+                           "texTileX" : 1.0,
+                           "texTileY" : 1.0,
+                           "uiScale" : 1.0,
+                           "useLight" : true
+                        },
+                        "type" : 8
+                     },
+                     "name" : "Node #5",
+                     "parent" : {
+                        "id" : 1,
+                        "type" : 1
+                     }
+                  },
+                  "type" : 1
+               }
+            ],
+            "localLastTransformData" : {
+               "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+               "scale" : [ 1.0, 1.0, 1.0 ],
+               "translation" : [ 0.0, 0.0, 0.0 ]
+            },
+            "localTransformData" : {
+               "eulerRotation" : [ 0.0, 0.0, 0.0 ],
+               "scale" : [ 1.0, 1.0, 1.0 ],
+               "translation" : [ 0.0, 0.0, 0.0 ]
+            },
+            "mesh" : {
+               "id" : -1,
+               "type" : 0
+            },
+            "name" : "Root",
+            "parent" : {
+               "id" : -1,
+               "type" : 0
+            }
+         },
+         "type" : 1
+      },
+      "skybox" : {
+         "id" : 10,
+         "object" : {
+            "faces" : [
+               "res/skybox/test/right.jpg",
+               "res/skybox/test/left.jpg",
+               "res/skybox/test/top.jpg",
+               "res/skybox/test/bottom.jpg",
+               "res/skybox/test/front.jpg",
+               "res/skybox/test/back.jpg"
+            ]
+         },
+         "type" : 47
+      }
+   },
+   "type" : 22
+}

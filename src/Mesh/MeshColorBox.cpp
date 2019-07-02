@@ -78,10 +78,14 @@ void MeshColorBox::renderGui() {
 
 void MeshColorBox::draw(Shader *shader, glm::mat4 world) {
 	MeshSimple::draw(shader, world);
+	CHECK_GL_ERROR();
 	glBindVertexArray(VAO);
 	glBindVertexBuffer(0, VBO, 0, sizeof(SimpleVertex));
+	CHECK_GL_ERROR();
 	glDrawArrays(renderMode, 0, vertexAmount);
+	CHECK_GL_ERROR();
 	glBindVertexArray(0);
+	CHECK_GL_ERROR();
 }
 
 void MeshColorBox::updateValues(glm::vec3 min, glm::vec3 max) {

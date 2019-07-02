@@ -27,11 +27,13 @@ void Scene::render() {
 		sf::Listener::setDirection(front.x, front.y, front.z);
 		glm::vec3 up = camera->getGameObject()->getUpVector();
 		sf::Listener::setUpVector(up.x, up.y, up.z);
+		CHECK_GL_ERROR();
 		rootNode->updateDrawData();
 		lightManager->renderAndUpdate([this](Shader *shader) {
-			renderNodesUsingRenderMap(shader, true);
+			renderNodesUsingRenderMap(shader, true, false, true);
 			//renderNodesUsingTransparentRenderMap(shader, true);
 		}, updatableShaders);
+		CHECK_GL_ERROR();
 		std::vector<GraphNode*> refNodes;
 		for (auto &rend : *renderMap[STReflect]) {
 			GraphNode *gn = dynamic_cast<GraphNode*>(rend);
@@ -51,39 +53,48 @@ void Scene::render() {
 				}
 			}
 		}
-		glViewport(0, 0, ENVMAP_SIZE.x, ENVMAP_SIZE.y);
+		CHECK_GL_ERROR();
 		for (auto &refNode : refNodes) {
 			MeshRef *ref = dynamic_cast<MeshRef*>(refNode->getMesh());
-			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [this, refNode](glm::mat4 view, glm::mat4 projection) {
+			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [&](glm::mat4 view, glm::mat4 projection) {
 				for (auto &shader : updatableShaders) {
 					shader->use();
-					shader->setViewPosition(refNode->worldTransform.getPosition());
+					shader->setViewPosition(refNode->worldTransform.getPosition() + ref->getUnmodeledCenter());
 				}
 				uboViewProjection->inject(view, projection);
-				renderNodesUsingRenderMap(nullptr, false, false, true);
+				CHECK_GL_ERROR_LAMBDA();
 				if (skybox != nullptr) {
 					static Shader *skyboxShader = assetManager->getShader(STSkybox);
 					glm::mat4 v = view;
 					v[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 					skybox->draw(skyboxShader, v, projection);
 				}
+				CHECK_GL_ERROR_LAMBDA();
+				renderNodesUsingRenderMap(nullptr, false, false, true);
+				CHECK_GL_ERROR_LAMBDA();
 				renderNodesUsingTransparentRenderMap(nullptr, false, false, true);
+				CHECK_GL_ERROR_LAMBDA();
 			});
 		}
 		glViewport(0, 0, windowWidth, windowHeight);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		CHECK_GL_ERROR();
 		for (auto &shader : updatableShaders) {
 			shader->use();
 			shader->setViewPosition(camera->getGameObject()->worldTransform.getPosition());
 		}
 		uboViewProjection->inject(camera->getView(), projection);
+		CHECK_GL_ERROR();
 		renderNodesUsingRenderMap();
+		CHECK_GL_ERROR();
 		if (skybox != nullptr) {
 			static Shader *skyboxShader = assetManager->getShader(STSkybox);
 			skybox->draw(skyboxShader, camera->getUntranslatedView(), projection);
 		}
+		CHECK_GL_ERROR();
 		renderNodesUsingTransparentRenderMap();
+		CHECK_GL_ERROR();
 	}
 }
 
@@ -462,7 +473,7 @@ void Scene::setPauseScene(Scene* scene) {
 }
 
 void Scene::createPauseScene() {
-	if(pauseScene == nullptr) {
+	if (pauseScene == nullptr) {
 		setPauseScene(new PauseScene(this));
 	}
 }
@@ -551,13 +562,15 @@ void Scene::addToRenderMap(Renderable* renderable, bool checkIfExists) {
 }
 
 void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool frustumCulling, bool ignoreRefractive) {
+	CHECK_GL_ERROR();
 	std::map<ShaderType, std::vector<Renderable*>*> *map = opaque ? &renderMap : &transparentRenderMap;
 	auto octree = OctreeNode::getInstance();
 	if (shader == nullptr) {
 		for (auto &type : ShaderTypes) {
-			if (type != STNone && !(ignoreLight && type == STLight)) {
+			if (type != STNone && !(ignoreLight && type == STLight) && !(ignoreRefractive && (type == STReflect || type == STRefract))) {
 				shader = shaders[type];
 				shader->use();
+				CHECK_GL_ERROR();
 				if (opaque) {
 					transparentRenderMap[type]->clear();
 				}
@@ -602,13 +615,15 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 						continue;
 					}
 					node->drawSelf(shader);
+					CHECK_GL_ERROR();
 				}
 			}
 		}
 	} else {
 		shader->use();
+		CHECK_GL_ERROR();
 		for (auto &type : ShaderTypes) {
-			if (type != STNone && !(ignoreLight && type == STLight)) {
+			if (type != STNone && !(ignoreLight && type == STLight) && !(ignoreRefractive && (type == STReflect || type == STRefract))) {
 				if (opaque) {
 					transparentRenderMap[type]->clear();
 				}
@@ -653,6 +668,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool fr
 						continue;
 					}
 					node->drawSelf(shader);
+					CHECK_GL_ERROR();
 				}
 			}
 		}

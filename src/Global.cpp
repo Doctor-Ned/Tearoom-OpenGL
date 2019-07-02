@@ -75,8 +75,7 @@ glm::vec3 Global::getScale(glm::mat4 matrix) {
 	return result;
 }
 
-glm::mat4 Global::aiMatrix4x4ToGlm(const aiMatrix4x4 &from)
-{
+glm::mat4 Global::aiMatrix4x4ToGlm(const aiMatrix4x4 &from) {
 	glm::mat4 to;
 	//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
 	to[0][0] = from.a1; to[1][0] = from.a2; to[2][0] = from.a3; to[3][0] = from.a4;
@@ -94,7 +93,7 @@ bool Global::endsWith(std::string text, std::string end) {
 }
 
 bool Global::startsWith(std::string text, std::string start) {
-	if(text.length() < start.length()) {
+	if (text.length() < start.length()) {
 		return false;
 	}
 	return std::equal(start.begin(), start.end(), text.begin());
@@ -166,7 +165,7 @@ float Global::distanceBetweenParallelPlanes(glm::vec4 plane1, glm::vec4 plane2) 
 }
 
 glm::vec3* Global::createHorizontalTransformArray(const int width, const int length, const glm::vec2 min, const glm::vec2 max,
-	const float yPosition) {
+												  const float yPosition) {
 	glm::vec3* result = new glm::vec3[width * length];
 	const float firstX = width == 1 ? (max.x + min.x) / 2.0f : min.x;
 	const float xStep = width == 1 ? 0.0f : (max.x - min.x) / static_cast<float>(width - 1);
@@ -182,14 +181,16 @@ glm::vec3* Global::createHorizontalTransformArray(const int width, const int len
 }
 
 void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuint rb,
-	const std::function<void(glm::mat4, glm::mat4)> renderCallback) {
+						   const std::function<void(glm::mat4, glm::mat4)> renderCallback) {
+	CHECK_GL_ERROR();
 	int oldFbo;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	CHECK_GL_ERROR();
 
-	glm::mat4 p = glm::perspective(glm::radians(90.0f), 1.0f, 0.001f, 100.0f);
+	static const glm::mat4 p = glm::perspective(glm::radians(90.0f), 1.0f, 0.001f, 100.0f);
 
-	glm::vec3 targets[6] = {
+	static const glm::vec3 targets[6] = {
 		glm::vec3(0.0f, 0.0f, -1.0f),
 		glm::vec3(1.0f, 0.0f, 0.0f),
 		glm::vec3(-1.0f, 0.0f, 0.0f),
@@ -197,12 +198,12 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 		glm::vec3(0.0f, -1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
-	glm::vec3 ups[6] = {
+	static const glm::vec3 ups[6] = {
 		glm::vec3(0.0f, -1.0f, 0.0f),
 		glm::vec3(0.0f, -1.0f, 0.0f),
 		glm::vec3(0.0f, -1.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f),
 		glm::vec3(0.0f, -1.0f, 0.0f)
 	};
 
@@ -210,6 +211,7 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 	for (int i = 0; i < 6; i++) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
+		CHECK_GL_ERROR();
 
 		glm::mat4 v = lookAt(position, position + targets[i], ups[i]);
 		//v[0][2] *= -1.0f;
@@ -217,16 +219,21 @@ void Global::drawToCubemap(GLuint cubemap, glm::vec3 position, GLuint fbo, GLuin
 		//v[2][2] *= -1.0f;
 		//v[3][2] *= -1.0f;
 		renderCallback(v, p);
+		CHECK_GL_ERROR();
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
+		CHECK_GL_ERROR();
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
+		CHECK_GL_ERROR();
 	}
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	CHECK_GL_ERROR();
 	glBindFramebuffer(GL_FRAMEBUFFER, oldFbo);
+	CHECK_GL_ERROR();
 }
 
 double Global::remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax,
-	const bool revertTarget, const bool snapIfInvalid) {
+					 const bool revertTarget, const bool snapIfInvalid) {
 	if (value < sourceMin || value > sourceMax) {
 		if (snapIfInvalid) {
 			return value < sourceMin ? targetMin : targetMax;
@@ -241,7 +248,7 @@ double Global::remap(const double value, const double sourceMin, const double so
 }
 
 float Global::remap(const float value, const float sourceMin, const float sourceMax, float targetMin, float targetMax,
-	const bool revertTarget, const bool snapIfInvalid) {
+					const bool revertTarget, const bool snapIfInvalid) {
 	if (value < sourceMin || value > sourceMax) {
 		if (snapIfInvalid) {
 			return value < sourceMin ? targetMin : targetMax;
@@ -256,8 +263,8 @@ float Global::remap(const float value, const float sourceMin, const float source
 }
 
 int Global::remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget,
-	const bool snapIfInvalid) {
+				  const bool snapIfInvalid) {
 	return static_cast<int>(remap(static_cast<double>(value), static_cast<double>(sourceMin), static_cast<double>(sourceMax), static_cast<double>(targetMin),
-		static_cast<double>(targetMax),
-		revertTarget, snapIfInvalid));
+								  static_cast<double>(targetMax),
+								  revertTarget, snapIfInvalid));
 }
