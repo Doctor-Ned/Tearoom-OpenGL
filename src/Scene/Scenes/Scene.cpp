@@ -55,6 +55,9 @@ void Scene::render() {
 		}
 		CHECK_GL_ERROR();
 		for (auto &refNode : refNodes) {
+			if(!refNode->isActive()) {
+				continue;
+			}
 			MeshRef *ref = dynamic_cast<MeshRef*>(refNode->getMesh());
 			if(!ref->initialized) {
 				ref->initialize();
