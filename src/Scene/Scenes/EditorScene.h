@@ -62,7 +62,7 @@ public:
 	std::vector<std::pair<GraphNode*, GraphNode*>> addRenderedNodeQueue;
 	void appendNode(GraphNode *node, GraphNode *parent = nullptr);
 	void applyPrefab(GraphNode* node, Prefab prefab);
-	void showNodeAsTree(GraphNode *node);
+	void showNodeAsTree(GraphNode *node, GraphNode* parent=nullptr);
 	void keyEvent(int key, bool pressed) override;
 	bool useEditorCamera = true;
 	void setEditorCamera(bool enabled);

@@ -25,6 +25,10 @@ public:
 	void setParent(GraphNode *parent);
 	void addChild(GraphNode* child);
 	void removeChild(GraphNode* child);
+	void swapChildren(int index1, int index2);
+	void setChildFirst(GraphNode *node);
+	void setChildLast(GraphNode *node);
+	int getChildIndex(GraphNode* child);
 	void addComponent(Component* component);
 	void move(glm::vec3 direction);
 	void moveRelative(glm::vec3 direction, bool allowVertical = false);
@@ -66,6 +70,7 @@ public:
 	void setTempRenderMode(GLenum tempRenderMode);
 	void removeTempRenderMode();
 	glm::vec3 getPosition();
+	int getChildrenCount();
 protected:
 	GLenum tempRenderMode = GL_NONE;
 	void updateWorld();

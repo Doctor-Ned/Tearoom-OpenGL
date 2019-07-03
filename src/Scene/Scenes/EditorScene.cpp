@@ -1070,7 +1070,7 @@ void EditorScene::renderUi() {
 	if (showLoadDialog) {
 		static bool loadScenes = true;
 		static std::vector<std::string> scenes;
-		if(loadScenes) {
+		if (loadScenes) {
 			loadScenes = false;
 			serializer->loadScenes();
 			scenes = serializer->getSceneNames();
@@ -1504,7 +1504,7 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 	}
 }
 
-void EditorScene::showNodeAsTree(GraphNode* node) {
+void EditorScene::showNodeAsTree(GraphNode* node, GraphNode* parent) {
 	ImGui::PushID(idCounter++);
 	ImGui::Text(node->getName().c_str());
 	ImGui::SameLine();
@@ -1576,6 +1576,30 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 			}
 			ImGui::SameLine();
 		}
+		int count = parent == nullptr ? -1 : parent->getChildrenCount();
+		if (count > 1) {
+			int ind = parent->getChildIndex(node);
+			if (parent->getChild(0) != node) {
+				ImGui::SameLine();
+				if (ImGui::Button("TOP")) {
+					parent->setChildFirst(node);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("/\\")) {
+					parent->swapChildren(ind - 1, ind);
+				}
+			}
+			if (parent->getChild(count - 1) != node) {
+				ImGui::SameLine();
+				if (ImGui::Button("BOT")) {
+					parent->setChildLast(node);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("\\/")) {
+					parent->swapChildren(ind + 1, ind);
+				}
+			}
+		}
 		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
 			confirmationDialogCallback = [this, node]() {
 				editedScene->removeNode(node);
@@ -1594,7 +1618,7 @@ void EditorScene::showNodeAsTree(GraphNode* node) {
 		if (ImGui::TreeNode("Children")) {
 			//ImGui::NewLine();
 			for (auto child : node->getChildren()) {
-				showNodeAsTree(child);
+				showNodeAsTree(child, node);
 			}
 			ImGui::TreePop();
 		}

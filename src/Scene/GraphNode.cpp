@@ -131,6 +131,39 @@ void GraphNode::removeChild(GraphNode* child) {
 	}
 }
 
+void GraphNode::swapChildren(int index1, int index2) {
+	if(index1 == index2 || index1 < 0 || index2 < 0 || index1 + 1 > children.size() || index2 +1 > children.size()) {
+		return;
+	}
+	std::swap(children[index1], children[index2]);
+}
+
+void GraphNode::setChildFirst(GraphNode* node) {
+	auto it = std::find(children.begin(), children.end(), node);
+	if(it == children.end()) {
+		return;
+	}
+	children.erase(it);
+	children.insert(children.begin(), node);
+}
+
+void GraphNode::setChildLast(GraphNode* node) {
+	auto it = std::find(children.begin(), children.end(), node);
+	if(it == children.end()) {
+		return;
+	}
+	children.erase(it);
+	children.push_back(node);
+}
+
+int GraphNode::getChildIndex(GraphNode* child) {
+	auto it = std::find(children.begin(), children.end(), child);
+	if(it == children.end()) {
+		return -1;
+	}
+	return std::distance(children.begin(), it);
+}
+
 void GraphNode::addComponent(Component* component) {
 	for (auto comp : components) {
 		if (comp == component) {
@@ -325,6 +358,10 @@ void GraphNode::removeTempRenderMode() {
 
 glm::vec3 GraphNode::getPosition() {
 	return worldTransform.getPosition();
+}
+
+int GraphNode::getChildrenCount() {
+	return children.size();
 }
 
 void GraphNode::moveRelative(glm::vec3 direction, bool allowVertical) {
