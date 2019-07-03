@@ -594,7 +594,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool ig
 						}
 					}
 #ifdef ENABLE_FRUSTUM_CULLING
-					if (!ignoreLight) {
+					if (!ignoreLight && !ignoreRefractive) {
 						GraphNode* gn = dynamic_cast<GraphNode*>(node);
 						if (gn == nullptr) {
 							Component *comp = dynamic_cast<Component*>(node);
@@ -647,7 +647,7 @@ void Scene::renderFromMap(bool opaque, Shader* shader, bool ignoreLight, bool ig
 						}
 					}
 #ifdef ENABLE_FRUSTUM_CULLING
-					if (!ignoreLight) {
+					if (!ignoreLight && !ignoreRefractive) {
 						GraphNode* gn = dynamic_cast<GraphNode*>(node);
 						if (gn == nullptr) {
 							Component *comp = dynamic_cast<Component*>(node);
