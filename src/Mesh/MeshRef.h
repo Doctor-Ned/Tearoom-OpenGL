@@ -9,6 +9,8 @@ public:
 	GLuint getEnvironmentMap() const;
 	SerializableType getSerializableType() override;
 protected:
+	bool initialized = false;
+	void initialize();
 	void draw(Shader *shader, glm::mat4 model) override;
 	virtual glm::vec3 getUnmodeledCenter() = 0;
 	MeshRef(bool reflective);

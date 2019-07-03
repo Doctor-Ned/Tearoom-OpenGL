@@ -56,6 +56,9 @@ void Scene::render() {
 		CHECK_GL_ERROR();
 		for (auto &refNode : refNodes) {
 			MeshRef *ref = dynamic_cast<MeshRef*>(refNode->getMesh());
+			if(!ref->initialized) {
+				ref->initialize();
+			}
 			ref->regenEnvironmentMap(refNode->worldTransform.getMatrix(), [&](glm::mat4 view, glm::mat4 projection) {
 				for (auto &shader : updatableShaders) {
 					shader->use();
