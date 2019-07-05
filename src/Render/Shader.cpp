@@ -18,8 +18,9 @@ Shader::Shader(char* vertexPath, char* fragmentPath, bool initialise) {
 			str.reserve(t.tellg());
 			t.seekg(0, std::ios::beg);
 			str.assign((std::istreambuf_iterator<char>(t)),
-				std::istreambuf_iterator<char>());
+					   std::istreambuf_iterator<char>());
 			sharedData.emplace(entry.path().filename().string(), str);
+			sharedDataPaths.emplace(entry.path().filename().string(), entry.path().string());
 		} else {
 			SPDLOG_ERROR("Cannot read shared shader file '{}'!", entry.path().filename().string().c_str());
 			exit(5);
@@ -39,6 +40,9 @@ Shader::Shader(char* vertexPath, char* fragmentPath, bool initialise) {
 void Shader::createShaders() {
 	shaders.push_back(createAndCompileShader(GL_VERTEX_SHADER, vertexPath));
 	shaders.push_back(createAndCompileShader(GL_FRAGMENT_SHADER, fragmentPath));
+#ifdef ENABLE_SHADER_HOTSWAP
+	firstPass = false;
+#endif
 }
 
 void Shader::deleteShaders() {
@@ -112,8 +116,8 @@ void Shader::setMetallic(float metallic) {
 	setFloat("metallic", metallic);
 }
 
-void Shader::setAnimatedModelBoneTransforms(glm::mat4 (&boneTransforms)[MAX_BONE_TRANSFORMS]) {
-	for(int i=0;i< MAX_BONE_TRANSFORMS;i++) {
+void Shader::setAnimatedModelBoneTransforms(glm::mat4(&boneTransforms)[MAX_BONE_TRANSFORMS]) {
+	for (int i = 0; i < MAX_BONE_TRANSFORMS; i++) {
 		setMat4(("boneTransforms[" + std::to_string(i) + "]").c_str(), boneTransforms[i]);
 	}
 }
@@ -193,7 +197,7 @@ void Shader::updateShadowData(std::vector<LightShadowData> dirs, std::vector<Lig
 	}
 	for (int i = 0; i < spots.size(); i++) {
 		current = baseTex - padding--;
-		glActiveTexture(GL_TEXTURE0 +current);
+		glActiveTexture(GL_TEXTURE0 + current);
 		glBindTexture(GL_TEXTURE_2D, spots[i].texture);
 		setInt(("spot_shadows[" + std::to_string(i) + "]").c_str(), current);
 	}
@@ -224,8 +228,51 @@ void Shader::setEmissiveFactor(float emissiveFactor) {
 	setFloat("emissiveFactor", emissiveFactor);
 }
 
-void Shader::setDepthScale(float depthScale)
-{
+#ifdef ENABLE_SHADER_HOTSWAP
+void Shader::refreshTimestamps() {
+	bool changed = false;
+	std::vector<std::string> changedFiles;
+	for (auto &pair : timestamps) {
+		auto time = std::experimental::filesystem::last_write_time(pair.first);
+		auto stamp = decltype(time)::clock::to_time_t(time);
+		if (stamp != pair.second) {
+			changed = true;
+			pair.second = stamp;
+			changedFiles.push_back(pair.first);
+		}
+	}
+	if (changed) {
+		for (auto &file : changedFiles) {
+			SPDLOG_DEBUG("Detected changes in shader file '{}'!", file.c_str());
+		}
+		SPDLOG_DEBUG("Recreating shader...");
+		GLuint oldId = id;
+		id = glCreateProgram();
+		try {
+			createShaders();
+			linkShaderProgram();
+			deleteShaders();
+			glDeleteProgram(oldId);
+			SPDLOG_DEBUG("Shader recreated!");
+		} catch (std::exception &e) {
+			glDeleteProgram(id);
+			id = oldId;
+			SPDLOG_DEBUG("Unable to recreate the shader. Using the old one.");
+		}
+		this->changed = true;
+	}
+}
+
+bool Shader::wasChanged() {
+	return changed;
+}
+
+void Shader::clearChanged() {
+	changed = false;
+}
+#endif
+
+void Shader::setDepthScale(float depthScale) {
 	setFloat("depthScale", depthScale);
 }
 
@@ -237,14 +284,32 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	strcpy(fullFile, SHADER_DIR);
 	strcat(fullFile, file);
 	std::string text = Global::readFullFile(fullFile);
+#ifdef ENABLE_SHADER_HOTSWAP
+	if (firstPass) {
+		auto time = std::experimental::filesystem::last_write_time(fullFile);
+		timestamps.emplace(fullFile, decltype(time)::clock::to_time_t(time));
+	}
+#endif
 	if (text.length() > 0) {
 		for (std::pair<std::string, std::string> pair : sharedData) {
 			size_t start_pos = 0;
 			std::string from = "//%" + pair.first + "%";
+#ifdef ENABLE_SHADER_HOTSWAP
+			bool used = false;
+#endif
 			while ((start_pos = text.find(from, start_pos)) != std::string::npos) {
 				text.replace(start_pos, from.length(), pair.second);
 				start_pos += pair.second.length();
+#ifdef ENABLE_SHADER_HOTSWAP
+				used = true;
+#endif
 			}
+#ifdef ENABLE_SHADER_HOTSWAP
+			if (used && firstPass) {
+				auto time = std::experimental::filesystem::last_write_time(sharedDataPaths[pair.first]);
+				timestamps.emplace(sharedDataPaths[pair.first], decltype(time)::clock::to_time_t(time));
+			}
+#endif
 		}
 		const char* finalText = text.c_str();
 		glShaderSource(shader, 1, (const GLchar**)&finalText, nullptr);
@@ -257,13 +322,13 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 			errorLog = new char[maxLength];
 			glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog);
 			SPDLOG_ERROR("Unable to compile the shader '{}'! {}", file, errorLog);
-			exit(1);
+			throw std::exception("Unable to compile the shader!");
 		}
 		return shader;
 	}
 	SPDLOG_ERROR("Unable to read the shader file '{}'!", fullFile);
 	delete[] fullFile;
-	exit(1);
+	throw std::exception("Unable to read the shader file!");
 }
 
 void Shader::linkShaderProgram() {

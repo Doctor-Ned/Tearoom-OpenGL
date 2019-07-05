@@ -103,6 +103,15 @@ Shader* AssetManager::getShader(ShaderType type) {
 	return shaders.find(type)->second;
 }
 
+ShaderType AssetManager::getShaderType(Shader* shader) {
+	for(auto &pair : shaders) {
+		if(pair.second == shader) {
+			return pair.first;
+		}
+	}
+	return STNone;
+}
+
 std::map<ShaderType, Shader*> AssetManager::getShaders() const {
 	return shaders;
 }
@@ -172,6 +181,24 @@ bool AssetManager::endsWith(std::string const &fullString, std::string const &en
 	return false;
 }
 
+void AssetManager::rebindUbos(Shader* shader) {
+	for(auto &ubo : ubos) {
+		shader->bind(ubo);
+	}
+}
+
+void AssetManager::refreshShader(Shader* shader) {
+	rebindUbos(shader);
+	ShaderType type = getShaderType(shader);
+	if(type == STModel || type == STModelInstanced || type == STAnimatedModel) {
+		shader->use();
+		shader->setInt("default_texture", defaultTexture.id);
+	}
+	if(type == STUiTexture || type == STUiColor || type == STUiText) {
+		UiElement::updateProjection();
+	}
+}
+
 void AssetManager::setup() {
 	SPDLOG_DEBUG("Setting up AssetManager...");
 	shaders.emplace(STUiText, new Shader("Ui/uitextVS.glsl", "Ui/uitextFS.glsl"));
@@ -217,9 +244,7 @@ void AssetManager::setup() {
 	getShader(STRefract)->bind(uboViewProjection);
 
 	for (auto& shader : shaders) {
-		for (auto& ubo : ubos) {
-			shader->bind(ubo);
-		}
+		rebindUbos(shader);
 	}
 
 	resourceExtensionMap.emplace("fbx", ModelResource);

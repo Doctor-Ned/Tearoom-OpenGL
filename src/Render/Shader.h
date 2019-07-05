@@ -43,8 +43,14 @@ public:
 	void setMat4(const char* name, glm::mat4 &value);
 	virtual ~Shader();
 	void setEmissiveFactor(float emissiveFactor);
+#ifdef ENABLE_SHADER_HOTSWAP
+	void refreshTimestamps();
+	bool wasChanged();
+	void clearChanged();
+#endif
 protected:
 	std::map<std::string, std::string> sharedData;
+	std::map<std::string, std::string> sharedDataPaths;
 	Shader(char* vertexPath, char* fragmentPath, bool initialise);
 	GLuint createAndCompileShader(int shaderType, const char* file);
 	virtual void createShaders();
@@ -56,6 +62,11 @@ protected:
 	char* vertexPath;
 	const char* SHADER_DIR = "Shaders/";
 	const char* SHARED_DIR = "Shaders/Shared";
+#ifdef ENABLE_SHADER_HOTSWAP
+	bool firstPass = true;
+	bool changed = false;
+	std::map<std::string, std::time_t> timestamps;
+#endif
 };
 
 #endif

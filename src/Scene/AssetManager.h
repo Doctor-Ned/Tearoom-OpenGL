@@ -105,6 +105,7 @@ public:
 	UboTextureColor* getUboTextureColor();
 	UboViewProjection* getUboViewProjection();
 	Shader *getShader(ShaderType type);
+	ShaderType getShaderType(Shader *shader);
 	std::map<ShaderType, Shader*> getShaders() const;
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
@@ -117,6 +118,8 @@ public:
 	static bool endsWith(std::string const& fullString, std::string const& ending);
 	AssetManager(AssetManager const&) = delete;
 	void operator=(AssetManager const&) = delete;
+	void rebindUbos(Shader* shader);
+	void refreshShader(Shader* shader);
 	void setup();
 	~AssetManager();
 	bool isLoaded();

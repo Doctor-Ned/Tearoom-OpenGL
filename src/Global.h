@@ -44,6 +44,8 @@
 #include "spdlog/spdlog.h"
 #include <csignal>
 
+#define ENABLE_SHADER_HOTSWAP
+
 #ifdef ENABLE_GL_ERROR_CHECK
 
 #ifdef ENABLE_GL_ERROR_BREAK
