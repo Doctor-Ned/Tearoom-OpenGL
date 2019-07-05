@@ -29,6 +29,8 @@ const float E = 0.02;
 const float F = 0.30;
 const float W = 11.2;
 
+//#define USE_WEIRD_FILTER
+
 vec3 getAntialiasedColor() {
 	vec3 luma = vec3(0.299, 0.587, 0.114);
 	float lumaTL = dot(luma, texture2D(scene, exTexCoords + (vec2(-1.0, -1.0) * inverseScreenSize)).rgb);
@@ -96,8 +98,39 @@ vec4 vignette(vec4 color) {
 	return color * vec4(vec3(smoothstep(r, r - softness, len)), 1.0);
 }
 
+vec4 getWeirdFilter() {
+	vec4 color = vec4(0.0f);
+	
+	color += texture(scene, exTexCoords + vec2(2.0, 0.0)) * 4.0f;
+	color += texture(scene, exTexCoords + vec2(1.0, 0.0)) * 2.0f;
+	color += texture(scene, exTexCoords + vec2(-1.0, 0.0)) * -2.0f;
+	color += texture(scene, exTexCoords + vec2(-2.0, 0.0)) * -4.0f;
+	
+	color += texture(scene, exTexCoords + vec2(0.0, 2.0)) * 4.0f;
+	color += texture(scene, exTexCoords + vec2(0.0, 1.0)) * 2.0f;
+	color += texture(scene, exTexCoords + vec2(0.0, -1.0)) * -2.0f;
+	color += texture(scene, exTexCoords + vec2(0.0, -2.0)) * -4.0f;
+	
+	if(color.x < 0.0) {
+		color.x = -color.x;
+	}
+	if(color.y < 0.0) {
+		color.y = -color.y;
+	}
+	if(color.z < 0.0) {
+		color.z = -color.z;
+	}
+	
+	color.w = 1.0f;
+	return color;
+}
+
 void main() {
+#ifdef USE_WEIRD_FILTER
+	vec3 hdrColor = vec3(getWeirdFilter());
+#else
 	vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
+#endif
 
 		if (useBloom) {
 			for (int i = 0; i < BLOOM_TEXTURES; i++) {

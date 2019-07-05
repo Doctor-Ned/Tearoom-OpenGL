@@ -138,6 +138,7 @@ public:
 	static double remap(const double value, const double sourceMin, const double sourceMax, double targetMin, double targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
 	static float remap(const float value, const float sourceMin, const float sourceMax, float targetMin, float targetMax, const bool revertTarget, const bool snapIfInvalid);
 	static int remap(const int value, const int sourceMin, const int sourceMax, const int targetMin, const int targetMax, const bool revertTarget = false, const bool snapIfInvalid = true);
+	static std::string BASE_PATH;
 private:
 	static const std::string WHITESPACE;
 };

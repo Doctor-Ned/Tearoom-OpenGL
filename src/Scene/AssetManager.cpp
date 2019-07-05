@@ -33,7 +33,7 @@ GLuint AssetManager::createCubemap(std::vector<std::string> faces) {
 
 	int width, height, nrComponents;
 	for (unsigned int i = 0; i < faces.size(); i++) {
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
+		unsigned char* data = stbi_load((Global::BASE_PATH + faces[i]).c_str(), &width, &height, &nrComponents, 0);
 		if (data) {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
 						 data);
@@ -91,7 +91,8 @@ Texture AssetManager::createTexture(const char* textureFile) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(imgData);
 	texture.id = imgTexture;
-	texture.path = textureFile;
+	std::string file(textureFile);
+	texture.path = file.substr(Global::BASE_PATH.size(), file.size() - Global::BASE_PATH.size());
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return texture;
 }
@@ -174,6 +175,18 @@ void AssetManager::addAnimation(std::string path, SkeletalAnimation anim) {
 	animations.emplace(path, anim);
 }
 
+void AssetManager::updatePPS() {
+	PostProcessingShader *pps = dynamic_cast<PostProcessingShader*>(getShader(STPostProcessing));
+	pps->use();
+	pps->setInt("scene", 0);
+	for (int i = 0; i < BLOOM_TEXTURES; i++) {
+		pps->setInt(("bloom[" + std::to_string(i) + "]").c_str(), i + 1);
+	}
+	GameManager* gm = GameManager::getInstance();
+	pps->setWindowSize(gm->getWindowWidth(), gm->getWindowHeight());
+	pps->setVec2("screenSize", glm::vec2(gm->getWindowWidth(), gm->getWindowHeight()));
+}
+
 bool AssetManager::endsWith(std::string const &fullString, std::string const &ending) {
 	if (fullString.length() >= ending.length()) {
 		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
@@ -196,6 +209,9 @@ void AssetManager::refreshShader(Shader* shader) {
 	}
 	if(type == STUiTexture || type == STUiColor || type == STUiText) {
 		UiElement::updateProjection();
+	}
+	if(type == STPostProcessing) {
+		updatePPS();
 	}
 }
 
@@ -323,13 +339,14 @@ void AssetManager::loadNextPendingResource() {
 			SPDLOG_DEBUG("Gathering loading data...");
 			std::vector<std::string> textures;
 			std::vector<std::string> models;
-			for (const auto & entry : fs::recursive_directory_iterator("res")) {
+			for (const auto & entry : fs::recursive_directory_iterator(Global::BASE_PATH + "res")) {
 				std::string path = entry.path().u8string();
 				for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
 					if (*i == '\\') {
 						*i = '/';
 					}
 				}
+				path = path.substr(Global::BASE_PATH.size(), path.size() - Global::BASE_PATH.size());
 				switch (getResourceTypeByExtension(Global::getExtension(path))) {
 					default:
 					case NoneResource:
@@ -435,7 +452,7 @@ void AssetManager::loadResource(std::string path, bool verify) {
 				}
 			}
 			if (add) {
-				models.emplace(path, AnimatedModel::createModelData(path));
+				models.emplace(path, AnimatedModel::createModelData(Global::BASE_PATH + path));
 			}
 			break;
 		case TextureResource:
@@ -448,7 +465,7 @@ void AssetManager::loadResource(std::string path, bool verify) {
 				}
 			}
 			if (add) {
-				textures.emplace_back(createTexture(path.c_str()));
+				textures.emplace_back(createTexture((Global::BASE_PATH + path).c_str()));
 			}
 			break;
 	}

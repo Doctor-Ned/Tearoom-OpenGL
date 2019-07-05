@@ -1,6 +1,7 @@
 #include "Global.h"
 #include <fstream>
 
+std::string Global::BASE_PATH = "";
 const std::string Global::WHITESPACE = " \n\r\t\f\v";
 
 std::string Global::getExtension(const std::string& path) {

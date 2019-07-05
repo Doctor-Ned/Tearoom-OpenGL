@@ -333,6 +333,7 @@ Texture *AnimatedModel::loadModelTextures(const std::string &objPath) {
 	Texture *textures = new Texture[7];
 	AssetManager *assetManager = AssetManager::getInstance();
 	std::string dir = objPath.substr(0, objPath.find_last_of("/") + 1);
+	dir = dir.substr(Global::BASE_PATH.size(), dir.size() - Global::BASE_PATH.size());
 	for (auto &text : assetManager->getTextures()) {
 		if (Global::startsWith(text, dir)) {
 			if (Global::endsWith(text, "_AO.png")) {

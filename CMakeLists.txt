@@ -6,5 +6,7 @@ set(THIRDPARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty")
 # add thirdparties
 include(thirdparty/thirdparty.cmake)
 
-# subdirectories
+# add subdirectories
 add_subdirectory(src)
+set(SHADER_DIR "Shaders")
+add_subdirectory(${SHADER_DIR})

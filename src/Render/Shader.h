@@ -11,6 +11,7 @@
 class Shader {
 public:
 	Shader(char* vertexPath, char* fragmentPath);
+	static void setup();
 	virtual GLuint getID();
 	void use();
 	void setColor(glm::vec4 &color);
@@ -60,8 +61,8 @@ protected:
 	std::vector<GLuint> shaders;
 	char* fragmentPath;
 	char* vertexPath;
-	const char* SHADER_DIR = "Shaders/";
-	const char* SHARED_DIR = "Shaders/Shared";
+	static std::string SHADER_DIR;
+	static std::string SHARED_DIR;
 #ifdef ENABLE_SHADER_HOTSWAP
 	bool firstPass = true;
 	bool changed = false;

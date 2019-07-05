@@ -7,7 +7,15 @@
 
 namespace fs = std::experimental::filesystem;
 
+std::string Shader::SHADER_DIR = "Shaders/";
+std::string Shader::SHARED_DIR = "Shaders/Shared";
+
 Shader::Shader(char* vertexPath, char* fragmentPath) : Shader(vertexPath, fragmentPath, true) {}
+
+void Shader::setup() {
+	SHADER_DIR = Global::BASE_PATH + SHADER_DIR;
+	SHARED_DIR = Global::BASE_PATH + SHARED_DIR;
+}
 
 Shader::Shader(char* vertexPath, char* fragmentPath, bool initialise) {
 	for (const auto & entry : fs::directory_iterator(SHARED_DIR)) {
@@ -279,9 +287,9 @@ void Shader::setDepthScale(float depthScale) {
 GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	GLuint shader;
 	shader = glCreateShader(shaderType);
-	size_t len_dir = strlen(SHADER_DIR), len_file = strlen(file);
+	size_t len_dir = strlen(SHADER_DIR.c_str()), len_file = strlen(file);
 	char* fullFile = new char[len_dir + len_file + 1];
-	strcpy(fullFile, SHADER_DIR);
+	strcpy(fullFile, SHADER_DIR.c_str());
 	strcat(fullFile, file);
 	std::string text = Global::readFullFile(fullFile);
 #ifdef ENABLE_SHADER_HOTSWAP

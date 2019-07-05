@@ -11,3 +11,5 @@ Build/
 *.TMP
 cmake-build-debug/
 .idea/
+log.txt
+Screenshots/

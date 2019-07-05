@@ -37,7 +37,7 @@ private:
 	std::map<Serializable*, int> ids;
 	Scene *deserializeScene(Json::Value &root);
 	Serializer() = default;
-	const std::string SCENES_DIR = "Scenes";
+	std::string SCENES_DIR = "Scenes";
 	const std::string FORMAT = ".scene";
 	const std::string OLD_FORMAT = ".oldscene";
 	std::map<std::string, std::string> scenes;

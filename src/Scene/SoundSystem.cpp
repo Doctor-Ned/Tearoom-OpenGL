@@ -41,12 +41,13 @@ SoundSystem* SoundSystem::getInstance() {
 
 void SoundSystem::loadSounds() {
 	SoundSystem *ss = getInstance();
-	for (auto it : fs::recursive_directory_iterator("res\\sounds")) {
+	std::string base = Global::BASE_PATH + "res/sounds";
+	for (auto it : fs::recursive_directory_iterator(base)) {
 		std::string fn = it.path().filename().u8string();
 		if (Global::getExtension(fn) == "wav" || Global::getExtension(fn) == "ogg") {
 			std::string noext = fn.substr(0, fn.find_last_of('.'));
 			if (ss->simpleNamesToFilesMap.find(noext) == ss->simpleNamesToFilesMap.end()) {
-				ss->simpleNamesToFilesMap.emplace(noext, "res\\sounds\\" + fn);
+				ss->simpleNamesToFilesMap.emplace(noext, Global::BASE_PATH + "res/sounds/" + fn);
 			}
 		}
 	}

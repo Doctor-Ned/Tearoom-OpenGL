@@ -115,6 +115,7 @@ public:
 	SkeletalAnimation getAnimation(std::string path);
 	void addBoneHierarchy(std::string path, Bone *boneHierarchy);
 	void addAnimation(std::string path, SkeletalAnimation anim);
+	void updatePPS();
 	static bool endsWith(std::string const& fullString, std::string const& ending);
 	AssetManager(AssetManager const&) = delete;
 	void operator=(AssetManager const&) = delete;

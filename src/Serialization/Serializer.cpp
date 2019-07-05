@@ -58,6 +58,7 @@ Serializer *Serializer::getInstance() {
 }
 
 void Serializer::setup() {
+	SCENES_DIR = Global::BASE_PATH + SCENES_DIR;
 	if (!fs::exists(SCENES_DIR)) {
 		fs::create_directory(SCENES_DIR);
 	}

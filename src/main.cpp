@@ -128,11 +128,38 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 }
 
 int main(int argc, char** argv) {
+	printf("Searching for base path...\n");
+
+	const int MAX_ITERATIONS = 6;
+
+	bool found = false;
+	int iterations = 0;
+	while (!found && iterations < MAX_ITERATIONS) {
+		for (const auto &entry : std::experimental::filesystem::directory_iterator(Global::BASE_PATH)) {
+			if (entry.path().filename().string() == "res") {
+				found = true;
+				break;
+			}
+		}
+		if (found) {
+			break;
+		}
+		Global::BASE_PATH.append("../");
+		iterations++;
+	}
+
+	if (!found) {
+		printf("Base path not found. Cannot proceed further!\n");
+		exit(1);
+	}
+
+	printf("Base path found at '%s'!\n", Global::BASE_PATH.c_str());
+
 	try {
 		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 		console_sink->set_level(spdlog::level::trace);
 		console_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
-		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt", true);
+		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(Global::BASE_PATH + "log.txt", true);
 		file_sink->set_level(spdlog::level::trace);
 		file_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
 		spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ console_sink, file_sink })));
@@ -319,8 +346,8 @@ int main(int argc, char** argv) {
 
 	glfwMakeContextCurrent(window);
 
-	if (!std::experimental::filesystem::is_directory("Screenshots") || !std::experimental::filesystem::exists("Screenshots")) {
-		std::experimental::filesystem::create_directory("Screenshots");
+	if (!std::experimental::filesystem::is_directory(Global::BASE_PATH + "Screenshots") || !std::experimental::filesystem::exists(Global::BASE_PATH + "Screenshots")) {
+		std::experimental::filesystem::create_directory(Global::BASE_PATH + "Screenshots");
 	}
 
 	CHECK_GL_ERROR();
@@ -365,6 +392,7 @@ int main(int argc, char** argv) {
 
 	const glm::vec4 clear_color(0.0f, 0.0f, 0.0f, 0.0f);
 
+	Shader::setup();
 	serializer->setup();
 	gameManager->setup();
 	SoundSystem::loadSounds();
@@ -374,13 +402,8 @@ int main(int argc, char** argv) {
 	GameFramebuffers framebuffers = gameManager->getFramebuffers();
 
 	PostProcessingShader *postProcessingShader = dynamic_cast<PostProcessingShader*>(assetManager->getShader(STPostProcessing));
-	postProcessingShader->use();
-	postProcessingShader->setInt("scene", 0);
-	for (int i = 0; i < BLOOM_TEXTURES; i++) {
-		postProcessingShader->setInt(("bloom[" + std::to_string(i) + "]").c_str(), i + 1);
-	}
-	postProcessingShader->setWindowSize(videoSettings.windowWidth, videoSettings.windowHeight);
-	postProcessingShader->setVec2("screenSize", glm::vec2(videoSettings.windowWidth, videoSettings.windowHeight));
+
+	assetManager->updatePPS();
 
 	Shader *blurShader = assetManager->getShader(STBlur);
 
@@ -435,7 +458,7 @@ int main(int argc, char** argv) {
 #ifdef ENABLE_SHADER_HOTSWAP
 		for (auto &pair : assetManager->getShaders()) {
 			pair.second->refreshTimestamps();
-			if(pair.second->wasChanged()) {
+			if (pair.second->wasChanged()) {
 				pair.second->clearChanged();
 				assetManager->refreshShader(pair.second);
 			}
@@ -555,7 +578,7 @@ int main(int argc, char** argv) {
 			struct tm* timeinfo = localtime(&rawtime);
 			strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo);
 			std::string timeString(buffer);
-			stbi_write_jpg(("Screenshots\\screenshot_" + timeString + ".jpg").c_str(), videoSettings.windowWidth, videoSettings.windowHeight, 3, data, 100);
+			stbi_write_jpg((Global::BASE_PATH + "Screenshots\\screenshot_" + timeString + ".jpg").c_str(), videoSettings.windowWidth, videoSettings.windowHeight, 3, data, 100);
 			SPDLOG_DEBUG(("Saved a new screenshot to 'screenshot_" + timeString + ".jpg'!").c_str());
 			takeScreenshot = takeUiScreenshot = false;
 			delete[] data;
