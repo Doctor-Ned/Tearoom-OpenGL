@@ -251,7 +251,6 @@ void Shader::refreshTimestamps() {
 		try {
 			createShaders();
 			linkShaderProgram();
-			deleteShaders();
 			glDeleteProgram(oldId);
 			SPDLOG_DEBUG("Shader recreated!");
 		} catch (std::exception &e) {
@@ -259,6 +258,7 @@ void Shader::refreshTimestamps() {
 			id = oldId;
 			SPDLOG_DEBUG("Unable to recreate the shader. Using the old one.");
 		}
+		deleteShaders();
 		this->changed = true;
 	}
 }
