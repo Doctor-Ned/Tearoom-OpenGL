@@ -33,11 +33,11 @@ const float W = 11.2;
 
 vec3 getAntialiasedColor() {
 	vec3 luma = vec3(0.299, 0.587, 0.114);
-	float lumaTL = dot(luma, texture2D(scene, exTexCoords + (vec2(-1.0, -1.0) * inverseScreenSize)).rgb);
-	float lumaTR = dot(luma, texture2D(scene, exTexCoords + (vec2(1.0, -1.0) * inverseScreenSize)).rgb);
-	float lumaBL = dot(luma, texture2D(scene, exTexCoords + (vec2(-1.0, 1.0) * inverseScreenSize)).rgb);
-	float lumaBR = dot(luma, texture2D(scene, exTexCoords + (vec2(1.0, 1.0) * inverseScreenSize)).rgb);
-	float lumaM = dot(luma, texture2D(scene, exTexCoords).rgb);
+	float lumaTL = dot(luma, texture(scene, exTexCoords + (vec2(-1.0, -1.0) * inverseScreenSize)).rgb);
+	float lumaTR = dot(luma, texture(scene, exTexCoords + (vec2(1.0, -1.0) * inverseScreenSize)).rgb);
+	float lumaBL = dot(luma, texture(scene, exTexCoords + (vec2(-1.0, 1.0) * inverseScreenSize)).rgb);
+	float lumaBR = dot(luma, texture(scene, exTexCoords + (vec2(1.0, 1.0) * inverseScreenSize)).rgb);
+	float lumaM = dot(luma, texture(scene, exTexCoords).rgb);
 
 	vec2 dir;
 	dir.x = -((lumaTL + lumaTR) - (lumaBL + lumaBR));
@@ -50,12 +50,12 @@ vec3 getAntialiasedColor() {
 			  max(vec2(-fxaaSpanMax, -fxaaSpanMax), dir * inverseDirAdjustment)) * inverseScreenSize;
 
 	vec3 result1 = (1.0 / 2.0) * (
-		texture2D(scene, exTexCoords + (dir * vec2(1.0 / 3.0 - 0.5))).rgb +
-		texture2D(scene, exTexCoords + (dir * vec2(2.0 / 3.0 - 0.5))).rgb);
+		texture(scene, exTexCoords + (dir * vec2(1.0 / 3.0 - 0.5))).rgb +
+		texture(scene, exTexCoords + (dir * vec2(2.0 / 3.0 - 0.5))).rgb);
 
 	vec3 result2 = result1 * (1.0 / 2.0) + (1.0 / 4.0) * (
-		texture2D(scene, exTexCoords + (dir * vec2(0.0 / 3.0 - 0.5))).rgb +
-		texture2D(scene, exTexCoords + (dir * vec2(3.0 / 3.0 - 0.5))).rgb);
+		texture(scene, exTexCoords + (dir * vec2(0.0 / 3.0 - 0.5))).rgb +
+		texture(scene, exTexCoords + (dir * vec2(3.0 / 3.0 - 0.5))).rgb);
 
 	float lumaMin = min(lumaM, min(min(lumaTL, lumaTR), min(lumaBL, lumaBR)));
 	float lumaMax = max(lumaM, max(max(lumaTL, lumaTR), max(lumaBL, lumaBR)));
