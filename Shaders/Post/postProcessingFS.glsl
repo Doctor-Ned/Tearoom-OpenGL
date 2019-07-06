@@ -98,36 +98,43 @@ vec4 vignette(vec4 color) {
 	return color * vec4(vec3(smoothstep(r, r - softness, len)), 1.0);
 }
 
-vec4 getWeirdFilter() {
-	vec4 color = vec4(0.0f);
-	
-	color += texture(scene, exTexCoords + vec2(2.0, 0.0)) * 4.0f;
-	color += texture(scene, exTexCoords + vec2(1.0, 0.0)) * 2.0f;
-	color += texture(scene, exTexCoords + vec2(-1.0, 0.0)) * -2.0f;
-	color += texture(scene, exTexCoords + vec2(-2.0, 0.0)) * -4.0f;
-	
-	color += texture(scene, exTexCoords + vec2(0.0, 2.0)) * 4.0f;
-	color += texture(scene, exTexCoords + vec2(0.0, 1.0)) * 2.0f;
-	color += texture(scene, exTexCoords + vec2(0.0, -1.0)) * -2.0f;
-	color += texture(scene, exTexCoords + vec2(0.0, -2.0)) * -4.0f;
-	
-	if(color.x < 0.0) {
-		color.x = -color.x;
+vec3 getWeirdFilter() {
+	vec3 color = vec3(0.0f);
+
+	const float Gx1[5] = float[] ( 2.0f, 2.0f, 4.0f, 2.0f, 2.0f );
+	const float Gx2[5] = float[] ( 1.0f, 1.0f, 2.0f, 1.0f, 1.0f );
+	const float Gx3[5] = float[] ( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f );
+	const float Gx4[5] = float[] ( -1.0f, -1.0f, -2.0f, -1.0f, -1.0f );
+	const float Gx5[5] = float[] ( -2.0f, -2.0f, -4.0f, -2.0f, -2.0f );
+
+	for (int i = -2; i < 3; i++) {
+		color += texture(scene, exTexCoords + vec2(i, -2.0f) * inverseScreenSize).rgb * Gx1[i];
+		color += texture(scene, exTexCoords + vec2(i, -1.0f) * inverseScreenSize).rgb * Gx2[i];
+		color += texture(scene, exTexCoords + vec2(i, 1.0f) * inverseScreenSize).rgb * Gx4[i];
+		color += texture(scene, exTexCoords + vec2(i, 2.0f) * inverseScreenSize).rgb * Gx5[i];
+
+		color += texture(scene, exTexCoords + vec2(-2.0f, i) * inverseScreenSize).rgb * Gx1[i];
+		color += texture(scene, exTexCoords + vec2(-1.0f, i) * inverseScreenSize).rgb * Gx2[i];
+		color += texture(scene, exTexCoords + vec2(1.0f, i) * inverseScreenSize).rgb * Gx4[i];
+		color += texture(scene, exTexCoords + vec2(2.0f, i) * inverseScreenSize).rgb * Gx5[i];
 	}
-	if(color.y < 0.0) {
-		color.y = -color.y;
-	}
-	if(color.z < 0.0) {
-		color.z = -color.z;
-	}
-	
-	color.w = 1.0f;
+
+	//color += texture(scene, exTexCoords + vec2(2.0, 0.0) * inverseScreenSize).rgb * 4.0f;
+	//color += texture(scene, exTexCoords + vec2(1.0, 0.0) * inverseScreenSize).rgb * 2.0f;
+	//color += texture(scene, exTexCoords + vec2(-1.0, 0.0) * inverseScreenSize).rgb * -2.0f;
+	//color += texture(scene, exTexCoords + vec2(-2.0, 0.0) * inverseScreenSize).rgb * -4.0f;
+
+	//color += texture(scene, exTexCoords + vec2(0.0, 2.0) * inverseScreenSize).rgb * 4.0f;
+	//color += texture(scene, exTexCoords + vec2(0.0, 1.0) * inverseScreenSize).rgb * 2.0f;
+	//color += texture(scene, exTexCoords + vec2(0.0, -1.0) * inverseScreenSize).rgb * -2.0f;
+	//color += texture(scene, exTexCoords + vec2(0.0, -2.0) * inverseScreenSize).rgb * -4.0f;
+
 	return color;
 }
 
 void main() {
 #ifdef USE_WEIRD_FILTER
-	vec3 hdrColor = vec3(getWeirdFilter());
+	vec3 hdrColor = getWeirdFilter();
 #else
 	vec3 hdrColor = useAntialiasing ? getAntialiasedColor() : texture(scene, exTexCoords).rgb;
 #endif
