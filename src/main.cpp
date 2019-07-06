@@ -128,49 +128,54 @@ void mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 }
 
 int main(int argc, char** argv) {
-	printf("Searching for base path...\n");
+	try {
+		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		console_sink->set_level(spdlog::level::trace);
+		console_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
+		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt", true);
+		file_sink->set_level(spdlog::level::trace);
+		file_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
+		spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ console_sink, file_sink })));
+		spdlog::set_level(spdlog::level::trace);
+
+	}
+	catch (const spdlog::spdlog_ex& ex) {
+		printf("Failed to initialize the logger! %s\n", ex.what());
+		return 1;
+	}
+
+	SPDLOG_DEBUG("Logger initialized! Warming up...");
+	
+	SPDLOG_DEBUG("Searching for base path...");
 
 	const int MAX_ITERATIONS = 6;
 
 	bool found = false;
 	int iterations = 0;
+	std::experimental::filesystem::path p = std::experimental::filesystem::current_path();
 	while (!found && iterations < MAX_ITERATIONS) {
-		for (const auto &entry : std::experimental::filesystem::directory_iterator(Global::BASE_PATH)) {
+		for (const auto &entry : std::experimental::filesystem::directory_iterator(p)) {
 			if (entry.path().filename().string() == "res") {
 				found = true;
 				break;
 			}
 		}
 		if (found) {
+			Global::BASE_PATH = p.string() + "\\";
 			break;
 		}
-		Global::BASE_PATH.append("../");
+		p = p.parent_path();
 		iterations++;
 	}
 
 	if (!found) {
-		printf("Base path not found. Cannot proceed further!\n");
+		SPDLOG_DEBUG("Base path not found. Cannot proceed further!");
 		exit(1);
 	}
 
-	printf("Base path found at '%s'!\n", Global::BASE_PATH.c_str());
+	SPDLOG_DEBUG("Base path found at " + Global::BASE_PATH);
 
-	try {
-		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-		console_sink->set_level(spdlog::level::trace);
-		console_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
-		auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(Global::BASE_PATH + "log.txt", true);
-		file_sink->set_level(spdlog::level::trace);
-		file_sink->set_pattern("[%Y-%m-%d %T.%e][%^%l%$][%@][%!] %v");
-		spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ console_sink, file_sink })));
-		spdlog::set_level(spdlog::level::trace);
-
-	} catch (const spdlog::spdlog_ex& ex) {
-		printf("Failed to initialize the logger! %s\n", ex.what());
-		return 1;
-	}
-
-	SPDLOG_DEBUG("Logger initialized! Warming up...");
+	
 
 	gameManager = GameManager::getInstance();
 	assetManager = AssetManager::getInstance();
@@ -423,14 +428,6 @@ int main(int argc, char** argv) {
 
 	SPDLOG_DEBUG("Starting the game loop!");
 
-	std::thread secondThread([]() {
-		while (!assetManager->isLoaded()) {
-			//std::cout << "second thread working" << std::endl;
-			//using namespace std::chrono_literals;
-			//std::this_thread::sleep_for(8ms);
-		}
-	});
-
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		if (showUi && !takeUiScreenshot) {
@@ -606,7 +603,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	secondThread.join();
 	SPDLOG_DEBUG("Game loop closed! Shutting down...");
 
 	delete gameManager;
