@@ -320,14 +320,13 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 #endif
 		}
 		const char* finalText = text.c_str();
-		glShaderSource(shader, 1, (const GLchar**)&finalText, nullptr);
+		glShaderSource(shader, 1, static_cast<const GLchar**>(&finalText), nullptr);
 		glCompileShader(shader);
 		GLint isFine, maxLength;
-		char* errorLog;
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &isFine);
 		if (isFine == FALSE) {
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-			errorLog = new char[maxLength];
+			char* errorLog = new char[maxLength];
 			glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog);
 			SPDLOG_ERROR("Unable to compile the shader '{}'! {}", file, errorLog);
 			throw std::exception("Unable to compile the shader!");
@@ -340,19 +339,18 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 }
 
 void Shader::linkShaderProgram() {
-	for (int i = 0; i < shaders.size(); i++) {
-		glAttachShader(id, shaders[i]);
+	for (unsigned int shader : shaders) {
+		glAttachShader(id, shader);
 	}
 	glLinkProgram(id);
 	GLint isFine, maxLength;
-	char* errorLog;
-	glGetProgramiv(id, GL_LINK_STATUS, (int *)&isFine);
+	glGetProgramiv(id, GL_LINK_STATUS, static_cast<int*>(&isFine));
 	if (isFine == FALSE) {
 		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-		errorLog = new char[maxLength];
+		char* errorLog = new char[maxLength];
 		glGetProgramInfoLog(id, maxLength, &maxLength, errorLog);
 		SPDLOG_ERROR("Unable to link the shader program! {}", errorLog);
 		delete errorLog;
-		exit(1);
+		throw std::exception("Unable to link the shader program!");
 	}
 }
