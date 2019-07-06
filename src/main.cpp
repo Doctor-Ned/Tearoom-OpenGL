@@ -419,7 +419,7 @@ int main(int argc, char** argv) {
 	UiPlane *keysPlane = nullptr;
 
 	Shader* fpsPlaneShader = assetManager->getShader(fpsPlane->getShaderType()), *fpsTextShader = assetManager->getShader(fpsText->getShaderType()), *screenTextShader = assetManager->getShader(STScreenTexture),
-		*uiTexShader = assetManager->getShader(STUiTexture);
+		*uiTexShader = assetManager->getShader(STUiTexture), *downscaleShader = assetManager->getShader(STDownscale);
 
 	SPDLOG_DEBUG("Starting the game loop!");
 
@@ -482,9 +482,17 @@ int main(int argc, char** argv) {
 		glDisable(GL_DEPTH_TEST);
 
 		if (postProcessingShader->isBloomEnabled()) {
+			//downscaleShader->use();
+			//downscaleShader->setVec2("inverseSourceSize", glm::vec2(1.0f / framebuffers.main.width, 1.0f / framebuffers.main.height));
 			for (int i = 0; i < BLOOM_TEXTURES; i++) {
-				screenTextShader->use();
 				BloomFramebuffer bl = framebuffers.bloom[i];
+				screenTextShader->use();
+				//downscaleShader->use();
+				//glm::ivec2 rescaleSize(ceil(framebuffers.main.width / bl.width), ceil(framebuffers.main.height / bl.height));
+				//glm::ivec2 shift(rescaleSize.x / 2, rescaleSize.y / 2);
+				//glm::ivec2 right(shift.x * 2 == rescaleSize.x ? shift.x : shift.x + 1, shift.y * 2 == rescaleSize.y ? shift.y : shift.y + 1);
+				//downscaleShader->setIVec2("row", glm::ivec2(-shift.x, right.x));
+				//downscaleShader->setIVec2("col", glm::ivec2(-shift.y, right.y));
 				glViewport(0, 0, bl.width, bl.height);
 				glBindFramebuffer(GL_FRAMEBUFFER, bl.rescaler.fbo);
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

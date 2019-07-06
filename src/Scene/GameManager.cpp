@@ -429,6 +429,8 @@ MultitextureFramebuffer GameManager::createMultitextureFramebuffer(GLint interna
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFbo);
 	CHECK_GL_ERROR();
 	MultitextureFramebuffer result;
+	result.width = width;
+	result.height = height;
 	result.textureAmount = textureCount;
 	result.textures = new GLuint[textureCount];
 	glGenFramebuffers(1, &result.fbo);

@@ -172,6 +172,13 @@ void Shader::setVec4(const char * name, glm::vec4 & value) {
 	}
 }
 
+void Shader::setIVec2(const char* name, glm::ivec2& value) {
+	GLint location = getUniformLocation(name);
+	if(location != -1) {
+		glUniform2i(location, value.x, value.y);
+	}
+}
+
 void Shader::setMat2(const char * name, glm::mat2 & value) {
 	GLint location = getUniformLocation(name);
 	if (location != -1) {
@@ -251,7 +258,8 @@ void Shader::refreshTimestamps() {
 	}
 	if (changed) {
 		for (auto &file : changedFiles) {
-			SPDLOG_DEBUG("Detected changes in shader file '{}'!", file.c_str());
+			SPDLOG_DEBUG("Detected changes in shader file '{}'!",
+				(file.substr(Global::BASE_PATH.size(), file.size() - Global::BASE_PATH.size())).c_str());
 		}
 		SPDLOG_DEBUG("Recreating shader...");
 		GLuint oldId = id;

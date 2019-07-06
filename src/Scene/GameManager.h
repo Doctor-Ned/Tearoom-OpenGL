@@ -31,6 +31,8 @@ struct MultitextureFramebuffer {
 	GLuint fbo = 0;
 	GLuint depth = 0;
 	GLuint *textures;
+	GLuint width;
+	GLuint height;
 	unsigned int textureAmount = 0;
 };
 

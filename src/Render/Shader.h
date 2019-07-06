@@ -39,6 +39,7 @@ public:
 	void setVec2(const char* name, glm::vec2 &value);
 	void setVec3(const char* name, glm::vec3 &value);
 	void setVec4(const char* name, glm::vec4 &value);
+	void setIVec2(const char* name, glm::ivec2 &value);
 	void setMat2(const char* name, glm::mat2 &value);
 	void setMat3(const char* name, glm::mat3 &value);
 	void setMat4(const char* name, glm::mat4 &value);

@@ -35,7 +35,8 @@ enum ShaderType {
 	STAnimatedModel,
 	STGaussianBlur,
 	STText,
-	STScreenTexture
+	STScreenTexture,
+	STDownscale
 };
 
 
@@ -61,7 +62,8 @@ static const ShaderType ShaderTypes[] = {
 	STAnimatedModel,
 	STGaussianBlur,
 	STText,
-	STScreenTexture
+	STScreenTexture,
+	STDownscale
 };
 
 // haven't had enough lol
@@ -86,7 +88,8 @@ static const std::string ShaderTypeNames[] = {
 	"STAnimatedModel",
 	"STGaussianBlur",
 	"STText",
-	"STScreenTexture"
+	"STScreenTexture",
+	"STDownscale"
 };
 
 enum ResourceType {
