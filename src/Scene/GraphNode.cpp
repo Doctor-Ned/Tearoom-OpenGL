@@ -277,9 +277,9 @@ GraphNode::~GraphNode() {
 		delete component;
 	}
 	renderableComponents.clear();
-	//for (auto &child : children) {
-		//delete child;
-	//}
+	for (auto &child : children) {
+		delete child;
+	}
 }
 
 bool GraphNode::isOpaque() {

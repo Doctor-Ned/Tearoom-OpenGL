@@ -294,7 +294,7 @@ void Scene::update(double deltaTime) {
 	if (showPauseScene) {
 		pauseScene->update(deltaTime);
 	} else {
-		if (!rootNode->getChildren().empty()) {
+		/*if (!rootNode->getChildren().empty()) {
 			Profiler::getInstance()->startCountingTime();
 			OctreeNode::getInstance().RebuildTree(50.0f);
 			Profiler::getInstance()->addMeasure("Octree rebuild");
@@ -314,7 +314,7 @@ void Scene::update(double deltaTime) {
 				OctreeNode::getInstance().frustumCulling(frustum);
 				Profiler::getInstance()->addMeasure("Frustum Culling");
 			}
-		}
+		}*/
 
 		rootNode->update(deltaTime);
 	}
@@ -394,7 +394,7 @@ Scene::Scene() {
 
 Scene::~Scene() {
 	OctreeNode::toInsert2.clear();
-	//delete rootUiElement;
+	delete rootUiElement;
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {
 			delete renderMap[type];

@@ -218,9 +218,14 @@ void UiElement::updateProjection() {
 }
 
 UiElement::~UiElement() {
+	SPDLOG_DEBUG("UI_Element destructor called");
 	glDeleteVertexArrays(1, &vao);
 	if (vbo != 0) {
 		glDeleteBuffers(1, &vbo);
+	}
+	for (UiElement* element : children)
+	{
+		delete element;
 	}
 }
 

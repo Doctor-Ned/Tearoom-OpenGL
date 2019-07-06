@@ -29,6 +29,8 @@
 #include "stb_image_write.h"
 #include <chrono>
 #include <thread>
+#include "Scene/Frustum.h"
+#include "Scene/Components/Camera.h"
 
 //comment extern below if you don't have NVidia GPU
 //extern "C" {
@@ -217,6 +219,8 @@ int main(int argc, char** argv) {
 
 	OptionsScene::setVideoSettings(videoSettings);
 
+
+	std::function<void()> main_loop = [&]() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
@@ -414,14 +418,6 @@ int main(int argc, char** argv) {
 
 	SPDLOG_DEBUG("Starting the game loop!");
 
-	std::thread secondThread([]() {
-		while (!assetManager->isLoaded()) {
-			std::cout << "second thread working" << std::endl;
-			using namespace std::chrono_literals;
-			//std::this_thread::sleep_for(8ms);
-		}
-	});
-
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		if (showUi && !takeUiScreenshot) {
@@ -463,9 +459,9 @@ int main(int argc, char** argv) {
 		glDisable(GL_DEPTH_TEST);
 
 		if (postProcessingShader->isBloomEnabled()) {
-			for (int i = 0; i < BLOOM_TEXTURES; i++) {
+			for (auto bl : framebuffers.bloom)
+			{
 				screenTextShader->use();
-				BloomFramebuffer bl = framebuffers.bloom[i];
 				glViewport(0, 0, bl.width, bl.height);
 				glBindFramebuffer(GL_FRAMEBUFFER, bl.rescaler.fbo);
 				glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -580,7 +576,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	secondThread.join();
 	SPDLOG_DEBUG("Game loop closed! Shutting down...");
 
 	delete gameManager;
@@ -590,6 +585,63 @@ int main(int argc, char** argv) {
 	glfwDestroyWindow(window);
 	//glfwDestroyCursor(cursor);
 	glfwTerminate();
+	};
+
+	std::function<void()> collision_function = [&]() {
+		using namespace std::chrono_literals;
+		SPDLOG_DEBUG("Collision thread started working");
+		while (true)
+		{
+			Scene* scene = GameManager::getInstance()->getCurrentScene();
+			if(scene != nullptr)
+			{
+				Camera* camera = scene->getCamera();
+				if (!scene->getRootNode()->getChildren().empty()) {
+					Profiler::getInstance()->startCountingTime();
+					OctreeNode::getInstance().RebuildTree(50.0f);
+					Profiler::getInstance()->addMeasure("Octree rebuild");
+
+					Profiler::getInstance()->startCountingTime();
+					OctreeNode::getInstance().Calculate();
+					Profiler::getInstance()->addMeasure("Octree calculation");
+
+					Profiler::getInstance()->startCountingTime();
+					OctreeNode::getInstance().CollisionTests();
+					Profiler::getInstance()->addMeasure("Collisions detection");
+
+					if (camera != nullptr) {
+						camera->RecalculateFrustum();
+						Frustum frustum = camera->getFrustum();
+						Profiler::getInstance()->startCountingTime();
+						OctreeNode::getInstance().frustumCulling(frustum);
+						Profiler::getInstance()->addMeasure("Frustum Culling");
+					}
+				}
+			}
+			std::this_thread::sleep_for(8ms);
+		}
+	};
+
+	std::function<void()> dummyFuncion = []()
+	{
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(5s);
+	};
+
+	#define NUMBER_OF_THREADS 2
+	enum ThreadNames
+	{
+		MAIN_LOOP,
+		COLLISION_SYSTEM
+	};
+	std::thread threads[NUMBER_OF_THREADS];
+	threads[MAIN_LOOP] = std::thread(main_loop);
+	threads[COLLISION_SYSTEM] = std::thread(dummyFuncion);
+
+	for (auto& thread : threads)
+	{
+		thread.join();
+	}
 
 	return 0;
 }

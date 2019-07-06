@@ -33,6 +33,6 @@ public:
 	virtual void update(float msec);
 	GraphNode* getGameObject() const;
 	std::string getName();
-	virtual ~Component() = default;
+	virtual ~Component() { SPDLOG_DEBUG("Component destructor called"); }
 };
 #endif

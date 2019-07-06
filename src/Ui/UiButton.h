@@ -31,6 +31,7 @@ public:
 	void clearCallbacks();
 	using UiElement::setPosition;
 	UiButtonState getState();
+	virtual ~UiButton();
 protected:
 	void runCallbacks(UiButtonState state);
 	void addCallback(UiButtonState state, std::function<void()> callback);

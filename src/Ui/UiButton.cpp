@@ -117,6 +117,12 @@ UiButtonState UiButton::getState() {
 	return state;
 }
 
+UiButton::~UiButton()
+{
+	SPDLOG_DEBUG("Button destructor called");
+	clearCallbacks();
+}
+
 void UiButton::runCallbacks(UiButtonState state) {
 	for (auto &pair : callbacks) {
 		if (pair.first == state) {
