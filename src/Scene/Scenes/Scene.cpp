@@ -394,6 +394,7 @@ Scene::Scene() {
 
 Scene::~Scene() {
 	OctreeNode::toInsert2.clear();
+	GameManager::getInstance()->clearCallbacks();
 	delete rootUiElement;
 	for (auto &type : ShaderTypes) {
 		if (type != STNone) {

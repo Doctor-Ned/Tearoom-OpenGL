@@ -253,6 +253,13 @@ void GameManager::addScrollCallback(bool up, const std::function<void(float)>& c
 	}
 }
 
+void GameManager::clearCallbacks()
+{
+	keyCallbacks.clear();
+	mouseCallbacks.clear();
+	scrollCallbacks.clear();
+}
+
 GameManager::~GameManager() {
 	if (currentScene == menuScene) {
 		setCurrentScene(nullptr);

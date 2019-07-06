@@ -89,6 +89,7 @@ public:
 	void addKeyCallback(int key, bool pressed, const std::function<void()>& callback);
 	void addMouseCallback(int key, bool pressed, const std::function<void()>& callback);
 	void addScrollCallback(bool up, const std::function<void(float)>& callback);
+	void clearCallbacks();
 	~GameManager();
 	bool getKeyState(int key);
 	bool getKeyOnce(int key);

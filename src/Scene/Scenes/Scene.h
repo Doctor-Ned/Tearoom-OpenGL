@@ -8,7 +8,7 @@
 #include "Render/LightManager.h"
 #include "Render/Skybox.h"
 
-#define ENABLE_FRUSTUM_CULLING
+//#define ENABLE_FRUSTUM_CULLING
 
 class LightManager;
 class UiPlane;
