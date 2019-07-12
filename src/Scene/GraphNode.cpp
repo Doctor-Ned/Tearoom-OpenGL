@@ -28,7 +28,8 @@ void GraphNode::updateDrawData() {
 		if (dirty) {
 			updateWorld();
 		}
-	} else if (dirty) {
+	}
+	else if (dirty) {
 		updateWorld();
 	}
 
@@ -132,7 +133,7 @@ void GraphNode::removeChild(GraphNode* child) {
 }
 
 void GraphNode::swapChildren(int index1, int index2) {
-	if(index1 == index2 || index1 < 0 || index2 < 0 || index1 + 1 > children.size() || index2 +1 > children.size()) {
+	if (index1 == index2 || index1 < 0 || index2 < 0 || index1 + 1 > children.size() || index2 + 1 > children.size()) {
 		return;
 	}
 	std::swap(children[index1], children[index2]);
@@ -140,7 +141,7 @@ void GraphNode::swapChildren(int index1, int index2) {
 
 void GraphNode::setChildFirst(GraphNode* node) {
 	auto it = std::find(children.begin(), children.end(), node);
-	if(it == children.end()) {
+	if (it == children.end()) {
 		return;
 	}
 	children.erase(it);
@@ -149,7 +150,7 @@ void GraphNode::setChildFirst(GraphNode* node) {
 
 void GraphNode::setChildLast(GraphNode* node) {
 	auto it = std::find(children.begin(), children.end(), node);
-	if(it == children.end()) {
+	if (it == children.end()) {
 		return;
 	}
 	children.erase(it);
@@ -158,7 +159,7 @@ void GraphNode::setChildLast(GraphNode* node) {
 
 int GraphNode::getChildIndex(GraphNode* child) {
 	auto it = std::find(children.begin(), children.end(), child);
-	if(it == children.end()) {
+	if (it == children.end()) {
 		return -1;
 	}
 	return std::distance(children.begin(), it);
@@ -250,7 +251,8 @@ std::vector<Component*> GraphNode::getComponents() {
 GraphNode* GraphNode::getChild(int index) {
 	if (index + 1 <= int(children.size())) {
 		return children[index];
-	} else {
+	}
+	else {
 		return nullptr;
 	}
 }
@@ -366,7 +368,7 @@ int GraphNode::getChildrenCount() {
 
 void GraphNode::moveRelative(glm::vec3 direction, bool allowVertical) {
 	direction = getRelative(direction);
-	if(!allowVertical) {
+	if (!allowVertical) {
 		direction.y = 0.0f;
 	}
 	move(direction);
@@ -377,7 +379,8 @@ void GraphNode::updateWorld() {
 		localTransform.updateLast();
 		if (parent != nullptr) {
 			worldTransform.setMatrix(parent->worldTransform.getMatrix() * localTransform.getMatrix());
-		} else {
+		}
+		else {
 			worldTransform.setMatrix(localTransform.getMatrix());
 		}
 	}
@@ -412,25 +415,29 @@ void GraphNode::renderGui() {
 		ImGui::Text("_____________________");
 		EditorScene *editor = GameManager::getInstance()->getEditorScene();
 		if (mesh != nullptr) {
-			if (editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
-				editor->confirmationDialogCallback = [this, editor]() {
-					//delete mesh;
-					mesh = nullptr;
-					editor->editedScene->updateRenderable(this);
-				};
-			}
-			mesh->drawGui();
-			ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
-			if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
-				ImGui::SameLine();
-				if (ImGui::Button("Change...")) {
-					editor->shaderTypeSelectionCallback = [node = this, editor = editor, mesh = mesh](ShaderType type) {
-						mesh->setShaderType(type);
-						editor->editedScene->updateRenderable(node);
+			if (ImGui::TreeNode("Mesh")) {
+				if (editor != nullptr && editor->confirmationDialogCallback == nullptr && ImGui::Button("Delete mesh")) {
+					editor->confirmationDialogCallback = [this, editor]() {
+						//delete mesh;
+						mesh = nullptr;
+						editor->editedScene->updateRenderable(this);
 					};
 				}
+				mesh->drawGui();
+				ImGui::Text(("Shader type: " + ShaderTypeNames[static_cast<int>(mesh->getShaderType())]).c_str());
+				if (editor != nullptr && editor->shaderTypeSelectionCallback == nullptr) {
+					ImGui::SameLine();
+					if (ImGui::Button("Change...")) {
+						editor->shaderTypeSelectionCallback = [node = this, editor = editor, mesh = mesh](ShaderType type) {
+							mesh->setShaderType(type);
+							editor->editedScene->updateRenderable(node);
+						};
+					}
+				}
+				ImGui::TreePop();
 			}
-		} else {
+		}
+		else {
 			if (editor != nullptr && editor->meshSelectionCallback == nullptr && ImGui::Button("Add mesh...")) {
 				editor->meshSelectionCallback = [this, editor](SerializableType type) {
 					if (!editor->typeCreationExists(type)) {
@@ -442,13 +449,14 @@ void GraphNode::renderGui() {
 				};
 			}
 		}
+		ImGui::Text("_____________________");
 		if (editor != nullptr && editor->componentSelectionCallback == nullptr && ImGui::Button("Add component...")) {
-			editor->componentSelectionCallback = [this,editor](SerializableType type) {
-				if(!editor->typeCreationExists(type)) {
+			editor->componentSelectionCallback = [this, editor](SerializableType type) {
+				if (!editor->typeCreationExists(type)) {
 					editor->addTypeCreation(type, [this, editor](void *component) {
 						this->addComponent(reinterpret_cast<Component*>(component));
 						Renderable *rend = dynamic_cast<Renderable*>(reinterpret_cast<Component*>(component));
-						if(rend != nullptr) {
+						if (rend != nullptr) {
 							editor->editedScene->addToRenderMap(rend);
 						}
 					}, this);
@@ -459,10 +467,10 @@ void GraphNode::renderGui() {
 			int counter = 0;
 			for (auto &comp : components) {
 				if (ImGui::TreeNode((comp->getName() + "(" + SerializableTypeNames[comp->getSerializableType()] + ")").c_str())) {
-					if(editor != nullptr && editor->confirmationDialogCallback == nullptr) {
+					if (editor != nullptr && editor->confirmationDialogCallback == nullptr) {
 						ImGui::SameLine();
-						if(ImGui::Button("Delete")) {
-							editor->confirmationDialogCallback = [this,comp,editor]() {
+						if (ImGui::Button("Delete")) {
+							editor->confirmationDialogCallback = [this, comp, editor]() {
 								editor->editedScene->removeComponent(this, comp);
 							};
 						}
@@ -474,5 +482,6 @@ void GraphNode::renderGui() {
 			}
 			ImGui::TreePop();
 		}
+		ImGui::NewLine();
 	}
 }

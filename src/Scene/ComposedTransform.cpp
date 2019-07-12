@@ -218,8 +218,9 @@ glm::mat4 ComposedTransform::dataToMatrixQuat(TransformData data)
 glm::mat4 ComposedTransform::standardDataToMatrix(TransformData data) {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), data.translation);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), data.scale);
-	glm::mat4 rotation = glm::eulerAngleYXZ(data.eulerRotation.y, data.eulerRotation.x, data.eulerRotation.z);
-	return translation * rotation * scale;
+	//glm::mat4 rotation = glm::eulerAngleYXZ(data.eulerRotation.y, data.eulerRotation.x, data.eulerRotation.z);
+	glm::mat4 rot = glm::mat4_cast(glm::quat(data.eulerRotation));
+	return translation * rot * scale;
 }
 
 glm::mat4 ComposedTransform::standardDataToMatrixQuat(TransformData data)
@@ -233,16 +234,9 @@ glm::mat4 ComposedTransform::standardDataToMatrixQuat(TransformData data)
 void ComposedTransform::renderGui() {
 	glm::vec3 translation = data.translation, scale = data.scale, eulerRotation = data.eulerRotation;
 	ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&translation), 0.1f);
-	ImGui::InputFloat3("Translation (fixed)", reinterpret_cast<float*>(&translation));
 	ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.1f);
-	ImGui::InputFloat3("Scale (fixed)", reinterpret_cast<float*>(&scale));
 	glm::vec3 eulerRotationDegrees = Global::radiansToDegrees(eulerRotation);
-	ImGui::SliderAngle("X Rotation", &eulerRotation.x);
-	ImGui::InputFloat("X Rotation (fixed)", &eulerRotationDegrees.x);
-	ImGui::SliderAngle("Y Rotation", &eulerRotation.y);
-	ImGui::InputFloat("Y Rotation (fixed)", &eulerRotationDegrees.y);
-	ImGui::SliderAngle("Z Rotation", &eulerRotation.z);
-	ImGui::InputFloat("Z Rotation (fixed)", &eulerRotationDegrees.z);
+	ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&eulerRotationDegrees), 1.0f, -360.0f, 360.0f);
 	if(translation != data.translation || scale != data.scale || eulerRotation != data.eulerRotation || Global::degreesToRadians(eulerRotationDegrees) != data.eulerRotation) {
 		glm::vec3 rot;
 		if(eulerRotation != data.eulerRotation) {

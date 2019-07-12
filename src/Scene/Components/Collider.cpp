@@ -37,14 +37,7 @@ void Collider::renderGui()
 		collisionType = isDynamic ? DYNAMIC : STATIC;
 	//}
 
-	ImGui::Text("Offset:");
-	ImGui::DragFloat("X: ", &positionOffset.x, 0.005f);
-	ImGui::DragFloat("Y: ", &positionOffset.y, 0.005f);
-	ImGui::DragFloat("Z: ", &positionOffset.z, 0.005f);
-
-	ImGui::InputFloat("fixed X:", &positionOffset.x);
-	ImGui::InputFloat("fixed Y:", &positionOffset.y);
-	ImGui::InputFloat("fixed Z:", &positionOffset.z);
+	ImGui::DragFloat3("PosOffset: ", reinterpret_cast<float*>(&positionOffset), 0.005f);
 
 	ImGui::NewLine();
 }

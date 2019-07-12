@@ -44,9 +44,7 @@ void BoxCollider::renderGui()
 	ImGui::Text("HalfDimensions:");
 	glm::vec3 hDim = halfDimensions;
 	
-	ImGui::DragFloat("HalfX: ", &hDim.x, 0.005f);
-	ImGui::DragFloat("HalfY: ", &hDim.y, 0.005f);
-	ImGui::DragFloat("HalfZ: ", &hDim.z, 0.005f);
+	ImGui::DragFloat3("HalfDims", reinterpret_cast<float*>(&hDim), 0.005f);
 	glm::vec3 hDim2;
 	for (int i = 0; i < 3; i++)
 	{
