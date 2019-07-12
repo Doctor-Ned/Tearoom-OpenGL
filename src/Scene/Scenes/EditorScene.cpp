@@ -158,791 +158,804 @@ void EditorScene::renderUi() {
 		ImGui::PushID(typeCreation);
 		std::string title = "Create a ";
 		switch (typeCreation->ttc) {
-			case TTCComponent:
-				title += "component";
-				break;
-			case TTCGraphNode:
-				title += "graph node";
-				break;
-			case TTCMesh:
-				title += "mesh";
-				break;
-			case TTCSkybox:
-				title += "skybox";
-				break;
+		case TTCComponent:
+			title += "component";
+			break;
+		case TTCGraphNode:
+			title += "graph node";
+			break;
+		case TTCMesh:
+			title += "mesh";
+			break;
+		case TTCSkybox:
+			title += "skybox";
+			break;
 		}
 		ImGui::Begin(title.c_str(), nullptr, 64);
 		switch (typeCreation->typeToCreate) {
-			case SGraphNode:
-			{
-				typeCreation->creationCallback(new GraphNode());
-				typeCreationsToDelete.push_back(typeCreation);
-			}
-			break;
-			case SSkybox:
-			{
-				static std::string faces[6];
-				if (typeCreation->typeCreationStarted) {
-					for (auto& face : faces) {
-						face = "";
-					}
-				}
-				static bool correct;
-				correct = true;
-				for (int i = 0; i < 6; i++) {
-					if (faces[i].length() == 0) {
-						correct = false;
-					}
-					ImGui::PushID(i);
-					std::string title;
-					switch (i) {
-						case 0:
-							title = "Right: ";
-							break;
-						case 1:
-							title = "Left: ";
-							break;
-						case 2:
-							title = "Top: ";
-							break;
-						case 3:
-							title = "Bottom: ";
-							break;
-						case 4:
-							title = "Front: ";
-							break;
-						case 5:
-							title = "Back: ";
-							break;
-					}
-					title += faces[i].length() == 0 ? "-" : faces[i];
-					ImGui::Text((title).c_str());
-					if (textureSelectionCallback == nullptr) {
-						ImGui::SameLine();
-						if (ImGui::Button("Change...")) {
-							textureSelectionCallback = [&, i](Texture t) {
-								faces[i] = t.path;
-							};
-						}
-					}
-					ImGui::PopID();
-				}
-				if (correct && ImGui::Button("Create")) {
-					std::vector<std::string> fcs;
-					for (int i = 0; i < 6; i++) {
-						fcs.push_back(faces[i]);
-					}
-					typeCreation->creationCallback(new Skybox(fcs));
-					typeCreationsToDelete.push_back(typeCreation);
+		case SGraphNode:
+		{
+			typeCreation->creationCallback(new GraphNode());
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SSkybox:
+		{
+			static std::string faces[6];
+			if (typeCreation->typeCreationStarted) {
+				for (auto& face : faces) {
+					face = "";
 				}
 			}
-			break;
-			case SModel:
-			case SAnimatedModel:
-			{
-				static std::string model;
-				if (typeCreation->typeCreationStarted) {
-					model = "";
+			static bool correct;
+			correct = true;
+			for (int i = 0; i < 6; i++) {
+				if (faces[i].length() == 0) {
+					correct = false;
 				}
-				std::string title = "Model: ";
-				if (model.length() == 0) {
-					title += "-";
-				} else {
-					title += model;
+				ImGui::PushID(i);
+				std::string title;
+				switch (i) {
+				case 0:
+					title = "Right: ";
+					break;
+				case 1:
+					title = "Left: ";
+					break;
+				case 2:
+					title = "Top: ";
+					break;
+				case 3:
+					title = "Bottom: ";
+					break;
+				case 4:
+					title = "Front: ";
+					break;
+				case 5:
+					title = "Back: ";
+					break;
 				}
-				ImGui::Text(title.c_str());
-				if (modelSelectionCallback == nullptr) {
+				title += faces[i].length() == 0 ? "-" : faces[i];
+				ImGui::Text((title).c_str());
+				if (textureSelectionCallback == nullptr) {
 					ImGui::SameLine();
 					if (ImGui::Button("Change...")) {
-						modelSelectionCallback = [&](std::string mdl) {
-							model = mdl;
+						textureSelectionCallback = [&, i](Texture t) {
+							faces[i] = t.path;
 						};
 					}
 				}
-				if (model.length() > 0 && ImGui::Button("Create")) {
-					void* mdl = typeCreation->typeToCreate == SModel ? static_cast<void*>(new Model(model)) : static_cast<void*>(new AnimatedModel(model));
-					typeCreation->creationCallback(mdl);
-					typeCreationsToDelete.push_back(typeCreation);
+				ImGui::PopID();
+			}
+			if (correct && ImGui::Button("Create")) {
+				std::vector<std::string> fcs;
+				for (int i = 0; i < 6; i++) {
+					fcs.push_back(faces[i]);
+				}
+				typeCreation->creationCallback(new Skybox(fcs));
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SModel:
+		case SAnimatedModel:
+		{
+			static std::string model;
+			if (typeCreation->typeCreationStarted) {
+				model = "";
+			}
+			std::string title = "Model: ";
+			if (model.length() == 0) {
+				title += "-";
+			}
+			else {
+				title += model;
+			}
+			ImGui::Text(title.c_str());
+			if (modelSelectionCallback == nullptr) {
+				ImGui::SameLine();
+				if (ImGui::Button("Change...")) {
+					modelSelectionCallback = [&](std::string mdl) {
+						model = mdl;
+					};
 				}
 			}
-			break;
-			case SMeshBox:
-			case SMeshColorBox:
-			case SMeshRefBox:
-			{
-				static bool useDimensions = true;
-				ImGui::Checkbox("Use dimensions", &useDimensions);
-				static glm::vec3 min, max, dimensions;
-				static bool reflective;
-				static glm::vec4 color;
-				static std::string texture;
-				if (typeCreation->typeCreationStarted) {
-					reflective = true;
-					texture = "";
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-					min = glm::vec3(-0.5f, -0.5f, -0.5f);
-					max = glm::vec3(0.5f, 0.5f, 0.5f);
-					dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
-				}
-				if (useDimensions) {
-					ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
-					ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
-					for (int i = 0; i < 3; i++) {
-						if (dimensions[i] < 0.0f) {
-							dimensions[i] = 0.0f;
-						}
-					}
-					min = -dimensions / 2.0f;
-					max = dimensions / 2.0f;
-				} else {
-					ImGui::DragFloat3("Min", reinterpret_cast<float*>(&min), 0.1f);
-					ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
-					ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f);
-					ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
-					for (int i = 0; i < 3; i++) {
-						if (min[i] > max[i]) {
-							min[i] = max[i];
-						}
+			if (model.length() > 0 && ImGui::Button("Create")) {
+				void* mdl = typeCreation->typeToCreate == SModel ? static_cast<void*>(new Model(model)) : static_cast<void*>(new AnimatedModel(model));
+				typeCreation->creationCallback(mdl);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshBox:
+		case SMeshColorBox:
+		case SMeshRefBox:
+		{
+			static bool useDimensions = true;
+			ImGui::Checkbox("Use dimensions", &useDimensions);
+			static glm::vec3 min, max, dimensions;
+			static bool reflective;
+			static glm::vec4 color;
+			static std::string texture;
+			if (typeCreation->typeCreationStarted) {
+				reflective = true;
+				texture = "";
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				min = glm::vec3(-0.5f, -0.5f, -0.5f);
+				max = glm::vec3(0.5f, 0.5f, 0.5f);
+				dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
+			}
+			if (useDimensions) {
+				ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
+				ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+				for (int i = 0; i < 3; i++) {
+					if (dimensions[i] < 0.0f) {
+						dimensions[i] = 0.0f;
 					}
 				}
-				bool valid = true;
+				min = -dimensions / 2.0f;
+				max = dimensions / 2.0f;
+			}
+			else {
+				ImGui::DragFloat3("Min", reinterpret_cast<float*>(&min), 0.1f);
+				ImGui::InputFloat3("Min (fixed)", reinterpret_cast<float*>(&min));
+				ImGui::DragFloat3("Max", reinterpret_cast<float*>(&max), 0.1f);
+				ImGui::InputFloat3("Max (fixed)", reinterpret_cast<float*>(&max));
 				for (int i = 0; i < 3; i++) {
 					if (min[i] > max[i]) {
-						valid = false;
-						break;
+						min[i] = max[i];
 					}
 				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshBox:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
+			}
+			bool valid = true;
+			for (int i = 0; i < 3; i++) {
+				if (min[i] > max[i]) {
+					valid = false;
 					break;
-					case SMeshColorBox:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-					case SMeshRefBox:
-						ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
-						break;
 				}
+			}
 
-				if (valid && ImGui::Button("Create")) {
-					Mesh *box;
-					if (typeCreation->typeToCreate == SMeshColorBox) {
-						box = new MeshColorBox(min, max, color);
-					} else if (typeCreation->typeToCreate == SMeshRefBox) {
-						box = new MeshRefBox(reflective, min, max);
-					} else {
-						//SMeshBox
-						box = new MeshBox(min, max, texture);
-					}
-					typeCreation->creationCallback(box);
-					typeCreationsToDelete.push_back(typeCreation);
+			switch (typeCreation->typeToCreate) {
+			case SMeshBox:
+			{
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
 				}
 			}
 			break;
+			case SMeshColorBox:
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
+			case SMeshRefBox:
+				ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
+				break;
+			}
+
+			if (valid && ImGui::Button("Create")) {
+				Mesh *box;
+				if (typeCreation->typeToCreate == SMeshColorBox) {
+					box = new MeshColorBox(min, max, color);
+				}
+				else if (typeCreation->typeToCreate == SMeshRefBox) {
+					box = new MeshRefBox(reflective, min, max);
+				}
+				else {
+					//SMeshBox
+					box = new MeshBox(min, max, texture);
+				}
+				typeCreation->creationCallback(box);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshCone:
+		case SMeshColorCone:
+		{
+			static glm::vec4 color;
+			static std::string texture;
+			static float radius, height;
+			static int sideAmount;
+			if (typeCreation->typeCreationStarted) {
+				texture = "";
+				radius = 0.5f;
+				height = 1.0f;
+				sideAmount = 25;
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			bool valid = true;
+
+			ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Radius (fixed)", &radius);
+			ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Height (fixed)", &height);
+			ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+			if (radius < 0.0f) {
+				radius = 0.0f;
+			}
+			if (height < 0.0f) {
+				height = 0.0f;
+			}
+			if (sideAmount < 3) {
+				sideAmount = 3;
+			}
+
+			switch (typeCreation->typeToCreate) {
 			case SMeshCone:
+			{
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
+				}
+			}
+			break;
 			case SMeshColorCone:
-			{
-				static glm::vec4 color;
-				static std::string texture;
-				static float radius, height;
-				static int sideAmount;
-				if (typeCreation->typeCreationStarted) {
-					texture = "";
-					radius = 0.5f;
-					height = 1.0f;
-					sideAmount = 25;
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				}
-				bool valid = true;
-
-				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Height (fixed)", &height);
-				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
-
-				if (radius < 0.0f) {
-					radius = 0.0f;
-				}
-				if (height < 0.0f) {
-					height = 0.0f;
-				}
-				if (sideAmount < 3) {
-					sideAmount = 3;
-				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshCone:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
-					break;
-					case SMeshColorCone:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-				}
-
-				if (valid && ImGui::Button("Create")) {
-					Mesh *cone;
-					if (typeCreation->typeToCreate == SMeshColorCone) {
-						cone = new MeshColorCone(radius, height, sideAmount, color);
-					} else {
-						cone = new MeshCone(radius, height, sideAmount, texture);
-					}
-					typeCreation->creationCallback(cone);
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
 			}
-			break;
+
+			if (valid && ImGui::Button("Create")) {
+				Mesh *cone;
+				if (typeCreation->typeToCreate == SMeshColorCone) {
+					cone = new MeshColorCone(radius, height, sideAmount, color);
+				}
+				else {
+					cone = new MeshCone(radius, height, sideAmount, texture);
+				}
+				typeCreation->creationCallback(cone);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshCylinder:
+		case SMeshColorCylinder:
+		{
+			static glm::vec4 color;
+			static std::string texture;
+			static float radius, height;
+			static int sideAmount;
+			if (typeCreation->typeCreationStarted) {
+				texture = "";
+				radius = 0.5f;
+				height = 1.0f;
+				sideAmount = 25;
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			bool valid = true;
+
+			ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Radius (fixed)", &radius);
+			ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Height (fixed)", &height);
+			ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+			if (radius < 0.0f) {
+				radius = 0.0f;
+			}
+			if (height < 0.0f) {
+				height = 0.0f;
+			}
+			if (sideAmount < 3) {
+				sideAmount = 3;
+			}
+
+			switch (typeCreation->typeToCreate) {
 			case SMeshCylinder:
+			{
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
+				}
+			}
+			break;
 			case SMeshColorCylinder:
-			{
-				static glm::vec4 color;
-				static std::string texture;
-				static float radius, height;
-				static int sideAmount;
-				if (typeCreation->typeCreationStarted) {
-					texture = "";
-					radius = 0.5f;
-					height = 1.0f;
-					sideAmount = 25;
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				}
-				bool valid = true;
-
-				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::DragFloat("Height", &height, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Height (fixed)", &height);
-				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
-
-				if (radius < 0.0f) {
-					radius = 0.0f;
-				}
-				if (height < 0.0f) {
-					height = 0.0f;
-				}
-				if (sideAmount < 3) {
-					sideAmount = 3;
-				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshCylinder:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
-					break;
-					case SMeshColorCylinder:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-				}
-
-				if (valid && ImGui::Button("Create")) {
-					Mesh *cylinder;
-					if (typeCreation->typeToCreate == SMeshColorCylinder) {
-						cylinder = new MeshColorCylinder(radius, height, sideAmount, color);
-					} else {
-						cylinder = new MeshCylinder(radius, height, sideAmount, texture);
-					}
-					typeCreation->creationCallback(cylinder);
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
 			}
-			break;
+
+			if (valid && ImGui::Button("Create")) {
+				Mesh *cylinder;
+				if (typeCreation->typeToCreate == SMeshColorCylinder) {
+					cylinder = new MeshColorCylinder(radius, height, sideAmount, color);
+				}
+				else {
+					cylinder = new MeshCylinder(radius, height, sideAmount, texture);
+				}
+				typeCreation->creationCallback(cylinder);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshPlane:
+		case SMeshColorPlane:
+		{
+			static glm::vec4 color;
+			static std::string texture;
+			static float width, length;
+			if (typeCreation->typeCreationStarted) {
+				texture = "";
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				width = 1.0f;
+				length = 1.0f;
+			}
+			bool valid = true;
+
+			ImGui::DragFloat("Width", &width, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Width (fixed)", &width);
+			ImGui::DragFloat("Length", &length, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Length (fixed)", &length);
+
+			if (width < 0.0f) {
+				width = 0.0f;
+			}
+			if (length < 0.0f) {
+				length = 0.0f;
+			}
+
+			switch (typeCreation->typeToCreate) {
 			case SMeshPlane:
-			case SMeshColorPlane:
 			{
-				static glm::vec4 color;
-				static std::string texture;
-				static float width, length;
-				if (typeCreation->typeCreationStarted) {
-					texture = "";
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-					width = 1.0f;
-					length = 1.0f;
-				}
-				bool valid = true;
-
-				ImGui::DragFloat("Width", &width, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Width (fixed)", &width);
-				ImGui::DragFloat("Length", &length, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Length (fixed)", &length);
-
-				if (width < 0.0f) {
-					width = 0.0f;
-				}
-				if (length < 0.0f) {
-					length = 0.0f;
-				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshPlane:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
-					break;
-					case SMeshColorPlane:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-				}
-
-				if (valid && ImGui::Button("Create")) {
-					Mesh *plane;
-					if (typeCreation->typeToCreate == SMeshColorPlane) {
-						plane = new MeshColorPlane(width, length, color);
-					} else {
-						plane = new MeshPlane(width, length, texture);
-					}
-					typeCreation->creationCallback(plane);
-					typeCreationsToDelete.push_back(typeCreation);
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
 				}
 			}
 			break;
-			case SMeshSphere:
-			case SMeshColorSphere:
-			case SMeshRefSphere:
-			{
-				static bool reflective;
-				static glm::vec4 color;
-				static std::string texture;
-				static int precision;
-				static float radius;
-				if (typeCreation->typeCreationStarted) {
-					reflective = true;
-					texture = "";
-					precision = 25;
-					radius = 0.5f;
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				}
-				bool valid = true;
+			case SMeshColorPlane:
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
+			}
 
+			if (valid && ImGui::Button("Create")) {
+				Mesh *plane;
+				if (typeCreation->typeToCreate == SMeshColorPlane) {
+					plane = new MeshColorPlane(width, length, color);
+				}
+				else {
+					plane = new MeshPlane(width, length, texture);
+				}
+				typeCreation->creationCallback(plane);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshSphere:
+		case SMeshColorSphere:
+		case SMeshRefSphere:
+		{
+			static bool reflective;
+			static glm::vec4 color;
+			static std::string texture;
+			static int precision;
+			static float radius;
+			if (typeCreation->typeCreationStarted) {
+				reflective = true;
+				texture = "";
+				precision = 25;
+				radius = 0.5f;
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			bool valid = true;
+
+			ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Radius (fixed)", &radius);
+			ImGui::DragInt("Precision", &precision, 1, 3, std::numeric_limits<int>::max());
+
+			if (radius < 0.0f) {
+				radius = 0.0f;
+			}
+			if (precision < 3) {
+				precision = 3;
+			}
+
+			switch (typeCreation->typeToCreate) {
+			case SMeshSphere:
+			{
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
+				}
+			}
+			break;
+			case SMeshColorSphere:
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
+			case SMeshRefSphere:
+				ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
+				break;
+			}
+
+			if (valid && ImGui::Button("Create")) {
+				Mesh *sphere;
+				if (typeCreation->typeToCreate == SMeshColorSphere) {
+					sphere = new MeshColorSphere(radius, precision, color);
+				}
+				else if (typeCreation->typeToCreate == SMeshRefSphere) {
+					sphere = new MeshRefSphere(reflective, radius, precision);
+				}
+				else {
+					sphere = new MeshSphere(radius, precision, texture);
+				}
+				typeCreation->creationCallback(sphere);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshTorus:
+		case SMeshColorTorus:
+		{
+			static glm::vec4 color;
+			static std::string texture;
+			static float radiusIn, radiusOut;
+			static int sideAmount;
+			if (typeCreation->typeCreationStarted) {
+				texture = "";
+				radiusIn = 0.5f;
+				radiusOut = 1.0f;
+				sideAmount = 25;
+				color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			bool valid = true;
+
+			ImGui::DragFloat("Radius 1", &radiusIn, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
+			ImGui::DragFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
+			ImGui::InputFloat("Radius 2", &radiusOut, 0.1f);
+			ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
+
+			if (radiusIn < 0.0f) {
+				radiusIn = 0.0f;
+			}
+			if (radiusOut < 0.0f) {
+				radiusOut = 0.0f;
+			}
+			if (sideAmount < 3) {
+				sideAmount = 3;
+			}
+
+			switch (typeCreation->typeToCreate) {
+			case SMeshTorus:
+			{
+				showTextureGui(texture);
+				if (valid && texture.length() == 0) {
+					valid = false;
+				}
+			}
+			break;
+			case SMeshColorTorus:
+				ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
+				break;
+			}
+
+			if (valid && ImGui::Button("Create")) {
+				Mesh *torus;
+				if (typeCreation->typeToCreate == SMeshColorTorus) {
+					torus = new MeshColorTorus(radiusIn, radiusOut, sideAmount, color);
+				}
+				else {
+					torus = new MeshTorus(radiusIn, radiusOut, sideAmount, texture);
+				}
+				typeCreation->creationCallback(torus);
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SMeshText:
+		{
+			typeCreation->creationCallback(new MeshText());
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SKeyFrameAnimation:
+		{
+			typeCreation->creationCallback(new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SSkeletalAnimation:
+		{
+			//todo
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SAnimationController:
+		{
+			typeCreation->creationCallback(new AnimationController(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SBillboard:
+		{
+			static bool rescale;
+			if (typeCreation->typeCreationStarted) {
+				rescale = true;
+			}
+			ImGui::Checkbox("Rescale", &rescale);
+			if (ImGui::Button("Create")) {
+				typeCreation->creationCallback(new Billboard(playerCamera, reinterpret_cast<GraphNode*>(typeCreation->arg), rescale));
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SSphereCollider:
+		case SBoxCollider:
+		{
+			static bool isTrigger;
+			static bool isDynamic;
+			static float radius;
+			static glm::vec3 dimensions;
+			static glm::vec3 positionOffset;
+			if (typeCreation->typeCreationStarted) {
+				isTrigger = false;
+				isDynamic = true;
+				radius = 0.5f;
+				dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
+				positionOffset = glm::vec3(0.0f, 0.0f, 0.0f);
+			}
+			ImGui::Checkbox("Trigger", &isTrigger);
+			ImGui::Checkbox("Dynamic", &isDynamic);
+			switch (typeCreation->typeToCreate) {
+			case SSphereCollider:
 				ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
 				ImGui::InputFloat("Radius (fixed)", &radius);
-				ImGui::DragInt("Precision", &precision, 1, 3, std::numeric_limits<int>::max());
-
 				if (radius < 0.0f) {
 					radius = 0.0f;
 				}
-				if (precision < 3) {
-					precision = 3;
-				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshSphere:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
-					break;
-					case SMeshColorSphere:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-					case SMeshRefSphere:
-						ImGui::Checkbox("Reflective (refractive otherwise)", &reflective);
-						break;
-				}
-
-				if (valid && ImGui::Button("Create")) {
-					Mesh *sphere;
-					if (typeCreation->typeToCreate == SMeshColorSphere) {
-						sphere = new MeshColorSphere(radius, precision, color);
-					} else if (typeCreation->typeToCreate == SMeshRefSphere) {
-						sphere = new MeshRefSphere(reflective, radius, precision);
-					} else {
-						sphere = new MeshSphere(radius, precision, texture);
-					}
-					typeCreation->creationCallback(sphere);
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SMeshTorus:
-			case SMeshColorTorus:
-			{
-				static glm::vec4 color;
-				static std::string texture;
-				static float radiusIn, radiusOut;
-				static int sideAmount;
-				if (typeCreation->typeCreationStarted) {
-					texture = "";
-					radiusIn = 0.5f;
-					radiusOut = 1.0f;
-					sideAmount = 25;
-					color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				}
-				bool valid = true;
-
-				ImGui::DragFloat("Radius 1", &radiusIn, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Radius 1 (fixed)", &radiusIn);
-				ImGui::DragFloat("Radius 2", &radiusOut, 0.1f, 0.0f, std::numeric_limits<float>::max());
-				ImGui::InputFloat("Radius 2", &radiusOut, 0.1f);
-				ImGui::DragInt("Side amount", &sideAmount, 1, 3, std::numeric_limits<int>::max());
-
-				if (radiusIn < 0.0f) {
-					radiusIn = 0.0f;
-				}
-				if (radiusOut < 0.0f) {
-					radiusOut = 0.0f;
-				}
-				if (sideAmount < 3) {
-					sideAmount = 3;
-				}
-
-				switch (typeCreation->typeToCreate) {
-					case SMeshTorus:
-					{
-						showTextureGui(texture);
-						if (valid && texture.length() == 0) {
-							valid = false;
-						}
-					}
-					break;
-					case SMeshColorTorus:
-						ImGui::ColorEdit4("Color", reinterpret_cast<float*>(&color));
-						break;
-				}
-
-				if (valid && ImGui::Button("Create")) {
-					Mesh *torus;
-					if (typeCreation->typeToCreate == SMeshColorTorus) {
-						torus = new MeshColorTorus(radiusIn, radiusOut, sideAmount, color);
-					} else {
-						torus = new MeshTorus(radiusIn, radiusOut, sideAmount, texture);
-					}
-					typeCreation->creationCallback(torus);
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SMeshText:
-			{
-				typeCreation->creationCallback(new MeshText());
-				typeCreationsToDelete.push_back(typeCreation);
-			}
-			break;
-			case SKeyFrameAnimation:
-			{
-				typeCreation->creationCallback(new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-			}
-			break;
-			case SSkeletalAnimation:
-			{
-				//todo
-				typeCreationsToDelete.push_back(typeCreation);
-			}
-			break;
-			case SAnimationController:
-			{
-				typeCreation->creationCallback(new AnimationController(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-			}
-			break;
-			case SBillboard:
-			{
-				static bool rescale;
-				if (typeCreation->typeCreationStarted) {
-					rescale = true;
-				}
-				ImGui::Checkbox("Rescale", &rescale);
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new Billboard(playerCamera, reinterpret_cast<GraphNode*>(typeCreation->arg), rescale));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SSphereCollider:
+				break;
 			case SBoxCollider:
-			{
-				static bool isTrigger;
-				static bool isDynamic;
-				static float radius;
-				static glm::vec3 dimensions;
-				static glm::vec3 positionOffset;
-				if (typeCreation->typeCreationStarted) {
-					isTrigger = false;
-					isDynamic = true;
-					radius = 0.5f;
-					dimensions = glm::vec3(1.0f, 1.0f, 1.0f);
-					positionOffset = glm::vec3(0.0f, 0.0f, 0.0f);
-				}
-				ImGui::Checkbox("Trigger", &isTrigger);
-				ImGui::Checkbox("Dynamic", &isDynamic);
-				switch (typeCreation->typeToCreate) {
-					case SSphereCollider:
-						ImGui::DragFloat("Radius", &radius, 0.1f, 0.0f, std::numeric_limits<float>::max());
-						ImGui::InputFloat("Radius (fixed)", &radius);
-						if (radius < 0.0f) {
-							radius = 0.0f;
-						}
-						break;
-					case SBoxCollider:
-						ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
-						ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
-						for (int i = 0; i < 3; i++) {
-							if (dimensions[i] < 0.0f) {
-								dimensions[i] = 0.0f;
-							}
-						}
-						break;
-				}
-				if (ImGui::Button("Create")) {
-					Collider *collider;
-					if (typeCreation->typeToCreate == SSphereCollider) {
-						collider = new SphereCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, radius);
-					} else {
-						collider = new BoxCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, dimensions / 2.0f);
+				ImGui::DragFloat3("Dimensions", reinterpret_cast<float*>(&dimensions), 0.1f, 0.0f, std::numeric_limits<float>::max());
+				ImGui::InputFloat3("Dimensions (fixed)", reinterpret_cast<float*>(&dimensions));
+				for (int i = 0; i < 3; i++) {
+					if (dimensions[i] < 0.0f) {
+						dimensions[i] = 0.0f;
 					}
-					typeCreation->creationCallback(collider);
-					typeCreationsToDelete.push_back(typeCreation);
 				}
+				break;
 			}
-			break;
-			case SPhysicalObject:
-			{
-				typeCreation->creationCallback(new PhysicalObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			if (ImGui::Button("Create")) {
+				Collider *collider;
+				if (typeCreation->typeToCreate == SSphereCollider) {
+					collider = new SphereCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, radius);
+				}
+				else {
+					collider = new BoxCollider(reinterpret_cast<GraphNode*>(typeCreation->arg), isDynamic ? DYNAMIC : STATIC, isTrigger, positionOffset, dimensions / 2.0f);
+				}
+				typeCreation->creationCallback(collider);
 				typeCreationsToDelete.push_back(typeCreation);
 			}
-			break;
-			case SRotatingObject:
-			{
-				static float rotationSpeed;
-				if (typeCreation->typeCreationStarted) {
-					rotationSpeed = glm::radians(45.0f);
-				}
-				ImGui::SliderAngle("Rotation speed (degrees/s)", &rotationSpeed);
-				float rotationSpeedDeg = glm::degrees(rotationSpeed);
-				ImGui::InputFloat("Rotation speed (fixed)", &rotationSpeedDeg);
-				rotationSpeed = glm::radians(rotationSpeedDeg);
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new RotatingObject(rotationSpeed, reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
+		}
+		break;
+		case SPhysicalObject:
+		{
+			typeCreation->creationCallback(new PhysicalObject(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SRotatingObject:
+		{
+			static float rotationSpeed;
+			if (typeCreation->typeCreationStarted) {
+				rotationSpeed = glm::radians(45.0f);
 			}
-			break;
-			case SCollectableObject:
-			{
-				static std::string icon, preview;
-				static glm::vec2 iconPos, iconSize, previewPos, previewSize;
-				static int itemType, doorID;
-				static bool addPreview;
-				if (typeCreation->typeCreationStarted) {
-					icon = "";
-					preview = "";
-					doorID = 0;
-					addPreview = false;
-					iconPos = glm::vec2(995.0f, 530.0f);
-					iconSize = glm::vec2(60.0f, 60.0f);
-					previewPos = glm::vec2(1200.0f, 430.0f);
-					previewSize = glm::vec2(300.0f, 500.0f);
+			ImGui::SliderAngle("Rotation speed (degrees/s)", &rotationSpeed);
+			float rotationSpeedDeg = glm::degrees(rotationSpeed);
+			ImGui::InputFloat("Rotation speed (fixed)", &rotationSpeedDeg);
+			rotationSpeed = glm::radians(rotationSpeedDeg);
+			if (ImGui::Button("Create")) {
+				typeCreation->creationCallback(new RotatingObject(rotationSpeed, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SCollectableObject:
+		{
+			static std::string icon, preview;
+			static glm::vec2 iconPos, iconSize, previewPos, previewSize;
+			static int itemType, doorID;
+			static bool addPreview;
+			if (typeCreation->typeCreationStarted) {
+				icon = "";
+				preview = "";
+				doorID = 0;
+				addPreview = false;
+				iconPos = glm::vec2(995.0f, 530.0f);
+				iconSize = glm::vec2(60.0f, 60.0f);
+				previewPos = glm::vec2(1200.0f, 430.0f);
+				previewSize = glm::vec2(300.0f, 500.0f);
+				itemType = 0;
+			}
+			ImGui::Text(("Item type: " + ItemTypeNames[itemType]).c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("CHANGE")) {
+				itemType++;
+				if (itemType >= sizeof(ItemTypes) / sizeof(*ItemTypes)) {
 					itemType = 0;
 				}
-				ImGui::Text(("Item type: " + ItemTypeNames[itemType]).c_str());
+			}
+			static const auto BUFFER_SIZE = 150;
+			static char nameBuffer[BUFFER_SIZE] = "";
+			ImGui::InputText("Description", nameBuffer, sizeof(nameBuffer));
+			ImGui::PushID(1);
+			ImGui::Text(("Icon: " + (icon.empty() ? "NONE" : icon)).c_str());
+			if (textureSelectionCallback == nullptr) {
 				ImGui::SameLine();
-				if (ImGui::Button("CHANGE")) {
-					itemType++;
-					if (itemType >= sizeof(ItemTypes) / sizeof(*ItemTypes)) {
-						itemType = 0;
-					}
+				if (ImGui::Button("CHOOSE")) {
+					textureSelectionCallback = [icon = &icon](Texture t) {
+						*icon = t.path;
+					};
 				}
-				static const auto BUFFER_SIZE = 150;
-				static char nameBuffer[BUFFER_SIZE] = "";
-				ImGui::InputText("Description", nameBuffer, sizeof(nameBuffer));
-				ImGui::PushID(1);
-				ImGui::Text(("Icon: " + (icon.empty() ? "NONE" : icon)).c_str());
+				ImGui::DragFloat2("Icon position", reinterpret_cast<float*>(&iconPos), 1.0f, 0.0f, 1280.0f);
+				ImGui::DragFloat2("Icon size", reinterpret_cast<float*>(&iconSize), 1.0f, 0.0f, 1000.0f);
+			}
+			ImGui::PopID();
+			ImGui::Checkbox("Add preview", &addPreview);
+			if (addPreview) {
+				ImGui::PushID(2);
+				ImGui::Text(("Preview: " + (preview.empty() ? "NONE" : preview)).c_str());
 				if (textureSelectionCallback == nullptr) {
 					ImGui::SameLine();
 					if (ImGui::Button("CHOOSE")) {
-						textureSelectionCallback = [icon = &icon](Texture t) {
-							*icon = t.path;
+						textureSelectionCallback = [preview = &preview](Texture t) {
+							*preview = t.path;
 						};
 					}
-					ImGui::DragFloat2("Icon position", reinterpret_cast<float*>(&iconPos), 1.0f, 0.0f, 1280.0f);
-					ImGui::DragFloat2("Icon size", reinterpret_cast<float*>(&iconSize), 1.0f, 0.0f, 1000.0f);
 				}
+				ImGui::DragFloat2("Preview position", reinterpret_cast<float*>(&previewPos), 1.0f, 0.0f, 1280.0f);
+				ImGui::DragFloat2("Preview size", reinterpret_cast<float*>(&previewSize), 1.0f, 0.0f, 1000.0f);
 				ImGui::PopID();
-				ImGui::Checkbox("Add preview", &addPreview);
-				if (addPreview) {
-					ImGui::PushID(2);
-					ImGui::Text(("Preview: " + (preview.empty() ? "NONE" : preview)).c_str());
-					if (textureSelectionCallback == nullptr) {
-						ImGui::SameLine();
-						if (ImGui::Button("CHOOSE")) {
-							textureSelectionCallback = [preview = &preview](Texture t) {
-								*preview = t.path;
-							};
-						}
-					}
-					ImGui::DragFloat2("Preview position", reinterpret_cast<float*>(&previewPos), 1.0f, 0.0f, 1280.0f);
-					ImGui::DragFloat2("Preview size", reinterpret_cast<float*>(&previewSize), 1.0f, 0.0f, 1000.0f);
-					ImGui::PopID();
-				}
-				ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
-				if (!icon.empty() && !(addPreview && preview.empty()) && ImGui::Button("Create")) {
-					std::string desc(nameBuffer);
-					typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize, doorID));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
 			}
-			break;
-			case SCollisionTest:
-			{
-				typeCreation->creationCallback(new CollisionTest(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			ImGui::DragInt("Door ID", &doorID, 1, 0, 100);
+			if (!icon.empty() && !(addPreview && preview.empty()) && ImGui::Button("Create")) {
+				std::string desc(nameBuffer);
+				typeCreation->creationCallback(new CollectableObject(reinterpret_cast<GraphNode*>(typeCreation->arg), static_cast<ItemType>(itemType), icon, iconPos, iconSize, desc, preview, previewPos, previewSize, doorID));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
-			break;
-			case SPicking:
-			{
-				typeCreation->creationCallback(new Picking(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
+		}
+		break;
+		case SCollisionTest:
+		{
+			typeCreation->creationCallback(new CollisionTest(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SPicking:
+		{
+			typeCreation->creationCallback(new Picking(reinterpret_cast<GraphNode*>(typeCreation->arg), playerCamera, editedScene));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SSunController:
+		{
+			if (ImGui::Button("Create")) {
+				typeCreation->creationCallback(new SunController(reinterpret_cast<GraphNode*>(typeCreation->arg), editedScene));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
-			break;
-			case SSunController:
-			{
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new SunController(reinterpret_cast<GraphNode*>(typeCreation->arg), editedScene));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SColumnMoving:
-			{
-				if (ImGui::Button("Create")) {
-					typeCreation->creationCallback(new ColumnMoving(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SPlayerMovement:
-			{
-				typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+		}
+		break;
+		case SColumnMoving:
+		{
+			if (ImGui::Button("Create")) {
+				typeCreation->creationCallback(new ColumnMoving(reinterpret_cast<GraphNode*>(typeCreation->arg)));
 				typeCreationsToDelete.push_back(typeCreation);
 			}
-			break;
-			case SDirLightComp:
-			{
-				if (lightManager->getDirAmount() != MAX_LIGHTS_OF_TYPE) {
-					typeCreation->creationCallback(new DirLightComp(lightManager->addDirLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					editedScene->setLights(lightManager->getLights());
-				}
-				typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SPlayerMovement:
+		{
+			typeCreation->creationCallback(new PlayerMovement(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SDirLightComp:
+		{
+			if (lightManager->getDirAmount() != MAX_LIGHTS_OF_TYPE) {
+				typeCreation->creationCallback(new DirLightComp(lightManager->addDirLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				editedScene->setLights(lightManager->getLights());
 			}
-			break;
-			case SSpotLightComp:
-			{
-				if (lightManager->getSpotAmount() != MAX_LIGHTS_OF_TYPE) {
-					typeCreation->creationCallback(new SpotLightComp(lightManager->addSpotLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					editedScene->setLights(lightManager->getLights());
-				}
-				typeCreationsToDelete.push_back(typeCreation);
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SSpotLightComp:
+		{
+			if (lightManager->getSpotAmount() != MAX_LIGHTS_OF_TYPE) {
+				typeCreation->creationCallback(new SpotLightComp(lightManager->addSpotLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				editedScene->setLights(lightManager->getLights());
 			}
-			break;
-			case SPointLightComp:
-			{
-				if (lightManager->getPointAmount() != MAX_LIGHTS_OF_TYPE) {
-					typeCreation->creationCallback(new PointLightComp(lightManager->addPointLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
-					editedScene->setLights(lightManager->getLights());
-				}
-				typeCreationsToDelete.push_back(typeCreation);
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SPointLightComp:
+		{
+			if (lightManager->getPointAmount() != MAX_LIGHTS_OF_TYPE) {
+				typeCreation->creationCallback(new PointLightComp(lightManager->addPointLight(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				editedScene->setLights(lightManager->getLights());
 			}
-			break;
-			case SSun:
-			{
-				if (lightManager->getDirAmount() < MAX_LIGHTS_OF_TYPE - 1) {
-					static glm::vec4 dawn, day, dusk, night;
-					static float sunDistance, initialTime, rotationAngle;
-					if (typeCreation->typeCreationStarted) {
-						dawn = normalize(glm::vec4(254, 107, 0, 255));
-						day = normalize(glm::vec4(173, 161, 70, 255));
-						dusk = normalize(glm::vec4(0, 2, 15, 255));
-						night = normalize(glm::vec4(2, 5, 18, 255));
-						sunDistance = 10.0f;
-						initialTime = 12.0f;
-						rotationAngle = glm::radians(75.0f);
-					}
-					ImGui::ColorEdit4("Dawn color", reinterpret_cast<float*>(&dawn));
-					ImGui::ColorEdit4("Day color", reinterpret_cast<float*>(&day));
-					ImGui::ColorEdit4("Dusk color", reinterpret_cast<float*>(&dusk));
-					ImGui::ColorEdit4("Night color", reinterpret_cast<float*>(&night));
-					ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
-					ImGui::DragFloat("Initial time", &initialTime, 0.1f);
-					ImGui::SliderAngle("Rotation angle", &rotationAngle);
-
-					if (ImGui::Button("Create")) {
-						typeCreation->creationCallback(new Sun(lightManager->addDirLight(), lightManager->addDirLight(), dawn, day, dusk, night,
-															   sunDistance, initialTime, rotationAngle, reinterpret_cast<GraphNode*>(typeCreation->arg)));
-						editedScene->setLights(lightManager->getLights());
-						typeCreationsToDelete.push_back(typeCreation);
-					}
-				} else {
-					typeCreationsToDelete.push_back(typeCreation);
-				}
-			}
-			break;
-			case SAnimTimeSaver:
-				typeCreation->creationCallback(new AnimTimeSaver(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-				break;
-			case SSunTimeActivator:
-				typeCreation->creationCallback(new SunTimeActivator(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-				break;
-			case SCollectableWatch:
-				typeCreation->creationCallback(new CollectableWatch(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-				break;
-			case SIntroCutscene:
-				typeCreation->creationCallback(new IntroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-				break;
-			case SOutroCutscene:
-				typeCreation->creationCallback(new OutroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
-				typeCreationsToDelete.push_back(typeCreation);
-				break;
-			case SSoundSource:
-			{
-				static std::string sound;
+			typeCreationsToDelete.push_back(typeCreation);
+		}
+		break;
+		case SSun:
+		{
+			if (lightManager->getDirAmount() < MAX_LIGHTS_OF_TYPE - 1) {
+				static glm::vec4 dawn, day, dusk, night;
+				static float sunDistance, initialTime, rotationAngle;
 				if (typeCreation->typeCreationStarted) {
-					sound = "";
+					dawn = normalize(glm::vec4(254, 107, 0, 255));
+					day = normalize(glm::vec4(173, 161, 70, 255));
+					dusk = normalize(glm::vec4(0, 2, 15, 255));
+					night = normalize(glm::vec4(2, 5, 18, 255));
+					sunDistance = 10.0f;
+					initialTime = 12.0f;
+					rotationAngle = glm::radians(75.0f);
 				}
-				std::string title = "Sound: ";
-				if (sound.length() == 0) {
-					title += "-";
-				} else {
-					title += sound;
-				}
-				ImGui::Text(title.c_str());
-				if (soundSelectionCallback == nullptr) {
-					ImGui::SameLine();
-					if (ImGui::Button("Change...")) {
-						soundSelectionCallback = [&](std::string snd) {
-							sound = snd;
-						};
-					}
-				}
-				if (sound.length() > 0 && ImGui::Button("Create")) {
-					typeCreation->creationCallback(new SoundSource(sound, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				ImGui::ColorEdit4("Dawn color", reinterpret_cast<float*>(&dawn));
+				ImGui::ColorEdit4("Day color", reinterpret_cast<float*>(&day));
+				ImGui::ColorEdit4("Dusk color", reinterpret_cast<float*>(&dusk));
+				ImGui::ColorEdit4("Night color", reinterpret_cast<float*>(&night));
+				ImGui::DragFloat("Sun distance", &sunDistance, 0.1f);
+				ImGui::DragFloat("Initial time", &initialTime, 0.1f);
+				ImGui::SliderAngle("Rotation angle", &rotationAngle);
+
+				if (ImGui::Button("Create")) {
+					typeCreation->creationCallback(new Sun(lightManager->addDirLight(), lightManager->addDirLight(), dawn, day, dusk, night,
+						sunDistance, initialTime, rotationAngle, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+					editedScene->setLights(lightManager->getLights());
 					typeCreationsToDelete.push_back(typeCreation);
 				}
 			}
+			else {
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
+		case SAnimTimeSaver:
+			typeCreation->creationCallback(new AnimTimeSaver(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
 			break;
+		case SSunTimeActivator:
+			typeCreation->creationCallback(new SunTimeActivator(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+			break;
+		case SCollectableWatch:
+			typeCreation->creationCallback(new CollectableWatch(reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+			break;
+		case SIntroCutscene:
+			typeCreation->creationCallback(new IntroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+			break;
+		case SOutroCutscene:
+			typeCreation->creationCallback(new OutroCutscene(editedScene, editedScene->getRootNode()->getComponentInChildren<SunController>(), reinterpret_cast<GraphNode*>(typeCreation->arg)));
+			typeCreationsToDelete.push_back(typeCreation);
+			break;
+		case SSoundSource:
+		{
+			static std::string sound;
+			if (typeCreation->typeCreationStarted) {
+				sound = "";
+			}
+			std::string title = "Sound: ";
+			if (sound.length() == 0) {
+				title += "-";
+			}
+			else {
+				title += sound;
+			}
+			ImGui::Text(title.c_str());
+			if (soundSelectionCallback == nullptr) {
+				ImGui::SameLine();
+				if (ImGui::Button("Change...")) {
+					soundSelectionCallback = [&](std::string snd) {
+						sound = snd;
+					};
+				}
+			}
+			if (sound.length() > 0 && ImGui::Button("Create")) {
+				typeCreation->creationCallback(new SoundSource(sound, reinterpret_cast<GraphNode*>(typeCreation->arg)));
+				typeCreationsToDelete.push_back(typeCreation);
+			}
+		}
+		break;
 		}
 		typeCreation->typeCreationStarted = false;
 		if (ImGui::Button("CANCEL")) {
@@ -1079,7 +1092,8 @@ void EditorScene::renderUi() {
 		ImGui::Begin("Load a scene from file", nullptr, 64);
 		if (scenes.empty()) {
 			ImGui::Text("No saved scene files detected.");
-		} else {
+		}
+		else {
 			ImGui::Text(("Found " + std::to_string(scenes.size()) + " available scenes:").c_str());
 			ImGui::Indent();
 			for (auto &name : scenes) {
@@ -1147,7 +1161,8 @@ void EditorScene::renderUi() {
 					editedScene->setSkybox(reinterpret_cast<Skybox*>(skybox));
 				});
 			}
-		} else {
+		}
+		else {
 			if (confirmationDialogCallback == nullptr && ImGui::Button("Delete the skybox")) {
 				confirmationDialogCallback = [this]() {
 					Skybox *skybox = editedScene->getSkybox();
@@ -1251,7 +1266,8 @@ void EditorScene::showTextureGui(std::string& texture) {
 	std::string txt = "Texture: ";
 	if (texture.length() == 0) {
 		txt += "-";
-	} else {
+	}
+	else {
 		txt += texture;
 	}
 	ImGui::Text(txt.c_str());
@@ -1273,7 +1289,8 @@ void EditorScene::addTypeCreation(SerializableType type, std::function<void(void
 	creation->ttc = TTCNone;
 	if (type == SGraphNode) {
 		creation->ttc = TTCGraphNode;
-	} else if (type == SSkybox) {
+	}
+	else if (type == SSkybox) {
 		creation->ttc = TTCSkybox;
 	}
 	for (int i = 0; i < sizeof(creatableComponents) / sizeof(*creatableComponents); i++) {
@@ -1293,7 +1310,8 @@ void EditorScene::addTypeCreation(SerializableType type, std::function<void(void
 		creation->creationCallback = creationCallback;
 		creation->arg = arg;
 		typeCreations.push_back(creation);
-	} else {
+	}
+	else {
 		delete creation;
 	}
 }
@@ -1301,63 +1319,63 @@ void EditorScene::addTypeCreation(SerializableType type, std::function<void(void
 bool EditorScene::typeCreationExists(SerializableType type) {
 	for (auto &tc : typeCreations) {
 		switch (type) {
-			default:
-				if (tc->typeToCreate == type) {
-					return true;
-				}
-				break;
+		default:
+			if (tc->typeToCreate == type) {
+				return true;
+			}
+			break;
+		case SMeshBox:
+		case SMeshColorBox:
+		case SMeshRefBox:
+			switch (tc->typeToCreate) {
 			case SMeshBox:
 			case SMeshColorBox:
 			case SMeshRefBox:
-				switch (tc->typeToCreate) {
-					case SMeshBox:
-					case SMeshColorBox:
-					case SMeshRefBox:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
+		case SMeshCone:
+		case SMeshColorCone:
+			switch (tc->typeToCreate) {
 			case SMeshCone:
 			case SMeshColorCone:
-				switch (tc->typeToCreate) {
-					case SMeshCone:
-					case SMeshColorCone:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
+		case SMeshCylinder:
+		case SMeshColorCylinder:
+			switch (tc->typeToCreate) {
 			case SMeshCylinder:
 			case SMeshColorCylinder:
-				switch (tc->typeToCreate) {
-					case SMeshCylinder:
-					case SMeshColorCylinder:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
+		case SMeshPlane:
+		case SMeshColorPlane:
+			switch (tc->typeToCreate) {
 			case SMeshPlane:
 			case SMeshColorPlane:
-				switch (tc->typeToCreate) {
-					case SMeshPlane:
-					case SMeshColorPlane:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
+		case SMeshSphere:
+		case SMeshColorSphere:
+		case SMeshRefSphere:
+			switch (tc->typeToCreate) {
 			case SMeshSphere:
 			case SMeshColorSphere:
 			case SMeshRefSphere:
-				switch (tc->typeToCreate) {
-					case SMeshSphere:
-					case SMeshColorSphere:
-					case SMeshRefSphere:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
+		case SMeshTorus:
+		case SMeshColorTorus:
+			switch (tc->typeToCreate) {
 			case SMeshTorus:
 			case SMeshColorTorus:
-				switch (tc->typeToCreate) {
-					case SMeshTorus:
-					case SMeshColorTorus:
-						return true;
-				}
-				break;
+				return true;
+			}
+			break;
 		}
 	}
 	return false;
@@ -1397,13 +1415,15 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 		if (camera != nullptr) {
 			delete playerCamera;
 			playerCamera = camera;
-		} else {
+		}
+		else {
 			playerCamera = nullptr;
 			setEditorCamera(true);
 		}
 		scene->setCamera(useEditorCamera ? editorCamera : playerCamera);
 		lightManager->replaceLights(scene->getLights());
-	} else {
+	}
+	else {
 		lightManager->clearLights();
 	}
 	editedScene = scene;
@@ -1415,7 +1435,8 @@ void EditorScene::setEditedScene(Scene* scene, bool deletePrevious) {
 void EditorScene::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (useEditorCamera) {
 		Scene::keyboard_callback(window, key, scancode, action, mods);
-	} else {
+	}
+	else {
 		if (editedScene != nullptr)
 			editedScene->keyboard_callback(window, key, scancode, action, mods);
 	}
@@ -1424,7 +1445,8 @@ void EditorScene::keyboard_callback(GLFWwindow* window, int key, int scancode, i
 void EditorScene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (useEditorCamera) {
 		Scene::mouse_callback(window, xpos, ypos);
-	} else {
+	}
+	else {
 		if (editedScene != nullptr)
 			editedScene->mouse_callback(window, xpos, ypos);
 	}
@@ -1433,7 +1455,8 @@ void EditorScene::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 void EditorScene::mouse_button_callback(GLFWwindow* window, int butt, int action, int mods) {
 	if (useEditorCamera) {
 		Scene::mouse_button_callback(window, butt, action, mods);
-	} else {
+	}
+	else {
 		if (editedScene != nullptr)
 			editedScene->mouse_button_callback(window, butt, action, mods);
 	}
@@ -1445,7 +1468,8 @@ void EditorScene::toggleWireframe() {
 		for (auto &node : editedNodes) {
 			node->setTempRenderMode(GL_LINE_STRIP);
 		}
-	} else {
+	}
+	else {
 		for (auto &node : editedNodes) {
 			node->removeTempRenderMode();
 		}
@@ -1458,200 +1482,234 @@ void EditorScene::appendNode(GraphNode* node, GraphNode* parent) {
 
 void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 	switch (prefab) {
-		case PrefCache:
-		{
-			BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
-			AnimTimeSaver *saver = new AnimTimeSaver(node);
-			Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
-			KeyFrameAnimation *anim = new KeyFrameAnimation(node);
-			SunTimeActivator *activator = new SunTimeActivator(node);
-			saver->setSun(sun);
-			activator->addActivatableComponent(anim);
-			saver->setAnimation(anim);
-			activator->setSun(sun);
-			saver->setDisableCollider(true);
-			editedScene->addComponent(node, collider);
-			editedScene->addComponent(node, activator);
-			editedScene->addComponent(node, anim);
-			editedScene->addComponent(node, saver);
-		}
-		break;
-		case PrefPhoto:
-		{
-			MeshColorBox *box = new MeshColorBox(glm::vec3(1.0f, 0.25f, 0.6f), glm::vec4(0.3480f, 0.2653f, 0.1825f, 1.0f));
-			box->setEmissive(glm::vec3(0.0441f, 0.0247f, 0.0115f));
-			GraphNode *photo = new GraphNode(box, node);
-			editedScene->addRenderedNode(photo, node);
-			CollectableObject *obj = new CollectableObject(photo, Photo, "res/textures/Photos/keyPhoto.jpg", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "", "res/textures/Photos/keyPhoto.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
-			BoxCollider *collider = new BoxCollider(photo, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.013f, 0.007f, 0.021f));
-			photo->localTransform.setScale(4.2f);
-			editedScene->addComponent(photo, obj);
-			editedScene->addComponent(photo, collider);
-		}
-		break;
-		case PrefKey:
-		{
-			Model *model = new Model("res/models/key/key.obj");
-			GraphNode *key = new GraphNode(model, node);
-			editedScene->addRenderedNode(key, node);
-			CollectableObject *obj = new CollectableObject(key, DoorKey, "res/textures/Icons/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "A mysterious key");
-			BoxCollider *collider = new BoxCollider(key, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.015f, 0.015f, 0.035f));
-			key->localTransform.setScale(1.40f);
-			editedScene->addComponent(key, obj);
-			editedScene->addComponent(key, collider);
-		}
-		break;
+	case PrefCache:
+	{
+		BoxCollider *collider = new BoxCollider(node, DYNAMIC, true);
+		AnimTimeSaver *saver = new AnimTimeSaver(node);
+		Sun *sun = editedScene->rootNode->getComponentInChildren<Sun>();
+		KeyFrameAnimation *anim = new KeyFrameAnimation(node);
+		SunTimeActivator *activator = new SunTimeActivator(node);
+		saver->setSun(sun);
+		activator->addActivatableComponent(anim);
+		saver->setAnimation(anim);
+		activator->setSun(sun);
+		saver->setDisableCollider(true);
+		editedScene->addComponent(node, collider);
+		editedScene->addComponent(node, activator);
+		editedScene->addComponent(node, anim);
+		editedScene->addComponent(node, saver);
+	}
+	break;
+	case PrefPhoto:
+	{
+		MeshColorBox *box = new MeshColorBox(glm::vec3(1.0f, 0.25f, 0.6f), glm::vec4(0.3480f, 0.2653f, 0.1825f, 1.0f));
+		box->setEmissive(glm::vec3(0.0441f, 0.0247f, 0.0115f));
+		GraphNode *photo = new GraphNode(box, node);
+		editedScene->addRenderedNode(photo, node);
+		CollectableObject *obj = new CollectableObject(photo, Photo, "res/textures/Photos/keyPhoto.jpg", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "", "res/textures/Photos/keyPhoto.jpg", glm::vec2(1200.0f, 430.0f), glm::vec2(300.0f, 500.0f));
+		BoxCollider *collider = new BoxCollider(photo, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.013f, 0.007f, 0.021f));
+		photo->localTransform.setScale(4.2f);
+		editedScene->addComponent(photo, obj);
+		editedScene->addComponent(photo, collider);
+	}
+	break;
+	case PrefKey:
+	{
+		Model *model = new Model("res/models/key/key.obj");
+		GraphNode *key = new GraphNode(model, node);
+		editedScene->addRenderedNode(key, node);
+		CollectableObject *obj = new CollectableObject(key, DoorKey, "res/textures/Icons/keyIcon.png", glm::vec2(995.0f, 530.0f), glm::vec2(60.0f, 60.0f), "A mysterious key");
+		BoxCollider *collider = new BoxCollider(key, DYNAMIC, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.015f, 0.015f, 0.035f));
+		key->localTransform.setScale(1.40f);
+		editedScene->addComponent(key, obj);
+		editedScene->addComponent(key, collider);
+	}
+	break;
 	}
 }
 
 void EditorScene::showNodeAsTree(GraphNode* node, GraphNode* parent) {
 	ImGui::PushID(idCounter++);
-	ImGui::Text(node->getName().c_str());
-	ImGui::SameLine();
-	bool opened = false;
-	for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-		if (*i == node) {
-			opened = true;
-			break;
-		}
-		++i;
+	std::string childrenMarker;
+	if(!node->getChildren().empty())
+	{
+		childrenMarker = " +";
 	}
-	if (nodeSelectionCallback != nullptr) {
-		if (ImGui::Button("CHOOSE")) {
-			nodeSelectionCallback(node);
-			nodeSelectionCallback = nullptr;
-		}
-		ImGui::SameLine();
+	else
+	{
+		childrenMarker = "";
 	}
-	if (!opened) {
-		if (ImGui::Button("Open...")) {
-			editedNodes.push_back(node);
-			if (useWireframe) {
-				node->setTempRenderMode(GL_LINE_STRIP);
+
+	if (ImGui::TreeNode((node->getName() + childrenMarker).c_str())) {
+		ImGui::OpenPopupOnItemClick("GraphNode_operations", 1);
+		bool opened = false;
+		for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+			if (*i == node) {
+				opened = true;
+				break;
 			}
+			++i;
 		}
-	} else {
-		if (ImGui::Button("Close...")) {
-			for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-				if (*i == node) {
-					if (useWireframe) {
-						node->removeTempRenderMode();
-					}
-					editedNodes.erase(i);
-					break;
-				}
-				++i;
-			}
+
+		/*if (opened)
+		{
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), node->getName().c_str());
 		}
-	}
-	ImGui::SameLine();
-	if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child...")) {
-		addTypeCreation(SGraphNode, [this, node](void* nod) {
-			if (nod != nullptr) {
-				appendNode(reinterpret_cast<GraphNode*>(nod), node);
-				editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
-				if (useWireframe) {
-					node->setTempRenderMode(GL_LINE_STRIP);
-				}
-			}
-		});
-	}
-	ImGui::SameLine();
-	if (node != editedScene->getRootNode()) {
-		if (nodeSelectionCallback == nullptr) {
-			if (ImGui::Button("Set parent...")) {
-				nodeSelectionCallback = [this, node](GraphNode *parent) {
-					if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
-						node->setParent(parent);
-					}
-				};
+		else
+		{
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), node->getName().c_str());
+		}*/
+
+
+
+		if (nodeSelectionCallback != nullptr) {
+			if (ImGui::Button("CHOOSE")) {
+				nodeSelectionCallback(node);
+				nodeSelectionCallback = nullptr;
 			}
 			ImGui::SameLine();
 		}
-		if (this->prefabSelectionCallback == nullptr) {
-			if (ImGui::Button("Apply prefab...")) {
-				prefabSelectionCallback = [this, node](Prefab prefab) {
-					applyPrefab(node, prefab);
-				};
-			}
-			ImGui::SameLine();
-		}
-		int count = parent == nullptr ? -1 : parent->getChildrenCount();
-		if (count > 1) {
-			int ind = parent->getChildIndex(node);
-			if (parent->getChild(0) != node) {
-				ImGui::SameLine();
-				if (ImGui::Button("TOP")) {
-					parent->setChildFirst(node);
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("/\\")) {
-					parent->swapChildren(ind - 1, ind);
-				}
-			}
-			if (parent->getChild(count - 1) != node) {
-				ImGui::SameLine();
-				if (ImGui::Button("BOT")) {
-					parent->setChildLast(node);
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("\\/")) {
-					parent->swapChildren(ind + 1, ind);
-				}
-			}
-		}
-		if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
-			confirmationDialogCallback = [this, node]() {
-				editedScene->removeNode(node);
-				for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-					if (*i == node) {
-						editedNodes.erase(i);
-						break;
+
+		if (node == editedScene->getRootNode())
+		{
+			if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child")) {
+				addTypeCreation(SGraphNode, [this, node](void* nod) {
+					if (nod != nullptr) {
+						appendNode(reinterpret_cast<GraphNode*>(nod), node);
+						editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
+						if (useWireframe) {
+							node->setTempRenderMode(GL_LINE_STRIP);
+						}
 					}
-					++i;
-				}
-			};
-		}
-		ImGui::SameLine();
-	}
-	if (!node->getChildren().empty()) {
-		if (ImGui::TreeNode("Children")) {
-			//ImGui::NewLine();
-			for (auto child : node->getChildren()) {
-				showNodeAsTree(child, node);
+				});
 			}
-			ImGui::TreePop();
 		}
-	} else {
-		//ImGui::Text("No children");
+
+		if (node != editedScene->getRootNode()) {
+			if (ImGui::BeginPopup("GraphNode_operations"))
+			{
+				if (!opened) {
+					if (ImGui::Button("Open")) {
+						editedNodes.push_back(node);
+						if (useWireframe) {
+							node->setTempRenderMode(GL_LINE_STRIP);
+						}
+					}
+				}
+				else {
+					if (ImGui::Button("Close")) {
+						for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+							if (*i == node) {
+								if (useWireframe) {
+									node->removeTempRenderMode();
+								}
+								editedNodes.erase(i);
+								break;
+							}
+							++i;
+						}
+					}
+				}
+
+				if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child")) {
+					addTypeCreation(SGraphNode, [this, node](void* nod) {
+						if (nod != nullptr) {
+							appendNode(reinterpret_cast<GraphNode*>(nod), node);
+							editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
+							if (useWireframe) {
+								node->setTempRenderMode(GL_LINE_STRIP);
+							}
+						}
+					});
+				}
+
+				if (nodeSelectionCallback == nullptr) {
+					if (ImGui::Button("Set parent")) {
+						nodeSelectionCallback = [this, node](GraphNode *parent) {
+							if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
+								node->setParent(parent);
+							}
+						};
+					}
+				}
+
+				if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
+					confirmationDialogCallback = [this, node]() {
+						editedScene->removeNode(node);
+						for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+							if (*i == node) {
+								editedNodes.erase(i);
+								break;
+							}
+							++i;
+						}
+					};
+				}
+
+				int count = parent == nullptr ? -1 : parent->getChildrenCount();
+				if (count > 1) {
+					int ind = parent->getChildIndex(node);
+					if (parent->getChild(0) != node) {
+						if (ImGui::Button("Move TOP")) {
+							parent->setChildFirst(node);
+						}
+						if (ImGui::Button("Move Up")) {
+							parent->swapChildren(ind - 1, ind);
+						}
+					}
+					if (parent->getChild(count - 1) != node) {
+						if (ImGui::Button("Move BOT")) {
+							parent->setChildLast(node);
+						}
+						if (ImGui::Button("Move Down")) {
+							parent->swapChildren(ind + 1, ind);
+						}
+					}
+				}
+
+				if (this->prefabSelectionCallback == nullptr) {
+					if (ImGui::Button("Apply prefab")) {
+						prefabSelectionCallback = [this, node](Prefab prefab) {
+							applyPrefab(node, prefab);
+						};
+					}
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		//ImGui::NewLine();
+		for (auto child : node->getChildren()) {
+			showNodeAsTree(child, node);
+		}
+		ImGui::TreePop();
 	}
-	ImGui::NewLine();
 	ImGui::PopID();
 }
 
 void EditorScene::keyEvent(int key, bool pressed) {
 	if (pressed) {
 		switch (key) {
-			case EDITOR_KEY_TOGGLE_WIREFRAME:
-				toggleWireframe();
-				break;
-			case KEY_TOGGLE_MOUSE_LOCK:
-				setCursorLocked(!getCursorLocked());
-				break;
-			case KEY_QUIT:
-				if (confirmationDialogCallback == nullptr) {
-					confirmationDialogCallback = [this]() {
-						setEditedScene(nullptr);
-						gameManager->goToMenu(false);
-					};
-				}
-				break;
+		case EDITOR_KEY_TOGGLE_WIREFRAME:
+			toggleWireframe();
+			break;
+		case KEY_TOGGLE_MOUSE_LOCK:
+			setCursorLocked(!getCursorLocked());
+			break;
+		case KEY_QUIT:
+			if (confirmationDialogCallback == nullptr) {
+				confirmationDialogCallback = [this]() {
+					setEditedScene(nullptr);
+					gameManager->goToMenu(false);
+				};
+			}
+			break;
 		}
 		if (!getCursorLocked()) {
 			switch (key) {
-				case EDITOR_KEY_TOGGLE_CAMERA:
-					setEditorCamera(!useEditorCamera);
-					break;
+			case EDITOR_KEY_TOGGLE_CAMERA:
+				setEditorCamera(!useEditorCamera);
+				break;
 			}
 		}
 	}
