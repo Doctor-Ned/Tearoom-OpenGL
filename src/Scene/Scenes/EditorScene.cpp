@@ -1530,48 +1530,70 @@ void EditorScene::applyPrefab(GraphNode* const node, Prefab prefab) {
 
 void EditorScene::showNodeAsTree(GraphNode* node, GraphNode* parent) {
 	ImGui::PushID(idCounter++);
-	std::string childrenMarker;
-	if(!node->getChildren().empty())
-	{
-		childrenMarker = " +";
+
+	if (nodeSelectionCallback != nullptr) {
+		if (ImGui::Button("CHOOSE")) {
+			nodeSelectionCallback(node);
+			nodeSelectionCallback = nullptr;
+		}
+		ImGui::SameLine();
 	}
-	else
-	{
-		childrenMarker = "";
+
+	bool opened = false;
+	for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+		if (*i == node) {
+			opened = true;
+			break;
+		}
+		++i;
 	}
 
-	if (ImGui::TreeNode((node->getName() + childrenMarker).c_str())) {
-		ImGui::OpenPopupOnItemClick("GraphNode_operations", 1);
-		bool opened = false;
-		for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-			if (*i == node) {
-				opened = true;
-				break;
+	ImGui::Selectable(node->getName().c_str(), opened, 0, { node->getName().length() * 7.1f, 0.0f});
+	ImGui::OpenPopupOnItemClick("GraphNode_operations", 1);
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+	{
+		if (!opened) {
+			editedNodes.push_back(node);
+			if (useWireframe) {
+				node->setTempRenderMode(GL_LINE_STRIP);
 			}
-			++i;
 		}
-
-		/*if (opened)
-		{
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), node->getName().c_str());
-		}
-		else
-		{
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), node->getName().c_str());
-		}*/
-
-
-
-		if (nodeSelectionCallback != nullptr) {
-			if (ImGui::Button("CHOOSE")) {
-				nodeSelectionCallback(node);
-				nodeSelectionCallback = nullptr;
+		else {
+			for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+				if (*i == node) {
+					if (useWireframe) {
+						node->removeTempRenderMode();
+					}
+					editedNodes.erase(i);
+					break;
+				}
+				++i;
 			}
-			ImGui::SameLine();
 		}
+	}
 
-		if (node == editedScene->getRootNode())
+	if (node == editedScene->getRootNode())
+	{
+		if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child")) {
+			addTypeCreation(SGraphNode, [this, node](void* nod) {
+				if (nod != nullptr) {
+					appendNode(reinterpret_cast<GraphNode*>(nod), node);
+					editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
+					if (useWireframe) {
+						node->setTempRenderMode(GL_LINE_STRIP);
+					}
+				}
+			});
+		}
+	}
+
+	if (node != editedScene->getRootNode()) {
+		if (ImGui::BeginPopup("GraphNode_operations"))
 		{
+			ImGui::Text("Operations");
+			ImGui::Separator();
+
 			if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child")) {
 				addTypeCreation(SGraphNode, [this, node](void* nod) {
 					if (nod != nullptr) {
@@ -1583,106 +1605,71 @@ void EditorScene::showNodeAsTree(GraphNode* node, GraphNode* parent) {
 					}
 				});
 			}
-		}
 
-		if (node != editedScene->getRootNode()) {
-			if (ImGui::BeginPopup("GraphNode_operations"))
-			{
-				if (!opened) {
-					if (ImGui::Button("Open")) {
-						editedNodes.push_back(node);
-						if (useWireframe) {
-							node->setTempRenderMode(GL_LINE_STRIP);
-						}
-					}
-				}
-				else {
-					if (ImGui::Button("Close")) {
-						for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-							if (*i == node) {
-								if (useWireframe) {
-									node->removeTempRenderMode();
-								}
-								editedNodes.erase(i);
-								break;
-							}
-							++i;
-						}
-					}
-				}
-
-				if (!typeCreationExists(SGraphNode) && ImGui::Button("Add child")) {
-					addTypeCreation(SGraphNode, [this, node](void* nod) {
-						if (nod != nullptr) {
-							appendNode(reinterpret_cast<GraphNode*>(nod), node);
-							editedNodes.push_back(reinterpret_cast<GraphNode*>(nod));
-							if (useWireframe) {
-								node->setTempRenderMode(GL_LINE_STRIP);
-							}
-						}
-					});
-				}
-
-				if (nodeSelectionCallback == nullptr) {
-					if (ImGui::Button("Set parent")) {
-						nodeSelectionCallback = [this, node](GraphNode *parent) {
-							if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
-								node->setParent(parent);
-							}
-						};
-					}
-				}
-
-				if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
-					confirmationDialogCallback = [this, node]() {
-						editedScene->removeNode(node);
-						for (auto i = editedNodes.begin(); i != editedNodes.end();) {
-							if (*i == node) {
-								editedNodes.erase(i);
-								break;
-							}
-							++i;
+			if (nodeSelectionCallback == nullptr) {
+				if (ImGui::Button("Set parent")) {
+					nodeSelectionCallback = [this, node](GraphNode *parent) {
+						if (parent != nullptr && parent != node && !doesAnyChildContain(parent, node)) {
+							node->setParent(parent);
 						}
 					};
 				}
-
-				int count = parent == nullptr ? -1 : parent->getChildrenCount();
-				if (count > 1) {
-					int ind = parent->getChildIndex(node);
-					if (parent->getChild(0) != node) {
-						if (ImGui::Button("Move TOP")) {
-							parent->setChildFirst(node);
-						}
-						if (ImGui::Button("Move Up")) {
-							parent->swapChildren(ind - 1, ind);
-						}
-					}
-					if (parent->getChild(count - 1) != node) {
-						if (ImGui::Button("Move BOT")) {
-							parent->setChildLast(node);
-						}
-						if (ImGui::Button("Move Down")) {
-							parent->swapChildren(ind + 1, ind);
-						}
-					}
-				}
-
-				if (this->prefabSelectionCallback == nullptr) {
-					if (ImGui::Button("Apply prefab")) {
-						prefabSelectionCallback = [this, node](Prefab prefab) {
-							applyPrefab(node, prefab);
-						};
-					}
-				}
-				ImGui::EndPopup();
 			}
-		}
 
-		//ImGui::NewLine();
-		for (auto child : node->getChildren()) {
-			showNodeAsTree(child, node);
+			if (this->confirmationDialogCallback == nullptr && ImGui::Button("Delete")) {
+				confirmationDialogCallback = [this, node]() {
+					editedScene->removeNode(node);
+					for (auto i = editedNodes.begin(); i != editedNodes.end();) {
+						if (*i == node) {
+							editedNodes.erase(i);
+							break;
+						}
+						++i;
+					}
+				};
+			}
+
+			int count = parent == nullptr ? -1 : parent->getChildrenCount();
+			if (count > 1) {
+				int ind = parent->getChildIndex(node);
+				if (parent->getChild(0) != node) {
+					if (ImGui::Button("Move TOP")) {
+						parent->setChildFirst(node);
+					}
+					if (ImGui::Button("Move Up")) {
+						parent->swapChildren(ind - 1, ind);
+					}
+				}
+				if (parent->getChild(count - 1) != node) {
+					if (ImGui::Button("Move BOT")) {
+						parent->setChildLast(node);
+					}
+					if (ImGui::Button("Move Down")) {
+						parent->swapChildren(ind + 1, ind);
+					}
+				}
+			}
+
+			if (this->prefabSelectionCallback == nullptr) {
+				if (ImGui::Button("Apply prefab")) {
+					prefabSelectionCallback = [this, node](Prefab prefab) {
+						applyPrefab(node, prefab);
+					};
+				}
+			}
+			ImGui::EndPopup();
 		}
-		ImGui::TreePop();
+	}
+	if (!node->getChildren().empty())
+	{
+		ImGui::SameLine();
+		if (ImGui::TreeNode("Children")) {
+			//ImGui::NewLine();
+			for (auto child : node->getChildren()) {
+				showNodeAsTree(child, node);
+			}
+			ImGui::TreePop();
+		}
 	}
 	ImGui::PopID();
 }
