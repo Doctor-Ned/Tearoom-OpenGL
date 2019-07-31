@@ -4,6 +4,7 @@
 #include <map>
 #include "Global.h"
 #include "Serializable.h"
+#include "Scene/AnimationData.h"
 
 class Scene;
 class GraphNode;
@@ -24,6 +25,8 @@ public:
 	void operator=(Serializer const&) = delete;
 	void saveScene(Scene *scene, const std::string& name);
 	Scene *loadScene(const std::string& name);
+	AnimationData* loadAnimationData(const std::string& name);
+	void saveAnimationData(AnimationData *scene, const std::string& name);
 	Serializable *getPointer(int id);
 	std::vector<std::string> getSceneNames();
 	int getId(Serializable *pointer);

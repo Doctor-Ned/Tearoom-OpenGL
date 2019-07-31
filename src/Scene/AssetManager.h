@@ -7,6 +7,7 @@
 #include "GameManager.h"
 #include "Global.h"
 #include "Components/SkeletalAnimation.h"
+#include "Scene/AnimationData.h"
 
 struct ModelData;
 struct AnimatedModelData;
@@ -148,6 +149,7 @@ private:
 	std::map <std::string, FullModelData*> models;
 	std::map <std::string, Bone*> boneHierarchies;
 	std::map <std::string, SkeletalAnimation> animations;
+	std::map <std::string, AnimationData*> animationDatasets;
 	std::map<ShaderType, Shader*> shaders;
 	std::map<std::string, std::function<void()>> preloadCallbacks;
 	std::vector<Texture> textures;

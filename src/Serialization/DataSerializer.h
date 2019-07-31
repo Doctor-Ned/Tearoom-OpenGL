@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Global.h"
-
+#include "Scene/AnimationData.h"
 namespace anim {
 	struct ObjectAnimation;
 }
@@ -34,5 +34,10 @@ public:
 	static std::map<float, glm::vec3> deserializeTransformationMap(const Json::Value &root);
 	static Json::Value serializeIntFloatMap(std::map<int, float>& map);
 	static std::map<int, float> deserializeIntFloatMap(const Json::Value &root);
-	
+
+
+	static Json::Value serializeAnimationData(std::map<std::string, KeyFrameData>& map);
+	static std::map<std::string, KeyFrameData> deserializeAnimationData(const Json::Value &root);
+	static Json::Value serializeKeyFrameData(KeyFrameData& objAnim);
+	static KeyFrameData deserializeKeyFrameData(const Json::Value &root);
 };

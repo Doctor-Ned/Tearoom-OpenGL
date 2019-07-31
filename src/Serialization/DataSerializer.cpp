@@ -220,3 +220,44 @@ std::map<int, float> DataSerializer::deserializeIntFloatMap(const Json::Value& r
 	}
 	return result;
 }
+
+Json::Value DataSerializer::serializeAnimationData(std::map<std::string, KeyFrameData>& map)
+{
+	Json::Value root;
+	for (auto it = map.begin(); it != map.end(); ++it)
+	{
+		root[it->first] = serializeKeyFrameData(it->second);
+	}
+	return root;
+}
+
+std::map<std::string, KeyFrameData> DataSerializer::deserializeAnimationData(const Json::Value & root)
+{
+	std::map<std::string, KeyFrameData> result;
+
+	for (Json::ValueConstIterator it = root.begin(); it != root.end(); ++it)
+	{
+		std::string animatedObject = it.key().asString();
+		KeyFrameData keyFrameData = deserializeKeyFrameData(root[animatedObject]);
+		result.emplace(animatedObject, keyFrameData);
+	}
+	return result;
+}
+
+Json::Value DataSerializer::serializeKeyFrameData(KeyFrameData & objAnim)
+{
+	Json::Value root;
+	root["translation"] = serializeTransformationMap(objAnim.translation);
+	root["scale"] = serializeTransformationMap(objAnim.scale);
+	root["rotation"] = serializeTransformationMap(objAnim.rotation);
+	return root;
+}
+
+KeyFrameData DataSerializer::deserializeKeyFrameData(const Json::Value & root)
+{
+	KeyFrameData keyFrameData;
+	keyFrameData.translation = deserializeTransformationMap(root["translation"]);
+	keyFrameData.scale = deserializeTransformationMap(root["scale"]);
+	keyFrameData.rotation = deserializeTransformationMap(root["rotation"]);
+	return keyFrameData;
+}

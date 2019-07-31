@@ -102,6 +102,51 @@ Scene* Serializer::loadScene(const std::string& name) {
 	return result;
 }
 
+AnimationData * Serializer::loadAnimationData(const std::string & name)
+{
+	SPDLOG_DEBUG("Attempting to load animation {}...", name);
+	/*std::string location;
+	for (auto &pair : scenes) {
+		if (name == pair.first) {
+			location = pair.second;
+			break;
+		}
+	}*/
+	/*if (location.length() == 0) {
+		SPDLOG_ERROR("Could not find the desired file!");
+		return nullptr;
+	}*/
+	idCounter = 0;
+	ids.clear();
+	Json::Value root = Global::readJsonFile(Global::BASE_PATH + name + ".anim");
+	SerializablePointer pointer = deserialize(root);
+	if (pointer.object == nullptr) {
+		SPDLOG_WARN("Deserialized animation data was null. Was that planned?");
+		return nullptr;
+	}
+	SPDLOG_DEBUG("Animation data seems to be valid!");
+	
+	AnimationData *result = dynamic_cast<AnimationData*>(pointer.object);
+	return result;
+}
+
+void Serializer::saveAnimationData(AnimationData * animationData, const std::string & name)
+{
+	idCounter = 0;
+	ids.clear();
+	Json::Value root = serialize(animationData);
+	std::string file = Global::BASE_PATH + name + ".anim";
+	if (fs::exists(file)) {
+		std::string oldFile = Global::BASE_PATH + name + ".animOld";
+		if (fs::exists(oldFile)) {
+			fs::remove(oldFile);
+		}
+		fs::rename(file, oldFile);
+	}
+	Global::saveToFile(file, root);
+	//loadScenes();
+}
+
 Serializable* Serializer::getPointer(const int id) {
 	for (auto &pair : ids) {
 		if (pair.second == id) {
@@ -343,6 +388,8 @@ SerializablePointer Serializer::deserialize(Json::Value& root) {
 		case SSoundSource:
 			deserializeAndIdentify(pointer, data, new SoundSource());
 			break;
+		case SAnimationData:
+			deserializeAndIdentify(pointer, data, new AnimationData());
 	}
 	return pointer;
 }

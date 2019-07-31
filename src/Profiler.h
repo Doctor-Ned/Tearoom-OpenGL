@@ -1,7 +1,7 @@
 #ifndef PROFILER_H
 #define PROFILER_H
 #include <map>
-
+#include <iostream>
 class Profiler
 {
 private:
