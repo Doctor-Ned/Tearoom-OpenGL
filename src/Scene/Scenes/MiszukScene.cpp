@@ -36,16 +36,16 @@ MiszukScene::MiszukScene() {
 
 	//-------------
 	//INVENTORY UI
-	const char* letterIcon = "res/textures/Icons/letterIcon.png";
-	const char* keyIcon = "res/textures/Icons/keyIcon.png";
-	const char* letterPreview = "res/textures/Letter/letterExample.jpg";
+	//const char* letterIcon = "res/textures/Icons/letterIcon.png";
+	//const char* keyIcon = "res/textures/Icons/keyIcon.png";
+	//const char* letterPreview = "res/textures/Letter/letterExample.jpg";
 	glm::vec2 iconPos(995, 530);
 	glm::vec2 iconSize(60, 60);
 	glm::vec2 previewPos(1200, 430);
 	glm::vec2 previewSize(300, 500);
 
 	// COLLECTABLE ITEM
-	MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
+	/*MeshColorBox *tinyItem = new MeshColorBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(0.0f, 0.5f, 0.5f, 1.0f));
 	GraphNode *tinyItemNode = new GraphNode(tinyItem, rootNode);
 	tinyItemNode->addComponent(new PhysicalObject(tinyItemNode));
 	tinyItemNode->addComponent(new CollectableObject(tinyItemNode, Letter, letterIcon, iconPos, iconSize, "Letter number 1", letterPreview, previewPos, previewSize));
@@ -64,7 +64,7 @@ MiszukScene::MiszukScene() {
     tinyItemNode3->addComponent(new PhysicalObject(tinyItemNode3));
     tinyItemNode3->addComponent(new CollectableObject(tinyItemNode3, DoorKey, keyIcon, iconPos, iconSize, "Key number 1", letterPreview, previewPos, previewSize, 1));
     tinyItemNode3->addComponent(new BoxCollider(tinyItemNode3, DYNAMIC, false, glm::vec3(0), glm::vec3(1)));
-    tinyItemNode3->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));
+    tinyItemNode3->localTransform.translate(glm::vec3(3.0f, -0.5f, 4.0f));*/
 
 	//-----------------
 	//miszuk animation
@@ -85,10 +85,11 @@ MiszukScene::MiszukScene() {
 	GraphNode* slidingDoorNode = new GraphNode(slidingDoor, rootNode);
 	door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
 	Animation* anim = new KeyFrameAnimation(door, "doorOpening");
-	anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
-	anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
-	anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-	anim->addKeyFrame("door", anim::TRANSLATION, 4.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+	anim->setAnimationData(AssetManager::getInstance()->getAnimationData("animacjaTestowa.anim"));
+	//anim->addKeyFrame("door", TRANSLATION, 0.0f, glm::vec3(0));
+	//anim->addKeyFrame("door", TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
+	//anim->addKeyFrame("door", TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	//anim->addKeyFrame("door", TRANSLATION, 4.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 	door->addComponent(anim);
 	doorPivot->localTransform.setPosition(-4.0f, -1.0f, -2.0f);
 	doorPivot->localTransform.rotateYDegrees(180.0f);
@@ -173,25 +174,25 @@ MiszukScene::MiszukScene() {
 	floor->addComponent(new BoxCollider(floor, STATIC, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f)));
 	//simpleBox2->localTransform.setPosition(0.5f, 2.0f, 0.0f);
 
-	auto* robot = AnimatedModel::createModelData("res/models/zabijaka/Pointing.fbx");
-	srand(time(NULL));
-	AnimatedModel* robo = new AnimatedModel("res/models/zabijaka/Pointing.fbx");
-	for (int i = 0; i < 1; i++) {
-
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
-		GraphNode* node = new GraphNode(robo, rootNode);
-		node->localTransform.setPosition(1, -2.5f, 1);
-		//node->localTransform.rotateXDegrees(-90);
-		node->localTransform.setScale(0.002f);
-		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
-		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(100.0f, 1.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
-//#todo find out if animation works 
-		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
-		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
-		node->getComponent<SkeletalAnimation>()->play(0.0f, true);
-	}
+//	auto* robot = AnimatedModel::createModelData("res/models/zabijaka/Pointing.fbx");
+//	srand(time(NULL));
+//	AnimatedModel* robo = new AnimatedModel("res/models/zabijaka/Pointing.fbx");
+//	for (int i = 0; i < 1; i++) {
+//
+//		int x = (rand() % 100) - 50;
+//		int y = (rand() % 100) - 50;
+//		int z = (rand() % 100) - 50;
+//		GraphNode* node = new GraphNode(robo, rootNode);
+//		node->localTransform.setPosition(1, -2.5f, 1);
+//		//node->localTransform.rotateXDegrees(-90);
+//		node->localTransform.setScale(0.002f);
+//		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
+//		node->addComponent(new BoxCollider(node, STATIC, false, glm::vec3(100.0f, 1.0f, 0.0f), glm::vec3(0.35f, 1.0f, 0.35f)));
+////#todo find out if animation works 
+//		node->addComponent(new SkeletalAnimation(node, "skeletorAnimation"));
+//		node->getComponent<SkeletalAnimation>()->setObjectAnimation(AssetManager::getInstance()->getAnimation("res/models/zabijaka/Pointing.fbx").getObjectAnimations());
+//		node->getComponent<SkeletalAnimation>()->play(0.0f, true);
+//	}
 	rootNode->updateDrawData();
 	rootUiElement->updateDrawData();
 	reinitializeRenderMap();

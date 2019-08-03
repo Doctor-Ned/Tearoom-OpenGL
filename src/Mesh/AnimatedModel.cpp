@@ -9,7 +9,6 @@
 #include "Scene/Components/KeyFrameAnimation.h"
 #include "Scene/Components/SkeletalAnimation.h"
 
-
 AnimatedModel::AnimatedModel(std::string path) : AnimatedModel(AssetManager::getInstance()->getAnimatedModelData(path), AssetManager::getInstance()->getBoneHierarchy(path)) {
 	this->path = path;
 }
@@ -37,22 +36,22 @@ std::vector<SkeletalAnimation> AnimatedModel::loadAnimations(aiAnimation** anims
 				keyTime = anims[i]->mChannels[j]->mPositionKeys[k].mTime / ticksPerSecond;
 				aiVector3D assimpPos = anims[i]->mChannels[j]->mPositionKeys[k].mValue;
 				glm::vec3 pos(assimpPos.x, assimpPos.y, assimpPos.z);
-				animations[i].addKeyFrame(nodeName, anim::TRANSLATION, keyTime, pos);
+				animations[i].addKeyFrame(nodeName, TRANSLATION, keyTime, pos);
 			}
 			//scale
 			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumScalingKeys; k++) {
 				keyTime = anims[i]->mChannels[j]->mScalingKeys[k].mTime / ticksPerSecond;
 				aiVector3D assimpScale = anims[i]->mChannels[j]->mScalingKeys[k].mValue;
 				glm::vec3 scale(assimpScale.x, assimpScale.y, assimpScale.z);
-				animations[i].addKeyFrame(nodeName, anim::SCALE, keyTime, scale);
+				animations[i].addKeyFrame(nodeName, SCALE, keyTime, scale);
 			}
 			//rotation
 			for (unsigned int k = 0; k < anims[i]->mChannels[j]->mNumRotationKeys; k++) {
 				keyTime = anims[i]->mChannels[j]->mRotationKeys[k].mTime / ticksPerSecond;
 				aiQuaternion q = anims[i]->mChannels[j]->mRotationKeys[k].mValue;
 				glm::quat q2 = glm::quat(q.w, q.x, q.y, q.z);
-				//glm::vec3 eulerAngles = Global::radiansToDegrees(glm::eulerAngles(q2));
-				animations[i].addKeyFrame(nodeName, anim::ROTATION, keyTime, q2);
+				glm::vec3 eulerAngles = Global::radiansToDegrees(glm::eulerAngles(q2));
+				animations[i].addKeyFrame(nodeName, ROTATION, keyTime, eulerAngles);
 			}
 		}
 	}

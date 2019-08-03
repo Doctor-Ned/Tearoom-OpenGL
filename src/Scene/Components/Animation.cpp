@@ -4,10 +4,6 @@
 #include "Scene/GameManager.h"
 #include "Serialization/DataSerializer.h"
 
-using anim::Animated;
-using anim::animMap;
-using anim::ObjectAnimation;
-
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
 	
@@ -21,7 +17,7 @@ Json::Value Animation::serialize(Serializer* serializer)
 	root["isPlaying"] = isPlaying;
 	root["looped"] = looped;
 	root["speed"] = speed;
-	root["objectAnimations"] = DataSerializer::serializeObjectAnimationsMap(objectAnimations);
+	root["animationDataName"] = animationDataName;
 	
 	return root;
 }
@@ -34,14 +30,15 @@ void Animation::deserialize(Json::Value& root, Serializer* serializer)
 	setIsPlaying(root["isPlaying"].asBool());
 	setLooped(root["looped"].asBool());
 	setSpeed(root["speed"].asFloat());
-	setObjectAnimations(DataSerializer::deserializeObjectAnimationsMap(root["objectAnimations"]));
+	animationDataName = root.get("animationDataName", "Empty").asString();
+	takeObjectsToAnimate(gameObject);
 }
 
-keyFramePair Animation::getProperIterators(float currentTime, animMap& map)
+KeyFrameIteratorPair Animation::getProperIterators(float currentTime, std::map<float, glm::vec3>& map)
 {
 	for(auto leftKeyFrame = map.begin(); leftKeyFrame != map.end(); ++leftKeyFrame)
 	{
-		auto rightKeyFrame = std::next(leftKeyFrame);
+		std::map<float, glm::vec3>::iterator rightKeyFrame = std::next(leftKeyFrame);
 		if(rightKeyFrame == map.end())
 		{
 			return { leftKeyFrame, rightKeyFrame };
@@ -53,9 +50,30 @@ keyFramePair Animation::getProperIterators(float currentTime, animMap& map)
 	}
 }
 
-std::map<std::string, anim::ObjectAnimation> Animation::getObjectAnimations()
+void Animation::interpolateValues(float currentTime, GraphNode* animatedObject, Animated type, std::map<float, glm::vec3>& mapToInterpolate)
 {
-	return objectAnimations;
+	if (mapToInterpolate.size() < 2)
+		return;
+	auto itPair = getProperIterators(currentTime, mapToInterpolate);
+	auto leftKeyFrame = itPair.first;
+	auto rightKeyFrame = itPair.second;
+
+	if (rightKeyFrame == mapToInterpolate.end())
+		return;
+
+	float time = rightKeyFrame->first - leftKeyFrame->first;
+	currentTime = currentTime - leftKeyFrame->first;
+	glm::vec3 mix = glm::mix(leftKeyFrame->second, rightKeyFrame->second, currentTime / time);
+
+	if (type == Animated::TRANSLATION) {
+		animatedObject->localTransform.setPosition(mix);
+	}
+	else if (type == Animated::SCALE) {
+		animatedObject->localTransform.setScale(mix);
+	}
+	else if (type == Animated::ROTATION) {
+		animatedObject->localTransform.setRotationDegrees(mix);
+	}
 }
 
 Animation::~Animation()
@@ -91,36 +109,36 @@ void Animation::renderGui()
 		ImGui::InputFloat("fixed Z:", &z);
 		if (ImGui::Button("Add/edit pos KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			addKeyFrame(str0, anim::TRANSLATION, time, values);
+			addKeyFrame(str0, TRANSLATION, time, values);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Delete pos KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			deleteKeyFrame(str0, anim::TRANSLATION, time);
+			deleteKeyFrame(str0, TRANSLATION, time);
 		}
 
 		if (ImGui::Button("Add/edit scale KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			addKeyFrame(str0, anim::SCALE, time, values);
+			addKeyFrame(str0, SCALE, time, values);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Delete scale KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			deleteKeyFrame(str0, anim::SCALE, time);
+			deleteKeyFrame(str0, SCALE, time);
 		}
 
 		if (ImGui::Button("Add/edit rot KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			addKeyFrame(str0, anim::ROTATION, time, values);
+			addKeyFrame(str0, ROTATION, time, values);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Delete rot KeyFrame")) {
 			glm::vec3 values = { x, y, z };
-			deleteKeyFrame(str0, anim::ROTATION, time);
+			deleteKeyFrame(str0, ROTATION, time);
 		}
 
 
-		for (auto animObjIt = objectAnimations.begin(); animObjIt != objectAnimations.end(); ++animObjIt) {
+		for (auto animObjIt = animationData->keyFramesForObjects.begin(); animObjIt != animationData->keyFramesForObjects.end(); ++animObjIt) {
 			std::string animatedObject = animObjIt->first;
 			ImGui::Text("Object:");
 			ImGui::SameLine();
@@ -137,15 +155,15 @@ float Animation::getEndTime() {
 	return endTime;
 }
 
-void Animation::animationGui(const char* animation, anim::animMap& map)
+void Animation::animationGui(const char* animation, std::map<float, glm::vec3>& keyFrameMap)
 {
 	ImGui::Indent(15.0f);
-	if (!map.empty())
+	if (!keyFrameMap.empty())
 	{
 		ImGui::TextColored(ImVec4(0.0f, 0.2f, 1.0f, 1.0f), animation);
-		auto it = map.begin();
+		auto it = keyFrameMap.begin();
 		ImGui::Indent(15.0f);
-		for (; it != map.end(); ++it)
+		for (; it != keyFrameMap.end(); ++it)
 		{
 			std::string time = std::to_string(it->first) + "s";
 			ImGui::Text(time.c_str());
@@ -178,6 +196,11 @@ float Animation::getCurrentTime() {
 	return currentTime;
 }
 
+AnimationData* Animation::getAnimationData()
+{
+	return animationData;
+}
+
 void Animation::play(float startTime, bool _looped)
 {
 	isPlaying = true;
@@ -198,25 +221,25 @@ bool Animation::addKeyFrame(std::string&& gameObjectName, Animated type, float t
 		return false;
 	if (isPlaying)
 		return false;
-	auto it = objectAnimations.find(gameObjectName);
-	if (it == objectAnimations.end())
+	auto it = animationData->keyFramesForObjects.find(gameObjectName);
+	if (it == animationData->keyFramesForObjects.end())
 	{
-		ObjectAnimation anim;
-		objectAnimations.emplace(gameObjectName, anim);
+		KeyFrameData keyFrameData;
+		animationData->keyFramesForObjects.emplace(gameObjectName, keyFrameData);
 	}
-	it = objectAnimations.find(gameObjectName);
+	auto keyFramesForObjectsIterator = animationData->keyFramesForObjects.find(gameObjectName);
 	
 	if(type == Animated::TRANSLATION)
 	{
-		it->second.translation[time] = values;
+		keyFramesForObjectsIterator->second.translation[time] = values;
 	}
 	else if(type == Animated::SCALE)
 	{
-		it->second.scale[time] = values;
+		keyFramesForObjectsIterator->second.scale[time] = values;
 	}
 	else if(type == Animated::ROTATION)
 	{
-		it->second.rotation[time] = values;
+		keyFramesForObjectsIterator->second.rotation[time] = values;
 	}
 	
 	if (endTime < time)
@@ -229,8 +252,8 @@ bool Animation::deleteKeyFrame(std::string&& gameObjectName, Animated type, floa
 	if (isPlaying)
 		return false;
 
-	auto it = objectAnimations.find(gameObjectName);
-	if (it == objectAnimations.end())
+	auto it = animationData->keyFramesForObjects.find(gameObjectName);
+	if (it == animationData->keyFramesForObjects.end())
 	{
 		return false;
 	}
@@ -263,7 +286,7 @@ bool Animation::deleteKeyFrame(std::string&& gameObjectName, Animated type, floa
 	//removing empty animated object
 	if(it->second.empty())
 	{
-		objectAnimations.erase(it);
+		animationData->keyFramesForObjects.erase(it);
 	}
 	setEndTime();
 	return true;
@@ -294,17 +317,16 @@ void Animation::setLooped(bool val)
 	looped = val;
 }
 
-
-
-void Animation::setObjectAnimations(std::map<std::string, anim::ObjectAnimation>&& map)
+void Animation::setAnimationData(AnimationData* animationData)
 {
-	objectAnimations = map;
+	this->animationData = animationData;
+	takeObjectsToAnimate(gameObject);
+	setEndTime();
 }
-
 
 void Animation::setEndTime()
 {
-	for (auto it = objectAnimations.begin(); it != objectAnimations.end(); ++it)
+	for (auto it = animationData->keyFramesForObjects.begin(); it != animationData->keyFramesForObjects.end(); ++it)
 	{
 		if (it->second.translation.size() >= 2)
 		{

@@ -115,7 +115,7 @@ public:
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
 	ModelData* getModelData(std::string path);
-	AnimationData* getAnimationData(std::string& name);
+	AnimationData* getAnimationData(std::string&& name);
 	std::vector<std::string> getAnimationDatasetsNames();
 	void saveAnimationData(AnimationData* animationData, std::string& name);
 	AnimatedModelData* getAnimatedModelData(std::string path);

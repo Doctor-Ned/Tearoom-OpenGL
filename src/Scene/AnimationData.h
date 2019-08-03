@@ -9,6 +9,17 @@ struct KeyFrameData
 	std::map<float, glm::vec3> translation;
 	std::map<float, glm::vec3> scale;
 	std::map<float, glm::vec3> rotation;
+	bool empty() const
+	{
+		if (!translation.empty())
+			return false;
+		if (!scale.empty())
+			return false;
+		if (!rotation.empty())
+			return false;
+
+		return true;
+	}
 };
 
 class AnimationData : public Serializable

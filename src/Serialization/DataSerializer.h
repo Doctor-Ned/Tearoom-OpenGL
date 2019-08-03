@@ -26,10 +26,6 @@ public:
 	static glm::mat4 deserializeMat4(const Json::Value &root);
 	static Json::Value serializeTransformData(TransformData data);
 	static TransformData deserializeTransformData(const Json::Value &root);
-	static Json::Value serializeObjectAnimationsMap(std::map<std::string, anim::ObjectAnimation>& map);
-	static std::map<std::string, anim::ObjectAnimation> deserializeObjectAnimationsMap(const Json::Value &root);
-	static Json::Value serializeObjectAnimation(anim::ObjectAnimation& objAnim);
-	static anim::ObjectAnimation deserializeObjectAnimation(const Json::Value &root);
 	static Json::Value serializeTransformationMap(std::map<float, glm::vec3>& map);
 	static std::map<float, glm::vec3> deserializeTransformationMap(const Json::Value &root);
 	static Json::Value serializeIntFloatMap(std::map<int, float>& map);

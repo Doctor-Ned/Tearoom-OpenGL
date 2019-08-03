@@ -209,31 +209,32 @@ TestScene::TestScene(bool serialized) {
 
 		door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
 		Animation* anim = new KeyFrameAnimation(door, "doorOpening");
-		anim->addKeyFrame("door", anim::TRANSLATION, 0.0f, glm::vec3(0));
-		anim->addKeyFrame("door", anim::TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
-		anim->addKeyFrame("door", anim::TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		anim->setAnimationData(new AnimationData());
+		anim->addKeyFrame("door", TRANSLATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("door", TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
+		anim->addKeyFrame("door", TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		door->addComponent(anim);
 		doorPivot->localTransform.setPosition(-4.0f, 2.0f, -2.0f);
 		doorPivot->localTransform.rotateYDegrees(180.0f);
 
 
-		anim->addKeyFrame("handle", anim::TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
-		anim->addKeyFrame("handle", anim::TRANSLATION, 0.0f, glm::vec3(0));
-		anim->addKeyFrame("handle", anim::TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		anim->addKeyFrame("handle", anim::TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
-		anim->addKeyFrame("handle", anim::TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
-		anim->addKeyFrame("handle", anim::TRANSLATION, 4.0f, glm::vec3(0));
+		anim->addKeyFrame("handle", TRANSLATION, 2.0f, glm::vec3(-1.0f, 0.0f, 0.0f));
+		anim->addKeyFrame("handle", TRANSLATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("handle", TRANSLATION, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		anim->addKeyFrame("handle", TRANSLATION, 3.0f, glm::vec3(1.0f, 4.0f, 0.0f));
+		anim->addKeyFrame("handle", TRANSLATION, 3.0f, glm::vec3(5.0f, 2.0f, 0.0f));
+		anim->addKeyFrame("handle", TRANSLATION, 4.0f, glm::vec3(0));
 
-		anim->addKeyFrame("handle", anim::SCALE, 0.0f, glm::vec3(1));
-		anim->addKeyFrame("handle", anim::SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
-		anim->addKeyFrame("handle", anim::SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
-		anim->addKeyFrame("handle", anim::SCALE, 4.0f, glm::vec3(1));
+		anim->addKeyFrame("handle", SCALE, 0.0f, glm::vec3(1));
+		anim->addKeyFrame("handle", SCALE, 1.0f, glm::vec3(2.0f, 0.5f, 1.0f));
+		anim->addKeyFrame("handle", SCALE, 2.0f, glm::vec3(3.0f, 0.5f, 0.5f));
+		anim->addKeyFrame("handle", SCALE, 4.0f, glm::vec3(1));
 
-		anim->addKeyFrame("handle", anim::ROTATION, 0.0f, glm::vec3(0));
-		anim->addKeyFrame("handle", anim::ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
-		anim->addKeyFrame("handle", anim::ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
+		anim->addKeyFrame("handle", ROTATION, 0.0f, glm::vec3(0));
+		anim->addKeyFrame("handle", ROTATION, 2.0f, glm::vec3(90.0f, 90.0f, 180.0f));
+		anim->addKeyFrame("handle", ROTATION, 4.0f, glm::vec3(0.0f, 0.0f, 360.0f));
 
-		anim->deleteKeyFrame("handle", anim::ROTATION, 2.0f);
+		anim->deleteKeyFrame("handle", ROTATION, 2.0f);
 		//
 
 

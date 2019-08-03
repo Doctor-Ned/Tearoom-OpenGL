@@ -136,47 +136,6 @@ TransformData DataSerializer::deserializeTransformData(const Json::Value& root) 
 	return result;
 }
 
-Json::Value DataSerializer::serializeObjectAnimationsMap(std::map<std::string, anim::ObjectAnimation>& map)
-{
-	Json::Value root;
-	for (auto it = map.begin(); it != map.end(); ++it)
-	{
-		root[it->first] = serializeObjectAnimation(it->second);
-	}
-	return root;
-}
-
-std::map<std::string, anim::ObjectAnimation> DataSerializer::deserializeObjectAnimationsMap(const Json::Value& root)
-{
-	std::map<std::string, anim::ObjectAnimation> result;
-
-	for (Json::ValueConstIterator it = root.begin(); it != root.end(); ++it)
-	{
-		std::string animatedObject = it.key().asString();
-		anim::ObjectAnimation anim = deserializeObjectAnimation(root[animatedObject]);
-		result.emplace(animatedObject, anim);
-	}
-	return result;
-}
-
-Json::Value DataSerializer::serializeObjectAnimation(anim::ObjectAnimation& objAnim)
-{
-	Json::Value root;
-	root["translation"] = serializeTransformationMap(objAnim.translation);
-	root["scale"] = serializeTransformationMap(objAnim.scale);
-	root["rotation"] = serializeTransformationMap(objAnim.rotation);
-	return root;
-}
-
-anim::ObjectAnimation DataSerializer::deserializeObjectAnimation(const Json::Value& root)
-{
-	anim::ObjectAnimation anim;
-	anim.translation = deserializeTransformationMap(root["translation"]);
-	anim.scale = deserializeTransformationMap(root["scale"]);
-	anim.rotation = deserializeTransformationMap(root["rotation"]);
-	return anim;
-}
-
 Json::Value DataSerializer::serializeTransformationMap(std::map<float, glm::vec3>& map)
 {
 	Json::Value root;

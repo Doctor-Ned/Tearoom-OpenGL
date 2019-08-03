@@ -7,10 +7,9 @@ class KeyFrameAnimation : public Animation
 private:
 	std::vector<GraphNode*> objectsToAnimate;
 
-	void interpolateValues(float currentTime, GraphNode* animatedObject, anim::Animated type, anim::animMap& mapToInterpolate);
-	void takeObjectsToAnimate(GraphNode* objectToAnimate);
+	void takeObjectsToAnimate(GraphNode* objectToAnimate) override;
 	void interpolateObjects();
-	KeyFrameAnimation() {}
+	KeyFrameAnimation() = default;
 	friend class Serializer;
 	void renderGui() override;
 public:

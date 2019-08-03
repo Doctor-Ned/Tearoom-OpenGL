@@ -142,7 +142,7 @@ ModelData* AssetManager::getModelData(std::string path) {
 	throw "Critical error! An object tried to access an unknown model: " + path;
 }
 
-AnimationData* AssetManager::getAnimationData(std::string& name)
+AnimationData* AssetManager::getAnimationData(std::string&& name)
 {
 	auto it = animationDatasets.find(name);
 	if(it->second != nullptr)
