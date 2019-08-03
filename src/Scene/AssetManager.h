@@ -96,7 +96,8 @@ static const std::string ShaderTypeNames[] = {
 enum ResourceType {
 	NoneResource,
 	TextureResource,
-	ModelResource
+	ModelResource,
+	AnimationDataResource
 };
 
 
@@ -114,6 +115,9 @@ public:
 	Texture getTexture(std::string path);
 	Model *getModel(std::string path);
 	ModelData* getModelData(std::string path);
+	AnimationData* getAnimationData(std::string& name);
+	std::vector<std::string> getAnimationDatasetsNames();
+	void saveAnimationData(AnimationData* animationData, std::string& name);
 	AnimatedModelData* getAnimatedModelData(std::string path);
 	Bone *getBoneHierarchy(std::string path);
 	SkeletalAnimation getAnimation(std::string path);

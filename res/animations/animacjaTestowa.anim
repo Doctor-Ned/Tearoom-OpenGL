@@ -1,0 +1,15 @@
+{
+   "id" : 0,
+   "object" : {
+      "objectAnimations" : {
+         "testObject" : {
+            "rotation" : null,
+            "scale" : null,
+            "translation" : {
+               "2.000000" : [ 1.0, 1.0, 1.0 ]
+            }
+         }
+      }
+   },
+   "type" : 60
+}

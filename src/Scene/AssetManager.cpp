@@ -7,6 +7,7 @@
 #include "Render/PostProcessingShader.h"
 #include "Render/LightManager.h"
 #include "Mesh/AnimatedModel.h"
+#include "Serialization/Serializer.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -141,6 +142,32 @@ ModelData* AssetManager::getModelData(std::string path) {
 	throw "Critical error! An object tried to access an unknown model: " + path;
 }
 
+AnimationData* AssetManager::getAnimationData(std::string& name)
+{
+	auto it = animationDatasets.find(name);
+	if(it->second != nullptr)
+	{
+		return it->second;
+	}
+	return nullptr;
+}
+
+std::vector<std::string> AssetManager::getAnimationDatasetsNames()
+{
+	std::vector<std::string> animationDatasetsNames;
+	for(auto it : animationDatasets)
+	{
+		animationDatasetsNames.emplace_back(it.first);
+	}
+	return animationDatasetsNames;
+}
+
+void AssetManager::saveAnimationData(AnimationData* animationData, std::string& name)
+{
+	Serializer::getInstance()->saveAnimationData(animationData, name);
+	animationDatasets[name] = animationData;
+}
+
 AnimatedModelData* AssetManager::getAnimatedModelData(std::string path) {
 	for (auto &pair : models) {
 		if (pair.first.compare(path) == 0) {
@@ -270,6 +297,7 @@ void AssetManager::setup() {
 	resourceExtensionMap.emplace("jpeg", TextureResource);
 	resourceExtensionMap.emplace("png", TextureResource);
 	resourceExtensionMap.emplace("tga", TextureResource);
+	resourceExtensionMap.emplace("anim", AnimationDataResource);
 }
 
 AssetManager::~AssetManager() {
@@ -340,6 +368,7 @@ void AssetManager::loadNextPendingResource() {
 			SPDLOG_DEBUG("Gathering loading data...");
 			std::vector<std::string> textures;
 			std::vector<std::string> models;
+			std::vector<std::string> animationsData = Serializer::getInstance()->getAnimationNames();
 			for (const auto & entry : fs::recursive_directory_iterator(Global::BASE_PATH + "res")) {
 				std::string path = entry.path().u8string();
 				for (std::string::iterator i = path.begin(); i != path.end(); ++i) {
@@ -364,6 +393,9 @@ void AssetManager::loadNextPendingResource() {
 				resourcesToLoad.push_back(str);
 			}
 			for (auto &str : models) {
+				resourcesToLoad.push_back(str);
+			}
+			for (auto &str : animationsData) {
 				resourcesToLoad.push_back(str);
 			}
 			int index = 0;
@@ -467,6 +499,19 @@ void AssetManager::loadResource(std::string path, bool verify) {
 			}
 			if (add) {
 				textures.emplace_back(createTexture((Global::BASE_PATH + path).c_str()));
+			}
+			break;
+		case AnimationDataResource:
+			if (verify) {
+				for (auto &pair : animationDatasets) {
+					if (pair.first == path) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if (add) {
+				animationDatasets.emplace(path, Serializer::getInstance()->loadAnimationData(path));
 			}
 			break;
 	}

@@ -26,14 +26,16 @@ public:
 	void saveScene(Scene *scene, const std::string& name);
 	Scene *loadScene(const std::string& name);
 	AnimationData* loadAnimationData(const std::string& name);
-	void saveAnimationData(AnimationData *scene, const std::string& name);
+	void saveAnimationData(AnimationData *animationData, const std::string& name);
 	Serializable *getPointer(int id);
 	std::vector<std::string> getSceneNames();
+	std::vector<std::string> getAnimationNames();
 	int getId(Serializable *pointer);
 	Json::Value serialize(Serializable *ser);
 	Json::Value serialize(SerializablePointer ser);
 	SerializablePointer deserialize(Json::Value &root);
 	void loadScenes();
+	void loadAnimations();
 private:
 	void deserializeAndIdentify(SerializablePointer &pointer, Json::Value &data, Serializable *serializable);
 	int idCounter;
@@ -43,5 +45,8 @@ private:
 	std::string SCENES_DIR = "Scenes";
 	const std::string FORMAT = ".scene";
 	const std::string OLD_FORMAT = ".oldscene";
+	std::string ANIMATIONS_DIR = "animations";
+	std::string ANIMATION_FORMAT = ".anim";
 	std::map<std::string, std::string> scenes;
+	std::map<std::string, std::string> animations;
 };

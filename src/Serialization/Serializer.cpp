@@ -63,6 +63,12 @@ void Serializer::setup() {
 		fs::create_directory(SCENES_DIR);
 	}
 	loadScenes();
+
+	ANIMATIONS_DIR = Global::BASE_PATH + "res\\" + ANIMATIONS_DIR;
+	if (!fs::exists(ANIMATIONS_DIR)) {
+		fs::create_directory(ANIMATIONS_DIR);
+	}
+	loadAnimations();
 }
 
 void Serializer::saveScene(Scene* scene, const std::string& name) {
@@ -102,23 +108,40 @@ Scene* Serializer::loadScene(const std::string& name) {
 	return result;
 }
 
+void Serializer::saveAnimationData(AnimationData * animationData, const std::string & name)
+{
+	idCounter = 0;
+	ids.clear();
+	Json::Value root = serialize(animationData);
+	std::string file = ANIMATIONS_DIR + "\\" + name;
+	if (fs::exists(file)) {
+		std::string oldFile = ANIMATIONS_DIR + "\\" + name + "Old";
+		if (fs::exists(oldFile)) {
+			fs::remove(oldFile);
+		}
+		fs::rename(file, oldFile);
+	}
+	Global::saveToFile(file, root);
+	loadAnimations();
+}
+
 AnimationData * Serializer::loadAnimationData(const std::string & name)
 {
 	SPDLOG_DEBUG("Attempting to load animation {}...", name);
-	/*std::string location;
-	for (auto &pair : scenes) {
+	std::string location;
+	for (auto &pair : animations) {
 		if (name == pair.first) {
 			location = pair.second;
 			break;
 		}
-	}*/
-	/*if (location.length() == 0) {
+	}
+	if (location.length() == 0) {
 		SPDLOG_ERROR("Could not find the desired file!");
 		return nullptr;
-	}*/
+	}
 	idCounter = 0;
 	ids.clear();
-	Json::Value root = Global::readJsonFile(Global::BASE_PATH + name + ".anim");
+	Json::Value root = Global::readJsonFile(location);
 	SerializablePointer pointer = deserialize(root);
 	if (pointer.object == nullptr) {
 		SPDLOG_WARN("Deserialized animation data was null. Was that planned?");
@@ -128,23 +151,6 @@ AnimationData * Serializer::loadAnimationData(const std::string & name)
 	
 	AnimationData *result = dynamic_cast<AnimationData*>(pointer.object);
 	return result;
-}
-
-void Serializer::saveAnimationData(AnimationData * animationData, const std::string & name)
-{
-	idCounter = 0;
-	ids.clear();
-	Json::Value root = serialize(animationData);
-	std::string file = Global::BASE_PATH + name + ".anim";
-	if (fs::exists(file)) {
-		std::string oldFile = Global::BASE_PATH + name + ".animOld";
-		if (fs::exists(oldFile)) {
-			fs::remove(oldFile);
-		}
-		fs::rename(file, oldFile);
-	}
-	Global::saveToFile(file, root);
-	//loadScenes();
 }
 
 Serializable* Serializer::getPointer(const int id) {
@@ -159,6 +165,15 @@ Serializable* Serializer::getPointer(const int id) {
 std::vector<std::string> Serializer::getSceneNames() {
 	std::vector<std::string> result;
 	for (auto &pair : scenes) {
+		result.push_back(pair.first);
+	}
+	return result;
+}
+
+std::vector<std::string> Serializer::getAnimationNames()
+{
+	std::vector<std::string> result;
+	for (auto &pair : animations) {
 		result.push_back(pair.first);
 	}
 	return result;
@@ -410,4 +425,17 @@ void Serializer::loadScenes() {
 		}
 	}
 	SPDLOG_DEBUG("Found {} scenes!", scenes.size());
+}
+
+void Serializer::loadAnimations()
+{
+	animations.clear();
+	SPDLOG_DEBUG("Gathering animations...");
+	for (auto &entry : fs::directory_iterator(ANIMATIONS_DIR)) {
+		std::string filename = entry.path().filename().u8string();
+		if (Global::endsWith(filename, ANIMATION_FORMAT)) {
+			animations.emplace(filename, entry.path().u8string());
+		}
+	}
+	SPDLOG_DEBUG("Found {} animations data!", animations.size());
 }
