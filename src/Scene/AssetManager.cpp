@@ -145,9 +145,12 @@ ModelData* AssetManager::getModelData(std::string path) {
 AnimationData* AssetManager::getAnimationData(std::string&& name)
 {
 	auto it = animationDatasets.find(name);
-	if(it->second != nullptr)
+	if(it != animationDatasets.end())
 	{
-		return it->second;
+		if(it->second != nullptr)
+		{
+			return it->second;
+		}
 	}
 	return nullptr;
 }

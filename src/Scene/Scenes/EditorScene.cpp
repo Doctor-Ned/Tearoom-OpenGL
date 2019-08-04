@@ -649,14 +649,34 @@ void EditorScene::renderUi() {
 		break;
 		case SKeyFrameAnimation:
 		{
-			typeCreation->creationCallback(new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg)));
-			typeCreationsToDelete.push_back(typeCreation);
+			ImGui::Text("Choose Animation Data");
+			std::vector<std::string> animationDataNames = AssetManager::getInstance()->getAnimationDatasetsNames();
+			for(auto&& name: animationDataNames)
+			{
+				if(ImGui::Button(name.c_str()))
+				{
+					auto tmp = new KeyFrameAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg));
+					tmp->setAnimationData(AssetManager::getInstance()->getAnimationData(std::move(name)), std::move(name));
+					typeCreation->creationCallback(tmp);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
 		}
 		break;
 		case SSkeletalAnimation:
 		{
-			//todo
-			typeCreationsToDelete.push_back(typeCreation);
+			ImGui::Text("Choose Animation Data");
+			std::vector<std::string> animationDataNames = AssetManager::getInstance()->getAnimationDatasetsNames();
+			for (auto&& name : animationDataNames)
+			{
+				if (ImGui::Button(name.c_str()))
+				{
+					auto tmp = new SkeletalAnimation(reinterpret_cast<GraphNode*>(typeCreation->arg));
+					tmp->setAnimationData(AssetManager::getInstance()->getAnimationData(std::move(name)), std::move(name));
+					typeCreation->creationCallback(tmp);
+					typeCreationsToDelete.push_back(typeCreation);
+				}
+			}
 		}
 		break;
 		case SAnimationController:

@@ -6,6 +6,9 @@ KeyFrameAnimation::KeyFrameAnimation(GraphNode* gameObject, std::string&& name) 
 }
 
 void KeyFrameAnimation::setFrame(float time) {
+	if(!animationData)
+		return;
+
 	if (time < 0.0f) {
 		currentTime = 0.0f;
 	} else if (time > endTime) {
@@ -17,16 +20,19 @@ void KeyFrameAnimation::setFrame(float time) {
 }
 
 void KeyFrameAnimation::update(float msec) {
-	if (isPlaying) {
-		interpolateObjects();
-		currentTime += msec * speed;
-	}
-
-	if (currentTime >= endTime) {
-		if (!looped) {
-			isPlaying = false;
+	if(animationData != nullptr)
+	{
+		if (isPlaying) {
+			interpolateObjects();
+			currentTime += msec * speed;
 		}
-		currentTime = 0.0f;
+
+		if (currentTime >= endTime) {
+			if (!looped) {
+				isPlaying = false;
+			}
+			currentTime = 0.0f;
+		}
 	}
 }
 
@@ -46,6 +52,7 @@ void KeyFrameAnimation::renderGui() {
 		}
 		ImGui::Text("If anim doesn't work, try reload.");
 		if (ImGui::Button("Reload")) {
+			objectsToAnimate.clear();
 			takeObjectsToAnimate(gameObject);
 		}
 	}

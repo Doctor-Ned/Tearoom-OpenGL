@@ -209,7 +209,7 @@ TestScene::TestScene(bool serialized) {
 
 		door->addComponent(new BoxCollider(door, STATIC, false, glm::vec3(0), glm::vec3(1.0f, 1.5f, 0.1f)));
 		Animation* anim = new KeyFrameAnimation(door, "doorOpening");
-		anim->setAnimationData(new AnimationData());
+		anim->setAnimationData(new AnimationData(), "animation.anim");
 		anim->addKeyFrame("door", TRANSLATION, 0.0f, glm::vec3(0));
 		anim->addKeyFrame("door", TRANSLATION, 1.0f, glm::vec3(0.4f, 0.0f, 0.0f));
 		anim->addKeyFrame("door", TRANSLATION, 2.0f, glm::vec3(1.0f, 0.0f, 0.0f));

@@ -21,7 +21,8 @@ protected:
 	float endTime = 0.0f;
 	bool isPlaying = false;
 	bool looped = false;
-	std::string animationDataName;
+	bool showAnimationDataSelectionWindow = false;
+	std::string animationDataName = "Empty";
 	AnimationData* animationData = nullptr;
 
 	KeyFrameIteratorPair getProperIterators(float currentTime, std::map<float, glm::vec3>& map);
@@ -52,7 +53,7 @@ public:
 	bool getIsPlaying();
 	float getCurrentTime();
 	AnimationData* getAnimationData();
-	void setAnimationData(AnimationData* animationData);
+	void setAnimationData(AnimationData* animationData, std::string&& name);
 
 	void play(float startTime = 0.0f, bool _looped = false);
 	void stopPlaying();

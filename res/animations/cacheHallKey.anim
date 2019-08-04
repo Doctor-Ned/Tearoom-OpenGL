@@ -1,0 +1,16 @@
+{
+   "id" : 0,
+   "object" : {
+      "objectAnimations" : {
+         "CacheHallKey" : {
+            "rotation" : null,
+            "scale" : null,
+            "translation" : {
+               "0.000000" : [ 0.0, 0.0, -0.17000000178813934 ],
+               "1.000000" : [ 0.0, 0.0, 0.0 ]
+            }
+         }
+      }
+   },
+   "type" : 60
+}

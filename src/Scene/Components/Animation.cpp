@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Scene/GameManager.h"
 #include "Serialization/DataSerializer.h"
+#include "Scene/AssetManager.h"
 
 Animation::Animation(GraphNode* gameObject, std::string&& _name) : Component(gameObject, _name)
 {
@@ -30,7 +31,8 @@ void Animation::deserialize(Json::Value& root, Serializer* serializer)
 	setIsPlaying(root["isPlaying"].asBool());
 	setLooped(root["looped"].asBool());
 	setSpeed(root["speed"].asFloat());
-	animationDataName = root.get("animationDataName", "Empty").asString();
+	animationDataName = root.get("animationDataName", animationDataName).asString();
+	animationData = AssetManager::getInstance()->getAnimationData(std::move(animationDataName));
 	takeObjectsToAnimate(gameObject);
 }
 
@@ -87,6 +89,36 @@ void Animation::renderGui()
 		ImGui::Text("__________________");
 		static float startTime = 0.0f;
 		static bool looped = false;
+
+		ImGui::TextColored({ 0.0f, 1.0f, 0.0f, 1.0f }, animationDataName.c_str());
+		if(ImGui::Button("Choose animation data"))
+		{
+			showAnimationDataSelectionWindow = true;
+		}
+		if(showAnimationDataSelectionWindow)
+		{
+			if (ImGui::Begin("Animation data selection", &showAnimationDataSelectionWindow))
+			{
+				auto names = AssetManager::getInstance()->getAnimationDatasetsNames();
+				for (auto&& name : names)
+				{
+					if (ImGui::Button(name.c_str()))
+					{
+						setAnimationData(AssetManager::getInstance()->getAnimationData(std::move(name)), std::move(name));
+						showAnimationDataSelectionWindow = false;
+					}
+				}
+				if (ImGui::Button("Close"))
+				{
+					showAnimationDataSelectionWindow = false;
+				}
+				ImGui::End();
+			}
+		}
+		
+		if (!animationData)
+			return;
+		
 		ImGui::Checkbox("Looped", &looped);
 		ImGui::InputFloat("startTime:", &startTime);
 		ImGui::InputFloat("Speed", &speed);
@@ -96,6 +128,7 @@ void Animation::renderGui()
 		if (ImGui::Button("Stop")) {
 			stopPlaying();
 		}
+		/*
 		ImGui::Text("Edition");
 		static float time = 0.0f;
 		static float x = 0.0f;
@@ -135,10 +168,10 @@ void Animation::renderGui()
 		if (ImGui::Button("Delete rot KeyFrame")) {
 			glm::vec3 values = { x, y, z };
 			deleteKeyFrame(str0, ROTATION, time);
-		}
+		}*/
 
-
-		for (auto animObjIt = animationData->keyFramesForObjects.begin(); animObjIt != animationData->keyFramesForObjects.end(); ++animObjIt) {
+		for (auto animObjIt = animationData->keyFramesForObjects.begin(); animObjIt != animationData->keyFramesForObjects.end(); ++animObjIt) 
+		{
 			std::string animatedObject = animObjIt->first;
 			ImGui::Text("Object:");
 			ImGui::SameLine();
@@ -217,6 +250,8 @@ void Animation::stopPlaying()
 
 bool Animation::addKeyFrame(std::string&& gameObjectName, Animated type, float time, glm::vec3 values)
 {
+	if (!animationData)
+		return false;
 	if (time < 0)
 		return false;
 	if (isPlaying)
@@ -249,6 +284,8 @@ bool Animation::addKeyFrame(std::string&& gameObjectName, Animated type, float t
 
 bool Animation::deleteKeyFrame(std::string&& gameObjectName, Animated type, float time)
 {
+	if (!animationData)
+		return false;
 	if (isPlaying)
 		return false;
 
@@ -317,8 +354,9 @@ void Animation::setLooped(bool val)
 	looped = val;
 }
 
-void Animation::setAnimationData(AnimationData* animationData)
+void Animation::setAnimationData(AnimationData* animationData, std::string&& name)
 {
+	animationDataName = name;
 	this->animationData = animationData;
 	takeObjectsToAnimate(gameObject);
 	setEndTime();
