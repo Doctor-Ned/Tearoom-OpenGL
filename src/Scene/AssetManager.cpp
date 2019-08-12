@@ -49,6 +49,8 @@ GLuint AssetManager::createCubemap(std::vector<std::string> faces) {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
@@ -63,19 +65,25 @@ Texture AssetManager::createTexture(const char* textureFile) {
 		SPDLOG_ERROR("Failed to load texture from file \{}\!", textureFile);
 		exit(1);
 	}
-	GLenum format;
+
+	GLenum internalFormat;
+	GLenum pixelFormat;
 	switch (imgChannels) {
 		case 1:
-			format = GL_RED;
+			internalFormat = GL_RED;
+			pixelFormat = GL_RED;
 			break;
 		case 2:
-			format = GL_RG;
+			internalFormat = GL_RG;
+			pixelFormat = GL_RG;
 			break;
 		case 3:
-			format = GL_RGB;
+			internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+			pixelFormat = GL_RGB;
 			break;
 		case 4:
-			format = GL_RGBA;
+			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			pixelFormat = GL_RGBA;
 			break;
 		default:
 			SPDLOG_ERROR("Unexpected channel amount!");
@@ -84,12 +92,12 @@ Texture AssetManager::createTexture(const char* textureFile) {
 	GLuint imgTexture;
 	glGenTextures(1, &imgTexture);
 	glBindTexture(GL_TEXTURE_2D, imgTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, imgWidth, imgHeight, 0, pixelFormat, GL_UNSIGNED_BYTE, imgData);
+	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, imgData);
-	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(imgData);
 	texture.id = imgTexture;
 	std::string file(textureFile);
