@@ -47,7 +47,7 @@
 #include "Scene/Scripts/OutroCutscene.h"
 #include "Scene/Components/SoundSource.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 Serializer *Serializer::getInstance() {
 	static Serializer* instance = nullptr;

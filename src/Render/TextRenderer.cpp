@@ -1,8 +1,9 @@
 #include <iostream>
 #include "Render/TextRenderer.h"
-#include "freetype/ftparams.h"
-#include "Scene/GameManager.h"
 #include "Scene/AssetManager.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 
 TextRenderer::TextRenderer(GLfloat defaultScale) {

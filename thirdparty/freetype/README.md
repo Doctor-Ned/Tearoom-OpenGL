@@ -1,15 +1,18 @@
-FreeType 2.9.1
+FreeType 2.10.4
 =========================
 ###### Windows binaries (DLL) of FreeType (win32/win64)
-
-Compiled with VS Express 2015  
-Compatible with Windows XP, Vista, 7, 8, 10
-
-> *freetype.dll* uses the *Universal CRT* and therefore **_requires_** Visual C++ 2017 Redistributable to be present on system (*VC++ 2017 Redistributable supersedes VC++ 2015 Redistributable*).
-
+Compiled with VS Express 2017 (SDK 10.0.19041.0)
+> *freetype.dll* uses the *Universal CRT* and therefore **_requires_** Visual C++ 2015-2019 Redistributable to be present on system.
+###### Supported operating systems
+- Windows 10 version 1507 or higher
+- Windows Server 2016
+- Windows 8.1
+- Windows Server 2012 R2
+- Windows 7 SP1
+###### File hash values
 | filename | sha256 |
 | :-- | :-- |
-| win32\\**freetype.dll** | `50BE9F0AAE77ED3419088168A3EE67FDF2A1C2B33A89D46548062B636B1EE893` |
-| win32\\**freetype.lib** | `184A993AD300F8CE39D48C0500CD0F34BB44C7DDAFDB22F8C1049F5031D4F6BF` |
-| win64\\**freetype.dll** | `8B0F1E91E80D441869169A3E9D924BAAFB2203A04CB90D1A11AC7ED22C81A24E` |
-| win64\\**freetype.lib** | `81C9050FE6C1A02D176131E45A37CC994AF027F94853EEAFFA06BB087ECCBF0A` |
+| win32\\**freetype.dll** | `61EE88D3633A3F3AC05E8525A5A45DC9AD7EA9E9971A6D695BB144E067167C34` |
+| win32\\**freetype.lib** | `1D284FFDAA5F4F9DA7C3D58F0B43380099B2103A68A650C08965256310931859` |
+| win64\\**freetype.dll** | `549E904DD42A3FA75960F705F480267DF270F8020A2B32AC67926634AE302D8D` |
+| win64\\**freetype.lib** | `C09D3B94B87FD60397AD19FAF1BCC8AD3B6F075E4F49B42DD6BE3F78D4EEF519` |

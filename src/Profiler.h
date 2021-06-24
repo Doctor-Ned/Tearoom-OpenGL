@@ -1,6 +1,7 @@
 #ifndef PROFILER_H
 #define PROFILER_H
 #include <map>
+#include <string>
 
 class Profiler
 {

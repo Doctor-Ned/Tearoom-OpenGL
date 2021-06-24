@@ -152,9 +152,9 @@ int main(int argc, char** argv) {
 
 	bool found = false;
 	int iterations = 0;
-	std::experimental::filesystem::path p = std::experimental::filesystem::current_path();
+	std::filesystem::path p = std::filesystem::current_path();
 	while (!found && iterations < MAX_ITERATIONS) {
-		for (const auto &entry : std::experimental::filesystem::directory_iterator(p)) {
+		for (const auto &entry : std::filesystem::directory_iterator(p)) {
 			if (entry.path().filename().string() == "res") {
 				found = true;
 				break;
@@ -351,8 +351,8 @@ int main(int argc, char** argv) {
 
 	glfwMakeContextCurrent(window);
 
-	if (!std::experimental::filesystem::is_directory(Global::BASE_PATH + "Screenshots") || !std::experimental::filesystem::exists(Global::BASE_PATH + "Screenshots")) {
-		std::experimental::filesystem::create_directory(Global::BASE_PATH + "Screenshots");
+	if (!std::filesystem::is_directory(Global::BASE_PATH + "Screenshots") || !std::filesystem::exists(Global::BASE_PATH + "Screenshots")) {
+		std::filesystem::create_directory(Global::BASE_PATH + "Screenshots");
 	}
 
 	CHECK_GL_ERROR();

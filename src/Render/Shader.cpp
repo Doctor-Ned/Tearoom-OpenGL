@@ -5,7 +5,7 @@
 #include <iostream>
 #include <streambuf>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 std::string Shader::SHADER_DIR = "Shaders/";
 std::string Shader::SHARED_DIR = "Shaders/Shared";
@@ -248,8 +248,8 @@ void Shader::refreshTimestamps() {
 	bool changed = false;
 	std::vector<std::string> changedFiles;
 	for (auto &pair : timestamps) {
-		auto time = std::experimental::filesystem::last_write_time(pair.first);
-		auto stamp = decltype(time)::clock::to_time_t(time);
+		auto time = std::filesystem::last_write_time(pair.first);
+		const auto stamp = time.time_since_epoch().count();
 		if (stamp != pair.second) {
 			changed = true;
 			pair.second = stamp;
@@ -302,8 +302,8 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 	std::string text = Global::readFullFile(fullFile);
 #ifdef ENABLE_SHADER_HOTSWAP
 	if (firstPass) {
-		auto time = std::experimental::filesystem::last_write_time(fullFile);
-		timestamps.emplace(fullFile, decltype(time)::clock::to_time_t(time));
+		auto time = std::filesystem::last_write_time(fullFile);
+		timestamps.emplace(fullFile, time.time_since_epoch().count());
 	}
 #endif
 	if (text.length() > 0) {
@@ -322,8 +322,8 @@ GLuint Shader::createAndCompileShader(int shaderType, const char* file) {
 			}
 #ifdef ENABLE_SHADER_HOTSWAP
 			if (used && firstPass) {
-				auto time = std::experimental::filesystem::last_write_time(sharedDataPaths[pair.first]);
-				timestamps.emplace(sharedDataPaths[pair.first], decltype(time)::clock::to_time_t(time));
+				auto time = std::filesystem::last_write_time(sharedDataPaths[pair.first]);
+				timestamps.emplace(sharedDataPaths[pair.first], time.time_since_epoch().count());
 			}
 #endif
 		}

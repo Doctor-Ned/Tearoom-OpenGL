@@ -4,7 +4,7 @@ set(OPENGL_LIBRARY ${OPENGL_LIBRARIES})
 
 # freetype
 set(FREETYPE_DIR "${THIRDPARTY_DIR}/freetype")
-set(FREETYPE_INCLUDE_DIRS "${THIRDPARTY_DIR}/include")
+set(FREETYPE_INCLUDE_DIRS "${FREETYPE_DIR}/include")
 set(FREETYPE_LIBRARY "${FREETYPE_DIR}/freetype.lib")
 find_package(Freetype REQUIRED)
 

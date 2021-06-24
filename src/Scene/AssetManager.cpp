@@ -8,7 +8,7 @@
 #include "Render/LightManager.h"
 #include "Mesh/AnimatedModel.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 AssetManager *AssetManager::getInstance() {
 	static AssetManager* instance = nullptr;
